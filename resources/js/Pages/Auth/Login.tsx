@@ -1,97 +1,69 @@
-import { useEffect, FormEventHandler } from 'react';
-import Checkbox from '@/Components/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import GuestLayout from '@/Layouts/GuestLayout'
+import { Head } from '@inertiajs/react'
+import useCustomForm from '@/hooks/useCustomForm'
+import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
+import React, { useMemo } from 'react'
+import useInertiaPost from '@/hooks/useInertiaPost'
 
-export default function Login({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false,
-    });
+const genders = [
+  { id: 1, name: 'MALE' },
+  { id: 2, name: 'FEMALE' },
+  { id: 3, name: 'OTHER' },
+]
 
-    useEffect(() => {
-        return () => {
-            reset('password');
-        };
-    }, []);
+export default function Login({ status }: { status?: string; canResetPassword: boolean }) {
+  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+    remember: false,
+    email: '',
+    password: '',
+  })
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+  const { post, loading, errors } = useInertiaPost(route('login'))
 
-        post(route('login'));
-    };
+  const formItems = useMemo(<
+    T,
+    U extends keyof T,
+    K extends keyof L,
+    G extends keyof L,
+    L extends Record<K, string | number> & Record<G, string | number | null>,
+  >() => {
+    return {
+      email: {
+        label: 'Email',
+        type: 'email' as const,
+        setValue: setFormValue('email'),
+      },
+      password: {
+        label: 'Password',
+        type: 'password' as const,
+        setValue: setFormValue('password'),
+      },
+      remember: {
+        label: 'Remember me',
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('remember'),
+      },
+    } as Record<U, FormItem<T[U], K, G, L>>
+  }, [setFormValue, toggleBoolean])
 
-    return (
-        <GuestLayout>
-            <Head title="Log in" />
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    post(formData)
+  }
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+  return (
+    <GuestLayout>
+      <Head title='Log in' />
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
+      {status && <div className='mb-4 font-medium text-sm text-green-600'>{status}</div>}
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="block mt-4">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
-                        />
-                        <span className="ms-2 text-sm text-gray-600">Remember me</span>
-                    </label>
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+      <FormBuilder
+        formItems={formItems}
+        formData={formData}
+        formStyles='md:grid-cols-1 gap-5'
+        onFormSubmit={handleSubmit}
+        loading={loading}
+      />
+    </GuestLayout>
+  )
 }
