@@ -2,7 +2,7 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
-import { ReferenceData, ReferenceDataDomain } from '@/ui/data_interfaces'
+import { ReferenceData, ReferenceDataDomain } from '@/interfaces/data_interfaces'
 
 interface Props {
   domains: ReferenceDataDomain[]
@@ -66,7 +66,7 @@ const ReferenceDataEdit = ({ domains, referenceData }: Props) => {
     <FormPage
       formItems={formItems}
       formData={formData}
-      heading='Update Reference Data'
+      title='Update Reference Data'
       url={route('reference-data.update', referenceData.id)}
       backUrl={route('reference-data.index')}
       isPatchRequest

@@ -1,5 +1,5 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
-import { ReferenceData, ReferenceDataDomain } from '@/ui/data_interfaces'
+import { ReferenceData, ReferenceDataDomain } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'

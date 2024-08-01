@@ -7,5 +7,5 @@ interface Props {
 }
 
 export default function SubHeading({ className = '', children }: Props) {
-  return <h2 className={cn('break-all ', className)}>{children}</h2>
+  return <h2 className={cn('break-all font-bold', className)}>{children}</h2>
 }

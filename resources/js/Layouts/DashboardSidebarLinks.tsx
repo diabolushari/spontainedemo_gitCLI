@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react'
 import { useMemo } from 'react'
 import SidebarItem from './SidebarItem'
-import { User } from '@/ui/data_interfaces'
+import { User } from '@/interfaces/data_interfaces'
 
 export interface SidebarSection {
   title: string
@@ -23,11 +23,36 @@ export interface UserRole {
 
 const sidebarLinks: SidebarSection[] = [
   {
+    title: 'Data Studio',
+    links: [
+      {
+        title: 'Meta Structure',
+        link: route('meta-structure.index'),
+        permission: 'reference-data.view',
+      },
+      {
+        title: 'Meta Data',
+        link: route('meta-data.index'),
+        permission: 'reference-data.view',
+      },
+      {
+        title: 'Meta Group',
+        link: route('meta-data-group.index'),
+        permission: 'reference-data.view',
+      },
+      {
+        title: 'Meta Hierarchy',
+        link: route('meta-hierarchy.index'),
+        permission: 'reference-data.view',
+      },
+    ],
+  },
+  {
     title: 'Data & Settings',
     links: [
       {
         title: 'Reference Data',
-        link: '/reference-data',
+        link: route('reference-data.index'),
         permission: 'reference-data.view',
       },
     ],

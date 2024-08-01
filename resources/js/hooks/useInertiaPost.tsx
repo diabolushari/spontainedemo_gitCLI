@@ -9,7 +9,8 @@ export interface PostOptions {
   replace?: boolean
   preserveState?: boolean
   preserveScroll?: boolean
-  onComplete?: (() => unknown) | null
+  onComplete?: () => unknown
+  onError?: () => unknown
 }
 
 const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
@@ -36,6 +37,9 @@ const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
             if (flash.error == null && options?.onComplete != null) {
               options.onComplete()
             }
+            if (flash.error != null && options?.onError != null) {
+              options.onError()
+            }
           },
           onError: (errors) => {
             const keys = Object.keys(errors)
@@ -57,6 +61,7 @@ const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
     },
     [
       options?.onComplete,
+      options?.onError,
       url,
       options?.showErrorToast,
       options?.forceFormData,

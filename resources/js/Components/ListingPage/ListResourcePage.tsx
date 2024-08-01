@@ -1,16 +1,15 @@
 import Authenticated from '@/Layouts/AuthenticatedLayout'
 import Card from '@/ui/Card/Card'
-import Heading from '@/typograpy/Heading'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import { router } from '@inertiajs/react'
 import React, { useEffect } from 'react'
-import AddButton from '@/ui/button/AddButton'
 import ListResourceTable from '@/Components/ListingPage/ListResourceTable'
 import SelectList from '@/ui/form/SelectList'
 import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
+import CardHeader from '@/ui/Card/CardHeader'
 
 export interface ListItemKeys<T> {
   key: keyof T
@@ -98,10 +97,10 @@ export default function ListResourcePage<
       <DashboardPadding>
         <Card>
           <div className='flex flex-col gap-5'>
-            <div className='flex justify-between gap-5 py-4 bg-gray-200 px-2'>
-              <Heading>{title}</Heading>
-              {addButtonUrl != null && <AddButton link={addButtonUrl} />}
-            </div>
+            <CardHeader
+              title={title}
+              addUrl={addButtonUrl}
+            />
             <div className='flex flex-col gap-10 px-5 py-5'>
               <div className='flex flex-col gap-5'>
                 <FormBuilder

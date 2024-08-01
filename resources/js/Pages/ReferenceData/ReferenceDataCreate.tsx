@@ -2,7 +2,7 @@ import FormPage from '@/FormBuilder/FormPage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
-import { ReferenceDataDomain } from '@/ui/data_interfaces'
+import { ReferenceDataDomain } from '@/interfaces/data_interfaces'
 
 interface Props {
   domains: ReferenceDataDomain[]
@@ -65,7 +65,7 @@ const ReferenceDataCreate = ({ domains }: Props) => {
     <FormPage
       formItems={formItems}
       formData={formData}
-      heading='Create Reference Data'
+      title='Create Reference Data'
       url={route('reference-data.store')}
       backUrl={route('reference-data.index')}
     />

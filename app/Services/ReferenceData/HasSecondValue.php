@@ -4,7 +4,7 @@ namespace App\Services\ReferenceData;
 
 use App\Http\Requests\ReferenceDataRequests\RefDataFormRequest;
 use App\Libs\ErrorResponse;
-use App\Models\ReferenceDataParameter;
+use App\Models\ReferenceData\ReferenceDataParameter;
 
 class HasSecondValue
 {

@@ -10,6 +10,7 @@ import SelectList from '@/ui/form/SelectList'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
+import ComboBox from '@/ui/form/ComboBox'
 
 export interface FormItem<
   T,
@@ -31,12 +32,15 @@ export interface FormItem<
     | 'date'
     | 'file'
     | 'time'
+    | 'autocomplete'
   hidden?: boolean
   disabled?: boolean
   list?: L[]
-  displayKey?: K
-  dataKey?: G
+  displayKey?: G
+  displayKey2?: G
+  dataKey?: K
   colPositionAdjustment?: string
+  autoCompleteSelection?: L | null
   selectListUrl?: string
   showAllOption?: boolean
   allOptionText?: string
@@ -204,6 +208,22 @@ export default function FormBuilder<
                 showAllOption={formItems[keyValue].showAllOption}
                 allOptionText={formItems[keyValue].allOptionText}
                 disabled={formItems[keyValue].disabled}
+                error={errors != null ? errors[keyValue] : undefined}
+              />
+            )}
+          {formItems[keyValue].type === 'autocomplete' &&
+            !formItems[keyValue].hidden &&
+            formItems[keyValue].selectListUrl != null &&
+            formItems[keyValue].displayKey != null &&
+            formItems[keyValue].dataKey != null && (
+              <ComboBox
+                value={formItems[keyValue].autoCompleteSelection as L | null}
+                url={formItems[keyValue].selectListUrl}
+                dataKey={formItems[keyValue].dataKey as keyof L}
+                displayKey={formItems[keyValue].displayKey as keyof L}
+                displayValue2={formItems[keyValue].displayKey2 as keyof L | undefined}
+                setValue={formItems[keyValue].setValue as (value: L | null) => unknown}
+                label={formItems[keyValue].label}
                 error={errors != null ? errors[keyValue] : undefined}
               />
             )}

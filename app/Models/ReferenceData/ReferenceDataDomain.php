@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\ReferenceData;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ReferenceDataParameter extends Model
+class ReferenceDataDomain extends Model
 {
     use HasFactory;
     use SoftDeletes;

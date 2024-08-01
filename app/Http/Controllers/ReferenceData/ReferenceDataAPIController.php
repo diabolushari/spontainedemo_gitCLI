@@ -5,8 +5,8 @@ namespace App\Http\Controllers\ReferenceData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReferenceDataRequests\CascadedReferenceDataRequest;
 use App\Http\Requests\ReferenceDataRequests\DomainParameterSearchRequest;
-use App\Models\ReferenceData;
-use App\Models\ReferenceDataParameter;
+use App\Models\ReferenceData\ReferenceData;
+use App\Models\ReferenceData\ReferenceDataParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

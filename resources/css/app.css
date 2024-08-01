@@ -22,6 +22,11 @@ body {
     @apply max-w-xs break-words px-3 py-6;
 }
 
+.link {
+    @apply text-blue-500 underline cursor-pointer hover:text-blue-700;
+}
+
+
 .spinner_svg {
     animation: 2s linear infinite svg-animation;
     max-width: 100px;
