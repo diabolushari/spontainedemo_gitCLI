@@ -24,7 +24,7 @@ export default function MetaStructureIndex({ structures }: Props) {
     return {
       search: {
         label: 'Search',
-        type: 'date',
+        type: 'text',
         setValue: setFormValue('search'),
       } as FormItem<string, never, never, never>,
     }
