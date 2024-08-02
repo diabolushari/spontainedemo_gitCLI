@@ -14,19 +14,23 @@ interface FormFields {
 }
 
 export default function MetaStructureIndex({ structures }: Props) {
+  //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: '',
   })
+
+  //input elements list
   const formItems = useMemo(() => {
     return {
       search: {
         label: 'Search',
-        type: 'text',
+        type: 'date',
         setValue: setFormValue('search'),
       } as FormItem<string, never, never, never>,
     }
   }, [])
 
+  // keys(table col titles) for the table
   const keys = useMemo(() => {
     return [
       {
@@ -37,6 +41,7 @@ export default function MetaStructureIndex({ structures }: Props) {
     ] as ListItemKeys<Partial<MetaStructure>>[]
   }, [])
 
+  //table data
   const data = useMemo(() => {
     return structures.data.map((structure) => {
       return {
