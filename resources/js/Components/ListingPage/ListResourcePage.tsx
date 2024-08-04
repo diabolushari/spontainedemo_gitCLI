@@ -1,4 +1,4 @@
-import Authenticated from '@/Layouts/AuthenticatedLayout'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import Card from '@/ui/Card/Card'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { Paginator } from '@/ui/ui_interfaces'
@@ -107,7 +107,7 @@ export default function ListResourcePage<
   }, [])
 
   return (
-    <Authenticated>
+    <AuthenticatedLayout>
       <DashboardPadding>
         <Card>
           <div className='flex flex-col gap-5'>
@@ -168,6 +168,6 @@ export default function ListResourcePage<
           </Card>
         )}
       </DashboardPadding>
-    </Authenticated>
+    </AuthenticatedLayout>
   )
 }

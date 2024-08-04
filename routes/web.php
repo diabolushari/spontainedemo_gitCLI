@@ -8,7 +8,6 @@ use App\Http\Controllers\Meta\MetaHierarchyAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use Illuminate\Foundation\Application;
@@ -27,12 +26,6 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);

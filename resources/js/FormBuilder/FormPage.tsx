@@ -1,4 +1,4 @@
-import Authenticated from '@/Layouts/AuthenticatedLayout'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import Card from '@/ui/Card/Card'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import React, { FormEvent } from 'react'
@@ -62,7 +62,7 @@ export default function FormPage<
   }
 
   return (
-    <Authenticated>
+    <AuthenticatedLayout>
       <DashboardPadding>
         <Card>
           <div className='flex flex-col gap-5'>
@@ -90,6 +90,6 @@ export default function FormPage<
           </div>
         </Card>
       </DashboardPadding>
-    </Authenticated>
+    </AuthenticatedLayout>
   )
 }

@@ -12,7 +12,7 @@ interface Props {
   children?: ReactNode
 }
 
-export default function Authenticated({ children }: Props) {
+export default function AuthenticatedLayout({ children }: Props) {
   const [showSidebar, setShowSidebar] = useState(false)
 
   const { flash } = usePage().props as unknown as { flash?: LaravelFlash }

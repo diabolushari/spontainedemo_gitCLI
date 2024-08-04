@@ -1,5 +1,5 @@
 import React from 'react'
-import Authenticated from '@/Layouts/AuthenticatedLayout'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
@@ -43,7 +43,7 @@ export default function ShowResourcePage({
   addUrl,
 }: Props) {
   return (
-    <Authenticated>
+    <AuthenticatedLayout>
       <DashboardPadding>
         <Card>
           <CardHeader
@@ -83,6 +83,6 @@ export default function ShowResourcePage({
         </Card>
         {children}
       </DashboardPadding>
-    </Authenticated>
+    </AuthenticatedLayout>
   )
 }
