@@ -11,7 +11,6 @@ export default function useFetchList<T>(url: string): [T[], boolean] {
     setList([])
     try {
       const { data } = await axios.get(url)
-      console.log(data)
       setList(data)
     } catch (error) {
       handleHttpErrors(error)
