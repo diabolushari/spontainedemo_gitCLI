@@ -9,6 +9,8 @@ use App\Models\Meta\MetaData;
 use App\Models\Meta\MetaStructure;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,7 +28,7 @@ class MetaDataController extends Controller
         ];
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
 
         $structures = MetaStructure::select(['id', 'structure_name'])
@@ -35,6 +37,8 @@ class MetaDataController extends Controller
         $records = MetaData::with([
             'metaStructure:id,structure_name',
         ])
+            ->when($request->filled(key:'search'),fn(Builder $builder)=>$builder->where('name',operator:'like',value:'%'.$request->input(key:'search').'%'))
+            ->when($request->filled('structure'),fn(Builder $builder)=>$builder->where('meta_structure_id','like',$request->input(key:'structure')))
             ->paginate(20)
             ->withQueryString();
 
