@@ -9,6 +9,8 @@ use App\Models\Meta\MetaGroup;
 use App\Models\Meta\MetaGroupItem;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,9 +24,10 @@ class MetaDataGroupController extends Controller
         return ['auth'];
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $groups = MetaGroup::withCount('items')
+        $groups = MetaGroup::when($request->filled(key:'search'),fn(Builder $builder)=>$builder->where('name',operator:'like',value:'%'.$request->input(key:'search').'%'))
+            ->withCount('items')
             ->paginate(20)
             ->withQueryString();
 

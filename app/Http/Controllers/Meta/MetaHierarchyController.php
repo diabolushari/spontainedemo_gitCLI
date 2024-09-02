@@ -10,6 +10,7 @@ use App\Models\Meta\MetaHierarchyItem;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,9 +24,10 @@ class MetaHierarchyController extends Controller
         return ['auth'];
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::withCount('items')
+        $hierarchies = MetaHierarchy::when($request->filled(key:'search'),fn(Builder $builder)=>$builder->where('name',operator:'like',value:'%'.$request->input(key:'search').'%'))
+            ->withCount('items')
             ->paginate(20)
             ->withQueryString();
 
