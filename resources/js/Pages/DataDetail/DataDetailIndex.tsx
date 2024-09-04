@@ -39,7 +39,7 @@ export default function DataDetailIndex({ details }: Props) {
         actions: [
           {
             title: 'Show',
-            url: route('data-detail.edit', { id: detail.id }),
+            url: route('data-detail.show', { id: detail.id }),
           },
         ],
       }
