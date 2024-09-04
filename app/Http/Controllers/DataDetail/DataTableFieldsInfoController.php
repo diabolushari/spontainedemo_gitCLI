@@ -13,6 +13,7 @@ use App\Models\Meta\MetaStructure;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -126,15 +127,20 @@ class DataTableFieldsInfoController extends Controller
 
         }
 
+        DB::beginTransaction();
         try {
             DataTableDate::insert($dateFields);
             DataTableDimension::insert($dimensionFields);
             DataTableMeasure::insert($measureFields);
         } catch (Exception $e) {
+            DB::rollBack();
+
             return back()->with([
                 'error' => ExceptionMessage::getMessage($e),
             ]);
         }
+
+        DB::commit();
 
         return redirect()->route('data-detail.show', $request->detailId)
             ->with([
