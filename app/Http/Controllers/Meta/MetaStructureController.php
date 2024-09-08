@@ -7,9 +7,9 @@ use App\Http\Requests\Meta\MetaStructureFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaStructure;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,8 +28,8 @@ class MetaStructureController extends Controller
     public function index(Request $request): Response
     {
         $structures = MetaStructure::withCount('metaData')
-            ->when($request->filled(key:'search'),fn(Builder $builder)=>$builder
-            ->where('structure_name',operator:'like',value:'%'.$request->input(key:'search').'%'))
+            ->when($request->filled(key: 'search'), fn (Builder $builder) => $builder
+                ->where('structure_name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
             ->paginate(20)
             ->withQueryString();
 

@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers\#[Directory];
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\#[Directory]\#[ModelName]FormRequest;
+use App\Libs\ExceptionMessage;
+use App\Models\#[Directory]\#[ModelName];
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Exception;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class #[ModelName]Controller extends Controller
+{
+    /**
+     * @return string[]
+     */
+    public static function middleware(): array
+    {
+        return [
+            'auth',
+        ];
+    }
+
+    public function index(Request $request): Response
+    {
+        /** @var LengthAwarePaginator<#[ModelName]> $#[modelNamePlural] */
+        $#[modelNamePlural] = #[ModelName]::paginate(20)
+            ->withQueryString();
+
+        return Inertia::render('#[Directory]/#[ModelName]Index', [
+            '#[modelNamePlural]' => $#[modelNamePlural],
+        ]);
+    }
+
+    public function create(): Response
+    {
+        return Inertia::render('#[Directory]/#[ModelName]Create');
+    }
+
+    public function store(#[ModelName]FormRequest $request): RedirectResponse
+    {
+        try{
+            /** @var #[ModelName] $record */
+            $record = #[ModelName]::create($request->all());
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('#[url].show', $record->id)
+            ->with(['message' =>'Data added successfully.']);
+    }
+
+    public function show(#[ModelName] $#[modelName]): Response
+    {
+        return Inertia::render('#[Directory]/#[ModelName]Show', [
+            '#[modelName]' => $#[modelName],
+        ]);
+    }
+
+    public function edit(#[ModelName] $#[modelName]): Response
+    {
+        return Inertia::render('#[Directory]/#[ModelName]', [
+            '#[modelName]' => $#[modelName],
+        ]);
+    }
+
+    public function update(#[ModelName]FormRequest $request, #[ModelName] $#[modelName]): RedirectResponse
+    {
+        try {
+            $#[modelName]->update($request->all());
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('#[url].show', $#[modelName]->id)
+            ->with(['message' => 'Record updated successfully.']);
+    }
+
+    public function destroy(#[ModelName] $#[modelName]): RedirectResponse
+    {
+        try {
+            $#[modelName]->delete();
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('#[url].index')
+            ->with(['message' => 'Record deleted successfully.']);
+    }
+}

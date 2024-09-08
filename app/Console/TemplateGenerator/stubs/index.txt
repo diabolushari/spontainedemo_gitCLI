@@ -1,19 +1,19 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
-import { MetaStructure } from '@/interfaces/meta_interfaces'
+import { #[ModelName] } from '@/interfaces/data_interfaces'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
 
 interface Props {
-  structures: Paginator<MetaStructure>
+  #{modelNamePlural]: Paginator<#[ModelName]>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function MetaStructureIndex({ structures }: Props) {
+export default function #[ModelName]Index({ #[modelNamePlural] }: ReadOnly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: '',
@@ -34,32 +34,27 @@ export default function MetaStructureIndex({ structures }: Props) {
   const keys = useMemo(() => {
     return [
       {
-        key: 'structure_name',
-        label: 'Structure',
+        key: 'name',
+        label: 'Name',
         isCardHeader: true,
       },
-    ] as ListItemKeys<Partial<MetaStructure>>[]
+    ] as ListItemKeys<Partial<#[ModelName]>>[]
   }, [])
 
   //table data
   const data = useMemo(() => {
-    return structures.data.map((structure) => {
+    return #[modelNamePlural].data.map((record) => {
       return {
-        id: structure.id,
-        structure_name: structure.structure_name,
+        id: record.id,
         actions: [
           {
-            title: `${structure.meta_data_count} Records`,
-            url: route('meta-data.index', { structure: structure.id }, false),
-          },
-          {
-            title: 'Edit',
-            url: route('meta-structure.edit', structure.id, false),
+            title: 'Show',
+            url: route('#[url].show', record.id),
           },
         ],
       }
     })
-  }, [structures])
+  }, [#[modelNamePlural]])
 
   return (
     <ListResourcePage
@@ -68,9 +63,9 @@ export default function MetaStructureIndex({ structures }: Props) {
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('meta-structure.create')}
-      searchUrl={route('meta-structure.index')}
-      paginator={structures}
+      addUrl={route('#[url].create')}
+      searchUrl={route('#[url].index')}
+      paginator={#[modelNamePlural]}
     />
   )
 }

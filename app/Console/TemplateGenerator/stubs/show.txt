@@ -1,0 +1,32 @@
+import { MetaDataGroup, MetaDataGroupItem } from '@/interfaces/meta_interfaces'
+import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
+import { useMemo } from 'react'
+import MetaGroupAddItem from '@/Components/MetaData/MetaDataGroup/MetaGroupAddItem'
+import { Paginator } from '@/ui/ui_interfaces'
+import MetaGroupItemList from '@/Components/MetaData/MetaDataGroup/MetaGroupItemList'
+
+interface Props {
+  #[modelName]: #[ModelName]
+}
+
+export default function MetaGroupShow({ #[modelName] }: ReadOnly<Props>) {
+  const displayedValues = useMemo(() => {
+    return [
+      {
+        label: 'Name',
+        content: '',
+        id: 1,
+      },
+    ] as ShowPageItem[]
+  }, [metaDataGroup])
+
+  return (
+    <ShowResourcePage
+      title={''}
+      items={displayedValues}
+      backUrl={route('#[url].index')}
+    >
+     {/**more content**/}
+    </ShowResourcePage>
+  )
+}

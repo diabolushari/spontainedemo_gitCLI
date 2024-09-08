@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models\#[Directory];
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class #[ModelName] extends Model
+{
+    use SoftDeletes;
+
+    protected $fillable = [
+      //fields
+    ];
+
+    //relationships
+
+    //scopes
+}
