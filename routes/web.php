@@ -3,6 +3,9 @@
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
+use App\Http\Controllers\DataLoader\DataLoaderJobController;
+use App\Http\Controllers\DataLoader\DataLoaderQueryController;
+use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -91,7 +94,19 @@ Route::get('test', function () {
 Route::resource('loader-connections', DataLoaderConnectionController::class)
     ->parameters(['loader-connections' => 'dataLoaderConnection']);
 
-Route::resource('loader-queries', \App\Http\Controllers\DataLoader\DataLoaderQueryController::class)
+Route::resource('loader-queries', DataLoaderQueryController::class)
     ->parameters(['loader-queries' => 'dataLoaderQuery']);
+
+Route::resource('loader-jobs', DataLoaderJobController::class)
+    ->parameters(['loader-jobs' => 'dataLoaderJob']);
+
+Route::resource('loader-jobs', DataLoaderJobController::class)
+    ->parameters(['loader-jobs' => 'dataLoaderJob']);
+
+Route::resource('loader-jobs', DataLoaderJobController::class)
+    ->parameters(['loader-jobs' => 'dataLoaderJob']);
+
+Route::get('queries-in-connection', QueryListController::class)
+    ->name('queries-in-connection');
 
 require __DIR__.'/auth.php';

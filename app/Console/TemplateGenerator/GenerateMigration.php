@@ -37,6 +37,9 @@ class GenerateMigration
             $formRequestContent = str_replace('#[modelName]', lcfirst($this->model), $formRequestContent);
             $formRequestContent = str_replace('#[modelNamePlural]', Str::plural(lcfirst($this->model)), $formRequestContent);
             $formRequestContent = str_replace('#[model_name]', Str::snake(lcfirst($this->model)), $formRequestContent);
+            $formRequestContent = str_replace('#[model_name_plural]', Str::snake(
+                Str::plural(lcfirst($this->model))
+            ), $formRequestContent);
             $formRequestContent = str_replace('#[url]', strtolower($this->url), $formRequestContent);
 
             File::put($modelDirectoryPath.$fileName, $formRequestContent);

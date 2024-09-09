@@ -1,9 +1,5 @@
-import { MetaDataGroup, MetaDataGroupItem } from '@/interfaces/meta_interfaces'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import { useMemo, useState } from 'react'
-import MetaGroupAddItem from '@/Components/MetaData/MetaDataGroup/MetaGroupAddItem'
-import { Paginator } from '@/ui/ui_interfaces'
-import MetaGroupItemList from '@/Components/MetaData/MetaDataGroup/MetaGroupItemList'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { #[ModelName] } from '@/interfaces/data_interfaces'
 

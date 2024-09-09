@@ -10,7 +10,7 @@ export function generateTableNames(name: string): string {
   //remove all special characters except space
   const tableName = name.replace(/[^a-zA-Z0-9 ]/g, '')
   //replace all spaces with underscore
-  return tableName.replace(/ /g, '_').toLowerCase() + '_data_table'
+  return 'data_table_' + tableName.replace(/ /g, '_').toLowerCase()
 }
 
 export default function SubjectAreaCreate() {

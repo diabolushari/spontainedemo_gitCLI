@@ -58,6 +58,11 @@ export default function DataLoaderConnectionIndex({ dataLoaderConnections }: Rea
         label: 'Database',
         isShownInCard: true,
       },
+      {
+        key: 'queries_count',
+        label: '# of queries',
+        isShownInCard: true,
+      },
     ] as ListItemKeys<Partial<DataLoaderConnection>>[]
   }, [])
 
@@ -71,6 +76,7 @@ export default function DataLoaderConnectionIndex({ dataLoaderConnections }: Rea
         driver: record.driver,
         username: record.username,
         database: record.database,
+        queries_count: record.queries_count,
         actions: [
           {
             title: 'Show',

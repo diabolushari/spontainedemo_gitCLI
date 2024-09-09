@@ -34,6 +34,7 @@ class DataLoaderConnectionController extends Controller
             $request->search != null,
             fn ($query) => $query->where('name', 'like', "%$request->search%")
         )
+            ->withCount('queries')
             ->paginate(20)
             ->withQueryString();
 

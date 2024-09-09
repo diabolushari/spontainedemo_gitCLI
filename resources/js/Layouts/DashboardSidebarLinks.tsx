@@ -70,6 +70,11 @@ const sidebarLinks: SidebarSection[] = [
         link: route('loader-queries.index'),
         permission: 'reference-data.view',
       },
+      {
+        title: 'Loader Jobs',
+        link: route('loader-jobs.index'),
+        permission: 'reference-data.view',
+      },
     ],
   },
   {

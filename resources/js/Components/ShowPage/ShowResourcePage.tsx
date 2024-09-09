@@ -5,7 +5,6 @@ import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import SubHeading from '@/typograpy/SubHeading'
 import NormalText from '@/typograpy/NormalText'
-import { Link } from '@inertiajs/react'
 
 export interface ShowPageItem {
   id: number
@@ -69,12 +68,13 @@ export default function ShowResourcePage({
                 <div className='md:col-span-2'>
                   {item.type === 'text' && <NormalText>{item.content}</NormalText>}
                   {item.type === 'link' && (
-                    <Link
+                    <a
+                      target='_blank'
                       href={item.content as string}
                       className='link'
                     >
                       {item.contentDescription}
-                    </Link>
+                    </a>
                   )}
                 </div>
               </div>

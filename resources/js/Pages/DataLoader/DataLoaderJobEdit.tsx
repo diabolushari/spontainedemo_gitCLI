@@ -2,14 +2,14 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
-import { #[ModelName] } from '@/interfaces/data_interfaces'
+import { DataLoaderJob } from '@/interfaces/data_interfaces'
 
 
 interface Props {
-  #[modelName]: #[ModelName]
+  dataLoaderJob: DataLoaderJob
 }
 
-export default function #[ModelName]Edit({ #[modelName] }: Readonly<Props>) {
+export default function DataLoaderJobEdit({ dataLoaderJob }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     //fields
   })
@@ -28,11 +28,11 @@ export default function #[ModelName]Edit({ #[modelName] }: Readonly<Props>) {
 
   return (
     <FormPage
-      url={route('#[url].update', #[modelName].id)}
+      url={route('loader-jobs.update', dataLoaderJob.id)}
       formData={formData}
       formItems={formItems}
-      title='Edit #[ModelName]'
-      backUrl={route('#[url].show', #[modelName].id)}
+      title='Edit DataLoaderJob'
+      backUrl={route('loader-jobs.show', dataLoaderJob.id)}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
     />

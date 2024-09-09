@@ -1,40 +1,43 @@
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import { DataLoaderQuery } from '@/interfaces/data_interfaces'
+import { DataLoaderJob } from '@/interfaces/data_interfaces'
 
 interface Props {
-  dataLoaderQuery: DataLoaderQuery
+  dataLoaderJob: DataLoaderJob
 }
 
-export default function MetaGroupShow({ dataLoaderQuery }: Readonly<Props>) {
+export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  console.log(dataLoaderJob)
 
   const displayedValues = useMemo(() => {
     return [
       {
         id: 1,
         label: 'Name',
-        content: dataLoaderQuery.name,
+        content: dataLoaderJob.name,
         type: 'text',
       },
       {
         id: 2,
-        label: 'Description',
-        content: dataLoaderQuery.description,
-        type: 'text',
+        label: 'Target Table',
+        content: route('data-detail.show', dataLoaderJob.data_detail_id),
+        contentDescription: dataLoaderJob.detail?.name,
+        type: 'link',
       },
       {
         id: 3,
-        label: 'Connection',
-        content: route('loader-connections.show', dataLoaderQuery.connection_id),
-        contentDescription: dataLoaderQuery.connection?.name ?? '',
+        label: 'Query',
+        content: route('loader-queries.show', dataLoaderJob.query_id),
+        contentDescription: dataLoaderJob.loader_query?.name,
         type: 'link',
       },
       {
         id: 4,
-        label: 'Query',
-        content: dataLoaderQuery.query,
+        label: 'Cron Type',
+        content: dataLoaderJob.cron_type,
         type: 'text',
       },
     ] as ShowPageItem[]
@@ -44,8 +47,8 @@ export default function MetaGroupShow({ dataLoaderQuery }: Readonly<Props>) {
     <ShowResourcePage
       title={''}
       items={displayedValues}
-      backUrl={route('loader-queries.index')}
-      editUrl={route('loader-queries.edit', dataLoaderQuery.id)}
+      backUrl={route('loader-jobs.index')}
+      editUrl={route('loader-jobs.edit', dataLoaderJob.id)}
       onDeleteClick={() => {
         setShowDeleteModal(true)
       }}
@@ -54,8 +57,8 @@ export default function MetaGroupShow({ dataLoaderQuery }: Readonly<Props>) {
       {showDeleteModal && (
         <DeleteModal
           setShowModal={setShowDeleteModal}
-          title={`Delete ${dataLoaderQuery.name}`}
-          url={route('loader-queries.destroy', dataLoaderQuery.id)}
+          title={`Delete Record`}
+          url={route('loader-jobs.destroy', dataLoaderJob.id)}
         >
           <p>Are you sure you want to delete record?</p>
         </DeleteModal>

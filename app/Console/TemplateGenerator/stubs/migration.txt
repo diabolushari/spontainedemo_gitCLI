@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('#[model_name]', function (Blueprint $table) {
+        Schema::create('#[model_name_plural]', function (Blueprint $table) {
             $table->id();
 
             //fields
-
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('#[model_name]');
+        Schema::dropIfExists('#[model_name_plural]');
     }
 };

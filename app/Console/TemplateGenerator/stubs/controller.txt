@@ -4,7 +4,7 @@ namespace App\Http\Controllers\#[Directory];
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\#[Directory]\#[ModelName]FormRequest;
-use App\Http\Requests\#[Directory]\#[ModelName]FormRequest;
+use App\Http\Requests\#[Directory]\#[ModelName]SearchRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\#[Directory]\#[ModelName];
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
