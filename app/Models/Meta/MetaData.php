@@ -37,6 +37,14 @@ class MetaData extends Model
         return $this->hasMany(MetaHierarchyItem::class, 'meta_data_id', 'id');
     }
 
+     /**
+     * @return HasMany<MetaGroupItem>
+     */
+    public function groupItem(): HasMany
+    {
+        return $this->hasMany(MetaGroupItem::class,'meta_data_id','id');
+    }
+
     /**
      * Scope a query to join the structure table
      *

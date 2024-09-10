@@ -71,6 +71,8 @@ class MetaDataController extends Controller
 
     public function show(MetaData $metaData): Response
     {
+        $metaData->load('hierarchyItem.metaHierarchy');
+        $metaData->load('groupItem.metaDataGroup');
         return Inertia::render('MetaData/MetaDataShow', [
             'metaData' => $metaData->load([
                 'metaStructure:id,structure_name',

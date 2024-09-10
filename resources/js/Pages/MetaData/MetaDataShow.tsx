@@ -5,6 +5,7 @@ import CardHeader from '@/ui/Card/CardHeader'
 import Card from '@/ui/Card/Card'
 import StrongText from '@/typograpy/StrongText'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+import EditButton from '@/ui/button/EditButton'
 
 interface Props {
   metaData: MetaData
@@ -50,7 +51,12 @@ export default function MetaDataShow({ metaData }: Props) {
       },
     ]
   }, [metaData])
+  const hierarchyNames =
+    metaData.hierarchy_item?.map((item) => item.meta_hierarchy?.name).filter(Boolean) || []
+  const groupNames = metaData.group_item?.map((item) => item.meta_group?.name).filter(Boolean) || []
 
+  console.log(hierarchyNames)
+  console.log(metaData)
   return (
     <ShowResourcePage
       items={displayedItems}
@@ -68,7 +74,7 @@ export default function MetaDataShow({ metaData }: Props) {
             onAddClick={() => {}}
           />
           <div className='p-2'>
-            <StrongText>Part of no groups.</StrongText>
+            <div>{groupNames}</div>
           </div>
         </Card>
         <Card className='mt-5'>
@@ -77,7 +83,7 @@ export default function MetaDataShow({ metaData }: Props) {
             onAddClick={() => {}}
           />
           <div className='p-2'>
-            <StrongText>Not part of any hierarchy.</StrongText>
+            <div>{hierarchyNames}</div>
           </div>
         </Card>
       </>

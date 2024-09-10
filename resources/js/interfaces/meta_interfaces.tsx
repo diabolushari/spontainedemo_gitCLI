@@ -12,6 +12,12 @@ export interface MetaData extends Model {
   meta_structure_id: number
   meta_structure?: Partial<MetaStructure> | null
   structure_name?: string | null
+
+  meta_hierarchy?: MetaHierarchy
+  meta_group?: MetaDataGroup
+
+  hierarchy_item?: MetaHierarchyItem[]
+  group_item?: MetaDataGroupItem[]
 }
 
 export interface MetaDataGroup extends Model {
