@@ -103,6 +103,7 @@ export default function DataLoaderConnectionEdit({ dataLoaderConnection }: Reado
       backUrl={route('loader-connections.index')}
       formStyles='w-1/2 md:grid-cols-1'
       customSubmitData={customFormData}
+      buttonText={'Update & Verify'}
       isPatchRequest
     />
   )

@@ -59,6 +59,7 @@ export default function DataLoaderQueryCreate({ connections }: Readonly<Props>) 
       title='Create Loader Query'
       backUrl={route('loader-queries.index')}
       formStyles='w-1/2 md:grid-cols-1'
+      buttonText='Save & Test'
     />
   )
 }

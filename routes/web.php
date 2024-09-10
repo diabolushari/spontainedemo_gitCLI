@@ -77,23 +77,6 @@ Route::resource('data-detail-fields-info', DataTableFieldsInfoController::class)
     ->parameters(['data-detail-fields-info' => 'dataTableFieldsInfo'])
     ->only('create', 'store');
 
-Route::get('test', function () {
-    \Illuminate\Support\Facades\Config::set('database.connections.external', [
-        'driver' => 'mysql',
-        'host' => 'mysql',
-        'port' => '3306',
-        'username' => 'root',
-        'database' => 'laravel',
-        'password' => 'password',
-    ]);
-
-    DB::purge('external');
-
-    \Illuminate\Support\Facades\DB::connection('external')->reconnect();
-
-    return \Illuminate\Support\Facades\DB::connection('external')->getDatabaseName();
-});
-
 Route::resource('loader-connections', DataLoaderConnectionController::class)
     ->parameters(['loader-connections' => 'dataLoaderConnection']);
 

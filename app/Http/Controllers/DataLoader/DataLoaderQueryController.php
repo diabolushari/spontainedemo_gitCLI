@@ -5,9 +5,11 @@ namespace App\Http\Controllers\DataLoader;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DataLoader\DataLoaderQueryFormRequest;
 use App\Http\Requests\DataLoader\DataLoaderQuerySearchRequest;
+use App\Libs\ErrorResponse;
 use App\Libs\ExceptionMessage;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderQuery;
+use App\Services\DataLoader\Connection\RunLoaderQuery;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
@@ -69,10 +71,34 @@ class DataLoaderQueryController extends Controller
             ->with(['message' => 'Data added successfully.']);
     }
 
-    public function show(DataLoaderQuery $dataLoaderQuery): Response
-    {
+    public function show(
+        DataLoaderQuery $dataLoaderQuery,
+        RunLoaderQuery $runLoaderQuery
+    ): Response {
+        $dataLoaderQuery->load('connection');
+
+        $error = new ErrorResponse(false, '');
+
+        $result = [];
+
+        if ($dataLoaderQuery->connection == null) {
+            $error->message = 'Connection not found';
+        } else {
+            try {
+                $result = $runLoaderQuery->runQuery($dataLoaderQuery->connection, $dataLoaderQuery);
+                $noOfRecords = count($result);
+                $error->message = "Query executed successfully, $noOfRecords records found.";
+            } catch (Exception $e) {
+                $error->error = true;
+                $error->message = ExceptionMessage::getMessage($e);
+            }
+        }
+
         return Inertia::render('DataLoader/DataLoaderQueryShow', [
-            'dataLoaderQuery' => $dataLoaderQuery->load('connection:id,name'),
+            'dataLoaderQuery' => $dataLoaderQuery,
+            'error' => $error->error,
+            'errorMessage' => $error->message,
+            'result' => array_slice($result, 0, 10),
         ]);
     }
 

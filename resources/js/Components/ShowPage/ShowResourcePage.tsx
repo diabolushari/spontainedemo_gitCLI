@@ -72,6 +72,7 @@ export default function ShowResourcePage({
                       target='_blank'
                       href={item.content as string}
                       className='link'
+                      rel='noreferrer'
                     >
                       {item.contentDescription}
                     </a>

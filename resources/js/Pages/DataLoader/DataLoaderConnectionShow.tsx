@@ -2,12 +2,18 @@ import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResour
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderConnection } from '@/interfaces/data_interfaces'
+import Card from '@/ui/Card/Card'
+import AlertMessage from '@/ui/Alert/AlertMessage'
 
 interface Props {
   dataLoaderConnection: DataLoaderConnection
+  status: {
+    message?: string
+    error: boolean
+  }
 }
 
-export default function MetaGroupShow({ dataLoaderConnection }: Readonly<Props>) {
+export default function MetaGroupShow({ dataLoaderConnection, status }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const displayedValues = useMemo(() => {
@@ -67,6 +73,12 @@ export default function MetaGroupShow({ dataLoaderConnection }: Readonly<Props>)
         setShowDeleteModal(true)
       }}
     >
+      <Card className='px-10 py-4'>
+        <AlertMessage
+          message={status.message}
+          variant={status.error ? 'error' : 'success'}
+        />
+      </Card>
       {/**more content**/}
       {showDeleteModal && (
         <DeleteModal

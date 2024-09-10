@@ -61,6 +61,7 @@ export default function DataLoaderQueryEdit({ dataLoaderQuery, connections }: Re
       backUrl={route('loader-queries.index')}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
+      buttonText='Update & Test'
     />
   )
 }

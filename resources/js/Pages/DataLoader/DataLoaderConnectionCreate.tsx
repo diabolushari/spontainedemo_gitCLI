@@ -2,7 +2,6 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
-import { DataLoaderJob } from '@/interfaces/data_interfaces'
 
 export const databaseDrivers = [
   { value: 'mysql', label: 'MySQL' },
@@ -11,10 +10,6 @@ export const databaseDrivers = [
   { value: 'sqlsrv', label: 'SQL Server' },
   { value: 'mariadb', label: 'MariaDB' },
 ]
-
-interface Props {
-  job: DataLoaderJob
-}
 
 export default function DataLoaderConnectionCreate() {
   const { formData, setFormValue } = useCustomForm({
@@ -90,6 +85,7 @@ export default function DataLoaderConnectionCreate() {
       title='Create DataLoaderConnection'
       backUrl={route('loader-connections.index')}
       formStyles='w-1/2 md:grid-cols-1'
+      buttonText={'Add & Verify'}
     />
   )
 }

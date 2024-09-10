@@ -28,6 +28,7 @@ interface Props<
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   customSubmitData?: Partial<T>
   isPatchRequest?: boolean
+  buttonText?: string
 }
 
 export default function FormPage<
@@ -51,6 +52,7 @@ export default function FormPage<
   onAddClick,
   addUrl,
   customSubmitData,
+  buttonText,
   isPatchRequest = false,
 }: Props<T, U, K, G, L>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
@@ -90,6 +92,7 @@ export default function FormPage<
                 formItems={formItems}
                 loading={loading}
                 errors={errors}
+                buttonText={buttonText}
               />
             </div>
           </div>
