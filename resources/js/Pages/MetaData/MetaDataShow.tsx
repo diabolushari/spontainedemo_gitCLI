@@ -53,7 +53,8 @@ export default function MetaDataShow({ metaData }: Props) {
   }, [metaData])
   const hierarchyNames =
     metaData.hierarchy_item?.map((item) => item.meta_hierarchy?.name).filter(Boolean) || []
-  const groupNames = metaData.group_item?.map((item) => item.meta_group?.name).filter(Boolean) || []
+  const groupNames =
+    metaData.group_item?.map((item) => item.meta_data_group?.name).filter(Boolean) || []
 
   console.log(hierarchyNames)
   console.log(metaData)
