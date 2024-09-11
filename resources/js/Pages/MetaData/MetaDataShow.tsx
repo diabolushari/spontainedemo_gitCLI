@@ -1,18 +1,23 @@
-import { MetaData } from '@/interfaces/meta_interfaces'
+import { MetaData, MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { useMemo, useState } from 'react'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import CardHeader from '@/ui/Card/CardHeader'
 import Card from '@/ui/Card/Card'
-import StrongText from '@/typograpy/StrongText'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import EditButton from '@/ui/button/EditButton'
+import Modal from '@/ui/Modal/Modal'
+import MetaGroupAddForm from './MetaGroupAddForm'
+import MetaHierarchyAddForm from './MetaHierarchyAddForm'
 
 interface Props {
   metaData: MetaData
+  metaGroup: MetaGroup
+  metaHierarchy: MetaHierarchy
 }
 
-export default function MetaDataShow({ metaData }: Props) {
+export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showAddGroupModal, setShowAddGroupModal] = useState(false)
+  const [showAddHierarchyModal, setShowAddHierarchyModal] = useState(false)
 
   const displayedItems: ShowPageItem[] = useMemo(() => {
     return [
@@ -55,9 +60,8 @@ export default function MetaDataShow({ metaData }: Props) {
     metaData.hierarchy_item?.map((item) => item.meta_hierarchy?.name).filter(Boolean) || []
   const groupNames =
     metaData.group_item?.map((item) => item.meta_data_group?.name).filter(Boolean) || []
-
-  console.log(hierarchyNames)
-  console.log(metaData)
+  console.log(metaGroup)
+  console.log(metaHierarchy)
   return (
     <ShowResourcePage
       items={displayedItems}
@@ -72,7 +76,9 @@ export default function MetaDataShow({ metaData }: Props) {
         <Card className='mt-5'>
           <CardHeader
             title='Groups'
-            onAddClick={() => {}}
+            onAddClick={() => {
+              setShowAddGroupModal(true)
+            }}
           />
           <div className='p-2'>
             <div>{groupNames}</div>
@@ -81,7 +87,9 @@ export default function MetaDataShow({ metaData }: Props) {
         <Card className='mt-5'>
           <CardHeader
             title='Hierarchy'
-            onAddClick={() => {}}
+            onAddClick={() => {
+              setShowAddHierarchyModal(true)
+            }}
           />
           <div className='p-2'>
             <div>{hierarchyNames}</div>
@@ -96,6 +104,28 @@ export default function MetaDataShow({ metaData }: Props) {
         >
           <p>Are you sure you want to delete {metaData.name}?</p>
         </DeleteModal>
+      )}
+      {showAddGroupModal && (
+        <Modal
+          setShowModal={setShowAddGroupModal}
+          title='Add Meta Group'
+        >
+          <MetaGroupAddForm
+            metaDataId={metaData.id}
+            metaGroup={metaGroup}
+          />
+        </Modal>
+      )}
+      {showAddHierarchyModal && (
+        <Modal
+          setShowModal={setShowAddHierarchyModal}
+          title='Add Meta Hierarchy'
+        >
+          <MetaHierarchyAddForm
+            metaDataId={metaData.id}
+            metaHierarchy={metaHierarchy}
+          />
+        </Modal>
       )}
     </ShowResourcePage>
   )
