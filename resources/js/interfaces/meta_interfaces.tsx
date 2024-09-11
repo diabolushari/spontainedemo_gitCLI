@@ -30,7 +30,7 @@ export interface MetaDataGroupItem extends Model {
   meta_group_id: number
   meta_data_id: number
   meta_data?: Partial<MetaData> | null
-  meta_group?: Partial<MetaDataGroup> | null
+  meta_data_group?: Partial<MetaDataGroup> | null
   meta_data_name?: string | null
   meta_group_name?: string | null
 }
