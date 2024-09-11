@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaDataFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaData;
+use App\Models\Meta\MetaGroup;
+use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaStructure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -73,10 +75,16 @@ class MetaDataController extends Controller
     {
         $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
+        $metaGroup = MetaGroup::select('id', 'name')
+                ->get();
+        $metaHierarchy =  MetaHierarchy::select('id', 'name')
+                ->get();
         return Inertia::render('MetaData/MetaDataShow', [
             'metaData' => $metaData->load([
                 'metaStructure:id,structure_name',
             ]),
+            'metaGroup' => $metaGroup,
+            'metaHierarchy' => $metaHierarchy
         ]);
     }
 
