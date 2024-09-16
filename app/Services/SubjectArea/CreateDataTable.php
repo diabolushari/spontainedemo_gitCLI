@@ -23,16 +23,36 @@ class CreateDataTable
                 ->index();
             $table->date('date_5')->nullable()
                 ->index();
-            $table->foreignId('dim_1')->constrained('meta_data');
-            $table->foreignId('dim_2')->constrained('meta_data');
-            $table->foreignId('dim_3')->constrained('meta_data');
-            $table->foreignId('dim_4')->constrained('meta_data');
-            $table->foreignId('dim_5')->constrained('meta_data');
-            $table->foreignId('dim_6')->constrained('meta_data');
-            $table->foreignId('dim_7')->constrained('meta_data');
-            $table->foreignId('dim_8')->constrained('meta_data');
-            $table->foreignId('dim_9')->constrained('meta_data');
-            $table->foreignId('dim_10')->constrained('meta_data');
+            $table->foreignId('dim_1')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_2')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_3')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_4')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_5')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_6')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_7')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_8')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_9')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('dim_10')
+                ->nullable()
+                ->constrained('meta_data');
             $table->double('measure_1', 10, 2)->nullable();
             $table->double('measure_2', 10, 2)->nullable();
             $table->double('measure_3', 10, 2)->nullable();

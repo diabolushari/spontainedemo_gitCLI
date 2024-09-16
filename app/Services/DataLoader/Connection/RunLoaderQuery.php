@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class RunLoaderQuery
 {
     /**
-     * @return array<string, bool|int|string|null|float>
+     * @return object[]
      *
      * @throws Exception
      */

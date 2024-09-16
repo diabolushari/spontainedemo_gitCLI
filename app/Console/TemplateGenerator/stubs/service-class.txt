@@ -1,0 +1,8 @@
+<?php
+
+namespace App\Services\#[Namespace];
+
+readonly class #[Action]
+{
+    public function __construct() {}
+}

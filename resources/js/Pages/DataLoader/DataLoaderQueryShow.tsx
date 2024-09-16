@@ -39,7 +39,7 @@ export default function MetaGroupShow({
         id: 3,
         label: 'Connection',
         content: route('loader-connections.show', dataLoaderQuery.connection_id),
-        contentDescription: dataLoaderQuery.connection?.name ?? '',
+        contentDescription: dataLoaderQuery.loader_connection?.name ?? '',
         type: 'link',
       },
       {

@@ -8,9 +8,9 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,7 +26,7 @@ class MetaHierarchyController extends Controller
 
     public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::when($request->filled(key:'search'),fn(Builder $builder)=>$builder->where('name',operator:'like',value:'%'.$request->input(key:'search').'%'))
+        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), fn (Builder $builder) => $builder->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
             ->withCount('items')
             ->paginate(20)
             ->withQueryString();
@@ -54,6 +54,7 @@ class MetaHierarchyController extends Controller
         if ($request->filled('node')) {
             $node = MetaHierarchyItem::where('id', $request->node)
                 ->with('metaData:id,name')
+                ->with('metaData.metaStructure:id,structure_name')
                 ->first();
         }
 

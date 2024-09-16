@@ -2,8 +2,8 @@
 
 namespace App\Services\DataLoader\Connection;
 
-use App\Libs\ErrorResponse;
 use App\Libs\ExceptionMessage;
+use App\Libs\OperationResult;
 use App\Models\DataLoader\DataLoaderConnection;
 use Exception;
 use Illuminate\Support\Facades\Config;
@@ -26,7 +26,7 @@ class LoaderConnectionStatusCheck
      */
     public function checkStatus(
         DataLoaderConnection $connection
-    ): ErrorResponse {
+    ): OperationResult {
 
         $connectionName = 'connection'.$connection->id;
 
@@ -45,10 +45,10 @@ class LoaderConnectionStatusCheck
             DB::connection($connectionName)->getDatabaseName();
             DB::connection($connectionName)->getPdo();
         } catch (Exception $e) {
-            return new ErrorResponse(true, ExceptionMessage::getMessage($e));
+            return new OperationResult(true, ExceptionMessage::getMessage($e));
         }
 
-        return new ErrorResponse(false, 'Connection successful');
+        return new OperationResult(false, 'Connection successful');
 
     }
 }

@@ -21,15 +21,6 @@ class MetaHierarchyAddItemController extends Controller
 
     public function __invoke(MetaHierarchyAddItemRequest $request): RedirectResponse
     {
-        $exists = MetaHierarchyItem::where('meta_hierarchy_id', $request->metaHierarchyId)
-            ->where('meta_hierarchy_id', $request->metaHierarchyId)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with([
-                'error' => 'Meta Data already exists in this Hierarchy',
-            ]);
-        }
         $parentLevel = 0;
         if ($request->parentId != null) {
             $parent = MetaHierarchyItem::where('meta_hierarchy_id', $request->metaHierarchyId)

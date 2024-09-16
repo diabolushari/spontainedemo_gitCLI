@@ -3,6 +3,7 @@
 namespace App\Models\DataLoader;
 
 use App\Models\DataDetail\DataDetail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,4 +49,19 @@ class DataLoaderJob extends Model
     }
 
     //scopes
+
+    /**
+     * @param  Builder<DataLoaderJob>  $builder
+     * @return Builder<DataLoaderJob>
+     */
+    public function scopeActive(Builder $builder): Builder
+    {
+        $now = now()->toDateString();
+
+        return $builder->whereDate('start_date', '<=', $now)
+            ->where(function (Builder $query) use ($now) {
+                $query->whereDate('end_date', '>=', $now)
+                    ->orWhereNull('end_date');
+            });
+    }
 }

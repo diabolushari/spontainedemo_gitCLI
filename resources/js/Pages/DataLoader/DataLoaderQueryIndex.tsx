@@ -56,7 +56,7 @@ export default function DataLoaderQueryIndex({ dataLoaderQueries }: Readonly<Pro
       return {
         id: record.id,
         name: record.name,
-        connection: record.connection?.name ?? '',
+        connection: record.loader_connection?.name ?? '',
         actions: [
           {
             title: 'Show',

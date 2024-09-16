@@ -5,8 +5,8 @@ namespace App\Http\Controllers\DataLoader;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DataLoader\DataLoaderQueryFormRequest;
 use App\Http\Requests\DataLoader\DataLoaderQuerySearchRequest;
-use App\Libs\ErrorResponse;
 use App\Libs\ExceptionMessage;
+use App\Libs\OperationResult;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderQuery;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
@@ -35,7 +35,7 @@ class DataLoaderQueryController extends Controller
             $request->search != null,
             fn ($query) => $query->where('name', 'like', "%$request->search%")
         )
-            ->with('connection:id,name')
+            ->with('loaderConnection:id,name')
             ->paginate(20)
             ->withQueryString();
 
@@ -75,17 +75,17 @@ class DataLoaderQueryController extends Controller
         DataLoaderQuery $dataLoaderQuery,
         RunLoaderQuery $runLoaderQuery
     ): Response {
-        $dataLoaderQuery->load('connection');
+        $dataLoaderQuery->load('loaderConnection');
 
-        $error = new ErrorResponse(false, '');
+        $error = new OperationResult(false, '');
 
         $result = [];
 
-        if ($dataLoaderQuery->connection == null) {
+        if ($dataLoaderQuery->loaderConnection == null) {
             $error->message = 'Connection not found';
         } else {
             try {
-                $result = $runLoaderQuery->runQuery($dataLoaderQuery->connection, $dataLoaderQuery);
+                $result = $runLoaderQuery->runQuery($dataLoaderQuery->loaderConnection, $dataLoaderQuery);
                 $noOfRecords = count($result);
                 $error->message = "Query executed successfully, $noOfRecords records found.";
             } catch (Exception $e) {

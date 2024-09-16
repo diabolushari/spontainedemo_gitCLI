@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Services\DataLoader\ImportToDataTable;
+
+readonly class ConvertToDataTable
+{
+    /**
+     * @param  TableColumnInfo[]  $fieldInfo
+     * @param  object[]  $data
+     * @return array<array<array-key, string|int|null|float>>
+     */
+    public function convert(
+        array $fieldInfo,
+        array $data,
+        int $dataDetailId
+    ): array {
+        $records = [];
+
+        $time = now()->toDateTimeString();
+
+        foreach ($data as $row) {
+            $record = [
+                'data_detail_id' => $dataDetailId,
+                'created_at' => $time,
+                'updated_at' => $time,
+            ];
+
+            foreach ($fieldInfo as $field) {
+                $record[$field->column] = $row->{$field->fieldName};
+            }
+
+            $records[] = $record;
+        }
+
+        return $records;
+    }
+}

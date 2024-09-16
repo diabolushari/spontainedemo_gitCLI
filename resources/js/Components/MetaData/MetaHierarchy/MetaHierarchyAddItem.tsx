@@ -1,6 +1,6 @@
 import useCustomForm from '@/hooks/useCustomForm'
-import React, { useCallback, useMemo, useState } from 'react'
-import { MetaData, MetaHierarchy } from '@/interfaces/meta_interfaces'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { MetaData, MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_interfaces'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import AddButton from '@/ui/button/AddButton'
@@ -9,9 +9,10 @@ import ErrorText from '@/typograpy/ErrorText'
 
 interface Props {
   metaHierarchy: MetaHierarchy
+  currentNode: MetaHierarchyItem | null
 }
 
-export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
+export default function MetaHierarchyAddItem({ metaHierarchy, currentNode }: Props) {
   const { formData, setFormValue } = useCustomForm({
     meta_data_id: '',
     parent_id: '',
@@ -21,6 +22,7 @@ export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
     MetaData,
     'id' | 'name' | 'structure_name'
   > | null>(null)
+
   const [selectedParent, setSelectedParent] = useState<{
     id: string
     name: string
@@ -28,11 +30,26 @@ export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
     meta_data_id: string
   } | null>(null)
 
+  useEffect(() => {
+    if (currentNode == null) {
+      setFormValue('parent_id')('')
+      setSelectedParent(null)
+      return
+    }
+    setFormValue('parent_id')(currentNode.id.toString())
+    setSelectedParent({
+      id: currentNode.id.toString(),
+      name: currentNode.meta_data?.name ?? '',
+      structure_name: currentNode.meta_data?.meta_structure?.structure_name ?? '',
+      meta_data_id: currentNode.meta_data?.id?.toString() ?? '',
+    })
+  }, [currentNode, setFormValue])
+
   const onComplete = useCallback(() => {
     setShowModal(false)
   }, [])
 
-  const { post, loading, errors } = useInertiaPost<{
+  const { post, errors } = useInertiaPost<{
     meta_hierarchy_id: string
     meta_data_id: string
     parent_id: string
@@ -67,7 +84,6 @@ export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
             meta_data_id: string
           } | null
         ) => {
-          console.log(value)
           setSelectedParent(value)
           setFormValue('parent_id')(value?.id.toString() ?? '')
         },
@@ -88,7 +104,7 @@ export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
         },
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, selectedItem, selectedParent])
+  }, [setFormValue, selectedItem, selectedParent, metaHierarchy.id])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

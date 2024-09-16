@@ -89,7 +89,7 @@ export interface DataLoaderQuery extends Model {
   query: string
   name: string
   description: string | null
-  connection?: Partial<DataLoaderConnection> | null
+  loader_connection?: Partial<DataLoaderConnection> | null
 }
 
 export const HOURLY_CRON = 'HOURLY'

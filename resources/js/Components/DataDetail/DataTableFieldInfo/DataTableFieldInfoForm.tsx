@@ -13,14 +13,14 @@ interface Props {
 
 export const possibleDateFields = ['date_1', 'date_2', 'date_3', 'date_4', 'date_5']
 export const possibleDimensionFields = [
-  'dimension_1',
-  'dimension_2',
-  'dimension_3',
-  'dimension_4',
-  'dimension_5',
-  'dimension_6',
-  'dimension_7',
-  'dimension_8',
+  'dim_1',
+  'dim_2',
+  'dim_3',
+  'dim_4',
+  'dim_5',
+  'dim_6',
+  'dim_7',
+  'dim_8',
 ]
 
 //measures 1- 8

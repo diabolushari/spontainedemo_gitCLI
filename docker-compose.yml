@@ -84,6 +84,13 @@ services:
             - mysql
         networks:
             - sail
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge

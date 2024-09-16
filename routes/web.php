@@ -21,10 +21,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('xdebug', function () {
-    return phpinfo();
-});
-
 Route::get('/', function () {
 
     Cache::set('key', 'value', 60);

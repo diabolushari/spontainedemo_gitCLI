@@ -18,22 +18,24 @@ export default function MetaHierarchyItemList({
 }: Props) {
   return (
     <>
-      {hierarchyItems.length === 0 && <StrongText>No items attached to this hierarchy.</StrongText>}
+      {currentNode != null && (
+        <Link
+          className='link'
+          href={route('meta-hierarchy.show', {
+            metaHierarchy: metaHierarchy.id,
+            node: currentNode.parent_id,
+          })}
+        >
+          PREVIOUS LEVEL
+        </Link>
+      )}
+      {hierarchyItems.length === 0 && <StrongText>No items attached to this level.</StrongText>}
       {hierarchyItems.length !== 0 && (
         <>
           {currentNode == null && <StrongText>Nodes at root level.</StrongText>}
           {currentNode != null && (
             <div className='flex flex-col gap-4'>
               <StrongText>Nodes under {currentNode.meta_data?.name}</StrongText>
-              <Link
-                className='link'
-                href={route('meta-hierarchy.show', {
-                  metaHierarchy: metaHierarchy.id,
-                  node: currentNode.parent_id,
-                })}
-              >
-                PREVIOUS LEVEL
-              </Link>
             </div>
           )}
           <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5'>

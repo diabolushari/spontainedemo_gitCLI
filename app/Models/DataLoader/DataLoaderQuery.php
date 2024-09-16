@@ -22,7 +22,7 @@ class DataLoaderQuery extends Model
     /**
      * @return BelongsTo<DataLoaderConnection, DataLoaderQuery>
      */
-    public function connection(): BelongsTo
+    public function loaderConnection(): BelongsTo
     {
         return $this->belongsTo(DataLoaderConnection::class, 'connection_id');
     }

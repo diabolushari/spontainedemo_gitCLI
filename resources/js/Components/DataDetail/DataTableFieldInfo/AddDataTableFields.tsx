@@ -113,7 +113,6 @@ export default function AddDataTableFields({ detail, structures }: Readonly<Prop
     ) => {
       setShowModal(false)
       if (selectedField.column !== '') {
-        console.log(selectedField.column)
         updateField(selectedField.column, type, data)
         return
       }
@@ -140,7 +139,7 @@ export default function AddDataTableFields({ detail, structures }: Readonly<Prop
               column: availableColumn,
               field_name: data.field_name,
               unit_field_name: data.unit_field_name ?? null,
-              unit_column: data.unit_field_name == null ? null : data.unit_field_name + '_unit',
+              unit_column: availableColumn + '_unit',
             },
           ])
           return

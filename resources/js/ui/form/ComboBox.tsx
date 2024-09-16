@@ -6,6 +6,7 @@ import { getFormStyle } from './Input'
 import { XIcon } from 'lucide-react'
 import SubHeading from '@/typograpy/SubHeading'
 import NormalText from '@/typograpy/NormalText'
+import ErrorText from '@/typograpy/ErrorText'
 
 interface Properties<
   K extends keyof T,
@@ -123,12 +124,12 @@ const ComboBox = <
               )}
             </span>
             {!disabled && (
-              <div
+              <button
                 className='cursor-pointer rounded-full p-1 hover:bg-gray-50'
                 onClick={() => setValue(null)}
               >
                 <XIcon />
-              </div>
+              </button>
             )}
           </div>
           {error != null && <div className='error-text'>{error}</div>}
@@ -150,7 +151,7 @@ const ComboBox = <
               disabled={disabled}
               readOnly={disabled}
             />
-            {error && <div className='error-text'>{error}</div>}
+            {error && <ErrorText>{error}</ErrorText>}
           </div>
           <div className='absolute top-full z-10  w-full overflow-auto rounded bg-white shadow-xl'>
             {list.length > 0 && (

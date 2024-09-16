@@ -12,11 +12,26 @@ export default function DataDetailShow({ detail }: Readonly<Props>) {
     const records: ShowPageItem[] = [
       {
         id: index++,
+        label: 'Last loader Job Status',
+        content: '',
+        type: 'text',
+      },
+      {
+        id: index++,
+        label: 'Jobs',
+        content: route('loader-jobs.create'),
+        contentDescription: 'Add a new loader job',
+        type: 'link',
+      },
+      {
+        id: index++,
         label: 'Fields',
         content: '',
         type: 'text',
       },
     ]
+
+    records.push()
 
     detail.date_fields?.map((field) => {
       records.push({

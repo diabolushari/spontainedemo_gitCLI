@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Services\#[Namespace];
+
+use Spatie\LaravelData\Data;
+
+class #[Action] extends Data
+{
+    public function __construct() {}
+}

@@ -34,7 +34,10 @@ export default function MetaHierarchyShow({ metaHierarchy, hierarchyItems, curre
       items={displayItems}
       backUrl={route('meta-hierarchy.index')}
     >
-      <MetaHierarchyAddItem metaHierarchy={metaHierarchy} />
+      <MetaHierarchyAddItem
+        metaHierarchy={metaHierarchy}
+        currentNode={currentNode}
+      />
       <MetaHierarchyItemList
         metaHierarchy={metaHierarchy}
         hierarchyItems={hierarchyItems}

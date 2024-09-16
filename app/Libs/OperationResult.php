@@ -4,7 +4,7 @@ namespace App\Libs;
 
 use Spatie\LaravelData\Data;
 
-class ErrorResponse extends Data
+class OperationResult extends Data
 {
     public function __construct(
         public bool $error,
