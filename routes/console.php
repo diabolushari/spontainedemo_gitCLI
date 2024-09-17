@@ -1,14 +1,10 @@
 <?php
 
 use App\Services\DataLoader\ScheduledQuery\StartScheduledJobs;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
-
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
 
 Schedule::call(function () {
     $runScheduleQuery = new StartScheduledJobs;
     $runScheduleQuery->run();
 })->everyMinute();
+
+Schedule::command('telescope:prune --hours=48')->daily();
