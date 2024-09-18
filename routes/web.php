@@ -66,7 +66,7 @@ Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
 Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::class)
     ->name('meta-group-delete-item');
-Route::post('meta-hierarchy-delete-item', MetaHierarchyDeleteItemController::class)
+Route::delete('meta-hierarchy-delete-item/{id}', MetaHierarchyDeleteItemController::class)
     ->name('meta-hierarchy-delete-item');
 
 //subject areas & data details
