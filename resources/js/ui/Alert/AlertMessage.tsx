@@ -31,12 +31,12 @@ function getIcon(variant: 'success' | 'error' | 'warning' | 'info') {
   }
 }
 
-export default function AlertMessage({ message, variant }: Props) {
+export default function AlertMessage({ message, variant }: Readonly<Props>) {
   const textColor = getTextColor(variant)
   const icon = getIcon(variant)
 
   return (
-    <div className={`flex gap-2 flex-wrap items-center ${textColor}`}>
+    <div className={`flex gap-2 items-center ${textColor}`}>
       <i className={`la ${icon} text-lg font-bold`}></i>
       <StrongText>{message}</StrongText>
     </div>

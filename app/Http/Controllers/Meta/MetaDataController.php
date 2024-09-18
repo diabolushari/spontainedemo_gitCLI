@@ -75,16 +75,19 @@ class MetaDataController extends Controller
     {
         $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
+
         $metaGroup = MetaGroup::select('id', 'name')
-                ->get();
-        $metaHierarchy =  MetaHierarchy::select('id', 'name')
-                ->get();
+            ->get();
+
+        $metaHierarchy = MetaHierarchy::select('id', 'name')
+            ->get();
+
         return Inertia::render('MetaData/MetaDataShow', [
             'metaData' => $metaData->load([
                 'metaStructure:id,structure_name',
             ]),
             'metaGroup' => $metaGroup,
-            'metaHierarchy' => $metaHierarchy
+            'metaHierarchy' => $metaHierarchy,
         ]);
     }
 

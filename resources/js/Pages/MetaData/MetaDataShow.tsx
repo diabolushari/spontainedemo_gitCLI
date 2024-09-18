@@ -5,10 +5,9 @@ import CardHeader from '@/ui/Card/CardHeader'
 import Card from '@/ui/Card/Card'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import Modal from '@/ui/Modal/Modal'
-import MetaGroupAddForm from './MetaGroupAddForm'
 import MetaHierarchyAddForm from './MetaHierarchyAddForm'
-import MetaGroupDeleteForm from './MetaGroupDeleteForm'
 import MetaHierarchyDeleteForm from './MetaHierarchyDeleteForm'
+import MetaDataGroupList from '@/Components/MetaData/MetaData/MetaDataGroupList'
 
 interface Props {
   metaData: MetaData
@@ -71,46 +70,29 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
         setShowDeleteModal(true)
       }}
     >
-      <>
-        <Card className='mt-5'>
-          <CardHeader
-            title='Groups'
-            onAddClick={() => {
-              setShowAddGroupModal(true)
-            }}
-            onDeleteClick={() => {
-              setShowDeleteGroupModal(true)
-            }}
-          />
-          <div className='p-2'>
-            <div className='flex flex-col gap-2'>
-              {metaData.group_item?.length === 0 && <div>No groups</div>}
-              {metaData.group_item?.map((groupName) => (
-                <div key={groupName.id}>{groupName.meta_data_group?.name}</div>
-              ))}
-            </div>
+      <MetaDataGroupList
+        metaData={metaData}
+        metaGroup={metaGroup}
+      />
+      <Card className='mt-5'>
+        <CardHeader
+          title='Hierarchy'
+          onAddClick={() => {
+            setShowAddHierarchyModal(true)
+          }}
+          onDeleteClick={() => {
+            setShowDeleteHierarchyModal(true)
+          }}
+        />
+        <div className='p-2'>
+          <div className='flex flex-col gap-2'>
+            {metaData.hierarchy_item?.length === 0 && <div>No hierarchy</div>}
+            {metaData.hierarchy_item?.map((hierarchyName) => (
+              <div key={hierarchyName.id}>{hierarchyName.meta_hierarchy?.name}</div>
+            ))}
           </div>
-        </Card>
-        <Card className='mt-5'>
-          <CardHeader
-            title='Hierarchy'
-            onAddClick={() => {
-              setShowAddHierarchyModal(true)
-            }}
-            onDeleteClick={() => {
-              setShowDeleteHierarchyModal(true)
-            }}
-          />
-          <div className='p-2'>
-            <div className='flex flex-col gap-2'>
-              {metaData.hierarchy_item?.length === 0 && <div>No hierarchy</div>}
-              {metaData.hierarchy_item?.map((hierarchyName) => (
-                <div key={hierarchyName.id}>{hierarchyName.meta_hierarchy?.name}</div>
-              ))}
-            </div>
-          </div>
-        </Card>
-      </>
+        </div>
+      </Card>
       {showDeleteModal && (
         <DeleteModal
           setShowModal={setShowDeleteModal}
@@ -120,28 +102,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
           <p>Are you sure you want to delete {metaData.name}?</p>
         </DeleteModal>
       )}
-      {showAddGroupModal && (
-        <Modal
-          setShowModal={setShowAddGroupModal}
-          title='Add Meta Group'
-        >
-          <MetaGroupAddForm
-            metaDataId={metaData.id}
-            metaGroup={metaGroup}
-          />
-        </Modal>
-      )}
-      {showDeleteGroupModal && (
-        <Modal
-          setShowModal={setShowDeleteGroupModal}
-          title='Remove Meta Group'
-        >
-          <MetaGroupDeleteForm
-            metaDataId={metaData.id}
-            metaGroup={metaGroup}
-          />
-        </Modal>
-      )}
+
       {showAddHierarchyModal && (
         <Modal
           setShowModal={setShowAddHierarchyModal}

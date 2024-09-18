@@ -1,19 +1,26 @@
-import { Head } from '@inertiajs/react'
 import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import React, { useMemo } from 'react'
+import React, { SetStateAction, useCallback, useMemo } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 
 interface Props {
   metaGroup: { id: number; name: string }
   metaDataId: number
+  setShowAddModal: React.Dispatch<SetStateAction<boolean>>
 }
-export default function MetaGroupAddForm({ metaGroup, metaDataId }: Props) {
+
+export default function MetaGroupAddForm({ metaGroup, metaDataId, setShowAddModal }: Props) {
   const { formData, setFormValue } = useCustomForm({
     metaGroup: '',
   })
 
-  const { post, loading, errors } = useInertiaPost(route('meta-group-add-item'))
+  const onCompleted = useCallback(() => {
+    setShowAddModal(false)
+  }, [setShowAddModal])
+
+  const { post, loading, errors } = useInertiaPost(route('meta-group-add-item'), {
+    onComplete: onCompleted,
+  })
 
   const formItems = useMemo(<
     T,
@@ -36,15 +43,12 @@ export default function MetaGroupAddForm({ metaGroup, metaDataId }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     const meta_group_id = Number(formData.metaGroup)
     const meta_data_id = metaDataId
     const dataToSubmit = {
       meta_group_id,
       meta_data_id,
     }
-    console.log(dataToSubmit)
-
     post(dataToSubmit)
   }
 
