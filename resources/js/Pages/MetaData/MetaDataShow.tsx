@@ -7,6 +7,8 @@ import DeleteModal from '@/ui/Modal/DeleteModal'
 import Modal from '@/ui/Modal/Modal'
 import MetaGroupAddForm from './MetaGroupAddForm'
 import MetaHierarchyAddForm from './MetaHierarchyAddForm'
+import MetaGroupDeleteForm from './MetaGroupDeleteForm'
+import MetaHierarchyDeleteForm from './MetaHierarchyDeleteForm'
 
 interface Props {
   metaData: MetaData
@@ -18,6 +20,8 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showAddGroupModal, setShowAddGroupModal] = useState(false)
   const [showAddHierarchyModal, setShowAddHierarchyModal] = useState(false)
+  const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false)
+  const [showDeleteHierarchyModal, setShowDeleteHierarchyModal] = useState(false)
 
   const displayedItems: ShowPageItem[] = useMemo(() => {
     return [
@@ -74,6 +78,9 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
             onAddClick={() => {
               setShowAddGroupModal(true)
             }}
+            onDeleteClick={() => {
+              setShowDeleteGroupModal(true)
+            }}
           />
           <div className='p-2'>
             <div className='flex flex-col gap-2'>
@@ -89,6 +96,9 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
             title='Hierarchy'
             onAddClick={() => {
               setShowAddHierarchyModal(true)
+            }}
+            onDeleteClick={() => {
+              setShowDeleteHierarchyModal(true)
             }}
           />
           <div className='p-2'>
@@ -121,12 +131,34 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
           />
         </Modal>
       )}
+      {showDeleteGroupModal && (
+        <Modal
+          setShowModal={setShowDeleteGroupModal}
+          title='Remove Meta Group'
+        >
+          <MetaGroupDeleteForm
+            metaDataId={metaData.id}
+            metaGroup={metaGroup}
+          />
+        </Modal>
+      )}
       {showAddHierarchyModal && (
         <Modal
           setShowModal={setShowAddHierarchyModal}
           title='Add Meta Hierarchy'
         >
           <MetaHierarchyAddForm
+            metaDataId={metaData.id}
+            metaHierarchy={metaHierarchy}
+          />
+        </Modal>
+      )}
+      {showDeleteHierarchyModal && (
+        <Modal
+          setShowModal={setShowDeleteHierarchyModal}
+          title='Remove Meta Hierarchy'
+        >
+          <MetaHierarchyDeleteForm
             metaDataId={metaData.id}
             metaHierarchy={metaHierarchy}
           />

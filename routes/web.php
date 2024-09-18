@@ -10,8 +10,10 @@ use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
 use App\Http\Controllers\Meta\MetaGroupAddItemController;
+use App\Http\Controllers\Meta\MetaGroupDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchyAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyController;
+use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
@@ -62,6 +64,10 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
+Route::post('meta-group-delete-item', MetaGroupDeleteItemController::class)
+    ->name('meta-group-delete-item');
+Route::post('meta-hierarchy-delete-item', MetaHierarchyDeleteItemController::class)
+    ->name('meta-hierarchy-delete-item');
 
 //subject areas & data details
 Route::resource('subject-area', SubjectAreaController::class)
