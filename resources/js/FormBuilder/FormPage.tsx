@@ -29,6 +29,7 @@ interface Props<
   customSubmitData?: Partial<T>
   isPatchRequest?: boolean
   buttonText?: string
+  children?: React.ReactNode
 }
 
 export default function FormPage<
@@ -54,6 +55,7 @@ export default function FormPage<
   customSubmitData,
   buttonText,
   isPatchRequest = false,
+  children,
 }: Props<T, U, K, G, L>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
 
@@ -93,7 +95,9 @@ export default function FormPage<
                 loading={loading}
                 errors={errors}
                 buttonText={buttonText}
-              />
+              >
+                {children}
+              </FormBuilder>
             </div>
           </div>
         </Card>

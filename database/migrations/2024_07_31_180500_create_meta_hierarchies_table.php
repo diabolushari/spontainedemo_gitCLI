@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->text('heirarchy_level');
             $table->softDeletes();
             $table->timestamps(); //
         });

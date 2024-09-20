@@ -13,6 +13,7 @@ class MetaHierarchy extends Model
     protected $fillable = [
         'name',
         'description',
+        'heirarchy_level',
     ];
 
     /**
@@ -21,5 +22,13 @@ class MetaHierarchy extends Model
     public function items(): HasMany
     {
         return $this->hasMany(MetaHierarchyItem::class, 'meta_hierarchy_id', 'id');
+    }
+    
+    /**
+     * @return HasMany<HeirarchyLevel>
+     */
+    public function level(): HasMany
+    {
+        return $this->hasMany(HeirarchyLevel::class, 'meta_hierarchy_id', 'id');
     }
 }

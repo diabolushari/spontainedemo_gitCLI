@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Meta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaHierarchyFormRequest;
 use App\Libs\ExceptionMessage;
+use App\Models\Meta\HeirarchyLevel;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
+use App\Models\Meta\MetaStructure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -26,7 +28,7 @@ class MetaHierarchyController extends Controller
 
     public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), fn (Builder $builder) => $builder->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
+        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
             ->withCount('items')
             ->paginate(20)
             ->withQueryString();
@@ -38,7 +40,10 @@ class MetaHierarchyController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('MetaHierarchy/MetaHierarchyCreate');
+        $structures = MetaStructure::select(['id', 'structure_name'])->get();
+        return Inertia::render('MetaHierarchy/MetaHierarchyCreate',[
+            'structures' => $structures
+        ]);
     }
 
     public function edit(MetaHierarchy $metaHierarchy): Response
@@ -61,8 +66,8 @@ class MetaHierarchyController extends Controller
         $items = MetaHierarchyItem::with('metaData:id,name')
             ->with('metaData.metaStructure:id,structure_name')
             ->where('meta_hierarchy_id', $metaHierarchy->id)
-            ->when($node != null, fn ($q) => $q->where('parent_id', $node->id))
-            ->when($node == null, fn ($q) => $q->whereNull('parent_id'))
+            ->when($node != null, fn($q) => $q->where('parent_id', $node->id))
+            ->when($node == null, fn($q) => $q->whereNull('parent_id'))
             ->get();
 
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
@@ -74,8 +79,13 @@ class MetaHierarchyController extends Controller
 
     public function store(MetaHierarchyFormRequest $request): RedirectResponse
     {
+        $tempLevels = $request->heirachyArray;
         try {
             $metaHierarchy = MetaHierarchy::create($request->all());
+            foreach($tempLevels as &$tempLevel) {
+                $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
+            }
+            HeirarchyLevel::insert($tempLevels);
         } catch (Exception $exception) {
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($exception)]);
