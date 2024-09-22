@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaHierarchyFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaHierarchy;
-use App\Models\Meta\MetaHierarchyItem;
+use App\Services\MetaData\Hierarchy\HierarchyList;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -48,27 +48,14 @@ class MetaHierarchyController extends Controller
         ]);
     }
 
-    public function show(MetaHierarchy $metaHierarchy, Request $request): Response
-    {
-        $node = null;
-        if ($request->filled('node')) {
-            $node = MetaHierarchyItem::where('id', $request->node)
-                ->with('metaData:id,name')
-                ->with('metaData.metaStructure:id,structure_name')
-                ->first();
-        }
-
-        $items = MetaHierarchyItem::with('metaData:id,name')
-            ->with('metaData.metaStructure:id,structure_name')
-            ->where('meta_hierarchy_id', $metaHierarchy->id)
-            ->when($node != null, fn ($q) => $q->where('parent_id', $node->id))
-            ->when($node == null, fn ($q) => $q->whereNull('parent_id'))
-            ->get();
-
+    public function show(
+        MetaHierarchy $metaHierarchy,
+        Request $request,
+        HierarchyList $hierarchyList
+    ): Response {
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
-            'hierarchyItems' => $items,
-            'currentNode' => $node,
+            'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),
         ]);
     }
 

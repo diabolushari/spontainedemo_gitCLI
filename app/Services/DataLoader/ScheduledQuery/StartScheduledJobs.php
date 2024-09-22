@@ -18,7 +18,7 @@ class StartScheduledJobs
 
     public function run(): void
     {
-        if ($this->now->minute == 43) {
+        if ($this->now->minute == 46) {
             $this->runHourlyQueries();
         }
         $this->runDailyQueries($this->now->toTimeString());

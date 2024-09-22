@@ -25,9 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Event::listen(
-            ScheduledDataLoadEvent::class,
-            ScheduledDataLoadListener::class
-        );
+        // Event::listen(
+        //     ScheduledDataLoadEvent::class,
+        //     ScheduledDataLoadListener::class
+        // );
     }
 }

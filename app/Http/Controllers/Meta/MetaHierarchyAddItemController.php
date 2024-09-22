@@ -22,9 +22,10 @@ class MetaHierarchyAddItemController extends Controller
     public function __invoke(MetaHierarchyAddItemRequest $request): RedirectResponse
     {
         $parentLevel = 0;
+
         if ($request->parentId != null) {
             $parent = MetaHierarchyItem::where('meta_hierarchy_id', $request->metaHierarchyId)
-                ->where('meta_data_id', $request->parentId)
+                ->where('id', $request->parentId)
                 ->first();
 
             if ($parent != null) {

@@ -42,6 +42,12 @@ body {
     }
 }
 
+.tree-node:has(.tree-node-content:hover) {
+    @apply border-green-500 text-green-500;
+}
+
+
+
 .spinner_circle {
     animation: 1.4s ease-in-out infinite both circle-animation;
     display: block;

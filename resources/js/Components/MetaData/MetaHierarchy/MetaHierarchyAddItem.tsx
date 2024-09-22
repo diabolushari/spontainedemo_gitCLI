@@ -1,23 +1,22 @@
-import useCustomForm from '@/hooks/useCustomForm'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { MetaData, MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_interfaces'
-import useInertiaPost from '@/hooks/useInertiaPost'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import AddButton from '@/ui/button/AddButton'
-import Modal from '@/ui/Modal/Modal'
+import useCustomForm from '@/hooks/useCustomForm'
+import useInertiaPost from '@/hooks/useInertiaPost'
+import { MetaData, MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_interfaces'
 import ErrorText from '@/typograpy/ErrorText'
+import Modal from '@/ui/Modal/Modal'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface Props {
   metaHierarchy: MetaHierarchy
   currentNode: MetaHierarchyItem | null
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function MetaHierarchyAddItem({ metaHierarchy, currentNode }: Props) {
+export default function MetaHierarchyAddItem({ metaHierarchy, currentNode, setShowModal }: Props) {
   const { formData, setFormValue } = useCustomForm({
     meta_data_id: '',
     parent_id: '',
   })
-  const [showModal, setShowModal] = useState(false)
   const [selectedItem, setSelectedItem] = useState<Pick<
     MetaData,
     'id' | 'name' | 'structure_name'
@@ -47,7 +46,7 @@ export default function MetaHierarchyAddItem({ metaHierarchy, currentNode }: Pro
 
   const onComplete = useCallback(() => {
     setShowModal(false)
-  }, [])
+  }, [setShowModal])
 
   const { post, errors } = useInertiaPost<{
     meta_hierarchy_id: string
@@ -115,34 +114,27 @@ export default function MetaHierarchyAddItem({ metaHierarchy, currentNode }: Pro
   }
 
   return (
-    <>
-      <div className='flex justify-end mt-10'>
-        <AddButton onClick={() => setShowModal(true)} />
+    <Modal
+      title={`Add Item to ${metaHierarchy.name}`}
+      setShowModal={setShowModal}
+    >
+      <div className='w-full p-2'>
+        <div className='w-full'>
+          {errors.meta_hierarchy_id != null && (
+            <ErrorText>{errors.meta_hierarchy_id as string}</ErrorText>
+          )}
+        </div>
+        <FormBuilder
+          formData={formData}
+          onFormSubmit={handleSubmit}
+          formItems={formItems}
+          loading={false}
+          formStyles='md:grid-cols-1'
+          buttonText='Add Node'
+          buttonAlignment='end'
+          errors={errors}
+        />
       </div>
-      {showModal && (
-        <Modal
-          title={`Add Item to ${metaHierarchy.name}`}
-          setShowModal={setShowModal}
-        >
-          <div className='p-2 w-full'>
-            <div className='w-full'>
-              {errors.meta_hierarchy_id != null && (
-                <ErrorText>{errors.meta_hierarchy_id as string}</ErrorText>
-              )}
-            </div>
-            <FormBuilder
-              formData={formData}
-              onFormSubmit={handleSubmit}
-              formItems={formItems}
-              loading={false}
-              formStyles='md:grid-cols-1'
-              buttonText='Add Node'
-              buttonAlignment='end'
-              errors={errors}
-            />
-          </div>
-        </Modal>
-      )}
-    </>
+    </Modal>
   )
 }

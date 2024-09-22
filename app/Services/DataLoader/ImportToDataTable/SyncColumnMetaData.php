@@ -35,8 +35,8 @@ readonly class SyncColumnMetaData
         $newMetaDataRecords = [];
         $currentTime = now()->toDateTimeString();
         foreach ($uniqueValues as $value) {
-            $value = strtolower($value);
-            if (! array_key_exists($value, $metaDataInfo)) {
+            $lowerCaseValue = strtolower($value);
+            if (! array_key_exists($lowerCaseValue, $metaDataInfo)) {
                 $newMetaDataRecords[] = [
                     'name' => $value,
                     'meta_structure_id' => $structureId,
