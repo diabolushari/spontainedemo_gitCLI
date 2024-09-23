@@ -19,6 +19,7 @@ use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
+use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -96,5 +97,7 @@ Route::resource('loader-jobs', DataLoaderJobController::class)
 
 Route::get('queries-in-connection', QueryListController::class)
     ->name('queries-in-connection');
+
+Route::get('tab', [TabController::class, 'show'])->name('tab');
 
 require __DIR__.'/auth.php';

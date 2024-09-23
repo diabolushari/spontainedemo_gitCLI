@@ -39,6 +39,7 @@
         "merge": "^2.1.1",
         "prettier": "^3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.5",
+        "react-router-dom": "^6.26.2",
         "react-toastify": "^10.0.5",
         "tailwind-merge": "^2.4.0"
     }
