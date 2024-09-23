@@ -38,6 +38,7 @@ export interface MetaDataGroupItem extends Model {
 export interface MetaHierarchy extends Model {
   name: string
   description?: string | null
+  heirarchy_level: string
   items?: Partial<MetaHierarchyItem>[]
   items_count?: number
 }

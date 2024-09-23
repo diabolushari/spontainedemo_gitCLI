@@ -23,6 +23,12 @@ export default function MetaHierarchyShow({ metaHierarchy, hierarchyList }: Read
         type: 'text',
         id: 2,
       },
+      {
+        label: 'Heirarchy Level',
+        content: metaHierarchy.heirarchy_level,
+        type: 'text',
+        id: 3,
+      },
     ] as ShowPageItem[]
   }, [metaHierarchy])
 

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Meta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaHierarchyFormRequest;
 use App\Libs\ExceptionMessage;
+use App\Models\Meta\HeirarchyLevel;
 use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaStructure;
 use App\Services\MetaData\Hierarchy\HierarchyList;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,7 +40,11 @@ class MetaHierarchyController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('MetaHierarchy/MetaHierarchyCreate');
+        $structures = MetaStructure::select(['id', 'structure_name'])->get();
+
+        return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
+            'structures' => $structures,
+        ]);
     }
 
     public function edit(MetaHierarchy $metaHierarchy): Response
@@ -61,8 +67,13 @@ class MetaHierarchyController extends Controller
 
     public function store(MetaHierarchyFormRequest $request): RedirectResponse
     {
+        $tempLevels = $request->heirachyArray;
         try {
             $metaHierarchy = MetaHierarchy::create($request->all());
+            foreach ($tempLevels as &$tempLevel) {
+                $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
+            }
+            HeirarchyLevel::insert($tempLevels);
         } catch (Exception $exception) {
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($exception)]);

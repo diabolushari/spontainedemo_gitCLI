@@ -1,6 +1,6 @@
 import { cn } from '@/utils'
 import Input from '@/ui/form/Input'
-import React, { useMemo } from 'react'
+import React, { Children, useMemo } from 'react'
 import CheckBox from '@/ui/form/CheckBox'
 import TextArea from '@/ui/form/TextArea'
 import DatePicker from '@/ui/form/DatePicker'
@@ -11,6 +11,7 @@ import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
 import ComboBox from '@/ui/form/ComboBox'
+
 
 export interface FormItem<
   T,
@@ -33,6 +34,7 @@ export interface FormItem<
     | 'file'
     | 'time'
     | 'autocomplete'
+    | 'number'
   hidden?: boolean
   disabled?: boolean
   list?: L[]
@@ -61,6 +63,7 @@ interface Props<
   errors?: Record<U, string | undefined>
   buttonText?: string
   buttonAlignment?: 'start' | 'center' | 'end'
+  children?: React.ReactNode
 }
 
 export default function FormBuilder<
@@ -78,6 +81,7 @@ export default function FormBuilder<
   errors,
   buttonText = 'Submit',
   buttonAlignment,
+  children
 }: Props<T, U, K, G, L>) {
   const formStyle = cn('grid w-full grid-cols-1 md:grid-cols-2 gap-5', formStyles)
 
@@ -107,6 +111,16 @@ export default function FormBuilder<
               value={formData[keyValue] as string | number | undefined}
               label={formItems[keyValue].label}
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
+            />
+          )}
+          {formItems[keyValue].type === 'number' && !formItems[keyValue].hidden && (
+            <Input
+              value={formData[keyValue] as string | number | undefined}
+              label={formItems[keyValue].label}
+              setValue={formItems[keyValue].setValue as (value: string) => unknown}
+              type='number'
               error={errors != null ? errors[keyValue] : undefined}
               disabled={formItems[keyValue].disabled}
             />
@@ -229,6 +243,7 @@ export default function FormBuilder<
             )}
         </div>
       ))}
+      {children}
       <div className={cn('flex gap-5 col-start-1 ', buttonStyle)}>
         <FullSpinnerWrapper processing={loading}>
           <Button label={buttonText} />
