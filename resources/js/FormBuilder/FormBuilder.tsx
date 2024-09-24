@@ -1,17 +1,16 @@
-import { cn } from '@/utils'
-import Input from '@/ui/form/Input'
-import React, { Children, useMemo } from 'react'
-import CheckBox from '@/ui/form/CheckBox'
-import TextArea from '@/ui/form/TextArea'
-import DatePicker from '@/ui/form/DatePicker'
-import TimePicker from '@/ui/form/TimePicker'
-import FileInput from '@/ui/form/FileInput'
-import SelectList from '@/ui/form/SelectList'
-import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
+import CheckBox from '@/ui/form/CheckBox'
 import ComboBox from '@/ui/form/ComboBox'
-
+import DatePicker from '@/ui/form/DatePicker'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import FileInput from '@/ui/form/FileInput'
+import Input from '@/ui/form/Input'
+import SelectList from '@/ui/form/SelectList'
+import TextArea from '@/ui/form/TextArea'
+import TimePicker from '@/ui/form/TimePicker'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import { cn } from '@/utils'
+import React, { useMemo } from 'react'
 
 export interface FormItem<
   T,
@@ -81,8 +80,8 @@ export default function FormBuilder<
   errors,
   buttonText = 'Submit',
   buttonAlignment,
-  children
-}: Props<T, U, K, G, L>) {
+  children,
+}: Readonly<Props<T, U, K, G, L>>) {
   const formStyle = cn('grid w-full grid-cols-1 md:grid-cols-2 gap-5', formStyles)
 
   const keys: (keyof typeof formItems)[] = useMemo(() => {
@@ -244,7 +243,7 @@ export default function FormBuilder<
         </div>
       ))}
       {children}
-      <div className={cn('flex gap-5 col-start-1 ', buttonStyle)}>
+      <div className={cn('col-start-1 flex gap-5', buttonStyle)}>
         <FullSpinnerWrapper processing={loading}>
           <Button label={buttonText} />
         </FullSpinnerWrapper>

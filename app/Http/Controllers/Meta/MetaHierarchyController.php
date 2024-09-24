@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Meta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaHierarchyFormRequest;
 use App\Libs\ExceptionMessage;
-use App\Models\Meta\HeirarchyLevel;
 use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaHierarchyLevelInfo;
 use App\Models\Meta\MetaStructure;
 use App\Services\MetaData\Hierarchy\HierarchyList;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -49,8 +50,12 @@ class MetaHierarchyController extends Controller
 
     public function edit(MetaHierarchy $metaHierarchy): Response
     {
-        return Inertia::render('MetaHierarchy/MetaHierarchyEdit', [
-            'hierarchy' => $metaHierarchy,
+        $structures = MetaStructure::select(['id', 'structure_name'])->get();
+
+        return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
+            'structures' => $structures,
+            'metaHierarchy' => $metaHierarchy,
+            'levelInfos' => $metaHierarchy->levelInfos,
         ]);
     }
 
@@ -59,25 +64,40 @@ class MetaHierarchyController extends Controller
         Request $request,
         HierarchyList $hierarchyList
     ): Response {
+
+        $metaHierarchy->load('levelInfos', 'levelInfos.structure:id,structure_name');
+
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
             'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),
+            'levelInfos' => $metaHierarchy->levelInfos,
         ]);
     }
 
     public function store(MetaHierarchyFormRequest $request): RedirectResponse
     {
-        $tempLevels = $request->heirachyArray;
+        $hierarchyLevels = $request->hierarchyLevelInfos;
+
+        DB::beginTransaction();
+
         try {
             $metaHierarchy = MetaHierarchy::create($request->all());
-            foreach ($tempLevels as &$tempLevel) {
+            foreach ($hierarchyLevels as &$tempLevel) {
                 $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
             }
-            HeirarchyLevel::insert($tempLevels);
+            MetaHierarchyLevelInfo::upsert(
+                $hierarchyLevels,
+                ['level', 'meta_hierarchy_id'],
+                ['meta_structure_id', 'level', 'meta_hierarchy_id'],
+            );
         } catch (Exception $exception) {
+            DB::rollBack();
+
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($exception)]);
         }
+
+        DB::commit();
 
         return redirect()
             ->route('meta-hierarchy.show', $metaHierarchy->id)
@@ -87,15 +107,50 @@ class MetaHierarchyController extends Controller
     public function update(MetaHierarchyFormRequest $request, MetaHierarchy $metaHierarchy): RedirectResponse
     {
 
+        $hierarchyLevels = $request->hierarchyLevelInfos;
+        DB::beginTransaction();
+
         try {
-            $metaHierarchy->update($request->all());
+            $metaHierarchy->update([
+                'name' => $request->name,
+                'description' => $request->description,
+            ]);
+
+            foreach ($hierarchyLevels as &$tempLevel) {
+                $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
+            }
+
+            //levels that are going to be updated/created
+            $levelsNotToBeDeleted = array_column($hierarchyLevels, 'level');
+
+            //delete existing  levels that are not in the new hierarchy levels
+            MetaHierarchyLevelInfo::where('meta_hierarchy_id', $metaHierarchy->id)
+                ->whereNotIn('level', $levelsNotToBeDeleted)
+                ->delete();
+
+            //restore deleted levels, that are going to be updated
+            MetaHierarchyLevelInfo::withTrashed()
+                ->whereNotNull('deleted_at')
+                ->where('meta_hierarchy_id', $metaHierarchy->id)
+                ->whereIn('level', $levelsNotToBeDeleted)
+                ->restore();
+
+            MetaHierarchyLevelInfo::upsert(
+                $hierarchyLevels,
+                ['level', 'meta_hierarchy_id'],
+                ['meta_structure_id', 'level', 'meta_hierarchy_id'],
+            );
         } catch (Exception $exception) {
+            DB::rollBack();
+
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($exception)]);
         }
 
+        DB::commit();
+
         return redirect()
             ->route('meta-hierarchy.show', $metaHierarchy->id)
-            ->with(['message' => "Meta Hierarchy $metaHierarchy->name updated successfully."]);
+            ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
     }
 }

@@ -9,14 +9,13 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapName(SnakeCaseMapper::class)]
 class MetaHierarchyFormRequest extends Data
 {
-    /**
-     * @var array{level:string ,heirarchy_name: string } $heirachy_array
-     */
     public function __construct(
         public string $name,
         public ?string $description,
-        public string $heirarchyLevel,
-        public array $heirachyArray
+        /**
+         * @var array<array{level:int,meta_structure_id:string}>
+         */
+        public array $hierarchyLevelInfos,
     ) {}
 
     /**
@@ -27,8 +26,9 @@ class MetaHierarchyFormRequest extends Data
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'heirarchy_level' => ['string', 'string', 'max:255'],
-            'heirachy_array' => ['array' ]
+            'hierarchy_level_info' => ['array', 'nullable'],
+            'hierarchy_level_info.*.level' => ['required', 'integer', 'min:1'],
+            'hierarchy_level_info.*.meta_structure_id' => ['required', 'integer', 'exists:meta_structures,id'],
         ];
     }
 }

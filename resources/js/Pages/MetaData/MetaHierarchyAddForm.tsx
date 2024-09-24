@@ -1,7 +1,7 @@
-import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import React, { useMemo, useState } from 'react'
+import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import React, { useMemo, useState } from 'react'
 
 interface Props {
   metaHierarchy: { id: number; name: string }
@@ -46,7 +46,8 @@ export default function MetaHierarchyAddForm({ metaHierarchy, metaDataId }: Prop
         displayKey: 'name',
         displayKey2: 'structure_name',
         selectListUrl: route('meta-hierarchy-search', {
-          hierarchy: metaHierarchy.id,
+          hierarchy: formData.meta_hierarchy_id,
+          current_meta_data_id: metaDataId,
           search: '',
         }),
         setValue: (
@@ -62,7 +63,7 @@ export default function MetaHierarchyAddForm({ metaHierarchy, metaDataId }: Prop
         },
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [metaHierarchy, setFormValue, selectedParent])
+  }, [metaHierarchy, setFormValue, formData.meta_hierarchy_id, selectedParent, metaDataId])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

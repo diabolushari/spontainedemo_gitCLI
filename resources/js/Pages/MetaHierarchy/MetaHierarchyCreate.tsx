@@ -1,41 +1,70 @@
-import useCustomForm from '@/hooks/useCustomForm'
-import { useEffect, useMemo, useState } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import useCustomForm from '@/hooks/useCustomForm'
+import { MetaHierarchy, MetaHierarchyLevelInfo, MetaStructure } from '@/interfaces/meta_interfaces'
 import SelectList from '@/ui/form/SelectList'
-import { MetaStructure } from '@/interfaces/meta_interfaces'
+import { useEffect, useMemo, useState } from 'react'
 
-interface HeirachyLevel {
+interface HierarchyLevelInfo {
   level: number
-  heirarchy_name: string
+  meta_structure_id: string
 }
 
 interface Properties {
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
+  metaHierarchy?: MetaHierarchy
+  levelInfos?: MetaHierarchyLevelInfo[]
 }
-export default function MetaHierarchyCreate({ structures }: Properties) {
-  const { formData, setFormValue } = useCustomForm({
-    name: '',
-    description: '',
-    heirarchy_level: 1,
-    heirachy_array: [] as HeirachyLevel[],
-  })
 
-  const [length, setLength] = useState<HeirachyLevel[]>([])
-
-  useEffect(() => {
-    const tempLength = []
-    for (let i = 1; i <= formData.heirarchy_level; i++) {
-      tempLength.push({ level: i, heirarchy_name: '' })
+function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
+  if (levelInfos == null) {
+    return []
+  }
+  return levelInfos.map((item) => {
+    return {
+      level: item.level,
+      meta_structure_id: item.meta_structure_id.toString(),
     }
-    setLength(tempLength)
-  }, [formData.heirarchy_level])
+  })
+}
+
+export default function MetaHierarchyCreate({
+  structures,
+  metaHierarchy,
+  levelInfos,
+}: Readonly<Properties>) {
+  const { formData, setFormValue } = useCustomForm({
+    name: metaHierarchy?.name ?? '',
+    description: metaHierarchy?.description ?? '',
+    no_of_levels: levelInfos?.length ?? 0,
+  })
+  const [hierarchyLevelInfos, setHierarchyLevelInfos] = useState<HierarchyLevelInfo[]>(
+    initLevelInfo(levelInfos)
+  )
 
   useEffect(() => {
-    setFormValue('heirachy_array')(length)
-  }, [setFormValue, length])
+    setHierarchyLevelInfos((oldValues) => {
+      const noOfLevels = Number(formData.no_of_levels)
 
-  console.log(formData)
+      if (noOfLevels === 0 || Number.isNaN(noOfLevels)) {
+        return []
+      }
+      if (oldValues.length === noOfLevels) {
+        return oldValues
+      }
+      //if the number of levels is less than the current length, remove the rest
+      if (oldValues.length > noOfLevels) {
+        return oldValues.slice(0, noOfLevels)
+      }
+      //if the number of levels is greater than the current length, add the rest
+      const tempLength: HierarchyLevelInfo[] = []
+      for (let i = oldValues.length + 1; i <= noOfLevels; i++) {
+        tempLength.push({ level: i, meta_structure_id: '' })
+      }
+      return [...oldValues, ...tempLength]
+    })
+  }, [formData.no_of_levels])
+
   const formItems = useMemo(<
     T,
     U extends keyof T,
@@ -54,35 +83,48 @@ export default function MetaHierarchyCreate({ structures }: Properties) {
         label: 'Description',
         setValue: setFormValue('description'),
       },
-      heirarchy_level: {
+      no_of_levels: {
         type: 'number',
-        label: 'Heirarchy Level',
-        setValue: setFormValue('heirarchy_level'),
+        label: 'Number of Levels',
+        setValue: setFormValue('no_of_levels'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 
-  const setHeirarchyValue = (item: HeirachyLevel, name: string) => {
-    setLength((oldValues) => {
+  const setHierarchyValue = (item: HierarchyLevelInfo, structureId: string) => {
+    setHierarchyLevelInfos((oldValues) => {
       return oldValues.map((tempValues) => {
         if (tempValues.level === item.level) {
-          return { ...tempValues, heirarchy_name: name }
+          return { ...tempValues, meta_structure_id: structureId }
         }
         return tempValues
       })
     })
   }
 
+  const fullFormData = useMemo(() => {
+    return {
+      ...formData,
+      hierarchy_level_infos: hierarchyLevelInfos,
+    }
+  }, [formData, hierarchyLevelInfos])
+
   return (
     <FormPage
-      url={route('meta-hierarchy.store')}
+      url={
+        metaHierarchy != null
+          ? route('meta-hierarchy.update', metaHierarchy.id)
+          : route('meta-hierarchy.store')
+      }
       formData={formData}
       formItems={formItems}
       title='Create Meta Hierarchy'
       backUrl={route('meta-hierarchy.index')}
       formStyles='w-1/2 md:grid-cols-1'
+      customSubmitData={fullFormData}
+      isPatchRequest={metaHierarchy != null}
     >
-      {length.map((item) => {
+      {hierarchyLevelInfos.map((item) => {
         return (
           <div
             className='flex flex-col'
@@ -90,11 +132,11 @@ export default function MetaHierarchyCreate({ structures }: Properties) {
           >
             <SelectList
               list={structures}
-              setValue={(name) => setHeirarchyValue(item, name)}
-              dataKey='structure_name'
+              setValue={(name) => setHierarchyValue(item, name)}
+              dataKey='id'
               displayKey='structure_name'
               showAllOption
-              value={item.heirarchy_name}
+              value={item.meta_structure_id}
             />
           </div>
         )

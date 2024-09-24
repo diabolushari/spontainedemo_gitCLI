@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('heirarchy_levels', function (Blueprint $table) {
+        Schema::create('meta_hierarchy_level_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('meta_hierarchy_id')
                 ->constrained('meta_hierarchies');
-            $table->string('level');
-            $table->string('heirarchy_name');
+            $table->unsignedBigInteger('level');
+            $table->foreignId('meta_structure_id')
+                ->constrained('meta_structures');
+            $table->unique(['meta_hierarchy_id', 'level']);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('heirarchy_levels');
+        Schema::dropIfExists('meta_hierarchy_level_infos');
     }
 };

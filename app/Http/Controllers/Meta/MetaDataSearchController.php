@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Meta;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Meta\MetaDataSearchRequest;
 use App\Models\Meta\MetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class MetaDataSearchController extends Controller
 {
@@ -17,7 +17,7 @@ class MetaDataSearchController extends Controller
         ];
     }
 
-    public function __invoke(MetaDataSearchRequest $request): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
         if ($request->search == null) {
             return response()
@@ -26,10 +26,8 @@ class MetaDataSearchController extends Controller
 
         $metaData = MetaData::where('name', 'like', "%$request->search%")
             ->joinStructure()
-            ->when($request->hierarchy != null, function (Builder $query) use ($request) {
-                $query->whereHas('hierarchyItem', function (Builder $builder) use ($request) {
-                    $builder->where('meta_hierarchy_id', $request->hierarchy);
-                });
+            ->when($request->meta_structure_id, function (Builder $query) use ($request) {
+                return $query->where('meta_structure_id', $request->meta_structure_id);
             })
             ->select(['meta_data.id', 'meta_data.name', 'meta_structures.structure_name'])
             ->limit(10)
