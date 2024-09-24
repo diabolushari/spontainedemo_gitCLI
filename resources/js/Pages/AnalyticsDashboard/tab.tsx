@@ -18,12 +18,12 @@ export default function Index() {
   ]
 
   return (
-    <div className='mx-auto container py-10 px-4'>
-      <div className='flex justify-center space-x-4 '>
+    <div className='container mx-auto px-4 py-10'>
+      <div className='flex justify-center space-x-4'>
         {headings.map((heading) => (
           <div
             key={heading.value}
-            className={`cursor-pointer pb-2 ${activeHeading === heading.value ? 'text-green-700 font-bold' : 'text-gray-600'}`}
+            className={`cursor-pointer pb-2 ${activeHeading === heading.value ? 'font-bold text-green-700' : 'text-gray-600'}`}
             onClick={() => setActiveHeading(heading.value)}
           >
             <p
@@ -37,11 +37,11 @@ export default function Index() {
 
       {activeHeading === 'manage' && (
         <div className='mt-4'>
-          <div className='sm:flex items-center border-b border-gray-200'>
+          <div className='items-center border-b border-gray-200 sm:flex'>
             {tabs.map((tab) => (
               <div
                 key={tab.value}
-                className={`flex items-center mr-16 group border-b pb-5 cursor-pointer ${
+                className={`group mr-16 flex cursor-pointer items-center border-b pb-5 ${
                   activeTab === tab.value
                     ? 'border-green-700'
                     : 'border-transparent hover:border-green-700'
@@ -62,25 +62,37 @@ export default function Index() {
                 href='/meta-data'
                 className='text-black-600 font-bold hover:text-green-700'
               >
-                METADATA
+                <img
+                  src='/metadata-logo.png'
+                  alt=''
+                />
               </Link>
               <Link
                 href='/meta-data-group'
                 className='text-black-600 font-bold hover:text-green-700'
               >
-                GROUPS
+                <img
+                  src='/groups-logo.png'
+                  alt=''
+                />
               </Link>
               <Link
                 href='/meta-hierarchy'
                 className='text-black-600 font-bold hover:text-green-700'
               >
-                HIERARCHIES
+                <img
+                  src='/heirarchys-logo.png'
+                  alt=''
+                />
               </Link>
               <Link
                 href='/meta-structure'
                 className='text-black-600 font-bold hover:text-green-700'
               >
-                STRUCTURAL BLOCKS
+                <img
+                  src='/blocks-logo.png'
+                  alt=''
+                />
               </Link>
             </div>
           )}

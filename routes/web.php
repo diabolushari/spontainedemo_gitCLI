@@ -16,6 +16,7 @@ use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
+use App\Http\Controllers\MetaDataAnalyticsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -93,5 +94,7 @@ Route::get('queries-in-connection', QueryListController::class)
     ->name('queries-in-connection');
 
 Route::get('tab', [TabController::class, 'show'])->name('tab');
+Route::resource('meta-data-analytics', MetaDataAnalyticsController::class)
+    ->parameters(['meta-data-analytics' => 'metaData']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
