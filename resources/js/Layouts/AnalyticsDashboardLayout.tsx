@@ -65,42 +65,57 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             </div>
             {activeTab === 'definitions' && (
               <div className='mt-4 flex space-x-4'>
-                <Link
-                  href='/meta-data-analytics?type=definitions&subtype=metadata'
-                  className='text-black-600 font-bold hover:text-green-700'
-                >
-                  <img
-                    src='/metadata-logo.png'
-                    alt=''
-                  />
-                </Link>
-                <Link
-                  href='/meta-data-group?type=definitions&subtype=groups'
-                  className='text-black-600 font-bold hover:text-green-700'
-                >
-                  <img
-                    src='/groups-logo.png'
-                    alt=''
-                  />
-                </Link>
-                <Link
-                  href='/meta-hierarchy?type=definitions&subtype=heirarchies'
-                  className='text-black-600 font-bold hover:text-green-700'
-                >
-                  <img
-                    src='/heirarchys-logo.png'
-                    alt=''
-                  />
-                </Link>
-                <Link
-                  href='/meta-structure?type=definitions&subtype=blocks'
-                  className='text-black-600 font-bold hover:text-green-700'
-                >
-                  <img
-                    src='/blocks-logo.png'
-                    alt=''
-                  />
-                </Link>
+                <div className='metadatalogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                  <Link
+                    href='/meta-data-analytics?type=definitions&subtype=metadata'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='justify-center pt-1'
+                      src='/metadata.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>METADATA</span>
+                  </Link>
+                </div>
+                <div className='groupslogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                  <Link
+                    href='/meta-data-group?type=definitions&subtype=groups'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='justify-center pt-2'
+                      src='/groups.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>GROUPS</span>
+                  </Link>
+                </div>
+                <div className='hierarchylogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                  <Link
+                    href='/meta-hierarchy?type=definitions&subtype=heirarchies'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='justify-center pt-2'
+                      src='/hierarchies.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>HIERARCHIES</span>
+                  </Link>
+                </div>
+                <div className='structblocklogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                  <Link
+                    href='/meta-structure?type=definitions&subtype=blocks'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      src='/structblock.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>STRUCTURAL BLOCKS</span>
+                  </Link>
+                </div>
               </div>
             )}
           </div>
