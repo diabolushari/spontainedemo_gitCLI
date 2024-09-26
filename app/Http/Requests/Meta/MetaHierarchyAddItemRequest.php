@@ -22,7 +22,7 @@ class MetaHierarchyAddItemRequest extends Data
     {
         return [
             'meta_data_id' => ['required', 'integer', 'exists:meta_data,id'],
-            'parent_id' => ['nullable',  'integer', 'exists:meta_data,id'],
+            'parent_id' => ['nullable',  'integer', 'exists:meta_hierarchy_items,id'],
             'meta_hierarchy_id' => ['required', 'integer', 'exists:meta_hierarchies,id'],
         ];
     }

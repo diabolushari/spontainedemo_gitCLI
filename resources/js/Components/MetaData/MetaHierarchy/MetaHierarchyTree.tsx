@@ -1,7 +1,11 @@
-import { MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_interfaces'
+import {
+  MetaHierarchy,
+  MetaHierarchyItem,
+  MetaHierarchyLevelInfo,
+} from '@/interfaces/meta_interfaces'
 import handleEnterPress from '@/libs/handle-enter'
 import StrongText from '@/typograpy/StrongText'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import MetaHierarchyAddItem from './MetaHierarchyAddItem'
 import MetaHierarchyTreeNode from './MetaHierarchyTreeNode'
 import useMetaTree from './useMetaTree'
@@ -9,9 +13,14 @@ import useMetaTree from './useMetaTree'
 interface Props {
   hierarchyList: MetaHierarchyItem[]
   metaHierarchy: MetaHierarchy
+  levelInfos: MetaHierarchyLevelInfo[]
 }
 
-export default function MetaHierarchyTree({ hierarchyList, metaHierarchy }: Readonly<Props>) {
+export default function MetaHierarchyTree({
+  hierarchyList,
+  metaHierarchy,
+  levelInfos,
+}: Readonly<Props>) {
   const { tree, toggleNode } = useMetaTree(hierarchyList)
 
   const [selectedNode, setSelectedNode] = useState<MetaHierarchyItem | null>(null)
@@ -21,6 +30,10 @@ export default function MetaHierarchyTree({ hierarchyList, metaHierarchy }: Read
     setSelectedNode(node)
     setShowModal(true)
   }, [])
+
+  const firstLevelInfo = useMemo(() => {
+    return levelInfos.find((info) => info.level == 1)
+  }, [levelInfos])
 
   return (
     <div className='mt-10 flex w-full flex-col justify-center gap-5'>
@@ -42,8 +55,8 @@ export default function MetaHierarchyTree({ hierarchyList, metaHierarchy }: Read
           className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 border border-blue-700 p-1 hover:border-green-500 hover:text-green-500 hover:shadow'
         >
           <StrongText>
-            <i className='las la-plus-circle'></i>
-            Add New
+            <i className='las la-plus-circle'></i> Add{' '}
+            {firstLevelInfo?.structure?.structure_name ?? 'New Item'}
           </StrongText>
         </div>
       </div>
@@ -52,6 +65,7 @@ export default function MetaHierarchyTree({ hierarchyList, metaHierarchy }: Read
           currentNode={selectedNode}
           setShowModal={setShowModal}
           metaHierarchy={metaHierarchy}
+          levelInfos={levelInfos}
         />
       )}
     </div>

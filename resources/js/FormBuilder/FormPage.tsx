@@ -1,10 +1,10 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
-import Card from '@/ui/Card/Card'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import React, { FormEvent } from 'react'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
+import React, { FormEvent } from 'react'
 
 interface Props<
   T,
@@ -56,13 +56,15 @@ export default function FormPage<
   buttonText,
   isPatchRequest = false,
   children,
-}: Props<T, U, K, G, L>) {
+}: Readonly<Props<T, U, K, G, L>>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const data = customSubmitData != null ? customSubmitData : formData
+    const data = customSubmitData ?? formData
+
+    console.log(data)
 
     post({
       ...data,

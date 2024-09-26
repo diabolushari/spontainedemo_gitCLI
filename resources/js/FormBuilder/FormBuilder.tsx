@@ -1,17 +1,16 @@
 import { cn } from '@/utils'
 import Input from '@/ui/form/Input'
-import React, { Children, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import CheckBox from '@/ui/form/CheckBox'
-import TextArea from '@/ui/form/TextArea'
+import ComboBox from '@/ui/form/ComboBox'
 import DatePicker from '@/ui/form/DatePicker'
-import TimePicker from '@/ui/form/TimePicker'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import FileInput from '@/ui/form/FileInput'
 import SelectList from '@/ui/form/SelectList'
+import TextArea from '@/ui/form/TextArea'
+import TimePicker from '@/ui/form/TimePicker'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
-import ComboBox from '@/ui/form/ComboBox'
-
 
 export interface FormItem<
   T,
@@ -81,8 +80,8 @@ export default function FormBuilder<
   errors,
   buttonText = 'Submit',
   buttonAlignment,
-  children
-}: Props<T, U, K, G, L>) {
+  children,
+}: Readonly<Props<T, U, K, G, L>>) {
   const formStyle = cn('grid w-full grid-cols-1 md:grid-cols-2 gap-5', formStyles)
 
   const keys: (keyof typeof formItems)[] = useMemo(() => {
@@ -113,6 +112,7 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
               error={errors != null ? errors[keyValue] : undefined}
               disabled={formItems[keyValue].disabled}
+              placeholder={formItems[keyValue].placeholder}
             />
           )}
           {formItems[keyValue].type === 'number' && !formItems[keyValue].hidden && (
@@ -123,6 +123,7 @@ export default function FormBuilder<
               type='number'
               error={errors != null ? errors[keyValue] : undefined}
               disabled={formItems[keyValue].disabled}
+              placeholder={formItems[keyValue].placeholder}
             />
           )}
           {formItems[keyValue].type === 'email' && !formItems[keyValue].hidden && (
@@ -133,6 +134,7 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
               error={errors != null ? errors[keyValue] : undefined}
               disabled={formItems[keyValue].disabled}
+              placeholder={formItems[keyValue].placeholder}
             />
           )}
           {formItems[keyValue].type === 'password' && !formItems[keyValue].hidden && (
@@ -143,6 +145,7 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
               error={errors != null ? errors[keyValue] : undefined}
               disabled={formItems[keyValue].disabled}
+              placeholder={formItems[keyValue].placeholder}
             />
           )}
           {formItems[keyValue].type === 'checkbox' && !formItems[keyValue].hidden && (
@@ -161,6 +164,7 @@ export default function FormBuilder<
               label={formItems[keyValue].label}
               error={errors != null ? errors[keyValue] : undefined}
               disabled={formItems[keyValue].disabled}
+              placeholder={formItems[keyValue].placeholder}
             />
           )}
           {formItems[keyValue].type === 'date' && !formItems[keyValue].hidden && (
@@ -244,7 +248,7 @@ export default function FormBuilder<
         </div>
       ))}
       {children}
-      <div className={cn('flex gap-5 col-start-1 ', buttonStyle)}>
+      <div className={cn('col-start-1 flex gap-5', buttonStyle)}>
         <FullSpinnerWrapper processing={loading}>
           <Button label={buttonText} />
         </FullSpinnerWrapper>

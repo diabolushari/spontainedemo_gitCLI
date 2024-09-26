@@ -8,6 +8,7 @@ use App\Models\DataLoader\DataLoaderConnection;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 
 class LoaderConnectionStatusCheck
@@ -34,8 +35,10 @@ class LoaderConnectionStatusCheck
         /** @var string|null $vpnPassword */
         $vpnPassword = config('app.vpn_password');
 
+        Log::info("VPN Password: $vpnPassword");
         if ($vpnPassword !== null) {
-            Process::run("echo $vpnPassword | snx -s 125.17.229.163 -u xocortx");
+            $result = Process::run("echo $vpnPassword | snx -s 125.17.229.163 -u xocortx");
+            Log::info($result->output());
         }
 
         try {

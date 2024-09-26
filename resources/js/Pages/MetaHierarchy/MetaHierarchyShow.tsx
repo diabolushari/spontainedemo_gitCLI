@@ -1,14 +1,25 @@
 import MetaHierarchyTree from '@/Components/MetaData/MetaHierarchy/MetaHierarchyTree'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
-import { MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_interfaces'
+import {
+  MetaHierarchy,
+  MetaHierarchyItem,
+  MetaHierarchyLevelInfo,
+} from '@/interfaces/meta_interfaces'
 import { useMemo } from 'react'
 
 interface Props {
   metaHierarchy: MetaHierarchy
   hierarchyList: MetaHierarchyItem[]
+  levelInfos: MetaHierarchyLevelInfo[]
 }
 
-export default function MetaHierarchyShow({ metaHierarchy, hierarchyList }: Readonly<Props>) {
+export default function MetaHierarchyShow({
+  metaHierarchy,
+  hierarchyList,
+  levelInfos,
+}: Readonly<Props>) {
+  console.log(levelInfos)
+
   const displayItems = useMemo(() => {
     return [
       {
@@ -23,12 +34,6 @@ export default function MetaHierarchyShow({ metaHierarchy, hierarchyList }: Read
         type: 'text',
         id: 2,
       },
-      {
-        label: 'Heirarchy Level',
-        content: metaHierarchy.heirarchy_level,
-        type: 'text',
-        id: 3,
-      },
     ] as ShowPageItem[]
   }, [metaHierarchy])
 
@@ -37,10 +42,13 @@ export default function MetaHierarchyShow({ metaHierarchy, hierarchyList }: Read
       title={metaHierarchy.name}
       items={displayItems}
       backUrl={route('meta-hierarchy.index')}
+      editUrl={route('meta-hierarchy.edit', metaHierarchy.id)}
+      deleteUrl={route('meta-hierarchy.destroy', metaHierarchy.id)}
     >
       <MetaHierarchyTree
         metaHierarchy={metaHierarchy}
         hierarchyList={hierarchyList}
+        levelInfos={levelInfos}
       />
     </ShowResourcePage>
   )

@@ -1,5 +1,5 @@
 import GuestLayout from '@/Layouts/GuestLayout'
-import { Head } from '@inertiajs/react'
+import { Head, Link } from '@inertiajs/react'
 import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import React, { useMemo } from 'react'
@@ -23,14 +23,14 @@ export default function Login({ status }: { status?: string; canResetPassword: b
   >() => {
     return {
       email: {
-        label: 'Email',
         type: 'email' as const,
         setValue: setFormValue('email'),
+        placeholder: 'employee id or username',
       },
       password: {
-        label: 'Password',
         type: 'password' as const,
         setValue: setFormValue('password'),
+        placeholder: 'password',
       },
       remember: {
         label: 'Remember me',
@@ -46,19 +46,38 @@ export default function Login({ status }: { status?: string; canResetPassword: b
   }
 
   return (
-    <GuestLayout>
-      <Head title='Log in' />
-
-      {status && <div className='mb-4 font-medium text-sm text-green-600'>{status}</div>}
-
-      <FormBuilder
-        formItems={formItems}
-        formData={formData}
-        formStyles='md:grid-cols-1 gap-5'
-        onFormSubmit={handleSubmit}
-        loading={loading}
-        buttonAlignment='center'
-      />
-    </GuestLayout>
+    <div className='flex min-h-screen flex-col items-center justify-center bg-blue-100'>
+      <div className='w-full max-w-sm rounded-lg bg-blue-100 p-8'>
+        <div className='mb-4 flex justify-center'>
+          <img
+            src='/one-stop-logo.png'
+            alt='one stop logo'
+            className='h-20 w-20'
+          />
+        </div>
+        <h1 className='text-center text-xl font-semibold text-gray-700'>ONE STOP ANALYTICS</h1>
+        <p className='text-md mb-8 mt-4 text-center font-medium text-gray-600'>sign in:</p>
+        <FormBuilder
+          formItems={formItems}
+          formData={formData}
+          formStyles='md:grid-cols-1 gap-5'
+          onFormSubmit={handleSubmit}
+          loading={loading}
+          buttonAlignment='center'
+        />
+        <div className='mt-6 text-center text-sm text-gray-500'>
+          <p>
+            forgot password or trouble signing in ? <br />
+            contact{' '}
+            <Link
+              href={''}
+              className='text-blue-500 underline'
+            >
+              support
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }
