@@ -1,3 +1,4 @@
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import { Link } from '@inertiajs/react'
 import React, { useState } from 'react'
 
@@ -17,87 +18,5 @@ export default function Index() {
     { name: 'DASHBOARD', value: 'dashboard' },
   ]
 
-  return (
-    <div className='container mx-auto px-4 py-10'>
-      <div className='flex justify-center space-x-4'>
-        {headings.map((heading) => (
-          <div
-            key={heading.value}
-            className={`cursor-pointer pb-2 ${activeHeading === heading.value ? 'font-bold text-green-700' : 'text-gray-600'}`}
-            onClick={() => setActiveHeading(heading.value)}
-          >
-            <p
-              className={`text-lg font-bold ${activeHeading === heading.value ? 'text-green-700' : 'text-gray-600'} `}
-            >
-              {heading.name}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {activeHeading === 'manage' && (
-        <div className='mt-4'>
-          <div className='items-center border-b border-gray-200 sm:flex'>
-            {tabs.map((tab) => (
-              <div
-                key={tab.value}
-                className={`group mr-16 flex cursor-pointer items-center border-b pb-5 ${
-                  activeTab === tab.value
-                    ? 'border-green-700'
-                    : 'border-transparent hover:border-green-700'
-                }`}
-                onClick={() => setActiveTab(tab.value)}
-              >
-                <p
-                  className={`text-lg font-extrabold leading-none ${activeTab === tab.value ? 'text-green-700' : 'text-gray-600 group-hover:text-green-700'}`}
-                >
-                  {tab.name}
-                </p>
-              </div>
-            ))}
-          </div>
-          {activeTab === 'definitions' && (
-            <div className='mt-4 flex space-x-4'>
-              <Link
-                href='/meta-data'
-                className='text-black-600 font-bold hover:text-green-700'
-              >
-                <img
-                  src='/metadata-logo.png'
-                  alt=''
-                />
-              </Link>
-              <Link
-                href='/meta-data-group'
-                className='text-black-600 font-bold hover:text-green-700'
-              >
-                <img
-                  src='/groups-logo.png'
-                  alt=''
-                />
-              </Link>
-              <Link
-                href='/meta-hierarchy'
-                className='text-black-600 font-bold hover:text-green-700'
-              >
-                <img
-                  src='/heirarchys-logo.png'
-                  alt=''
-                />
-              </Link>
-              <Link
-                href='/meta-structure'
-                className='text-black-600 font-bold hover:text-green-700'
-              >
-                <img
-                  src='/blocks-logo.png'
-                  alt=''
-                />
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )
+  return <AnalyticsDashboardLayout></AnalyticsDashboardLayout>
 }
