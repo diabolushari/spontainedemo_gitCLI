@@ -3,7 +3,11 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 
-export default function MetaGroupCreate() {
+interface Properties {
+  type?: string
+  subtype?: string
+}
+export default function MetaGroupCreate({ type, subtype }: Properties) {
   const { formData, setFormValue } = useCustomForm({
     name: '',
     description: '',
@@ -36,8 +40,10 @@ export default function MetaGroupCreate() {
       formData={formData}
       formItems={formItems}
       title='Create Meta Group'
-      backUrl={route('meta-data-group.index')}
+      backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
       formStyles='w-1/2 md:grid-cols-1'
+      type={type}
+      subtype={subtype}
     />
   )
 }

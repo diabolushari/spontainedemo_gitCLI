@@ -28,19 +28,28 @@ class MetaStructureController extends Controller
     public function index(Request $request): Response
     {
         $structures = MetaStructure::withCount('metaData')
-            ->when($request->filled(key: 'search'), fn (Builder $builder) => $builder
-                ->where('structure_name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
+            ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder
+                ->where('structure_name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
             ->paginate(20)
             ->withQueryString();
 
         return Inertia::render('MetaStructure/MetaStructureIndex', [
             'structures' => $structures,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all()
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('MetaStructure/MetaStructureCreate');
+        return Inertia::render(
+            'MetaStructure/MetaStructureCreate',
+            [
+                'type' => $request->type,
+                'subtype' => $request->subtype
+            ]
+        );
     }
 
     public function store(MetaStructureFormRequest $request): RedirectResponse
@@ -54,7 +63,7 @@ class MetaStructureController extends Controller
 
         return redirect()
             ->route('meta-structure.index')
-            ->with(['message' => 'Meta structure '.$request->structureName.' created successfully']);
+            ->with(['message' => 'Meta structure ' . $request->structureName . ' created successfully']);
     }
 
     public function show(MetaStructure $metaStructure)
@@ -80,7 +89,7 @@ class MetaStructureController extends Controller
 
         return redirect()
             ->route('meta-structure.index')
-            ->with(['message' => 'Meta structure '.$request->structureName.' updated successfully']);
+            ->with(['message' => 'Meta structure ' . $request->structureName . ' updated successfully']);
     }
 
     public function destroy(MetaStructure $metaStructure): RedirectResponse
@@ -94,6 +103,6 @@ class MetaStructureController extends Controller
 
         return redirect()
             ->route('meta-structure.index')
-            ->with(['success' => 'Meta structure '.$metaStructure->structure_name.' deleted successfully']);
+            ->with(['success' => 'Meta structure ' . $metaStructure->structure_name . ' deleted successfully']);
     }
 }

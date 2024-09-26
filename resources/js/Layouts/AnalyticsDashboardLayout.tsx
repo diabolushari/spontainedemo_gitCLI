@@ -51,7 +51,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   }, [])
 
   return (
-    <div className=''>
+    <div className='bg-white h-screen'>
       <div className='container mx-auto px-4 py-10'>
         {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
@@ -131,47 +131,55 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             </div>
 
             {activeTab === 'definitions' && (
-              <div className='mt-4 flex space-x-4'>
-                <div className='metadatalogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'metadata' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
                   <Link
-                    href='/meta-data-analytics?type=definitions&subtype=metadata'
+                    href='/meta-data?type=definitions&subtype=metadata'
                     className='text-black-600 flex flex-col font-bold hover:text-green-700'
                   >
                     <img
-                      className='justify-center pt-1'
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
                       src='/metadata.png'
                       alt=''
                     />
                     <span className='pt-1 text-center text-xs'>METADATA</span>
                   </Link>
                 </div>
-                <div className='groupslogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                <div
+                  className={`groupslogo rounded-xl ${subtype === 'groups' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
                   <Link
                     href='/meta-data-group?type=definitions&subtype=groups'
                     className='text-black-600 flex flex-col font-bold hover:text-green-700'
                   >
                     <img
-                      className='justify-center pt-2'
+                      className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
                       src='/groups.png'
                       alt=''
                     />
                     <span className='pt-1 text-center text-xs'>GROUPS</span>
                   </Link>
                 </div>
-                <div className='hierarchylogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                <div
+                  className={`hierarchylogo rounded-xl ${subtype === 'heirarchies' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
                   <Link
                     href='/meta-hierarchy?type=definitions&subtype=heirarchies'
                     className='text-black-600 flex flex-col font-bold hover:text-green-700'
                   >
                     <img
-                      className='justify-center pt-2'
+                      className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
                       src='/hierarchies.png'
                       alt=''
                     />
                     <span className='pt-1 text-center text-xs'>HIERARCHIES</span>
                   </Link>
                 </div>
-                <div className='structblocklogo w-150 h-150 rounded-xl bg-[#EFF0A6] p-8 hover:bg-[#E3FE3C]'>
+                <div
+                  className={`hierarchylogo rounded-xl ${subtype === 'blocks' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
                   <Link
                     href='/meta-structure?type=definitions&subtype=blocks'
                     className='text-black-600 flex flex-col font-bold hover:text-green-700'
@@ -179,8 +187,60 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                     <img
                       src='/structblock.png'
                       alt=''
+                      className='flex h-10 w-10 items-center justify-center md:h-20 md:w-20'
                     />
-                    <span className='pt-1 text-center text-xs'>STRUCTURAL BLOCKS</span>
+                    <span className='flex max-w-16 pt-1 text-center text-xs'>
+                      STRUCTURAL BLOCKS
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            )}
+            {activeTab === 'loaders' && (
+              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/loader-connections?type=loaders&subtype=data-sources'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/data-sources.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>DATA SOURCES</span>
+                  </Link>
+                </div>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'jobs' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/loader-jobs?type=loaders&subtype=jobs'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/jobs.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>JOBS</span>
+                  </Link>
+                </div>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'queries' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/loader-queries?type=loaders&subtype=queries'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/extraction.png'
+                      alt=''
+                    />
+                    <span className='max-w-16 pt-1 text-center text-xs'>EXTRACTION STATEMENTS</span>
                   </Link>
                 </div>
               </div>

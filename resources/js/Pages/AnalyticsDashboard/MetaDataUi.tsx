@@ -5,19 +5,23 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import { Paginator } from '@/ui/ui_interfaces'
-import React, { useMemo } from 'react'
+import { router } from '@inertiajs/react'
+import React, { useCallback, useMemo } from 'react'
 
 interface Props {
   structures: Partial<MetaStructure>[]
   metaData: Paginator<MetaData>
   type?: string
   subtype?: string
+  oldValues?: Record<string, string>
 }
 
-export default function MetaDataUi({ structures, metaData, type, subtype }: Props) {
+export default function MetaDataUi({ structures, metaData, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
     structure: '',
+    type: 'definitions',
+    subtype: 'metadata',
   })
 
   const formItems = useMemo(<
@@ -76,6 +80,7 @@ export default function MetaDataUi({ structures, metaData, type, subtype }: Prop
     >
       <MetaDataUiIndex
         keys={keys}
+        oldValues={oldValues}
         primaryKey='id'
         rows={data}
         formData={formData}

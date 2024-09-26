@@ -26,19 +26,24 @@ class MetaDataGroupController extends Controller
 
     public function index(Request $request): Response
     {
-        $groups = MetaGroup::when($request->filled(key:'search'),fn(Builder $builder)=>$builder->where('name',operator:'like',value:'%'.$request->input(key:'search').'%'))
+        $groups = MetaGroup::when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
             ->withCount('items')
             ->paginate(20)
             ->withQueryString();
 
         return Inertia::render('MetaGroup/MetaGroupIndex', [
             'groups' => $groups,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all()
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('MetaGroup/MetaGroupCreate');
+        
+        return Inertia::render('MetaGroup/MetaGroupCreate', 
+        ['type' => $request->type, 'subtype' => $request->subtype]);
     }
 
     public function edit(MetaGroup $metaDataGroup): Response
@@ -82,7 +87,7 @@ class MetaDataGroupController extends Controller
             ]);
     }
 
-    public function show(MetaGroup $metaDataGroup): Response
+    public function show(MetaGroup $metaDataGroup, Request $request): Response
     {
 
         $items = MetaGroupItem::where('meta_group_id', $metaDataGroup->id)
@@ -94,6 +99,8 @@ class MetaDataGroupController extends Controller
         return Inertia::render('MetaGroup/MetaGroupShow', [
             'metaDataGroup' => $metaDataGroup,
             'groupItems' => $items,
+            'type' => $request->type,
+            'subtype' => $request->subtype
         ]);
     }
 }

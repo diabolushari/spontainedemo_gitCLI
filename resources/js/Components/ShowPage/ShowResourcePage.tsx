@@ -5,6 +5,7 @@ import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import SubHeading from '@/typograpy/SubHeading'
 import NormalText from '@/typograpy/NormalText'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 export interface ShowPageItem {
   id: number
@@ -26,6 +27,8 @@ interface Props {
   onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  type?: string
+  subtype?: string
 }
 
 export default function ShowResourcePage({
@@ -40,9 +43,14 @@ export default function ShowResourcePage({
   onDeleteClick,
   onAddClick,
   addUrl,
+  type,
+  subtype,
 }: Props) {
   return (
-    <AuthenticatedLayout>
+    <AnalyticsDashboardLayout
+      type={type}
+      subtype={subtype}
+    >
       <DashboardPadding>
         <Card>
           <CardHeader
@@ -56,10 +64,10 @@ export default function ShowResourcePage({
             addUrl={addUrl}
             onAddClick={onAddClick}
           />
-          <div className='flex flex-col gap-5 py-5 px-10'>
+          <div className='flex flex-col gap-5 px-10 py-5'>
             {items.map((item) => (
               <div
-                className='grid grid-cols-1 md:grid-cols-3 gap-x-5'
+                className='grid grid-cols-1 gap-x-5 md:grid-cols-3'
                 key={item.id.toString()}
               >
                 <div>
@@ -84,6 +92,6 @@ export default function ShowResourcePage({
         </Card>
         {children}
       </DashboardPadding>
-    </AuthenticatedLayout>
+    </AnalyticsDashboardLayout>
   )
 }

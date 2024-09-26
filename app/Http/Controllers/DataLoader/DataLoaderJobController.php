@@ -13,6 +13,7 @@ use App\Models\DataLoader\DataLoaderQuery;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,10 +37,13 @@ class DataLoaderJobController extends Controller
 
         return Inertia::render('DataLoader/DataLoaderJobIndex', [
             'dataLoaderJobs' => $dataLoaderJobs,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all()
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
 
         $connections = DataLoaderConnection::select('id', 'name')
@@ -53,6 +57,8 @@ class DataLoaderJobController extends Controller
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'connections' => $connections,
             'dataTables' => $dataTables,
+            'type' => $request->type,
+            'subtype' => $request->subtype
         ]);
     }
 

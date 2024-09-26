@@ -100,11 +100,13 @@ export default function DataLoaderConnectionEdit({ dataLoaderConnection }: Reado
       formData={formData}
       formItems={formItems}
       title={`Edit ${dataLoaderConnection.name}`}
-      backUrl={route('loader-connections.index')}
+      backUrl={route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' })}
       formStyles='w-1/2 md:grid-cols-1'
       customSubmitData={customFormData}
       buttonText={'Update & Verify'}
       isPatchRequest
+      type='loaders'
+      subtype='data-sources'
     />
   )
 }

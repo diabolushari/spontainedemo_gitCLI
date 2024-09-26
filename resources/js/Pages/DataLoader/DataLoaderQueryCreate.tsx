@@ -6,9 +6,11 @@ import { DataLoaderConnection } from '@/interfaces/data_interfaces'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
+  type?: string
+  subtype?: string
 }
 
-export default function DataLoaderQueryCreate({ connections }: Readonly<Props>) {
+export default function DataLoaderQueryCreate({ connections, type, subtype }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: '',
     description: '',
@@ -57,9 +59,11 @@ export default function DataLoaderQueryCreate({ connections }: Readonly<Props>) 
       formData={formData}
       formItems={formItems}
       title='Create Loader Query'
-      backUrl={route('loader-queries.index')}
+      backUrl={route('loader-queries.index', { type: 'loaders', subtype: 'queries' })}
       formStyles='w-1/2 md:grid-cols-1'
       buttonText='Save & Test'
+      type={type}
+      subtype={subtype}
     />
   )
 }

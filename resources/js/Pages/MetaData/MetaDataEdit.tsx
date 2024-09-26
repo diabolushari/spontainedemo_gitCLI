@@ -51,7 +51,7 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
       formData={formData}
       formItems={formItems}
       title={'Update Meta Data'}
-      backUrl={route('meta-data.index')}
+      backUrl={route('meta-data.show', metaData.id)}
       isPatchRequest
     />
   )

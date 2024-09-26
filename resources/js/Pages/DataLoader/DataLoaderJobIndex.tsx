@@ -7,13 +7,21 @@ import { Paginator } from '@/ui/ui_interfaces'
 
 interface Props {
   dataLoaderJobs: Paginator<DataLoaderJob>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function DataLoaderJobIndex({ dataLoaderJobs }: Readonly<Props>) {
+export default function DataLoaderJobIndex({
+  dataLoaderJobs,
+  type,
+  subtype,
+  oldValues,
+}: Readonly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: '',
@@ -64,9 +72,12 @@ export default function DataLoaderJobIndex({ dataLoaderJobs }: Readonly<Props>) 
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('loader-jobs.create')}
-      searchUrl={route('loader-jobs.index')}
+      addUrl={route('loader-jobs.create', { type: 'loaders', subtype: 'jobs' })}
+      searchUrl={route('loader-jobs.index', { type: 'loaders', subtype: 'jobs' })}
       paginator={dataLoaderJobs}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

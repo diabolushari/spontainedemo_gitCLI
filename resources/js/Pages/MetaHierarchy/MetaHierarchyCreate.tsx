@@ -14,6 +14,8 @@ interface Properties {
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
   metaHierarchy?: MetaHierarchy
   levelInfos?: MetaHierarchyLevelInfo[]
+  type?: string
+  subtype?: string
 }
 
 function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
@@ -32,6 +34,8 @@ export default function MetaHierarchyCreate({
   structures,
   metaHierarchy,
   levelInfos,
+  type,
+  subtype
 }: Readonly<Properties>) {
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy?.name ?? '',
@@ -119,10 +123,12 @@ export default function MetaHierarchyCreate({
       formData={formData}
       formItems={formItems}
       title='Create Meta Hierarchy'
-      backUrl={route('meta-hierarchy.index')}
+      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       formStyles='w-1/2 md:grid-cols-1'
       customSubmitData={fullFormData}
       isPatchRequest={metaHierarchy != null}
+      type={type}
+      subtype={subtype}
     >
       {hierarchyLevelInfos.map((item) => {
         return (

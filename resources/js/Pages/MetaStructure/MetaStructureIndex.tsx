@@ -7,16 +7,21 @@ import { Paginator } from '@/ui/ui_interfaces'
 
 interface Props {
   structures: Paginator<MetaStructure>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
-interface FormFields {
-  search: string
-}
+// interface FormFields {
+//   search: string
+// }
 
-export default function MetaStructureIndex({ structures }: Props) {
+export default function MetaStructureIndex({ structures, type, subtype, oldValues }: Props) {
   //holds data
-  const { formData, setFormValue } = useCustomForm<FormFields>({
+  const { formData, setFormValue } = useCustomForm({
     search: '',
+    type: 'definitions',
+    subtype: 'blocks',
   })
 
   //input elements list
@@ -68,9 +73,12 @@ export default function MetaStructureIndex({ structures }: Props) {
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('meta-structure.create')}
+      addUrl={route('meta-structure.create', { type: 'definitions', subtype: 'blocks' })}
       searchUrl={route('meta-structure.index')}
       paginator={structures}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

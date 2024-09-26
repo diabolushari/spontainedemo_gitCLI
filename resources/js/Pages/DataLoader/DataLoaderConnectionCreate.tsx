@@ -3,6 +3,10 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 
+interface Properties {
+  type?: string
+  subtype?: string
+}
 export const databaseDrivers = [
   { value: 'mysql', label: 'MySQL' },
   { value: 'pgsql', label: 'PostgreSQL' },
@@ -11,7 +15,7 @@ export const databaseDrivers = [
   { value: 'mariadb', label: 'MariaDB' },
 ]
 
-export default function DataLoaderConnectionCreate() {
+export default function DataLoaderConnectionCreate({ type, subtype }: Properties) {
   const { formData, setFormValue } = useCustomForm({
     name: '',
     description: '',
@@ -83,9 +87,11 @@ export default function DataLoaderConnectionCreate() {
       formData={formData}
       formItems={formItems}
       title='Create DataLoaderConnection'
-      backUrl={route('loader-connections.index')}
+      backUrl={route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' })}
       formStyles='w-1/2 md:grid-cols-1'
       buttonText={'Add & Verify'}
+      type={type}
+      subtype={subtype}
     />
   )
 }

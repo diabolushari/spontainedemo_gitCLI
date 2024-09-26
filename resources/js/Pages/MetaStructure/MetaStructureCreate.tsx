@@ -3,7 +3,12 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 
-export default function MetaStructureCreate() {
+interface Properties {
+  type?: string
+  subtype?: string
+}
+
+export default function MetaStructureCreate({ type, subtype }: Properties) {
   const { formData, setFormValue } = useCustomForm({
     structure_name: '',
     description: '',
@@ -30,8 +35,10 @@ export default function MetaStructureCreate() {
       formData={formData}
       title={'Create Meta Structure'}
       url={route('meta-structure.store')}
-      backUrl={route('meta-structure.index')}
+      backUrl={route('meta-structure.index', { type: 'definitions', subtype: 'blocks' })}
       formStyles='md:w-1/2  md:grid-cols-1'
+      type={type}
+      subtype={subtype}
     />
   )
 }

@@ -55,19 +55,21 @@ export default function MetaGroupShow({
     <ShowResourcePage
       title={''}
       items={displayedValues}
-      backUrl={route('loader-queries.index')}
+      backUrl={route('loader-queries.index', { type: 'loaders', subtype: 'queries' })}
       editUrl={route('loader-queries.edit', dataLoaderQuery.id)}
       onDeleteClick={() => {
         setShowDeleteModal(true)
       }}
+      type='loaders'
+      subtype='queries'
     >
-      <Card className='my-10 py-5 px-2'>
+      <Card className='my-10 px-2 py-5'>
         <AlertMessage
           variant={error ? 'error' : 'success'}
           message={errorMessage}
         />
         {result.length === 10 && <NormalText>Showing first 10 results.</NormalText>}
-        <div className='bg-gray-200 w-full min-h-24'>
+        <div className='min-h-24 w-full bg-gray-200'>
           <NormalText>
             [
             {result.map((item, index) => (

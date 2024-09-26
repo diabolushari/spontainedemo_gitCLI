@@ -10,6 +10,8 @@ import ListResourceTable from '@/Components/ListingPage/ListResourceTable'
 import SelectList from '@/ui/form/SelectList'
 import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
 import CardHeader from '@/ui/Card/CardHeader'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import FilterOldValues from '../OldSearch/FilterOldValues'
 
 export interface ListItemKeys<T> {
   key: keyof T
@@ -19,17 +21,6 @@ export interface ListItemKeys<T> {
   textStyles?: string
   hideLabel?: boolean
 }
-
-const viewTypes = [
-  {
-    label: 'Cards',
-    value: 'cards',
-  },
-  {
-    label: 'Table',
-    value: 'table',
-  },
-]
 
 interface Props<
   U extends keyof T,
@@ -57,6 +48,10 @@ interface Props<
   onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  pageDescription?: string
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
 export default function ListResourcePage<
@@ -85,6 +80,10 @@ export default function ListResourcePage<
   onEditClick,
   deleteUrl,
   onDeleteClick,
+  pageDescription,
+  type,
+  subtype,
+  oldValues,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -107,36 +106,44 @@ export default function ListResourcePage<
   }, [])
 
   return (
-    <AuthenticatedLayout>
+    <AnalyticsDashboardLayout
+      type={type}
+      subtype={subtype}
+    >
       <DashboardPadding>
-        <Card>
-          <div className='flex flex-col gap-5'>
-            <CardHeader
-              title={title}
-              addUrl={addUrl}
-              backUrl={backUrl}
-              onBackClick={onBackClick}
-              onAddClick={onAddClick}
-              editUrl={editUrl}
-              onEditClick={onEditClick}
-              deleteUrl={deleteUrl}
-              onDeleteClick={onDeleteClick}
-            />
-            <div className='flex flex-col gap-10 px-5 py-5'>
-              <div className='flex flex-col gap-5'>
-                <FormBuilder
-                  formData={formData}
-                  onFormSubmit={onSearchSubmit}
-                  formItems={formItems}
-                  loading={false}
-                  buttonText='Search'
-                  formStyles={'md:grid-cols-3 lg:grid-cols-4'}
-                />
-              </div>
+        <div className='pb-5'>{pageDescription ?? ''}</div>
+
+        <div className='flex flex-col gap-5'>
+          <CardHeader
+            title={title}
+            // addUrl={addUrl}
+            backUrl={backUrl}
+            onBackClick={onBackClick}
+            onAddClick={onAddClick}
+            editUrl={editUrl}
+            onEditClick={onEditClick}
+            deleteUrl={deleteUrl}
+            onDeleteClick={onDeleteClick}
+          />
+          <div className='flex flex-col gap-10 px-5 py-5'>
+            <div className='flex flex-col gap-5'>
+              <FormBuilder
+                formData={formData}
+                onFormSubmit={onSearchSubmit}
+                formItems={formItems}
+                loading={false}
+                buttonText='Search'
+                formStyles={'md:grid-cols-3 lg:grid-cols-4'}
+              />
             </div>
           </div>
-        </Card>
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 my-5'>
+        </div>
+
+        <FilterOldValues
+          oldValues={oldValues}
+          searchUrl={searchUrl}
+        />
+        {/* <div className='my-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
           <div className='flex flex-col md:col-start-3 lg:col-start-4'>
             <SelectList
               list={viewTypes}
@@ -146,18 +153,17 @@ export default function ListResourcePage<
               value={viewType}
             />
           </div>
-        </div>
-        {viewType === 'cards' && (
-          <>
-            <ListResourceCard
-              keys={keys}
-              primaryKey={primaryKey}
-              rows={rows}
-            />
-            {paginator != null && <Pagination pagination={paginator} />}
-          </>
-        )}
-        {viewType === 'table' && (
+        </div> */}
+
+        <ListResourceCard
+          keys={keys}
+          primaryKey={primaryKey}
+          rows={rows}
+          addUrl={addUrl}
+        />
+        {paginator != null && <Pagination pagination={paginator} />}
+
+        {/* {viewType === 'table' && (
           <Card className='p-5'>
             <ListResourceTable
               keys={keys}
@@ -166,8 +172,8 @@ export default function ListResourcePage<
             />
             {paginator != null && <Pagination pagination={paginator} />}
           </Card>
-        )}
+        )} */}
       </DashboardPadding>
-    </AuthenticatedLayout>
+    </AnalyticsDashboardLayout>
   )
 }

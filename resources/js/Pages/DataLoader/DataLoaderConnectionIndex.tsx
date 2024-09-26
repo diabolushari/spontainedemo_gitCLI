@@ -7,13 +7,21 @@ import { Paginator } from '@/ui/ui_interfaces'
 
 interface Props {
   dataLoaderConnections: Paginator<DataLoaderConnection>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function DataLoaderConnectionIndex({ dataLoaderConnections }: Readonly<Props>) {
+export default function DataLoaderConnectionIndex({
+  dataLoaderConnections,
+  type,
+  subtype,
+  oldValues,
+}: Readonly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: '',
@@ -80,7 +88,11 @@ export default function DataLoaderConnectionIndex({ dataLoaderConnections }: Rea
         actions: [
           {
             title: 'Show',
-            url: route('loader-connections.show', record.id),
+            url: route('loader-connections.show', {
+              dataLoaderConnection: record.id,
+              type: 'loaders',
+              subtype: 'data-sources',
+            }),
           },
         ],
       }
@@ -95,9 +107,12 @@ export default function DataLoaderConnectionIndex({ dataLoaderConnections }: Rea
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('loader-connections.create')}
-      searchUrl={route('loader-connections.index')}
+      addUrl={route('loader-connections.create', { type: 'loaders', subtype: 'data-sources' })}
+      searchUrl={route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' })}
       paginator={dataLoaderConnections}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

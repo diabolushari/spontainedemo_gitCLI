@@ -76,8 +76,6 @@ export default function MetaHierarchyAddItem({
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, selectedItem, nextLevelInfo])
 
-  console.log('currentNode', currentNode)
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     post({

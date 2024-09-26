@@ -7,9 +7,16 @@ import { useMemo } from 'react'
 interface Props {
   dataLoaderQuery: DataLoaderQuery
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
+  type?: string
+  subtype?: string
 }
 
-export default function DataLoaderQueryEdit({ dataLoaderQuery, connections }: Readonly<Props>) {
+export default function DataLoaderQueryEdit({
+  dataLoaderQuery,
+  connections,
+  type,
+  subtype,
+}: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: dataLoaderQuery.name,
     description: dataLoaderQuery.description ?? '',
@@ -58,10 +65,12 @@ export default function DataLoaderQueryEdit({ dataLoaderQuery, connections }: Re
       formData={formData}
       formItems={formItems}
       title='Edit Query'
-      backUrl={route('loader-queries.index')}
+      backUrl={route('loader-queries.index', { type: 'loaders', subtype: 'queries' })}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
       buttonText='Update & Test'
+      type={type ?? 'loaders'}
+      subtype={subtype ?? 'queries'}
     />
   )
 }

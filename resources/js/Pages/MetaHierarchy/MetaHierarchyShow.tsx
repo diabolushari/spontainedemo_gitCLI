@@ -18,8 +18,6 @@ export default function MetaHierarchyShow({
   hierarchyList,
   levelInfos,
 }: Readonly<Props>) {
-  console.log(levelInfos)
-
   const displayItems = useMemo(() => {
     return [
       {
@@ -41,7 +39,7 @@ export default function MetaHierarchyShow({
     <ShowResourcePage
       title={metaHierarchy.name}
       items={displayItems}
-      backUrl={route('meta-hierarchy.index')}
+      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       editUrl={route('meta-hierarchy.edit', metaHierarchy.id)}
       deleteUrl={route('meta-hierarchy.destroy', metaHierarchy.id)}
     >

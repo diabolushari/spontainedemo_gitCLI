@@ -13,6 +13,7 @@ use App\Services\DataLoader\Connection\RunLoaderQuery;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +34,7 @@ class DataLoaderQueryController extends Controller
         /** @var LengthAwarePaginator<DataLoaderQuery> $dataLoaderQueries */
         $dataLoaderQueries = DataLoaderQuery::when(
             $request->search != null,
-            fn ($query) => $query->where('name', 'like', "%$request->search%")
+            fn($query) => $query->where('name', 'like', "%$request->search%")
         )
             ->with('loaderConnection:id,name')
             ->paginate(20)
@@ -41,18 +42,24 @@ class DataLoaderQueryController extends Controller
 
         return Inertia::render('DataLoader/DataLoaderQueryIndex', [
             'dataLoaderQueries' => $dataLoaderQueries,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all()
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
 
         $connections = DataLoaderConnection::select([
-            'id', 'name',
+            'id',
+            'name',
         ])->get();
 
         return Inertia::render('DataLoader/DataLoaderQueryCreate', [
             'connections' => $connections,
+            'type' => $request->type,
+            'subtype' => $request->subtype
         ]);
     }
 
@@ -102,15 +109,18 @@ class DataLoaderQueryController extends Controller
         ]);
     }
 
-    public function edit(DataLoaderQuery $dataLoaderQuery): Response
+    public function edit(DataLoaderQuery $dataLoaderQuery, Request $request): Response
     {
         $connections = DataLoaderConnection::select([
-            'id', 'name',
+            'id',
+            'name',
         ])->get();
 
         return Inertia::render('DataLoader/DataLoaderQueryEdit', [
             'dataLoaderQuery' => $dataLoaderQuery,
             'connections' => $connections,
+            'type' => $request->type,
+            'subtype' => $request->subtype
         ]);
     }
 

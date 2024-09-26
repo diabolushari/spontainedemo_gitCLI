@@ -41,7 +41,7 @@ export default function MetaGroupEdit({ group }: Props) {
       formData={formData}
       formItems={formItems}
       title='Create Meta Data Group'
-      backUrl={route('meta-data-group.index')}
+      backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
       formStyles='w-1/2 md:grid-cols-1'
     />
   )

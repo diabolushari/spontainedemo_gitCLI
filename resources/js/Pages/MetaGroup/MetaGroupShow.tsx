@@ -8,9 +8,11 @@ import MetaGroupItemList from '@/Components/MetaData/MetaDataGroup/MetaGroupItem
 interface Props {
   metaDataGroup: MetaDataGroup
   groupItems: Paginator<MetaDataGroupItem>
+  type?: string
+  subtype?: string
 }
 
-export default function MetaGroupShow({ metaDataGroup, groupItems }: Props) {
+export default function MetaGroupShow({ metaDataGroup, groupItems, type, subtype }: Props) {
   const displayedValues = useMemo(() => {
     return [
       {
@@ -21,13 +23,13 @@ export default function MetaGroupShow({ metaDataGroup, groupItems }: Props) {
     ] as ShowPageItem[]
   }, [metaDataGroup])
 
-  console.log(groupItems)
-
   return (
     <ShowResourcePage
       title={metaDataGroup.name}
       items={displayedValues}
-      backUrl={route('meta-data-group.index')}
+      backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
+      type={type}
+      subtype={subtype}
     >
       <MetaGroupAddItem metaDataGroup={metaDataGroup} />
       <MetaGroupItemList

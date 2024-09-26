@@ -11,9 +11,16 @@ interface Props {
     message?: string
     error: boolean
   }
+  type?: string
+  subtype?: string
 }
 
-export default function MetaGroupShow({ dataLoaderConnection, status }: Readonly<Props>) {
+export default function MetaGroupShow({
+  dataLoaderConnection,
+  status,
+  type,
+  subtype,
+}: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const displayedValues = useMemo(() => {
@@ -67,11 +74,16 @@ export default function MetaGroupShow({ dataLoaderConnection, status }: Readonly
     <ShowResourcePage
       title={''}
       items={displayedValues}
-      backUrl={route('loader-connections.index')}
-      editUrl={route('loader-connections.edit', dataLoaderConnection.id)}
+      backUrl={route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' })}
+      editUrl={route('loader-connections.edit', {
+        id: dataLoaderConnection.id,
+       
+      })}
       onDeleteClick={() => {
         setShowDeleteModal(true)
       }}
+      type={type}
+      subtype={subtype}
     >
       <Card className='px-10 py-4'>
         <AlertMessage

@@ -41,7 +41,7 @@ export default function MetaHierarchyEdit({ metaHierarchy }: Props) {
       formData={formData}
       formItems={formItems}
       title='Create Meta Hierarchy'
-      backUrl={route('meta-hierarchy.index')}
+      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
     />

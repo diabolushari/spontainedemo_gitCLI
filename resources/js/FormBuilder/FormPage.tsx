@@ -1,5 +1,6 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
@@ -30,6 +31,8 @@ interface Props<
   isPatchRequest?: boolean
   buttonText?: string
   children?: React.ReactNode
+  type?: string
+  subtype?: string
 }
 
 export default function FormPage<
@@ -56,6 +59,8 @@ export default function FormPage<
   buttonText,
   isPatchRequest = false,
   children,
+  type,
+  subtype,
 }: Readonly<Props<T, U, K, G, L>>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
 
@@ -64,8 +69,6 @@ export default function FormPage<
 
     const data = customSubmitData ?? formData
 
-    console.log(data)
-
     post({
       ...data,
       _method: isPatchRequest ? 'PATCH' : 'POST',
@@ -73,7 +76,10 @@ export default function FormPage<
   }
 
   return (
-    <AuthenticatedLayout>
+    <AnalyticsDashboardLayout
+      type={type}
+      subtype={subtype}
+    >
       <DashboardPadding>
         <Card>
           <div className='flex flex-col gap-5'>
@@ -104,6 +110,6 @@ export default function FormPage<
           </div>
         </Card>
       </DashboardPadding>
-    </AuthenticatedLayout>
+    </AnalyticsDashboardLayout>
   )
 }

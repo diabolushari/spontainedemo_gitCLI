@@ -7,13 +7,21 @@ import { Paginator } from '@/ui/ui_interfaces'
 
 interface Props {
   dataLoaderQueries: Paginator<DataLoaderQuery>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function DataLoaderQueryIndex({ dataLoaderQueries }: Readonly<Props>) {
+export default function DataLoaderQueryIndex({
+  dataLoaderQueries,
+  type,
+  subtype,
+  oldValues,
+}: Readonly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: '',
@@ -74,9 +82,12 @@ export default function DataLoaderQueryIndex({ dataLoaderQueries }: Readonly<Pro
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('loader-queries.create')}
-      searchUrl={route('loader-queries.index')}
+      addUrl={route('loader-queries.create', { type: 'loaders', subtype: 'queries' })}
+      searchUrl={route('loader-queries.index', { type: 'loaders', subtype: 'queries' })}
       paginator={dataLoaderQueries}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

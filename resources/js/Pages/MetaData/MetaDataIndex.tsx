@@ -8,12 +8,17 @@ import { FormItem } from '@/FormBuilder/FormBuilder'
 interface Props {
   structures: Partial<MetaStructure>[]
   metaData: Paginator<MetaData>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
-export default function MetaDataIndex({ structures, metaData }: Props) {
+export default function MetaDataIndex({ structures, metaData, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
     structure: '',
+    type: 'definitions',
+    subtype: 'metadata',
   })
 
   const formItems = useMemo(<
@@ -75,6 +80,9 @@ export default function MetaDataIndex({ structures, metaData }: Props) {
       addUrl={route('meta-data.create')}
       title={'Meta Data'}
       searchUrl={route('meta-data.index')}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

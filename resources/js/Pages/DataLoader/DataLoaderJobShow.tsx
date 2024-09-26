@@ -10,8 +10,6 @@ interface Props {
 export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
-  console.log(dataLoaderJob)
-
   const displayedValues = useMemo(() => {
     return [
       {
@@ -47,11 +45,13 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
     <ShowResourcePage
       title={''}
       items={displayedValues}
-      backUrl={route('loader-jobs.index')}
+      backUrl={route('loader-jobs.index', { type: 'loaders', subtype: 'jobs' })}
       editUrl={route('loader-jobs.edit', dataLoaderJob.id)}
       onDeleteClick={() => {
         setShowDeleteModal(true)
       }}
+      type='loaders'
+      subtype='jobs'
     >
       {/**more content**/}
       {showDeleteModal && (

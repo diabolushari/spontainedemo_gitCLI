@@ -26,7 +26,7 @@ export default function MetaDataCard<
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
-  console.log(rows)
+
   return (
     <div className='grid grid-cols-1 gap-5 rounded sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
       <AddButton

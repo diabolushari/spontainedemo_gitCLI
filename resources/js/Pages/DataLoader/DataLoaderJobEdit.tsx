@@ -35,6 +35,8 @@ export default function DataLoaderJobEdit({ dataLoaderJob }: Readonly<Props>) {
       backUrl={route('loader-jobs.show', dataLoaderJob.id)}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
+      type='loaders'
+      subtype='jobs'
     />
   )
 }

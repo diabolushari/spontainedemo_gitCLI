@@ -43,14 +43,14 @@ export default function MetaDataCreate({ structures }: Props) {
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, structures])
-
+ 
   return (
     <FormPage
       url={route('meta-data.store')}
       formData={formData}
       formItems={formItems}
       title={'Create Meta Data'}
-      backUrl={route('meta-data.index')}
+      backUrl={route('meta-data.index', { subtype: 'metadata', type: 'definitions' })}
       formStyles='w-1/2 md:grid-cols-1'
     />
   )

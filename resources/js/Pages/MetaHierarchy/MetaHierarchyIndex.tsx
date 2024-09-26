@@ -7,11 +7,16 @@ import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListRes
 
 interface Props {
   hierarchies: Paginator<MetaHierarchy>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
-export default function MetaHierarchyIndex({ hierarchies }: Props) {
+export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
+    type: 'definitions',
+    subtype: 'heirarchies',
   })
 
   const formItems = useMemo(<
@@ -54,7 +59,11 @@ export default function MetaHierarchyIndex({ hierarchies }: Props) {
         actions: [
           {
             title: 'SHOW',
-            url: route('meta-hierarchy.show', { id: hierarchy.id }),
+            url: route('meta-hierarchy.show', {
+              metaHierarchy: hierarchy.id,
+              type: 'definitions',
+              subtype: 'heirarchies',
+            }),
           },
           {
             title: 'EDIT',
@@ -74,8 +83,11 @@ export default function MetaHierarchyIndex({ hierarchies }: Props) {
       formItems={formItems}
       paginator={hierarchies}
       title='Meta Hierarchies'
-      addUrl={route('meta-hierarchy.create')}
+      addUrl={route('meta-hierarchy.create', { type: 'definitions', subtype: 'heirarchies' })}
       searchUrl={route('meta-hierarchy.index')}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

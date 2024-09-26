@@ -7,11 +7,16 @@ import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListRes
 
 interface Props {
   groups: Paginator<MetaDataGroup>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
-export default function MetaGroupIndex({ groups }: Props) {
+export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
+    type: 'definitions',
+    subtype: 'groups',
   })
 
   const formItems = useMemo(<
@@ -40,14 +45,16 @@ export default function MetaGroupIndex({ groups }: Props) {
           {
             title: 'SHOW',
             url: route('meta-data-group.show', {
-              id: group.id,
+              metaDataGroup: group.id,
+              type: 'definitions',
+              subtype: 'groups',
             }),
           },
         ],
       }
     })
   }, [groups])
-
+  console.log(data)
   const keys = useMemo(() => {
     return [
       {
@@ -70,10 +77,13 @@ export default function MetaGroupIndex({ groups }: Props) {
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('meta-data-group.create')}
+      addUrl={route('meta-data-group.create', { type: 'definitions', subtype: 'groups' })}
       title={'Meta Data Groups'}
       searchUrl={route('meta-data-group.index')}
       paginator={groups}
+      type={type}
+      subtype={subtype}
+      oldValues={oldValues}
     />
   )
 }

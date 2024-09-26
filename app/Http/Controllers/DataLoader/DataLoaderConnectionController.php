@@ -13,6 +13,7 @@ use App\Services\DataLoader\Connection\LoaderConnectionStatusCheck;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +34,7 @@ class DataLoaderConnectionController extends Controller
         /** @var LengthAwarePaginator<DataLoaderConnection> $dataLoaderConnections */
         $dataLoaderConnections = DataLoaderConnection::when(
             $request->search != null,
-            fn ($query) => $query->where('name', 'like', "%$request->search%")
+            fn($query) => $query->where('name', 'like', "%$request->search%")
         )
             ->withCount('queries')
             ->paginate(20)
@@ -41,12 +42,15 @@ class DataLoaderConnectionController extends Controller
 
         return Inertia::render('DataLoader/DataLoaderConnectionIndex', [
             'dataLoaderConnections' => $dataLoaderConnections,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all()
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('DataLoader/DataLoaderConnectionCreate');
+        return Inertia::render('DataLoader/DataLoaderConnectionCreate', ['type' => $request->type, 'subtype' => $request->subtype]);
     }
 
     public function store(DataLoaderConnectionFormRequest $request): RedirectResponse
@@ -64,13 +68,15 @@ class DataLoaderConnectionController extends Controller
             ->with(['message' => 'Data added successfully.']);
     }
 
-    public function show(DataLoaderConnection $dataLoaderConnection, LoaderConnectionStatusCheck $statusCheck): Response
+    public function show(DataLoaderConnection $dataLoaderConnection, LoaderConnectionStatusCheck $statusCheck, Request $parameters): Response
     {
         return Inertia::render('DataLoader/DataLoaderConnectionShow', [
             'dataLoaderConnection' => $dataLoaderConnection,
             'status' => $statusCheck->checkStatus(
                 $dataLoaderConnection
             ),
+            'type' => $parameters->type,
+            'subtype' => $parameters->subtype
         ]);
     }
 

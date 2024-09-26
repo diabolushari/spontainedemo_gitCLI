@@ -11,5 +11,7 @@ class DataLoaderConnectionSearchRequest extends Data
 {
     public function __construct(
         public readonly ?string $search,
+        public readonly ?string $type,
+        public readonly ?string $subtype,
     ) {}
 }

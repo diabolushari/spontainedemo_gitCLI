@@ -29,22 +29,28 @@ class MetaHierarchyController extends Controller
 
     public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), fn (Builder $builder) => $builder->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
+        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
             ->withCount('items')
             ->paginate(20)
             ->withQueryString();
 
         return Inertia::render('MetaHierarchy/MetaHierarchyIndex', [
             'hierarchies' => $hierarchies,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all()
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
 
         return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
             'structures' => $structures,
+            'type' => $request->type,
+            'subtype' => $request->subtype
         ]);
     }
 

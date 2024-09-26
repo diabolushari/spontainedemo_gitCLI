@@ -19,6 +19,8 @@ interface Props {
   dataTables: Pick<DataDetail, 'id' | 'name'>[]
   job?: DataLoaderJob | null
   connectionId?: number | null
+  type?: string
+  subtype?: string
 }
 
 export default function DataLoaderJobCreate({
@@ -26,6 +28,8 @@ export default function DataLoaderJobCreate({
   connections,
   dataTables,
   connectionId,
+  type,
+  subtype,
 }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: job?.name ?? '',
@@ -164,16 +168,16 @@ export default function DataLoaderJobCreate({
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, formData.cron_type, connections, dataTables, formData.connection_id])
 
-  console.log(formData)
-
   return (
     <FormPage
       url={job == null ? route('loader-jobs.store') : route('loader-jobs.update', job.id)}
       formData={formData}
       formItems={formItems}
       title={job == null ? 'Create Job' : 'Edit Job'}
-      backUrl={route('loader-jobs.index')}
+      backUrl={route('loader-jobs.index', { type: 'loaders', subtype: 'jobs' })}
       formStyles='w-1/2 md:grid-cols-1'
+      type={type ?? 'loaders'}
+      subtype={subtype ?? 'jobs'}
     />
   )
 }

@@ -11,6 +11,7 @@ import SelectList from '@/ui/form/SelectList'
 import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
 import CardHeader from '@/ui/Card/CardHeader'
 import MetaDataCard from './MetaDataCard'
+import FilterOldValues from '../OldSearch/FilterOldValues'
 
 export interface ListItemKeys<T> {
   key: keyof T
@@ -20,17 +21,6 @@ export interface ListItemKeys<T> {
   textStyles?: string
   hideLabel?: boolean
 }
-
-const viewTypes = [
-  {
-    label: 'Cards',
-    value: 'cards',
-  },
-  {
-    label: 'Table',
-    value: 'table',
-  },
-]
 
 interface Props<
   U extends keyof T,
@@ -42,6 +32,7 @@ interface Props<
   S extends keyof L,
   L extends Record<R, string | number> & Record<S, string | number | null>,
 > {
+  performSearch: (search: string, structure: string) => void
   keys: ListItemKeys<T>[]
   primaryKey: keyof T
   rows: T[]
@@ -58,6 +49,7 @@ interface Props<
   onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  oldValues?: Record<string, string>
 }
 
 export default function MetaDataUiIndex<
@@ -70,6 +62,7 @@ export default function MetaDataUiIndex<
   S extends keyof L,
   L extends Record<R, string | number> & Record<S, string | number | null>,
 >({
+  performSearch,
   rows,
   primaryKey,
   keys,
@@ -86,6 +79,7 @@ export default function MetaDataUiIndex<
   onEditClick,
   deleteUrl,
   onDeleteClick,
+  oldValues,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -141,8 +135,9 @@ export default function MetaDataUiIndex<
             </div>
           </div>
         </div>
-      </Card>
-      {/* <div className='my-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
+
+        <FilterOldValues oldValues={oldValues} />
+        {/* <div className='my-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
         <div className='flex flex-col md:col-start-3 lg:col-start-4'>
           <SelectList
             list={viewTypes}
@@ -154,31 +149,21 @@ export default function MetaDataUiIndex<
         </div>
       </div> */}
 
-      {/* <ListResourceCard
+        {/* <ListResourceCard
             keys={keys}
             primaryKey={primaryKey}
             rows={rows}
           /> */}
-      <Card className='p-5'>
-        <MetaDataCard
-          keys={keys}
-          primaryKey={primaryKey}
-          rows={rows}
-          addUrl={route('meta-data.create')}
-        />
-        {paginator != null && <Pagination pagination={paginator} />}
-      </Card>
-
-      {/* {viewType === 'table' && (
-        <Card className='p-5'>
-          <ListResourceTable
+        <div className='p-5'>
+          <MetaDataCard
             keys={keys}
             primaryKey={primaryKey}
             rows={rows}
+            addUrl={route('meta-data.create')}
           />
           {paginator != null && <Pagination pagination={paginator} />}
-        </Card>
-      )} */}
+        </div>
+      </Card>
     </DashboardPadding>
   )
 }

@@ -4,6 +4,7 @@ import NormalText from '@/typograpy/NormalText'
 import { useMemo } from 'react'
 import SubHeading from '@/typograpy/SubHeading'
 import { Link } from '@inertiajs/react'
+import AddButton from '@/ui/button/AddButton'
 
 interface Props<
   U extends keyof T,
@@ -13,19 +14,21 @@ interface Props<
   keys: ListItemKeys<T>[]
   primaryKey: keyof T
   rows: T[]
+  addUrl?: string
 }
 
 export default function ListResourceCard<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string }[]>,
->({ keys, primaryKey, rows }: Props<U, T>) {
+>({ keys, primaryKey, rows, addUrl }: Props<U, T>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
-  console.log(keys)
+
   return (
     <div className='grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+      <AddButton link={addUrl} />
       {rows.map((row) => {
         return (
           <Card
@@ -39,7 +42,10 @@ export default function ListResourceCard<
               {keys
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
-                  <div key={rowKey.key as string}>
+                  <div
+                    className='flex gap-2'
+                    key={rowKey.key as string}
+                  >
                     {!(rowKey.hideLabel ?? false) && (
                       <>
                         <NormalText className='font-bold'>{rowKey.key as string}</NormalText>
