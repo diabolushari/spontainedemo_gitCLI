@@ -35,7 +35,9 @@ class MetaDataAnalyticsController extends Controller
             'metaData' => $records,
             'structures' => $structures,
             'type' => $request->type,
-            'subtype' => $request->subtype
+            'subtype' => $request->subtype,
+            'oldValues' =>$request->all()
+
         ]);
     }
 }
