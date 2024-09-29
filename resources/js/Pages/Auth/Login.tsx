@@ -55,8 +55,10 @@ export default function Login({ status }: { status?: string; canResetPassword: b
             className='h-20 w-20'
           />
         </div>
-        <h1 className='text-center text-xl font-semibold text-gray-700'>ONE STOP ANALYTICS</h1>
-        <p className='text-md mb-8 mt-4 text-center font-medium text-gray-600'>sign in:</p>
+        <h1 className='text-black-700 text-center text-xl font-extrabold tracking-widest'>
+          ONE STOP ANALYTICS
+        </h1>
+        <p className='text-md text-black-600 mb-8 mt-4 text-center font-medium'>sign in:</p>
         <FormBuilder
           formItems={formItems}
           formData={formData}
@@ -65,7 +67,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
           loading={loading}
           buttonAlignment='center'
         />
-        <div className='mt-6 text-center text-sm text-gray-500'>
+        <div className='text-black-500 mt-6 text-center text-sm'>
           <p>
             forgot password or trouble signing in ? <br />
             contact{' '}

@@ -51,9 +51,8 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   }, [])
 
   return (
-    <div className='bg-white h-screen'>
+    <div className='h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
-        {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <img
@@ -62,34 +61,51 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             />
           </div>
 
-          <div className='flex flex-grow justify-center space-x-4'>
+          <div className='flex flex-grow justify-center space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
-                className={`cursor-pointer pb-2 ${activeHeading === heading.value ? 'font-bold text-green-700' : 'text-gray-600'}`}
+                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'font-bold text-1stop-highlight' : 'text-gray-600'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
-                <p
-                  className={`text-lg font-bold ${activeHeading === heading.value ? 'text-green-700' : 'text-gray-600'}`}
+                <h1
+                  className={`text-lg font-bold ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
                 >
                   {heading.name}
-                </p>
+                </h1>
               </div>
             ))}
           </div>
-
-          <div
-            className='relative flex-shrink-0'
-            ref={profileRef}
-          >
+          <div>
             <div
-              className='flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-green-700 text-white'
-              onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              className='relative flex flex-shrink-0 items-center'
+              ref={profileRef}
             >
-              {userInitial}
+              <div
+                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl font-extrabold text-white hover:bg-1stop-accent1'
+                onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              >
+                {userInitial}
+              </div>
+
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className={`h-6 w-6 transform cursor-pointer duration-300 ${isProfileDropdown ? 'rotate-180' : ''}`}
+                onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M19.5 8.25l-7.5 7.5-7.5-7.5'
+                />
+              </svg>
             </div>
             {isProfileDropdown && (
-              <div className='absolute right-0 mt-2 w-48 rounded-md border border-gray-300 bg-white shadow-lg'>
+              <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
                   <p className='text-sm font-medium text-gray-900'>{userName}</p>
                 </div>
@@ -109,20 +125,20 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
         </div>
 
         {activeHeading === 'manage' && (
-          <div className='mt-4'>
+          <div className='mt-10'>
             <div className='items-center border-b border-gray-200 sm:flex'>
               {tabs.map((tab) => (
                 <div
                   key={tab.value}
-                  className={`group mr-16 flex cursor-pointer items-center border-b pb-5 ${
+                  className={`group mr-16 flex cursor-pointer items-center border-b-5 pb-5 ${
                     activeTab === tab.value
-                      ? 'border-green-700'
-                      : 'border-transparent hover:border-green-700'
+                      ? 'border-1stop-highlight'
+                      : 'border-transparent hover:border-1stop-highlight'
                   }`}
                   onClick={() => setActiveTab(tab.value)}
                 >
                   <p
-                    className={`text-lg font-extrabold leading-none ${activeTab === tab.value ? 'text-green-700' : 'text-gray-600 group-hover:text-green-700'}`}
+                    className={`text-lg font-extrabold leading-none ${activeTab === tab.value ? 'text-1stop-highlight' : 'text-gray-300 group-hover:text-1stop-highlight'}`}
                   >
                     {tab.name}
                   </p>
@@ -131,13 +147,13 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             </div>
 
             {activeTab === 'definitions' && (
-              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
+              <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
                 <div
-                  className={`metadatalogo rounded-xl ${subtype === 'metadata' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'metadata' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/meta-data?type=definitions&subtype=metadata'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
@@ -148,11 +164,11 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`groupslogo rounded-xl ${subtype === 'groups' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`groupslogo w-40 rounded-xl ${subtype === 'groups' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/meta-data-group?type=definitions&subtype=groups'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
@@ -163,11 +179,11 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`hierarchylogo rounded-xl ${subtype === 'heirarchies' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'heirarchies' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/meta-hierarchy?type=definitions&subtype=heirarchies'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
@@ -178,11 +194,11 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`hierarchylogo rounded-xl ${subtype === 'blocks' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'blocks' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/meta-structure?type=definitions&subtype=blocks'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       src='/structblock.png'
@@ -197,13 +213,13 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               </div>
             )}
             {activeTab === 'loaders' && (
-              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
+              <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
                 <div
-                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'data-sources' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/loader-connections?type=loaders&subtype=data-sources'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
@@ -214,11 +230,11 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`metadatalogo rounded-xl ${subtype === 'jobs' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'jobs' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/loader-jobs?type=loaders&subtype=jobs'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
@@ -229,18 +245,20 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`metadatalogo rounded-xl ${subtype === 'queries' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'queries' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
                     href='/loader-queries?type=loaders&subtype=queries'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
                       src='/extraction.png'
                       alt=''
                     />
-                    <span className='max-w-16 pt-1 text-center text-xs'>EXTRACTION STATEMENTS</span>
+                    <span className='max-w-16 justify-center pt-1 text-center text-xs'>
+                      EXTRACTION STATEMENTS
+                    </span>
                   </Link>
                 </div>
               </div>
