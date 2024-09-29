@@ -1,6 +1,8 @@
 import { Link, usePage } from '@inertiajs/react'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
+import Tab from '@/ui/Tabs/Tab'
+import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
 
 interface Properties {
   children?: ReactNode
@@ -8,24 +10,28 @@ interface Properties {
   subtype?: string
 }
 
+const tabs = [
+  { name: 'Data Tables', value: 'data' },
+  { name: 'Definitions', value: 'definitions' },
+  { name: 'Loaders', value: 'loaders' },
+  { name: 'Config', value: 'config' },
+]
+
+const headings = [
+  { name: 'MANAGE', value: 'manage' },
+  { name: 'DASHBOARD', value: 'dashboard' },
+]
+
 export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
 
+  const menuItems = useMemo(() => {
+    return dashboardMenuItems.find((item) => item.value === activeTab)?.links ?? []
+  }, [activeTab])
+
   const profileRef = useRef<HTMLDivElement>(null)
-
-  const tabs = [
-    { name: 'Data Tables', value: 'data' },
-    { name: 'Definitions', value: 'definitions' },
-    { name: 'Loaders', value: 'loaders' },
-    { name: 'Config', value: 'config' },
-  ]
-
-  const headings = [
-    { name: 'MANAGE', value: 'manage' },
-    { name: 'DASHBOARD', value: 'dashboard' },
-  ]
 
   const userInfo = usePage().props.auth as unknown as { user: User | null }
   const User = useMemo(() => {
@@ -53,6 +59,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   return (
     <div className='h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
+        {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <img
@@ -65,7 +72,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {headings.map((heading) => (
               <div
                 key={heading.value}
-                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'font-bold text-1stop-highlight' : 'text-gray-600'}`}
+                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'text-1stop-highlight font-bold' : 'text-gray-600'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
                 <h1
@@ -82,7 +89,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               ref={profileRef}
             >
               <div
-                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl font-extrabold text-white hover:bg-1stop-accent1'
+                className='bg-1stop-highlight hover:bg-1stop-accent1 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-2xl font-extrabold text-white'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -126,143 +133,31 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
 
         {activeHeading === 'manage' && (
           <div className='mt-10'>
-            <div className='items-center border-b border-gray-200 sm:flex'>
-              {tabs.map((tab) => (
+            <Tab
+              tabItems={dashboardMenuItems}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
+              {menuItems.map((item) => (
                 <div
-                  key={tab.value}
-                  className={`group mr-16 flex cursor-pointer items-center border-b-5 pb-5 ${
-                    activeTab === tab.value
-                      ? 'border-1stop-highlight'
-                      : 'border-transparent hover:border-1stop-highlight'
-                  }`}
-                  onClick={() => setActiveTab(tab.value)}
+                  key={item.title}
+                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
-                  <p
-                    className={`text-lg font-extrabold leading-none ${activeTab === tab.value ? 'text-1stop-highlight' : 'text-gray-300 group-hover:text-1stop-highlight'}`}
+                  <Link
+                    href={item.link}
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
-                    {tab.name}
-                  </p>
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src={item.image}
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>{item.title}</span>
+                  </Link>
                 </div>
               ))}
             </div>
-
-            {activeTab === 'definitions' && (
-              <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
-                <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'metadata' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/meta-data?type=definitions&subtype=metadata'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/metadata.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>METADATA</span>
-                  </Link>
-                </div>
-                <div
-                  className={`groupslogo w-40 rounded-xl ${subtype === 'groups' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/meta-data-group?type=definitions&subtype=groups'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
-                      src='/groups.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>GROUPS</span>
-                  </Link>
-                </div>
-                <div
-                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'heirarchies' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/meta-hierarchy?type=definitions&subtype=heirarchies'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
-                      src='/hierarchies.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>HIERARCHIES</span>
-                  </Link>
-                </div>
-                <div
-                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'blocks' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/meta-structure?type=definitions&subtype=blocks'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      src='/structblock.png'
-                      alt=''
-                      className='flex h-10 w-10 items-center justify-center md:h-20 md:w-20'
-                    />
-                    <span className='flex max-w-16 pt-1 text-center text-xs'>
-                      STRUCTURAL BLOCKS
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            )}
-            {activeTab === 'loaders' && (
-              <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
-                <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'data-sources' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/loader-connections?type=loaders&subtype=data-sources'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/data-sources.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>DATA SOURCES</span>
-                  </Link>
-                </div>
-                <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'jobs' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/loader-jobs?type=loaders&subtype=jobs'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/jobs.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>JOBS</span>
-                  </Link>
-                </div>
-                <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'queries' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
-                >
-                  <Link
-                    href='/loader-queries?type=loaders&subtype=queries'
-                    className='text-black-600 flex flex-col items-center font-bold'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/extraction.png'
-                      alt=''
-                    />
-                    <span className='max-w-16 justify-center pt-1 text-center text-xs'>
-                      EXTRACTION STATEMENTS
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
