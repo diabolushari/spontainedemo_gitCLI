@@ -44,7 +44,10 @@ export const chooseButtonColor = (type: string): [string, string] => {
     }
 
     default: {
-      return ['bg-1stop-highlight text-white hover:shadow-lg focus:ring-1', 'text-primary-700 ']
+      return [
+        'bg-1stop-highlight text-white hover:shadow-lg  hover:opacity-75 focus:ring-1',
+        'text-primary-700 ',
+      ]
     }
   }
 }
