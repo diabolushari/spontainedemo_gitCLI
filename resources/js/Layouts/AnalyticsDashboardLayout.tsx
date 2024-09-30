@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
 import Tab from '@/ui/Tabs/Tab'
@@ -67,6 +67,13 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  useEffect(() => {
+    const tabInfo = dashboardMenuItems.find((tab) => tab.value === activeTab)
+    if (tabInfo != null && tabInfo.url != null) {
+      router.get(tabInfo.url)
+    }
+  }, [activeTab])
 
   return (
     <div className='h-screen bg-white'>
