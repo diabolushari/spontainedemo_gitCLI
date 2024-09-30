@@ -89,6 +89,9 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       subtype={subtype}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading={
+        'Hierarchies of dimensional values (metadata) enable rolling up data to various higher level sofreporting automatically.'
+      }
     />
   )
 }

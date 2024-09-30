@@ -51,7 +51,6 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
       subtype='metadata'
     >
       <DashboardPadding>
-        {' '}
         <Card>
           <div className='p-8'>
             <div className='mb-6'>

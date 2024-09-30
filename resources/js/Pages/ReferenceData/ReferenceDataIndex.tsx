@@ -125,6 +125,7 @@ const ReferenceDataIndex = ({
       type='config'
       subtype='reference-data'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Reference data is a flexible list of data elements used to populate dynamic selection lists, basic rule sets etc.'
     />
   )
 }

@@ -40,6 +40,7 @@ interface Props<
   formItems: Record<P, FormItem<Q[P], R, S, L>>
   paginator?: Paginator<{}>
   title?: string
+  subheading?: string
   searchUrl?: string
   backUrl?: string
   onBackClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
@@ -86,6 +87,7 @@ export default function ListResourcePage<
   type,
   subtype,
   oldValues,
+  subheading,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -114,7 +116,7 @@ export default function ListResourcePage<
       title={title}
     >
       <DashboardPadding>
-        <div className='pb-5'>{pageDescription ?? ''}</div>
+        <div className='pb-5 pl-4 text-sm'>{pageDescription ?? ''}</div>
 
         <div className='flex flex-col gap-5'>
           <CardHeader
@@ -127,6 +129,7 @@ export default function ListResourcePage<
             onEditClick={onEditClick}
             deleteUrl={deleteUrl}
             onDeleteClick={onDeleteClick}
+            subheading={subheading}
           />
           <div className='flex flex-col gap-10 px-5 py-5'>
             <div className='flex flex-col gap-5'>

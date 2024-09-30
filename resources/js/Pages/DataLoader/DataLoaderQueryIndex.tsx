@@ -90,6 +90,7 @@ export default function DataLoaderQueryIndex({
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Extraction Statements'
+      pageDescription='Extraction statements are SQL'
     />
   )
 }

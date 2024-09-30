@@ -18,32 +18,32 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
 
   const profileRef = useRef<HTMLDivElement>(null)
 
-  const tabs = [
-    { name: 'Data Tables', value: 'data', url: '/data-detail?type=data&subtype=data-tables' },
-    {
-      name: 'Definitions',
-      value: 'definitions',
-      url: '/meta-data?type=definitions&subtype=metadata',
-    },
-    { name: 'Loaders', value: 'loaders', url: '/loader-jobs?type=loaders&subtype=jobs' },
-    { name: 'Config', value: 'config', url: '/reference-data?type=config&subtype=reference-data' },
+  // const tabs = [
+  //   { name: 'Data Tables', value: 'data', url: '/data-detail?type=data&subtype=data-tables' },
+  //   {
+  //     name: 'Definitions',
+  //     value: 'definitions',
+  //     url: '/meta-data?type=definitions&subtype=metadata',
+  //   },
+  //   { name: 'Loaders', value: 'loaders', url: '/loader-jobs?type=loaders&subtype=jobs' },
+  //   { name: 'Config', value: 'config', url: '/reference-data?type=config&subtype=reference-data' },
+  // ]
+
+  const headings = [
+    { name: 'MANAGE', value: 'manage' },
+    { name: 'DASHBOARD', value: 'dashboard' },
   ]
 
-const headings = [
-  { name: 'MANAGE', value: 'manage' },
-  { name: 'DASHBOARD', value: 'dashboard' },
-]
-
-export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
-  const [activeTab, setActiveTab] = useState(type ?? 'data')
-  const [activeHeading, setActiveHeading] = useState('manage')
-  const [isProfileDropdown, setIsProfileDropdown] = useState(false)
+  // export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
+  //   const [activeTab, setActiveTab] = useState(type ?? 'data')
+  //   const [activeHeading, setActiveHeading] = useState('manage')
+  //   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
 
   const menuItems = useMemo(() => {
     return dashboardMenuItems.find((item) => item.value === activeTab)?.links ?? []
   }, [activeTab])
 
-  const profileRef = useRef<HTMLDivElement>(null)
+  // const profileRef = useRef<HTMLDivElement>(null)
 
   const userInfo = usePage().props.auth as unknown as { user: User | null }
   const User = useMemo(() => {
@@ -68,12 +68,6 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
     }
   }, [])
 
-  const defaultTab = (link: string) => {
-    if (link != null) {
-      router.get(link)
-    }
-  }
-
   const setTab = (tab: { name: string; value: string; url: string }) => {
     setActiveTab(tab.value)
     router.get(tab.url)
@@ -94,7 +88,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {headings.map((heading) => (
               <div
                 key={heading.value}
-                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'text-1stop-highlight font-bold' : 'text-gray-600'}`}
+                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'font-bold text-1stop-highlight' : 'text-gray-600'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
                 <h1
@@ -111,7 +105,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               ref={profileRef}
             >
               <div
-                className='bg-1stop-highlight hover:bg-1stop-accent1 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-2xl font-extrabold text-white'
+                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl font-extrabold text-white hover:bg-1stop-accent1'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -158,9 +152,10 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             <Tab
               tabItems={dashboardMenuItems}
               activeTab={activeTab}
-              setActiveTab={setActiveTab}
+              // setActiveTab={setTa}
+              onTabClick={setTab}
             />
-            <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
+            <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
                 <div
                   key={item.title}
@@ -178,38 +173,8 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                     <span className='pt-1 text-center text-xs'>{item.title}</span>
                   </Link>
                 </div>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'jobs' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/loader-jobs?type=loaders&subtype=jobs'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/jobs.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>JOBS</span>
-                  </Link>
-                </div>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'queries' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/loader-queries?type=loaders&subtype=queries'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/extraction.png'
-                      alt=''
-                    />
-                    <span className='max-w-16 pt-1 text-center text-xs'>EXTRACTION STATEMENTS</span>
-                  </Link>
-                </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         )}
       </div>

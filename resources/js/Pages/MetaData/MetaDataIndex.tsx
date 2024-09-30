@@ -72,6 +72,10 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
 
   return (
     <ListResourcePage
+      pageDescription='This section of the application defines standardized data values 
+      and structures allowed in data tables. Maintaining standard values and structures helps 
+      ensure data in the system remains valid,
+       and can automatically be rolled-up as necessary into higher levels of reporting.'
       keys={keys}
       primaryKey='id'
       rows={data}

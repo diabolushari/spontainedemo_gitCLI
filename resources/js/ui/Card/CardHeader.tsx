@@ -15,6 +15,7 @@ interface Props {
   onBackClick?: () => unknown
   onEditClick?: () => unknown
   onDeleteClick?: () => unknown
+  subheading?: string
 }
 
 export default function CardHeader({
@@ -27,38 +28,42 @@ export default function CardHeader({
   onEditClick,
   deleteUrl,
   onDeleteClick,
+  subheading,
 }: Props) {
   return (
-    <div className='flex flex-wrap items-center justify-between gap-5 px-4 py-4'>
-      <div className='flex items-center gap-5'>
-        {(backUrl != null || onBackClick != null) && (
-          <BackButton
-            link={backUrl}
-            onClick={onBackClick}
-          />
-        )}
-        <Heading>{title}</Heading>
+    <div className=''>
+      <div className='flex flex-wrap items-center justify-between gap-5 px-4 py-4'>
+        <div className='flex items-center gap-5'>
+          {(backUrl != null || onBackClick != null) && (
+            <BackButton
+              link={backUrl}
+              onClick={onBackClick}
+            />
+          )}
+          <Heading>{title}</Heading>
+        </div>
+        <div className='flex flex-wrap gap-2'>
+          {(editUrl != null || onEditClick != null) && (
+            <EditButton
+              link={editUrl}
+              onClick={onEditClick}
+            />
+          )}
+          {(deleteUrl != null || onDeleteClick != null) && (
+            <DeleteButton
+              link={deleteUrl}
+              onClick={onDeleteClick}
+            />
+          )}
+          {(addUrl != null || onAddClick != null) && (
+            <AddButton
+              link={addUrl}
+              onClick={onAddClick}
+            />
+          )}
+        </div>
       </div>
-      <div className='flex flex-wrap gap-2'>
-        {(editUrl != null || onEditClick != null) && (
-          <EditButton
-            link={editUrl}
-            onClick={onEditClick}
-          />
-        )}
-        {(deleteUrl != null || onDeleteClick != null) && (
-          <DeleteButton
-            link={deleteUrl}
-            onClick={onDeleteClick}
-          />
-        )}
-        {(addUrl != null || onAddClick != null) && (
-          <AddButton
-            link={addUrl}
-            onClick={onAddClick}
-          />
-        )}
-      </div>
+      <div className='pl-4 text-sm text-primary'>{subheading ?? ''}</div>
     </div>
   )
 }
