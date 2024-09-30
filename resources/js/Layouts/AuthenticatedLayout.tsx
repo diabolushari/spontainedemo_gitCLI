@@ -49,14 +49,14 @@ export default function AuthenticatedLayout({ children }: Props) {
         theme='dark'
         toastClassName='toast-container'
       />
-      <nav className='fixed inset-0 z-50 flex h-20 items-center justify-between bg-primary-700 px-2 shadow lg:px-10'>
+      <nav className='bg-1stop-accent1 fixed inset-0 z-50 flex h-20 items-center justify-between px-2 shadow lg:px-10'>
         <div
           className='cursor-pointer rounded p-2 transition duration-300 hover:bg-gray-400 hover:text-primary-700'
           onClick={toggle}
         >
           <Menu size={20} />
         </div>
-        <ApplicationLogo className='w-auto h-16 fill-current text-gray-500' />
+        <ApplicationLogo className='h-16 w-auto fill-current text-gray-500' />
       </nav>
       <DashboardSidebar
         showSideBar={showSidebar}

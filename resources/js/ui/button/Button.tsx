@@ -44,7 +44,10 @@ export const chooseButtonColor = (type: string): [string, string] => {
     }
 
     default: {
-      return ['bg-primary-500 text-white hover:bg-theme_color_2 focus:ring-1', 'text-primary-700 ']
+      return [
+        'bg-1stop-highlight text-white hover:shadow-lg  hover:opacity-75 focus:ring-1',
+        'text-primary-700 ',
+      ]
     }
   }
 }
@@ -67,7 +70,7 @@ export default function Button({
           href={link}
           as='a'
           className={cn(
-            'lgButtonText flex items-center  justify-center px-8 py-2  capitalize tracking-wider transition duration-150' +
+            'lgButtonText flex items-center justify-center px-8 py-2 capitalize tracking-wider transition duration-150' +
               ' ease-in-out focus:outline-none focus:ring-4',
             buttonStyle
           )}
@@ -80,7 +83,7 @@ export default function Button({
           onClick={onClick}
           disabled={disabled}
           className={cn(
-            'lgButtonText flex items-center  justify-center px-8 py-2  capitalize tracking-wider transition duration-150' +
+            'lgButtonText flex items-center justify-center px-8 py-2 capitalize tracking-wider transition duration-150' +
               ' ease-in-out focus:outline-none focus:ring-4',
             buttonStyle
           )}

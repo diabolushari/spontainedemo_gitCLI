@@ -1,6 +1,8 @@
 import { Link, router, usePage } from '@inertiajs/react'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
+import Tab from '@/ui/Tabs/Tab'
+import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
 
 interface Properties {
   children?: ReactNode
@@ -9,11 +11,7 @@ interface Properties {
   title?: string
 }
 
-export default function AnalyticsDashboardLayout({ children, type, subtype, title }: Properties) {
-  // useEffect(() => {
-  //   document.title = title ?? 'KSEB'
-  // }, [title])
-
+export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
@@ -31,10 +29,21 @@ export default function AnalyticsDashboardLayout({ children, type, subtype, titl
     { name: 'Config', value: 'config', url: '/reference-data?type=config&subtype=reference-data' },
   ]
 
-  const headings = [
-    { name: 'MANAGE', value: 'manage' },
-    { name: 'DASHBOARD', value: 'dashboard' },
-  ]
+const headings = [
+  { name: 'MANAGE', value: 'manage' },
+  { name: 'DASHBOARD', value: 'dashboard' },
+]
+
+export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
+  const [activeTab, setActiveTab] = useState(type ?? 'data')
+  const [activeHeading, setActiveHeading] = useState('manage')
+  const [isProfileDropdown, setIsProfileDropdown] = useState(false)
+
+  const menuItems = useMemo(() => {
+    return dashboardMenuItems.find((item) => item.value === activeTab)?.links ?? []
+  }, [activeTab])
+
+  const profileRef = useRef<HTMLDivElement>(null)
 
   const userInfo = usePage().props.auth as unknown as { user: User | null }
   const User = useMemo(() => {
@@ -81,34 +90,51 @@ export default function AnalyticsDashboardLayout({ children, type, subtype, titl
             />
           </div>
 
-          <div className='flex flex-grow justify-center space-x-4'>
+          <div className='flex flex-grow justify-center space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
-                className={`cursor-pointer pb-2 ${activeHeading === heading.value ? 'font-bold text-green-700' : 'text-gray-600'}`}
+                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'text-1stop-highlight font-bold' : 'text-gray-600'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
-                <p
-                  className={`text-lg font-bold ${activeHeading === heading.value ? 'text-green-700' : 'text-gray-600'}`}
+                <h1
+                  className={`text-lg font-bold ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
                 >
                   {heading.name}
-                </p>
+                </h1>
               </div>
             ))}
           </div>
-
-          <div
-            className='relative flex-shrink-0'
-            ref={profileRef}
-          >
+          <div>
             <div
-              className='flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-green-700 text-white'
-              onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              className='relative flex flex-shrink-0 items-center'
+              ref={profileRef}
             >
-              {userInitial}
+              <div
+                className='bg-1stop-highlight hover:bg-1stop-accent1 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-2xl font-extrabold text-white'
+                onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              >
+                {userInitial}
+              </div>
+
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className={`h-6 w-6 transform cursor-pointer duration-300 ${isProfileDropdown ? 'rotate-180' : ''}`}
+                onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M19.5 8.25l-7.5 7.5-7.5-7.5'
+                />
+              </svg>
             </div>
             {isProfileDropdown && (
-              <div className='absolute right-0 mt-2 w-48 rounded-md border border-gray-300 bg-white shadow-lg'>
+              <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
                   <p className='text-sm font-medium text-gray-900'>{userName}</p>
                 </div>
@@ -128,108 +154,28 @@ export default function AnalyticsDashboardLayout({ children, type, subtype, titl
         </div>
 
         {activeHeading === 'manage' && (
-          <div className='mt-4'>
-            <div className='items-center border-b border-gray-200 sm:flex'>
-              {tabs.map((tab) => (
+          <div className='mt-10'>
+            <Tab
+              tabItems={dashboardMenuItems}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
+              {menuItems.map((item) => (
                 <div
-                  key={tab.value}
-                  className={`group mr-16 flex cursor-pointer items-center border-b pb-5 ${
-                    activeTab === tab.value
-                      ? 'border-green-700'
-                      : 'border-transparent hover:border-green-700'
-                  }`}
-                  onClick={() => setTab(tab)}
-                >
-                  <p
-                    className={`text-lg font-extrabold leading-none ${activeTab === tab.value ? 'text-green-700' : 'text-gray-600 group-hover:text-green-700'}`}
-                  >
-                    {tab.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {activeTab === 'definitions' && (
-              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'metadata' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                  key={item.title}
+                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
                 >
                   <Link
-                    href='/meta-data?type=definitions&subtype=metadata'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                    href={item.link}
+                    className='text-black-600 flex flex-col items-center font-bold'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/metadata.png'
+                      src={item.image}
                       alt=''
                     />
-                    <span className='pt-1 text-center text-xs'>METADATA</span>
-                  </Link>
-                </div>
-                <div
-                  className={`groupslogo rounded-xl ${subtype === 'groups' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/meta-data-group?type=definitions&subtype=groups'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
-                      src='/groups.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>GROUPS</span>
-                  </Link>
-                </div>
-                <div
-                  className={`hierarchylogo rounded-xl ${subtype === 'heirarchies' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/meta-hierarchy?type=definitions&subtype=heirarchies'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-2 md:h-20 md:w-20'
-                      src='/hierarchies.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>HIERARCHIES</span>
-                  </Link>
-                </div>
-                <div
-                  className={`hierarchylogo rounded-xl ${subtype === 'blocks' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/meta-structure?type=definitions&subtype=blocks'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      src='/structblock.png'
-                      alt=''
-                      className='flex h-10 w-10 items-center justify-center md:h-20 md:w-20'
-                    />
-                    <span className='flex max-w-16 pt-1 text-center text-xs'>
-                      STRUCTURAL BLOCKS
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            )}
-            {activeTab === 'loaders' && (
-              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/loader-connections?type=loaders&subtype=data-sources'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/data-sources.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>DATA SOURCES</span>
+                    <span className='pt-1 text-center text-xs'>{item.title}</span>
                   </Link>
                 </div>
                 <div
@@ -262,104 +208,6 @@ export default function AnalyticsDashboardLayout({ children, type, subtype, titl
                     <span className='max-w-16 pt-1 text-center text-xs'>EXTRACTION STATEMENTS</span>
                   </Link>
                 </div>
-              </div>
-            )}
-            {activeTab === 'data' && (
-              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'data-tables' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/data-detail?type=data&subtype=data-tables'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/data-tables.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>DATA TABLES</span>
-                  </Link>
-                </div>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'subject-area' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/subject-area?type=data&subtype=subject-area'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/subject-area.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>SUBJECT AREAS</span>
-                  </Link>
-                </div>
-                {/* <div
-                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/loader-connections?type=loaders&subtype=data-sources'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/subsets.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>SUBSETS</span>
-                  </Link>
-                </div> */}
-              </div>
-            )}
-            {activeTab === 'config' && (
-              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'reference-data' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/reference-data?type=config&subtype=reference-data'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/reference-data.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>REFERENCE DATA</span>
-                  </Link>
-                </div>
-                {/* <div
-                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/loader-connections?type=loaders&subtype=data-sources'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/users.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>USERS</span>
-                  </Link>
-                </div>
-                <div
-                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
-                >
-                  <Link
-                    href='/loader-connections?type=loaders&subtype=data-sources'
-                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
-                  >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src='/roles.png'
-                      alt=''
-                    />
-                    <span className='pt-1 text-center text-xs'>ROLES</span>
-                  </Link>
-                </div> */}
               </div>
             )}
           </div>
