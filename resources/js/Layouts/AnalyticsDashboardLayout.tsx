@@ -16,7 +16,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   const profileRef = useRef<HTMLDivElement>(null)
 
   const tabs = [
-    { name: 'Data Tables', value: 'data' },
+    { name: 'Data', value: 'data' },
     { name: 'Definitions', value: 'definitions' },
     { name: 'Loaders', value: 'loaders' },
     { name: 'Config', value: 'config' },
@@ -37,28 +37,33 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : 'G'
   const userName = User?.name || 'Guest'
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-      setIsProfileDropdown(false)
-    }
-  }
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+  //     setIsProfileDropdown(false)
+  //   }
+  // }
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+  // useEffect(() => {
+  //   document.addEventListener('mousedown', handleClickOutside)
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside)
+  //   }
+  // }, [])
 
   return (
     <div className='h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
-            <img
-              src='/one-stop-logo.png'
-              alt='Logo'
-            />
+            <Link
+              href='/meta-structure'
+              className='cursor-pointer hover:opacity-50'
+            >
+              <img
+                src='/one-stop-logo.png'
+                alt='Logo'
+              />
+            </Link>
           </div>
 
           <div className='flex flex-grow justify-center space-x-12'>
@@ -107,7 +112,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {isProfileDropdown && (
               <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
-                  <p className='text-sm font-medium text-gray-900'>{userName}</p>
+                  <p className='text-sm font-medium text-gray-900'>Logged in as {userName}</p>
                 </div>
                 <div className='border-t border-gray-200'></div>
                 <div className='py-2'>
@@ -149,7 +154,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {activeTab === 'definitions' && (
               <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
                 <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'metadata' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'metadata' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/meta-data?type=definitions&subtype=metadata'
@@ -164,7 +169,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`groupslogo w-40 rounded-xl ${subtype === 'groups' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`groupslogo w-40 rounded-xl ${subtype === 'groups' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/meta-data-group?type=definitions&subtype=groups'
@@ -179,7 +184,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'heirarchies' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'heirarchies' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/meta-hierarchy?type=definitions&subtype=heirarchies'
@@ -194,7 +199,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'blocks' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`hierarchylogo w-40 rounded-xl ${subtype === 'blocks' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/meta-structure?type=definitions&subtype=blocks'
@@ -215,7 +220,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {activeTab === 'loaders' && (
               <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
                 <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'data-sources' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'data-sources' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/loader-connections?type=loaders&subtype=data-sources'
@@ -230,7 +235,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'jobs' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'jobs' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/loader-jobs?type=loaders&subtype=jobs'
@@ -245,7 +250,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                   </Link>
                 </div>
                 <div
-                  className={`metadatalogo w-40 rounded-xl ${subtype === 'queries' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`metadatalogo w-40 rounded-xl ${subtype === 'queries' ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href='/loader-queries?type=loaders&subtype=queries'
