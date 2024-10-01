@@ -39,18 +39,18 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : 'G'
   const userName = User?.name || 'Guest'
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-      setIsProfileDropdown(false)
-    }
-  }
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+  //     setIsProfileDropdown(false)
+  //   }
+  // }
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+  // useEffect(() => {
+  //   document.addEventListener('mousedown', handleClickOutside)
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside)
+  //   }
+  // }, [])
 
   const changeTab = (newTab: string) => {
     setActiveTab(newTab)
@@ -63,7 +63,6 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   return (
     <div className='min-h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
-        {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <Link
@@ -85,7 +84,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                 onClick={() => setActiveHeading(heading.value)}
               >
                 <h1
-                  className={`text-lg font-bold ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
+                  className={`font-h1stop text-lg ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
                 >
                   {heading.name}
                 </h1>
@@ -98,7 +97,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               ref={profileRef}
             >
               <div
-                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl font-extrabold text-white hover:bg-1stop-accent1'
+                className='font-h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-accent1'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -123,7 +122,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {isProfileDropdown && (
               <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
-                  <p className='text-sm font-medium text-gray-900'>{userName}</p>
+                  <p className='font-h2-1stop text-gray-900'>Logged in as {userName}</p>
                 </div>
                 <div className='border-t border-gray-200'></div>
                 <div className='py-2'>
@@ -151,11 +150,11 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               {menuItems.map((item) => (
                 <div
                   key={item.title}
-                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-75'} p-8`}
+                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
                 >
                   <Link
                     href={item.link}
-                    className='text-black-600 flex flex-col items-center font-bold'
+                    className='text-black-600 flex flex-col items-center font-h3-1stop'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'

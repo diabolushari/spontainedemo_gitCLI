@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-        h1stop: ['var(--font-h1-1stop)', ...defaultTheme.fontFamily.sans],
+        'h1-stop': ['var(--font-h1-1stop)', ...defaultTheme.fontFamily.sans],
         'h2-1stop': ['var(--font-h2-1stop)', ...defaultTheme.fontFamily.sans],
         'h3-1stop': ['var(--font-h3-1stop)', ...defaultTheme.fontFamily.sans],
         'subheader-1stop': ['var(--font-subheader-1stop)', ...defaultTheme.fontFamily.sans],
