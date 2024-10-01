@@ -5,6 +5,8 @@ import { useMemo } from 'react'
 import SubHeading from '@/typograpy/SubHeading'
 import { Link } from '@inertiajs/react'
 import AddButton from '@/ui/button/AddButton'
+import { cn } from '@/utils'
+import StrongText from '@/typograpy/StrongText'
 
 interface Props<
   U extends keyof T,
@@ -15,13 +17,15 @@ interface Props<
   primaryKey: keyof T
   rows: T[]
   addUrl?: string
+  gridStyles?: string
+  cardStyles?: string
 }
 
 export default function ListResourceCard<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string }[]>,
->({ keys, primaryKey, rows, addUrl }: Props<U, T>) {
+>({ keys, primaryKey, rows, addUrl, cardStyles, gridStyles }: Props<U, T>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
@@ -32,48 +36,45 @@ export default function ListResourceCard<
       {rows.map((row) => {
         return (
           <Card
-            className='bg-[#F5F5FA] p-2'
+            className={'bg-[#F5F5FA] p-2 ' + cardStyles}
             key={row[primaryKey] as string}
           >
-            <div className='text-xs'>VALUE NAME </div>
-
             {titleKey != null && <SubHeading>{row[titleKey.key] as string}</SubHeading>}
-            <div className='grid grid-cols-1'>
+            <div className={`${cn('grid grid-cols-1', gridStyles)}`}>
               {keys
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className='flex gap-2'
+                    className={`${cn('flex gap-2', rowKey.boxStyles)}`}
                     key={rowKey.key as string}
                   >
                     {!(rowKey.hideLabel ?? false) && (
-                      <>
-                        <NormalText className='font-bold'>{rowKey.key as string}</NormalText>
-                      </>
+                      <StrongText className='font-bold'>{rowKey.label as string}</StrongText>
                     )}
-                    <NormalText>{row[rowKey.key] as string}</NormalText>
+                    <NormalText
+                      className={
+                        'text-base ' + rowKey.textStyles != null
+                          ? (row[rowKey.textStyles as keyof typeof row] as string)
+                          : ''
+                      }
+                    >
+                      {row[rowKey.key] as string}
+                    </NormalText>
                   </div>
                 ))}
-              <div className='flex gap-3'>
+              <div className='col-span-full flex gap-3'>
                 {row.actions.map((action) => (
                   <Link
                     as='a'
                     href={action.url}
                     className='text-blue-500 underline hover:text-blue-600'
+                    key={action.title}
                   >
                     {action.title}
                   </Link>
                 ))}
               </div>
             </div>
-            {/* <div className=''>
-              <div className='text-xs'>VALUE NAME {row['name']}</div>
-              <div className='text-sm font-semibold'>{row['structure'] as string}</div>
-              <div className='flex justify-between text-sm'>
-                <span>Groups: {row['groups'] as string}</span>
-                <span>Herirachies: {row['hierarchies'] as string}</span>
-              </div>
-            </div> */}
           </Card>
         )
       })}

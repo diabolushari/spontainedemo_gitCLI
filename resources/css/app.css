@@ -127,52 +127,53 @@ body {
   }
 
   .card-8col {
-    @apply bg-1stop-gray my-4 flex w-full rounded-2xl p-2 md:w-1/2;
+    @apply my-4 flex w-full rounded-2xl bg-1stop-gray p-2 md:w-1/2;
   }
 
   .card-6col {
-    @apply bg-1stop-white my-4 flex w-full rounded-2xl p-2 md:w-1/2;
+    @apply my-4 flex w-full rounded-2xl bg-1stop-white p-2 md:w-1/2;
   }
 
   .card-4col {
-    @apply bg-1stop-gray my-4 flex w-full rounded-2xl p-2 py-2 md:w-1/2;
+    @apply my-4 flex w-full rounded-2xl bg-1stop-gray p-2 py-2 md:w-1/2;
   }
 
   .link-1stop {
-    @apply text-1stop-link cursor-pointer underline hover:opacity-70;
+    @apply cursor-pointer text-1stop-link underline hover:opacity-70;
   }
 
   .indicator-highlight {
-    @apply bg-1stop-accent1 rounded-2xl;
+    @apply rounded-2xl bg-1stop-accent1;
   }
 
   .indicator-regular {
-    @apply bg-1stop-accent2 rounded-2xl;
+    @apply rounded-2xl bg-1stop-accent2;
   }
 
   .indicator-muted {
-    @apply bg-1stop-gray rounded-2xl;
+    @apply rounded-2xl bg-1stop-gray;
   }
 
   .btn-highlight {
-    @apply bg-1stop-accent1 hover:bg-1stop-highlight rounded-2xl px-6 py-2;
+    @apply rounded-2xl bg-1stop-accent1 px-6 py-2 hover:bg-1stop-highlight;
   }
 
   .btn-muted {
-    @apply hover:bg-1stop-highlight rounded-2xl border px-6 py-2;
+    @apply rounded-2xl border px-6 py-2 hover:bg-1stop-highlight;
   }
 
   /* 1 Stop */
-  .h1-1stop {
+  .h1 {
     font-family: 'Poppins-ExtraBold';
     font-style: normal;
+    font: bold;
     font-size: 42px;
     font-weight: 900;
     line-height: 50px;
     letter-spacing: -1px;
   }
 
-  .h2-1stop {
+  .h2 {
     font-family: 'Poppins-ExtraBold';
     font-style: normal;
     font-size: 32px;
@@ -181,7 +182,7 @@ body {
     letter-spacing: 0px;
   }
 
-  .h3-1stop {
+  .h3 {
     font-family: 'Poppins-ExtraBold';
     font-style: normal;
     font-size: 22px;
@@ -190,7 +191,7 @@ body {
     letter-spacing: 0px;
   }
 
-  .subheader-1stop {
+  .subheader {
     font-family: 'Poppins-Medium';
     font-style: normal;
     font-size: 18px;
@@ -199,7 +200,7 @@ body {
     letter-spacing: 4px;
   }
 
-  .subheader-sm-1stop {
+  .subheader-sm {
     font-family: 'Poppins-Medium';
     font-style: normal;
     font-size: 12px;
@@ -208,7 +209,7 @@ body {
     letter-spacing: 3px;
   }
 
-  .body-1stop {
+  .body {
     font-family: 'Poppins-Regular';
     font-style: normal;
     font-size: 16px;
@@ -216,7 +217,7 @@ body {
     line-height: 22px;
   }
 
-  .small-1stop {
+  .small {
     font-family: 'Poppins-Regular';
     font-style: normal;
     font-size: 12px;

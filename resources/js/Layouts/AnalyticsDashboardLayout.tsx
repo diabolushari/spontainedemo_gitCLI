@@ -67,10 +67,15 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
         {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
-            <img
-              src='/one-stop-logo.png'
-              alt='Logo'
-            />
+            <Link
+              href='/meta-structure'
+              className='cursor-pointer hover:opacity-50'
+            >
+              <img
+                src='/one-stop-logo.png'
+                alt='Logo'
+              />
+            </Link>
           </div>
 
           <div className='flex flex-grow justify-center space-x-12'>

@@ -1,13 +1,9 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
-import Card from '@/ui/Card/Card'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import { router } from '@inertiajs/react'
 import React, { useEffect } from 'react'
-import ListResourceTable from '@/Components/ListingPage/ListResourceTable'
-import SelectList from '@/ui/form/SelectList'
 import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
 import CardHeader from '@/ui/Card/CardHeader'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
@@ -19,6 +15,7 @@ export interface ListItemKeys<T> {
   isCardHeader?: boolean
   isShownInCard?: boolean
   textStyles?: string
+  boxStyles?: string
   hideLabel?: boolean
 }
 
@@ -54,6 +51,8 @@ interface Props<
   type?: string
   subtype?: string
   oldValues?: Record<string, string>
+  cardStyles?: string
+  gridStyles?: string
 }
 
 export default function ListResourcePage<
@@ -88,6 +87,8 @@ export default function ListResourcePage<
   subtype,
   oldValues,
   subheading,
+  cardStyles,
+  gridStyles,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -164,6 +165,8 @@ export default function ListResourcePage<
           primaryKey={primaryKey}
           rows={rows}
           addUrl={addUrl}
+          cardStyles={cardStyles}
+          gridStyles={gridStyles}
         />
         {paginator != null && <Pagination pagination={paginator} />}
 

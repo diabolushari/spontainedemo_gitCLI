@@ -65,6 +65,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
           formStyles='md:grid-cols-1 gap-5'
           onFormSubmit={handleSubmit}
           loading={loading}
+          buttonText='sign in'
           buttonAlignment='center'
         />
         <div className='text-black-500 mt-6 text-center text-sm'>
