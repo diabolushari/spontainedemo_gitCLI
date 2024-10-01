@@ -1,9 +1,10 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataLoaderConnection } from '@/interfaces/data_interfaces'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
 
 interface Props {
   dataLoaderConnections: Paginator<DataLoaderConnection>
@@ -86,19 +87,21 @@ export default function DataLoaderConnectionIndex({
         database: record.database,
         queries_count: record.queries_count,
         actions: [
-          {
-            title: 'Show',
-            url: route('loader-connections.show', {
-              dataLoaderConnection: record.id,
-              type: 'loaders',
-              subtype: 'data-sources',
-            }),
-          },
+          // {
+          //   title: 'Show',
+          //   url: route('loader-connections.show', {
+          //     dataLoaderConnection: record.id,
+          //     type: 'loaders',
+          //     subtype: 'data-sources',
+          //   }),
+          // },
         ],
       }
     })
   }, [dataLoaderConnections])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('loader-connections.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       keys={keys}
@@ -114,6 +117,9 @@ export default function DataLoaderConnectionIndex({
       subtype={subtype}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Configure connections to source databases here. Please be sure to standard names, and descriptions.'
+      handleCardClick={handleCardClick}
+      cardStyles='p-4 hover:scale-105 transition'
     />
   )
 }

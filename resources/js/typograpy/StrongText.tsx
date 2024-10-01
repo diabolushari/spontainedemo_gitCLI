@@ -1,11 +1,22 @@
 import { cn } from '@/utils'
 import React from 'react'
 
-interface Props {
-  className?: string
+interface Props extends React.HTMLProps<HTMLElement> {
   children: React.ReactNode
 }
 
-export default function StrongText({ className = '', children }: Props) {
-  return <strong className={cn('break-all ', className)}>{children}</strong>
-}
+const StrongText = React.forwardRef<HTMLElement, Props>(
+  ({ className = '', children, ...props }: Props, ref) => {
+    return (
+      <strong
+        ref={ref}
+        className={cn('break-all', className)}
+        {...props}
+      >
+        {children}
+      </strong>
+    )
+  }
+)
+
+export default StrongText

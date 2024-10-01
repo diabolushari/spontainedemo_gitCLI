@@ -1,9 +1,10 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataLoaderQuery } from '@/interfaces/data_interfaces'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
 
 interface Props {
   dataLoaderQueries: Paginator<DataLoaderQuery>
@@ -66,15 +67,17 @@ export default function DataLoaderQueryIndex({
         name: record.name,
         connection: record.loader_connection?.name ?? '',
         actions: [
-          {
-            title: 'Show',
-            url: route('loader-queries.show', record.id),
-          },
+          // {
+          //   title: 'Show',
+          //   url: route('loader-queries.show', record.id),
+          // },
         ],
       }
     })
   }, [dataLoaderQueries])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('loader-queries.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       keys={keys}
@@ -91,6 +94,9 @@ export default function DataLoaderQueryIndex({
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Extraction Statements'
       pageDescription='Extraction statements are SQL'
+      handleCardClick={handleCardClick}
+      cardStyles='p-4 hover:scale-105 transition'
+      subheading='Extraction statements are SQl statements that run against source DBs written in a way that produces an outputr data set that matches the structure of the target data table.'
     />
   )
 }

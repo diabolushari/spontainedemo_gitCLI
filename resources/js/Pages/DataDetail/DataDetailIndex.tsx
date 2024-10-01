@@ -3,7 +3,8 @@ import { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataDetail } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
-import { useMemo } from 'react'
+import { router } from '@inertiajs/react'
+import { useCallback, useMemo } from 'react'
 
 interface Props {
   details: Paginator<DataDetail>
@@ -37,10 +38,10 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
         name: detail.name,
         is_active: detail.is_active === 1 ? 'Yes' : 'No',
         actions: [
-          {
-            title: 'Show',
-            url: route('data-detail.show', { id: detail.id }),
-          },
+          // {
+          //   title: 'Show',
+          //   url: route('data-detail.show', { id: detail.id }),
+          // },
         ],
       }
     })
@@ -55,7 +56,9 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       is_active: string
     }>[]
   }, [])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('data-detail.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       formData={formData}
@@ -70,9 +73,9 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       subtype='data-tables'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Data Tables'
-      subheading={`Data tables are primary containers for data. Data tables may be populated by standard loader jobs, 
-      orin some cases, may be manually populated, or bulk loaded from spreadsheets.
-       \nSubsets are derived from data tables are individual groups based on organizational hierarchy, a particulartime period etc.`}
+      handleCardClick={handleCardClick}
+      cardStyles='p-4 hover:scale-105 transition'
+      subheading={`Data tables contain data in report-ready formats.  Data tables contain dimensions (including data dates), and measures/metrics`}
     />
   )
 }

@@ -2,8 +2,9 @@ import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListRes
 import { ReferenceData, ReferenceDataDomain } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
+import { router } from '@inertiajs/react'
 
 interface Props {
   referenceData: Paginator<ReferenceData>
@@ -75,6 +76,7 @@ const ReferenceDataIndex = ({
           {
             title: 'Edit',
             url: route('reference-data.edit', row.id, false),
+            textStyles: 'hover:scale-105 transition',
           },
         ],
       }
@@ -110,7 +112,9 @@ const ReferenceDataIndex = ({
       },
     ] as ListItemKeys<Partial<ReferenceData>>[]
   }, [])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('reference-data.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       rows={data}
@@ -125,6 +129,8 @@ const ReferenceDataIndex = ({
       type='config'
       subtype='reference-data'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      // handleCardClick={handleCardClick}
+      cardStyles='p-4 '
       subheading='Reference data is a flexible list of data elements used to populate dynamic selection lists, basic rule sets etc.'
     />
   )

@@ -17,12 +17,14 @@ export interface ListItemKeys<T> {
   textStyles?: string
   boxStyles?: string
   hideLabel?: boolean
+  isLink?: boolean
+  actionStyle?: string
 }
 
 interface Props<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
   Q,
   P extends keyof Q,
   R extends keyof L,
@@ -53,12 +55,13 @@ interface Props<
   oldValues?: Record<string, string>
   cardStyles?: string
   gridStyles?: string
+  handleCardClick?: (id: number | string) => void
 }
 
 export default function ListResourcePage<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
   Q,
   P extends keyof Q,
   R extends keyof L,
@@ -89,6 +92,7 @@ export default function ListResourcePage<
   subheading,
   cardStyles,
   gridStyles,
+  handleCardClick,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -115,10 +119,9 @@ export default function ListResourcePage<
       type={type}
       subtype={subtype}
       title={title}
+      description={subheading}
     >
       <DashboardPadding>
-        <div className='pb-5 pl-4 text-sm'>{pageDescription ?? ''}</div>
-
         <div className='flex flex-col gap-5'>
           <CardHeader
             title={title}
@@ -169,6 +172,7 @@ export default function ListResourcePage<
           addUrl={addUrl}
           cardStyles={cardStyles}
           gridStyles={gridStyles}
+          handleCardClick={handleCardClick}
         />
         {paginator != null && <Pagination pagination={paginator} />}
 

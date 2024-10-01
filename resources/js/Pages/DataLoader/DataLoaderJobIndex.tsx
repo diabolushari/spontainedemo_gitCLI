@@ -1,9 +1,10 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataLoaderJob } from '@/interfaces/data_interfaces'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
 
 interface Props {
   dataLoaderJobs: Paginator<DataLoaderJob>
@@ -56,15 +57,17 @@ export default function DataLoaderJobIndex({
         id: record.id,
         name: record.name,
         actions: [
-          {
-            title: 'Show',
-            url: route('loader-jobs.show', record.id),
-          },
+          // {
+          //   title: 'Show',
+          //   url: route('loader-jobs.show', record.id),
+          // },
         ],
       }
     })
   }, [dataLoaderJobs])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('loader-jobs.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       keys={keys}
@@ -80,6 +83,9 @@ export default function DataLoaderJobIndex({
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Jobs'
+      handleCardClick={handleCardClick}
+      cardStyles='p-4 hover:scale-105 transition'
+      subheading='Multiple data loader jobs may be configured against each data source. Loaders may be scheduled to run based on time or other dependencies. Once scheduled, the loader jobs then continue to run automatically.'
     />
   )
 }

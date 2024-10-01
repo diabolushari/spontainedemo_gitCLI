@@ -3,15 +3,23 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
 import Tab from '@/ui/Tabs/Tab'
 import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
+import MetaTags from '@/Components/MetaTags'
 
 interface Properties {
   children?: ReactNode
   type?: string
   subtype?: string
   title?: string
+  description?: string
 }
 
-export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
+export default function AnalyticsDashboardLayout({
+  children,
+  type,
+  subtype,
+  title,
+  description,
+}: Properties) {
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
@@ -27,8 +35,9 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
     return dashboardMenuItems.find((item) => item.value === activeTab)?.links ?? []
   }, [activeTab])
 
-  // const profileRef = useRef<HTMLDivElement>(null)
-
+  const findDescription = (tabName: string) => {
+    return dashboardMenuItems.find((item) => item.value === activeTab)?.tabDescription
+  }
   const userInfo = usePage().props.auth as unknown as { user: User | null }
   const User = useMemo(() => {
     if (userInfo.user) {
@@ -61,8 +70,13 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   }
 
   return (
-    <div className='min-h-screen bg-white'>
-      <div className='container mx-auto px-4 py-10'>
+    <div className='min-h-screen'>
+      <MetaTags
+        title={title}
+        description={description}
+      />
+      <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
+        {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <Link
@@ -97,7 +111,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               ref={profileRef}
             >
               <div
-                className='font-h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-accent1'
+                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight font-h1-stop text-2xl text-white hover:bg-1stop-accent1'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -166,6 +180,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                 </div>
               ))}
             </div>
+            <div className='mt-10 text-sm'>{findDescription(activeTab)}</div>
           </div>
         )}
       </div>

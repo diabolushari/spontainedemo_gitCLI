@@ -40,7 +40,7 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 Route::get('/dashboard', function () {
-    return redirect()->route('meta-structure.index');
+    return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 //reference data

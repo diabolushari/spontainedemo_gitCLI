@@ -20,7 +20,7 @@ export interface Properties<
 const getStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
   switch (style) {
     case 'normal': {
-      return `bg-accent-light w-full appearance-none rounded-lg border border-gray-300 py-3 pl-3 text-sm text-gray-800
+      return ` w-full appearance-none rounded-lg border border-gray-300 py-3 pl-3 text-sm text-gray-800
       shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
     }
     case 'bottom-border': {

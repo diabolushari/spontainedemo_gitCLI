@@ -2,8 +2,9 @@ import { Paginator } from '@/ui/ui_interfaces'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import { FormItem } from '@/FormBuilder/FormBuilder'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import { router } from '@inertiajs/react'
 
 interface Props {
   hierarchies: Paginator<MetaHierarchy>
@@ -31,6 +32,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         type: 'text',
         label: 'Search',
         setValue: setFormValue('search'),
+        placeholder: 'Search by hierarchy name',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
@@ -41,6 +43,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         label: 'Hierarchy',
         key: 'name',
         isCardHeader: true,
+        isLink: true,
       },
       {
         key: 'items_count',
@@ -57,22 +60,26 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         name: hierarchy.name,
         items_count: hierarchy.items_count ?? 0,
         actions: [
-          {
-            title: 'SHOW',
-            url: route('meta-hierarchy.show', {
-              metaHierarchy: hierarchy.id,
-              type: 'definitions',
-              subtype: 'heirarchies',
-            }),
-          },
+          // {
+          //   title: 'SHOW',
+          //   url: route('meta-hierarchy.show', {
+          //     metaHierarchy: hierarchy.id,
+          //     type: 'definitions',
+          //     subtype: 'heirarchies',
+          //   }),
+          // },
           {
             title: 'EDIT',
             url: route('meta-hierarchy.edit', { id: hierarchy.id }),
+            textStyles: 'ml-auto  hover:scale-105 transition',
           },
         ],
       }
     })
   }, [hierarchies])
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('meta-hierarchy.show', { id: id }))
+  }, [])
 
   return (
     <ListResourcePage
@@ -85,13 +92,15 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       title='Meta Hierarchies'
       addUrl={route('meta-hierarchy.create', { type: 'definitions', subtype: 'heirarchies' })}
       searchUrl={route('meta-hierarchy.index')}
-      type={type}
-      subtype={subtype}
+      type={type ?? 'definitions'}
+      subtype={subtype ?? 'hierarchies'}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       subheading={
-        'Hierarchies of dimensional values (metadata) enable rolling up data to various higher level sofreporting automatically.'
+        'Hierarchies can be particularly helpful when automatically drilling down or rolling up data. A hierarchy is a multi level,  "one parent to multiple children" structure'
       }
+      handleCardClick={handleCardClick}
+      cardStyles='p-4 '
     />
   )
 }

@@ -38,6 +38,8 @@ class MetaDataController extends Controller
 
         $records = MetaData::with([
             'metaStructure:id,structure_name',
+            'hierarchyItem',
+            'groupItem',
         ])
             ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
             ->when($request->filled('structure'), fn(Builder $builder) => $builder->where('meta_structure_id', 'like', $request->input(key: 'structure')))

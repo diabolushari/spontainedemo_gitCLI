@@ -11,7 +11,7 @@ import StrongText from '@/typograpy/StrongText'
 interface Props<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
 > {
   keys: ListItemKeys<T>[]
   primaryKey: keyof T
@@ -19,34 +19,62 @@ interface Props<
   addUrl?: string
   gridStyles?: string
   cardStyles?: string
+  handleCardClick?: (id: number | string) => void
 }
 
 export default function ListResourceCard<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
->({ keys, primaryKey, rows, addUrl, cardStyles, gridStyles }: Props<U, T>) {
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
+>({ keys, primaryKey, rows, addUrl, cardStyles, gridStyles, handleCardClick }: Props<U, T>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
 
+  const isUsingTitleClick = useMemo(() => {
+    return titleKey?.isLink ?? false
+  }, [titleKey])
+
+  const handleCardDivClick = (id: number | string) => {
+    if (isUsingTitleClick || handleCardClick == null) {
+      return
+    }
+    handleCardClick(id)
+  }
+
+  const handleTitleClick = (id: number | string) => {
+    if (!isUsingTitleClick || handleCardClick == null) {
+      return
+    }
+    handleCardClick(id)
+  }
+  // console.log(titleKey?.boxStyles)
   return (
     <div className='grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
       <AddButton link={addUrl} />
       {rows.map((row) => {
         return (
           <Card
-            className={'bg-[#F5F5FA] p-2 ' + cardStyles}
+            className={`bg-[#F5F5FA] p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
             key={row[primaryKey] as string}
+            onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
-            {titleKey != null && <SubHeading>{row[titleKey.key] as string}</SubHeading>}
+            {titleKey != null && (
+              <SubHeading
+                onClick={() => handleTitleClick(row[primaryKey] as string | number)}
+                className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
+              >
+                {row[titleKey.key] as string}
+              </SubHeading>
+            )}
             <div className={`${cn('grid grid-cols-1', gridStyles)}`}>
               {keys
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className={`${cn('flex gap-2', rowKey.boxStyles)}`}
+                    className={`${cn(`flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`, rowKey.boxStyles)}`}
                     key={rowKey.key as string}
+                    // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
                     {!(rowKey.hideLabel ?? false) && (
                       <StrongText className='font-bold'>{rowKey.label as string}</StrongText>
@@ -62,12 +90,12 @@ export default function ListResourceCard<
                     </NormalText>
                   </div>
                 ))}
-              <div className='col-span-full flex gap-3'>
+              <div className={`col-span-full flex gap-3 ${row.actionStyle}`}>
                 {row.actions.map((action) => (
                   <Link
                     as='a'
                     href={action.url}
-                    className='text-blue-500 underline hover:text-blue-600'
+                    className={`text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
                     key={action.title}
                   >
                     {action.title}

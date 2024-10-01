@@ -2,6 +2,7 @@ interface DashboardMenuItem {
   name: string
   value: string
   url?: string
+  tabDescription?: string
   links: {
     title: string
     link: string
@@ -16,6 +17,7 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     name: 'Data',
     value: 'data',
     url: '/data-detail?type=data&subtype=data-tables',
+    tabDescription: 'Explore data tables and subsets by subject areas.',
     links: [
       {
         title: 'DATA TABLES',
@@ -28,8 +30,8 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         title: 'SUBJECT AREAS',
         link: '/subject-area?type=data&subtype=subject-area',
         image: '/subject-area.png',
-        permission: 'ubject-area',
-        subtype: 'ubject-area',
+        permission: 'subject-area',
+        subtype: 'subject-area',
       },
     ],
   },
@@ -37,6 +39,8 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     name: 'Definitions',
     value: 'definitions',
     url: '/meta-data?type=definitions&subtype=metadata',
+    tabDescription: `It is important to ensure quality of data that is stored in this analytical repository.
+     The definitions in this section will be used to validate data upon import.`,
     links: [
       {
         title: 'METADATA',
@@ -72,6 +76,8 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     name: 'Loaders',
     value: 'loaders',
     url: '/loader-jobs?type=loaders&subtype=jobs',
+    tabDescription: `Loaders are scheduled or conditional jobs that are 
+    used to automatically extract and load data into pre-defined data tables.`,
     links: [
       {
         link: '/loader-connections?type=loaders&subtype=data-sources',
@@ -100,6 +106,7 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     name: 'Config',
     value: 'config',
     url: '/reference-data?type=config&subtype=reference-data',
+    tabDescription: `Manage configurations and system level settings`,
     links: [
       {
         link: '/reference-data?type=config&subtype=reference-data',

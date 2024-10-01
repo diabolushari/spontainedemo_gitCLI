@@ -1,9 +1,10 @@
 import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
 import { MetaDataGroup } from '@/interfaces/meta_interfaces'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import { router } from '@inertiajs/react'
 
 interface Props {
   groups: Paginator<MetaDataGroup>
@@ -31,6 +32,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         type: 'text',
         label: 'Search',
         setValue: setFormValue('search'),
+        placeholder: 'Search by group name',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
@@ -42,14 +44,14 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         items_count: group.items_count,
         name: group.name,
         actions: [
-          {
-            title: 'SHOW',
-            url: route('meta-data-group.show', {
-              metaDataGroup: group.id,
-              type: 'definitions',
-              subtype: 'groups',
-            }),
-          },
+          // {
+          //   title: 'SHOW',
+          //   url: route('meta-data-group.show', {
+          //     metaDataGroup: group.id,
+          //     type: 'definitions',
+          //     subtype: 'groups',
+          //   }),
+          // },
         ],
       }
     })
@@ -69,7 +71,9 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       },
     ] as ListItemKeys<Partial<MetaDataGroup>>[]
   }, [])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('meta-data-group.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       keys={keys}
@@ -81,10 +85,14 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       title={'Meta Data Groups'}
       searchUrl={route('meta-data-group.index')}
       paginator={groups}
-      type={type}
-      subtype={subtype}
+      type={type ?? 'definitions'}
+      subtype={subtype ?? 'groups'}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Dimensional groups can come in handy when creating report sections etc. 
+e.g. An extruded steel section can be in groups "All materials" and "Steel materials"'
+      handleCardClick={handleCardClick}
+      cardStyles='p-4 hover:scale-105 transition'
     />
   )
 }

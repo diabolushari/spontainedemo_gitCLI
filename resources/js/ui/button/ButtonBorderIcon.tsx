@@ -34,7 +34,7 @@ export const chooseBorderButtonColor = (type: string): [string, string] => {
 
     default: {
       return [
-        `text-primary-700 bg-transparent border-primary-700 focus:ring-primary-700 focus:ring-offset-1 hover:bg-primary-700
+        `text-primary-700 bg-transparent border-primary-700 focus:ring-primary-700 focus:ring-offset-1 hover:bg-primary
           hover:text-white transition duration-150 ease-in-out`,
         'text-primary-700',
       ]

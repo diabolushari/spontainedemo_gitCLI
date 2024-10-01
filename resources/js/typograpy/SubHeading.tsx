@@ -1,11 +1,22 @@
 import { cn } from '@/utils'
 import React from 'react'
 
-interface Props {
-  className?: string
+interface Props extends React.HTMLProps<HTMLHeadingElement> {
   children: React.ReactNode
 }
 
-export default function SubHeading({ className = '', children }: Props) {
-  return <h2 className={cn('break-all font-semibold', className)}>{children}</h2>
-}
+const SubHeading = React.forwardRef<HTMLHeadingElement, Props>(
+  ({ className = '', children, ...props }: Props, ref) => {
+    return (
+      <h2
+        ref={ref}
+        className={cn('break-all font-semibold', className)}
+        {...props}
+      >
+        {children}
+      </h2>
+    )
+  }
+)
+
+export default SubHeading

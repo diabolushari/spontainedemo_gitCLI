@@ -2,8 +2,9 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { Paginator } from '@/ui/ui_interfaces'
 import { SubjectArea } from '@/interfaces/data_interfaces'
 import { FormItem } from '@/FormBuilder/FormBuilder'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import { router } from '@inertiajs/react'
 
 interface Props {
   subjectAreas: Paginator<SubjectArea>
@@ -47,15 +48,17 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
         name: subjectArea.name,
         is_active: subjectArea.is_active === 1 ? 'Yes' : 'No',
         actions: [
-          {
-            title: 'Show',
-            url: route('subject-area.edit', { id: subjectArea.id }),
-          },
+          // {
+          //   title: 'Show',
+          //   url: route('subject-area.edit', { id: subjectArea.id }),
+          // },
         ],
       }
     })
   }, [subjectAreas])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('subject-area.show', { id: id }))
+  }, [])
   return (
     <ListResourcePage
       keys={keys}
@@ -69,6 +72,9 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       type='data'
       subtype='subject-area'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      handleCardClick={handleCardClick}
+      subheading='Subject areas are thematic regions that hold data, and will form logical groupings of reports and dashboards'
+      cardStyles='p-4 hover:scale-105 transition'
     />
   )
 }
