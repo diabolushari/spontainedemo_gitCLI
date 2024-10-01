@@ -13,7 +13,7 @@ interface DashboardMenuItem {
 
 const dashboardMenuItems: DashboardMenuItem[] = [
   {
-    name: 'Data Tables',
+    name: 'Data',
     value: 'data',
     url: '/data-detail?type=data&subtype=data-tables',
     links: [
