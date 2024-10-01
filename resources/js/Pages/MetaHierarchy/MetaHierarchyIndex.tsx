@@ -90,7 +90,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       subheading={
-        'Hierarchies of dimensional values (metadata) enable rolling up data to various higher level sofreporting automatically.'
+        'Hierarchies can be particularly helpful when automatically drilling down or rolling up data. A hierarchy is a multi level,  "one parent to multiple children" structure'
       }
     />
   )

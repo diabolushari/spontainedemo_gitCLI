@@ -85,6 +85,8 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       subtype={subtype}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Dimensional groups can come in handy when creating report sections etc. 
+e.g. An extruded steel section can be in groups "All materials" and "Steel materials"'
     />
   )
 }

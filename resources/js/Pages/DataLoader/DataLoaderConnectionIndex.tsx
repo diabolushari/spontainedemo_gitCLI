@@ -114,6 +114,7 @@ export default function DataLoaderConnectionIndex({
       subtype={subtype}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Configure connections to source databases here. Please be sure to standard names, and descriptions.'
     />
   )
 }

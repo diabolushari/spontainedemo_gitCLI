@@ -80,6 +80,7 @@ export default function DataLoaderJobIndex({
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Jobs'
+      subheading='Multiple data loader jobs may be configured against each data source. Loaders may be scheduled to run based on time or other dependencies. Once scheduled, the loader jobs then continue to run automatically.'
     />
   )
 }

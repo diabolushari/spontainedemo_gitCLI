@@ -70,9 +70,7 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       subtype='data-tables'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Data Tables'
-      subheading={`Data tables are primary containers for data. Data tables may be populated by standard loader jobs, 
-      orin some cases, may be manually populated, or bulk loaded from spreadsheets.
-       \nSubsets are derived from data tables are individual groups based on organizational hierarchy, a particulartime period etc.`}
+      subheading={`Data tables contain data in report-ready formats.  Data tables contain dimensions (including data dates), and measures/metrics`}
     />
   )
 }

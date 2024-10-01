@@ -116,8 +116,6 @@ export default function ListResourcePage<
       title={title}
     >
       <DashboardPadding>
-        <div className='pb-5 pl-4 text-sm'>{pageDescription ?? ''}</div>
-
         <div className='flex flex-col gap-5'>
           <CardHeader
             title={title}

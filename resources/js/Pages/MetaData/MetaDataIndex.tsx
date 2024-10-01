@@ -88,6 +88,8 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       subtype={subtype}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Metadata elements that will form valid reporting dimension. Each metdata element will be a distinct value of a structural block.
+e.g: "Yellow" is a valid dimensional value of a structural block called "Colour"'
     />
   )
 }

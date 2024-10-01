@@ -69,6 +69,7 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       type='data'
       subtype='subject-area'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      subheading='Subject areas are thematic regions that hold data, and will form logical groupings of reports and dashboards'
     />
   )
 }

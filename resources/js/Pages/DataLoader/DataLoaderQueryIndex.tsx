@@ -91,6 +91,7 @@ export default function DataLoaderQueryIndex({
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Extraction Statements'
       pageDescription='Extraction statements are SQL'
+      subheading='Extraction statements are SQl statements that run against source DBs written in a way that produces an outputr data set that matches the structure of the target data table.'
     />
   )
 }
