@@ -44,6 +44,8 @@ export default function MetaHierarchyEdit({ metaHierarchy }: Props) {
       backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
+      type={'definitions'}
+      subtype={'hierarchies'}
     />
   )
 }

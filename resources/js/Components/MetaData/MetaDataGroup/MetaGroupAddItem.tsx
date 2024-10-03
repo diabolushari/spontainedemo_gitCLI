@@ -47,6 +47,8 @@ export default function MetaGroupAddItem({ metaDataGroup }: Props) {
         dataKey: 'id',
         displayKey: 'name',
         displayKey2: 'structure_name',
+        linkText: 'Metadata',
+        redirectLink: route('meta-data.index'),
         selectListUrl: route('meta-data-search', {
           search: '',
         }),

@@ -28,8 +28,8 @@ export default function MetaGroupShow({ metaDataGroup, groupItems, type, subtype
       title={metaDataGroup.name}
       items={displayedValues}
       backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
-      type={type}
-      subtype={subtype}
+      type={type ?? 'definitions'}
+      subtype={subtype ?? 'groups'}
     >
       <MetaGroupAddItem metaDataGroup={metaDataGroup} />
       <MetaGroupItemList

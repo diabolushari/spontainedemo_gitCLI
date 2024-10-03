@@ -75,7 +75,7 @@ export default function AnalyticsDashboardLayout({
         title={title}
         description={description}
       />
-      <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
+      <div className='mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
         {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
@@ -90,7 +90,7 @@ export default function AnalyticsDashboardLayout({
             </Link>
           </div>
 
-          <div className='flex flex-grow justify-center space-x-12'>
+          <div className='flex flex-col justify-center px-1 md:flex-row md:space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
@@ -98,7 +98,7 @@ export default function AnalyticsDashboardLayout({
                 onClick={() => setActiveHeading(heading.value)}
               >
                 <h1
-                  className={`font-h1stop text-lg ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
+                  className={`font-h1stop text-center text-lg ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
                 >
                   {heading.name}
                 </h1>
@@ -111,7 +111,7 @@ export default function AnalyticsDashboardLayout({
               ref={profileRef}
             >
               <div
-                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight font-h1-stop text-2xl text-white hover:bg-1stop-accent1'
+                className='flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight font-h1-stop text-xl text-white hover:bg-1stop-accent1 hover:text-black md:h-12 md:w-12 md:text-2xl'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -123,7 +123,7 @@ export default function AnalyticsDashboardLayout({
                 viewBox='0 0 24 24'
                 strokeWidth={1.5}
                 stroke='currentColor'
-                className={`h-6 w-6 transform cursor-pointer duration-300 ${isProfileDropdown ? 'rotate-180' : ''}`}
+                className={`h-5 w-5 transform cursor-pointer duration-300 md:h-6 md:w-6 ${isProfileDropdown ? 'rotate-180' : ''}`}
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 <path
@@ -134,7 +134,7 @@ export default function AnalyticsDashboardLayout({
               </svg>
             </div>
             {isProfileDropdown && (
-              <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
+              <div className='absolute mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
                   <p className='font-h2-1stop text-gray-900'>Logged in as {userName}</p>
                 </div>

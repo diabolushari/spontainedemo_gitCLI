@@ -7,6 +7,7 @@ import { XIcon } from 'lucide-react'
 import SubHeading from '@/typograpy/SubHeading'
 import NormalText from '@/typograpy/NormalText'
 import ErrorText from '@/typograpy/ErrorText'
+import { Link } from '@inertiajs/react'
 
 interface Properties<
   K extends keyof T,
@@ -25,6 +26,8 @@ interface Properties<
   displayKey: K
   displayValue2?: K
   url: string
+  linkText?: string
+  redirectLink?: string
 }
 
 const ComboBox = <
@@ -43,6 +46,8 @@ const ComboBox = <
   displayValue2,
   disabled,
   url,
+  linkText,
+  redirectLink,
 }: Properties<K, G, U, V, T>) => {
   const [textFieldValue, setTextFieldValue] = useState<string>('')
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
@@ -108,10 +113,7 @@ const ComboBox = <
     <>
       {value != null && (
         <div className='flex flex-col gap-2'>
-          <div
-            className='flex items-center justify-between bg-gray-100 px-3 py-2
-            text-sm text-gray-800'
-          >
+          <div className='flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
             <span>
               {label}
               <br />
@@ -141,7 +143,18 @@ const ComboBox = <
           ref={listRef}
         >
           <div className='flex flex-col'>
-            <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+            <div className='flex justify-between'>
+              <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+
+              <a
+                className={`link flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
+                href={redirectLink ?? ''}
+                target='_blank'
+                rel='noreferrer'
+              >
+                {linkText}
+              </a>
+            </div>
             <input
               type='text'
               value={textFieldValue}
@@ -153,21 +166,20 @@ const ComboBox = <
             />
             {error && <ErrorText>{error}</ErrorText>}
           </div>
-          <div className='absolute top-full z-10  w-full overflow-auto rounded bg-white shadow-xl'>
+          <div className='absolute top-full z-10 w-full overflow-auto rounded bg-white shadow-xl'>
             {list.length > 0 && (
               <>
                 {list.map((item, index) => {
                   return (
                     <div
                       key={item[dataKey]}
-                      className={`flex cursor-pointer flex-col py-3 px-2 text-sm
-                        ${highlightedIndex === index ? 'bg-gray-200 font-semibold' : ''}`}
+                      className={`flex cursor-pointer flex-col px-2 py-3 text-sm ${highlightedIndex === index ? 'bg-gray-200 font-semibold' : ''}`}
                       onClick={() => setValue(item)}
                       onMouseEnter={() => setHighlightedIndex(index)}
                     >
                       <SubHeading>{item[displayKey]}</SubHeading>
                       {displayValue2 != null && (
-                        <NormalText className='text-gray-500 text-xs'>
+                        <NormalText className='text-xs text-gray-500'>
                           {item[displayValue2]}
                         </NormalText>
                       )}

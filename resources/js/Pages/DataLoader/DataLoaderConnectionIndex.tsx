@@ -51,26 +51,31 @@ export default function DataLoaderConnectionIndex({
         key: 'host',
         label: 'Host',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
       {
         key: 'driver',
         label: 'Driver',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
       {
         key: 'username',
         label: 'Username',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
       {
         key: 'database',
         label: 'Database',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
       {
         key: 'queries_count',
         label: '# of queries',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
     ] as ListItemKeys<Partial<DataLoaderConnection>>[]
   }, [])

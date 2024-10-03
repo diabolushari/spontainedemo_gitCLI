@@ -38,6 +38,8 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
       backUrl={route('meta-structure.index')}
       formStyles='md:w-1/2  md:grid-cols-1'
       isPatchRequest
+      type={'definitions'}
+      subtype={'blocks'}
     />
   )
 }

@@ -37,7 +37,7 @@ Route::get('/', function () {
     ]);
 });
 Route::get('/', function () {
-    return redirect()->route('dashboard'); 
+    return redirect()->route('dashboard');
 });
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
@@ -68,6 +68,8 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
+Route::get('meta-strucure-search', [MetaStructureController::class, 'metaStructureSearch'])
+    ->name('meta-strucure-search');
 Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::class)
     ->name('meta-group-delete-item');
 Route::delete('meta-hierarchy-delete-item/{metaHierarchyItem}', MetaHierarchyDeleteItemController::class)
