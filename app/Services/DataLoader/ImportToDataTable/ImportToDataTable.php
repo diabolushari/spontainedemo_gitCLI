@@ -21,7 +21,7 @@ readonly class ImportToDataTable
     /**
      * Import data to the data table
      *
-     * @param  object[]  $data
+     * @param  array[]  $data
      * @return array{
      *     is_successful: bool,
      *     total_records: int,
@@ -51,7 +51,7 @@ readonly class ImportToDataTable
             return $status;
         }
 
-        $dataColumns = array_keys(get_object_vars($data[0]));
+        $dataColumns = array_keys($data[0]);
 
         $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id);
 

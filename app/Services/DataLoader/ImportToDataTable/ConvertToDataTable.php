@@ -6,7 +6,7 @@ readonly class ConvertToDataTable
 {
     /**
      * @param  TableColumnInfo[]  $fieldInfo
-     * @param  object[]  $data
+     * @param  array[]  $data
      * @return array<array<array-key, string|int|null|float>>
      */
     public function convert(
@@ -26,7 +26,7 @@ readonly class ConvertToDataTable
             ];
 
             foreach ($fieldInfo as $field) {
-                $record[$field->column] = $row->{$field->fieldName};
+                $record[$field->column] = $row[$field->fieldName] ?? null;
             }
 
             $records[] = $record;

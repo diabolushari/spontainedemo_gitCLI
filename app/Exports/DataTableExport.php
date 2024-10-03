@@ -68,7 +68,7 @@ class DataTableExport implements FromCollection
                 $records->each(function ($record) use (&$data, $columns) {
                     $row = [];
                     $columns->each(function ($column) use (&$row, $record) {
-                        $row[] = $record->{$column['column']} ?? '-';
+                        $row[] = $record->{$column['column']} ?? '';
                     });
                     $data->push($row);
                 });

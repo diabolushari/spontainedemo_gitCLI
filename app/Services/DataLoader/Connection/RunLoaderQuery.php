@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Process;
 class RunLoaderQuery
 {
     /**
-     * @return object[]
+     * @return array[]
      *
      * @throws Exception
      */
@@ -44,6 +44,6 @@ class RunLoaderQuery
             Process::run('snx -d');
         }
 
-        return $result;
+        return json_decode(json_encode($result), true);
     }
 }

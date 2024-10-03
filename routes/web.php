@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataDetail\DataDetailController;
+use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
@@ -99,5 +100,8 @@ Route::get('tab', [TabController::class, 'show'])->name('tab');
 
 Route::get('export-data-table/{dataDetail}', ExportDataTableController::class)
     ->name('export-data-table');
+
+Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::class)
+    ->name('import-data-table');
 
 require __DIR__.'/auth.php';

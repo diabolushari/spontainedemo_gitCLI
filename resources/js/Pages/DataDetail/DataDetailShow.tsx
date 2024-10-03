@@ -2,6 +2,7 @@ import { DataDetail, DataTableItem } from '@/interfaces/data_interfaces'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import { useMemo } from 'react'
 import DataSetTable from '@/Components/DataExplorer/DataSetTable'
+import DataTableExcelImport from '@/Components/DataDetail/DataTableExcelImport/DataTableExcelImport'
 
 interface Props {
   detail: DataDetail
@@ -73,7 +74,7 @@ export default function DataDetailShow({ detail, dataTableItems }: Readonly<Prop
       subtype='data-tables'
       backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
     >
-      <div className='my-5 flex justify-end'>
+      <div className='my-5 flex justify-end gap-5'>
         <a
           target='_blank'
           href={route('export-data-table', detail.id)}
@@ -82,6 +83,7 @@ export default function DataDetailShow({ detail, dataTableItems }: Readonly<Prop
         >
           Export Data
         </a>
+        <DataTableExcelImport dataDetail={detail} />
       </div>
       <DataSetTable
         dataDetail={detail}

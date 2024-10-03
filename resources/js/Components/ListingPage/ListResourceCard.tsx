@@ -90,7 +90,7 @@ export default function ListResourceCard<
                     </NormalText>
                   </div>
                 ))}
-              <div className={`col-span-full flex gap-3 ${row.actionStyle}`}>
+              <div className={`col-span-full flex gap-3`}>
                 {row.actions.map((action) => (
                   <Link
                     as='a'
