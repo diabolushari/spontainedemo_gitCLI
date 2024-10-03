@@ -26,7 +26,7 @@ export default function Tab({ tabItems, activeTab, setActiveTab }: Readonly<Prop
           onKeyDown={(event) => handleEnterPress(event, () => setActiveTab(tab.value))}
         >
           <p
-            className={`text-lg font-extrabold leading-none ${
+            className={`font-h2-1stop text-lg leading-none ${
               activeTab === tab.value
                 ? 'text-1stop-highlight'
                 : 'text-gray-300 group-hover:text-1stop-highlight'

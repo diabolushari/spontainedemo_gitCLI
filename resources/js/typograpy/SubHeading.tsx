@@ -10,7 +10,7 @@ const SubHeading = React.forwardRef<HTMLHeadingElement, Props>(
     return (
       <h2
         ref={ref}
-        className={cn('break-all font-semibold', className)}
+        className={cn('break-all font-h3-1stop', className)}
         {...props}
       >
         {children}

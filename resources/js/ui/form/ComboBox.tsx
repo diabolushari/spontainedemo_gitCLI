@@ -108,10 +108,7 @@ const ComboBox = <
     <>
       {value != null && (
         <div className='flex flex-col gap-2'>
-          <div
-            className='flex items-center justify-between bg-gray-100 px-3 py-2
-            text-sm text-gray-800'
-          >
+          <div className='flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
             <span>
               {label}
               <br />
@@ -153,21 +150,20 @@ const ComboBox = <
             />
             {error && <ErrorText>{error}</ErrorText>}
           </div>
-          <div className='absolute top-full z-10  w-full overflow-auto rounded bg-white shadow-xl'>
+          <div className='absolute top-full z-10 w-full overflow-auto rounded bg-white shadow-xl'>
             {list.length > 0 && (
               <>
                 {list.map((item, index) => {
                   return (
                     <div
                       key={item[dataKey]}
-                      className={`flex cursor-pointer flex-col py-3 px-2 text-sm
-                        ${highlightedIndex === index ? 'bg-gray-200 font-semibold' : ''}`}
+                      className={`flex cursor-pointer flex-col px-2 py-3 text-sm ${highlightedIndex === index ? 'bg-gray-200 font-h3-1stop' : ''}`}
                       onClick={() => setValue(item)}
                       onMouseEnter={() => setHighlightedIndex(index)}
                     >
                       <SubHeading>{item[displayKey]}</SubHeading>
                       {displayValue2 != null && (
-                        <NormalText className='text-gray-500 text-xs'>
+                        <NormalText className='text-xs text-gray-500'>
                           {item[displayValue2]}
                         </NormalText>
                       )}

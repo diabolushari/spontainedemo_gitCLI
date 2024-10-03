@@ -56,7 +56,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
             <div className='mb-6'>
               <h1 className='font-h1-stop text-xl'>METADATA</h1>
               <p className='text-sm text-gray-500'>
-                Metadata Search {'>'} <span className='font-bold'>Value Details</span>
+                Metadata Search {'>'} <span className='font-h2-1stop'>Value Details</span>
               </p>
             </div>
             <div className='rounded-md bg-[#D9DEE8] p-6 shadow-lg'>

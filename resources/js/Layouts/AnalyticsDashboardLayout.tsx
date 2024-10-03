@@ -76,7 +76,6 @@ export default function AnalyticsDashboardLayout({
         description={description}
       />
       <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
-        {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <Link
@@ -111,7 +110,7 @@ export default function AnalyticsDashboardLayout({
               ref={profileRef}
             >
               <div
-                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight font-h1-stop text-2xl text-white hover:bg-1stop-accent1'
+                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight font-h1-stop text-2xl text-white hover:bg-1stop-dark'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}

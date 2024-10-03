@@ -36,7 +36,7 @@ const BorderedPill = ({ value, onClose, type = 'white' }: Properties) => {
         <>
           <span>&nbsp;&nbsp;&nbsp;</span>
           <span
-            className='cursor-pointer  hover:font-bold'
+            className='cursor-pointer hover:font-h2-1stop'
             onClick={onClose}
           >
             x
