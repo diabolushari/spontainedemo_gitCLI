@@ -7,6 +7,7 @@ use App\Models\SubjectArea\SubjectArea;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 readonly class ImportToDataTable
 {
@@ -35,6 +36,7 @@ readonly class ImportToDataTable
     public function importToDataTable(DataDetail $dataDetail, array $data): array
     {
 
+        Log::info('Importing data to data table');
         $status = [
             'is_successful' => false,
             'total_records' => 0,
