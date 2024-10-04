@@ -22,6 +22,7 @@ class StartScheduledJobs
         if ($this->now->minute == 0) {
             $this->runHourlyQueries();
         }
+        Log::info('Running scheduled jobs: ': $this->now->toTimeString());
         $this->runDailyQueries($this->now->toTimeString());
         $this->runWeeklyQueries($this->now->toTimeString(), $this->now->dayName);
         $this->runMonthlyQueries($this->now->toTimeString(), $this->now->day);
@@ -30,14 +31,6 @@ class StartScheduledJobs
 
     private function runHourlyQueries(): void
     {
-
-        Log::info(
-            DataLoaderJob::where('cron_type', CronTypes::HOURLY)
-                ->active()
-                ->get()
-                ->toArray()
-        );
-
         DataLoaderJob::where('cron_type', CronTypes::HOURLY)
             ->active()
             ->get()
@@ -49,6 +42,14 @@ class StartScheduledJobs
 
     private function runDailyQueries(string $time): void
     {
+
+        Log::info(
+            DataLoaderJob::where('cron_type', CronTypes::DAILY)
+                ->active()
+                ->where('schedule_time', $time)
+                ->get()
+        );
+
         DataLoaderJob::where('cron_type', CronTypes::DAILY)
             ->active()
             ->where('schedule_time', $time)
