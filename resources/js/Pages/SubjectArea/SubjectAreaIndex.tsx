@@ -5,6 +5,7 @@ import { FormItem } from '@/FormBuilder/FormBuilder'
 import { useCallback, useMemo } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { router } from '@inertiajs/react'
+import { Description } from '@headlessui/react'
 
 interface Props {
   subjectAreas: Paginator<SubjectArea>
@@ -34,7 +35,8 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
   const keys = useMemo(() => {
     return [
       { key: 'name', label: 'Name', isCardHeader: true },
-      { key: 'is_active', label: 'Is Active', isShownInCard: true },
+      { key: 'is_active', label: 'Is Active', isShownInCard: true, boxStyles: 'items-center ' },
+      { key: 'description', label: 'Description', isShownInCard: true, boxStyles: 'items-center' },
     ] as ListItemKeys<{
       name: string
       is_active: string
@@ -46,6 +48,7 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       return {
         id: subjectArea.id,
         name: subjectArea.name,
+        description: subjectArea.description,
         is_active: subjectArea.is_active === 1 ? 'Yes' : 'No',
         actions: [
           // {
@@ -74,7 +77,7 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       handleCardClick={handleCardClick}
       subheading='Subject areas are thematic regions that hold data, and will form logical groupings of reports and dashboards'
-      cardStyles='p-4 hover:scale-105 transition'
+      cardStyles='p-4'
     />
   )
 }

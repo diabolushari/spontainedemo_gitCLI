@@ -80,7 +80,7 @@ export default function AnalyticsDashboardLayout({
         description={description}
       />
       <ToastContainer />
-      <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
+      <div className='mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <Link
@@ -94,7 +94,7 @@ export default function AnalyticsDashboardLayout({
             </Link>
           </div>
 
-          <div className='flex flex-grow justify-center space-x-12'>
+          <div className='flex flex-col justify-center px-1 md:flex-row md:space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
@@ -127,7 +127,7 @@ export default function AnalyticsDashboardLayout({
                 viewBox='0 0 24 24'
                 strokeWidth={1.5}
                 stroke='currentColor'
-                className={`h-6 w-6 transform cursor-pointer duration-300 ${isProfileDropdown ? 'rotate-180' : ''}`}
+                className={`h-5 w-5 transform cursor-pointer duration-300 md:h-6 md:w-6 ${isProfileDropdown ? 'rotate-180' : ''}`}
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 <path
@@ -138,7 +138,7 @@ export default function AnalyticsDashboardLayout({
               </svg>
             </div>
             {isProfileDropdown && (
-              <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
+              <div className='absolute mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
                   <p className='1stop-small-head text-gray-900'>Logged in as {userName}</p>
                 </div>

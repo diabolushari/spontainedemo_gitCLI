@@ -104,17 +104,19 @@ const ReferenceDataIndex = ({
         key: 'value_one',
         label: 'Value One',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
       {
         key: 'value_two',
         label: 'Value Two',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
     ] as ListItemKeys<Partial<ReferenceData>>[]
   }, [])
-  const handleCardClick = useCallback((id: number | string) => {
-    router.get(route('reference-data.show', { id: id }))
-  }, [])
+  // const handleCardClick = useCallback((id: number | string) => {
+  //   router.get(route('reference-data.show', { id: id }))
+  // }, [])
   return (
     <ListResourcePage
       rows={data}

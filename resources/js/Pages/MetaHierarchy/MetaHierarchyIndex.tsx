@@ -49,6 +49,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         key: 'items_count',
         label: 'No. of items',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
     ] as ListItemKeys<{ name: string; items_count: number }>[]
   }, [])

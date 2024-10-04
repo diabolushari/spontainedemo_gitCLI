@@ -64,6 +64,8 @@ export default function MetaHierarchyAddItem({
         dataKey: 'id',
         displayKey: 'name',
         displayKey2: 'structure_name',
+        linkText: 'Metadata',
+        redirectLink: route('meta-data.index'),
         selectListUrl: route('meta-data-search', {
           meta_structure_id: nextLevelInfo?.meta_structure_id.toString(),
           search: '',

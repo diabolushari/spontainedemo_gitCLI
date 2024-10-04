@@ -37,8 +37,8 @@ export default function MetaStructureCreate({ type, subtype }: Properties) {
       url={route('meta-structure.store')}
       backUrl={route('meta-structure.index', { type: 'definitions', subtype: 'blocks' })}
       formStyles='md:w-1/2  md:grid-cols-1'
-      type={type}
-      subtype={subtype}
+      type={'definitions'}
+      subtype={'blocks'}
     />
   )
 }

@@ -35,7 +35,7 @@ export default function MetaHierarchyCreate({
   metaHierarchy,
   levelInfos,
   type,
-  subtype
+  subtype,
 }: Readonly<Properties>) {
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy?.name ?? '',
@@ -127,8 +127,8 @@ export default function MetaHierarchyCreate({
       formStyles='w-1/2 md:grid-cols-1'
       customSubmitData={fullFormData}
       isPatchRequest={metaHierarchy != null}
-      type={type}
-      subtype={subtype}
+      type={'definitions'}
+      subtype={'hierarchies'}
     >
       {hierarchyLevelInfos.map((item) => {
         return (

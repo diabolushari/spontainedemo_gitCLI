@@ -51,6 +51,7 @@ export default function DataLoaderQueryIndex({
         key: 'connection',
         label: 'Connection',
         isShownInCard: true,
+        boxStyles: 'items-center',
       },
     ] as ListItemKeys<{
       id: number

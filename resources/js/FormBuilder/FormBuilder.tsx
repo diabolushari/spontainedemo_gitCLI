@@ -46,6 +46,8 @@ export interface FormItem<
   showAllOption?: boolean
   allOptionText?: string
   placeholder?: string
+  linkText?: string
+  redirectLink?: string
 }
 
 interface Props<
@@ -244,6 +246,8 @@ export default function FormBuilder<
                 setValue={formItems[keyValue].setValue as (value: L | null) => unknown}
                 label={formItems[keyValue].label}
                 error={errors != null ? errors[keyValue] : undefined}
+                linkText={formItems[keyValue].linkText}
+                redirectLink={formItems[keyValue].redirectLink}
               />
             )}
         </div>

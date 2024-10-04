@@ -42,6 +42,8 @@ export default function MetaHierarchyShow({
       backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       editUrl={route('meta-hierarchy.edit', metaHierarchy.id)}
       deleteUrl={route('meta-hierarchy.destroy', metaHierarchy.id)}
+      type={'definitions'}
+      subtype={'hierarchies'}
     >
       <MetaHierarchyTree
         metaHierarchy={metaHierarchy}

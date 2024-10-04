@@ -1,7 +1,7 @@
 import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import { Paginator } from '@/ui/ui_interfaces'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { router } from '@inertiajs/react'
@@ -22,6 +22,11 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
     subtype: 'metadata',
   })
 
+  const [selectedItem, setSelectedItem] = useState<Pick<
+    MetaStructure,
+    'id' | 'structure_name'
+  > | null>(null)
+
   const formItems = useMemo(<
     T,
     U extends keyof T,
@@ -37,15 +42,23 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
         placeholder: 'Search for a metadata value..',
       },
       structure: {
-        type: 'select',
+        type: 'autocomplete',
+        label: 'Meta Structure',
+        autoCompleteSelection: selectedItem,
         dataKey: 'id',
         displayKey: 'structure_name',
-        label: 'Structure',
-        list: structures,
-        setValue: setFormValue('structure'),
+        linkText: 'Structural blocks',
+        redirectLink: route('meta-structure.index'),
+        selectListUrl: route('meta-strucure-search', {
+          search: '',
+        }),
+        setValue: (value: Pick<MetaStructure, 'id' | 'structure_name'>) => {
+          setSelectedItem(value)
+          setFormValue('structure')(value?.id.toString() ?? '')
+        },
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, structures])
+  }, [setFormValue, selectedItem])
 
   const data = useMemo(() => {
     return metaData.data.map((metaData) => ({

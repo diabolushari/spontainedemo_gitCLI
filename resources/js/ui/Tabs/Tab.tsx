@@ -15,7 +15,7 @@ export default function Tab({ tabItems, activeTab, setActiveTab }: Readonly<Prop
       {tabItems.map((tab) => (
         <div
           key={tab.value}
-          className={`group mr-16 flex cursor-pointer items-center border-b-5 pb-5 ${
+          className={`group mr-16 flex cursor-pointer items-center border-b-5 pb-2 pt-2 md:pb-5 md:pt-0 ${
             activeTab === tab.value
               ? 'border-1stop-highlight'
               : 'border-transparent hover:border-1stop-highlight'

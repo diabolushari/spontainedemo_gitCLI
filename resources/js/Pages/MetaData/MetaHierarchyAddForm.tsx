@@ -45,6 +45,8 @@ export default function MetaHierarchyAddForm({ metaHierarchy, metaDataId }: Prop
         dataKey: 'id',
         displayKey: 'name',
         displayKey2: 'structure_name',
+        linkText: 'Metad hierarchy',
+        redirectLink: route('meta-hierarchy.index'),
         selectListUrl: route('meta-hierarchy-search', {
           hierarchy: formData.meta_hierarchy_id,
           current_meta_data_id: metaDataId,

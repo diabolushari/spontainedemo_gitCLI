@@ -7,6 +7,7 @@ import { XIcon } from 'lucide-react'
 import SubHeading from '@/typograpy/SubHeading'
 import NormalText from '@/typograpy/NormalText'
 import ErrorText from '@/typograpy/ErrorText'
+import { Link } from '@inertiajs/react'
 
 interface Properties<
   K extends keyof T,
@@ -25,6 +26,8 @@ interface Properties<
   displayKey: K
   displayValue2?: K
   url: string
+  linkText?: string
+  redirectLink?: string
 }
 
 const ComboBox = <
@@ -43,6 +46,8 @@ const ComboBox = <
   displayValue2,
   disabled,
   url,
+  linkText,
+  redirectLink,
 }: Properties<K, G, U, V, T>) => {
   const [textFieldValue, setTextFieldValue] = useState<string>('')
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
@@ -138,7 +143,18 @@ const ComboBox = <
           ref={listRef}
         >
           <div className='flex flex-col'>
-            <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+            <div className='flex justify-between'>
+              <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+
+              <a
+                className={`link flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
+                href={redirectLink ?? ''}
+                target='_blank'
+                rel='noreferrer'
+              >
+                {linkText}
+              </a>
+            </div>
             <input
               type='text'
               value={textFieldValue}
