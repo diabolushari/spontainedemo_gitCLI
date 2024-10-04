@@ -7,9 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 readonly class QueryDataTable
 {
-    public function query(string $table): Builder
+    public function query(string $table, int $dataDetailId): Builder
     {
         return DB::table($table)
+            ->where('data_detail_id', $dataDetailId)
             ->leftJoin('meta_data as dim_1_record', "$table.dim_1", '=', 'dim_1_record.id')
             ->leftJoin('meta_data as dim_2_record', "$table.dim_2", '=', 'dim_2_record.id')
             ->leftJoin('meta_data as dim_3_record', "$table.dim_3", '=', 'dim_3_record.id')

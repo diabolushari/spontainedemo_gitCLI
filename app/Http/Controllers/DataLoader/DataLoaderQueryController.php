@@ -34,7 +34,7 @@ class DataLoaderQueryController extends Controller
         /** @var LengthAwarePaginator<DataLoaderQuery> $dataLoaderQueries */
         $dataLoaderQueries = DataLoaderQuery::when(
             $request->search != null,
-            fn($query) => $query->where('name', 'like', "%$request->search%")
+            fn ($query) => $query->where('name', 'like', "%$request->search%")
         )
             ->with('loaderConnection:id,name')
             ->paginate(20)
@@ -44,7 +44,7 @@ class DataLoaderQueryController extends Controller
             'dataLoaderQueries' => $dataLoaderQueries,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all()
+            'oldValues' => $request->all(),
         ]);
     }
 
@@ -59,15 +59,19 @@ class DataLoaderQueryController extends Controller
         return Inertia::render('DataLoader/DataLoaderQueryCreate', [
             'connections' => $connections,
             'type' => $request->type,
-            'subtype' => $request->subtype
+            'subtype' => $request->subtype,
         ]);
     }
 
     public function store(DataLoaderQueryFormRequest $request): RedirectResponse
     {
+        //        $escapeCharacters = ['\n', '\r', '\t'];
         try {
             /** @var DataLoaderQuery $record */
-            $record = DataLoaderQuery::create($request->all());
+            $record = DataLoaderQuery::create([
+                ...$request->all(),
+                //                'query' => str_replace($escapeCharacters, ' ', $request->query),
+            ]);
         } catch (Exception $e) {
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($e)]);
@@ -120,14 +124,18 @@ class DataLoaderQueryController extends Controller
             'dataLoaderQuery' => $dataLoaderQuery,
             'connections' => $connections,
             'type' => $request->type,
-            'subtype' => $request->subtype
+            'subtype' => $request->subtype,
         ]);
     }
 
     public function update(DataLoaderQueryFormRequest $request, DataLoaderQuery $dataLoaderQuery): RedirectResponse
     {
+        //        $escapeCharacters = ['\n', '\r', '\t'];
         try {
-            $dataLoaderQuery->update($request->all());
+            $dataLoaderQuery->update([
+                ...$request->all(),
+                //                'query' => str_replace($escapeCharacters, ' ', $request->query),
+            ]);
         } catch (Exception $e) {
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($e)]);

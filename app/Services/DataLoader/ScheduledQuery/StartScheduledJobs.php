@@ -6,7 +6,6 @@ use App\Events\ScheduledDataLoadEvent;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\CronTypes;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class StartScheduledJobs
 {
@@ -19,8 +18,7 @@ class StartScheduledJobs
 
     public function run(): void
     {
-        if ($this->now->minute == 8) {
-            Log::info('Running hourly queries');
+        if ($this->now->minute == 0) {
             $this->runHourlyQueries();
         }
         $this->runDailyQueries($this->now->toTimeString());
