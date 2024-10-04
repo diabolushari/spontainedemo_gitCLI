@@ -46,7 +46,7 @@ const calcUrls = (pagination: Paginator<{}>) => {
               strokeLinejoin='round'
             />
           </svg>
-          <p className='ml-2 mr-4 text-sm font-medium leading-none '>Previous</p>
+          <p className='small-1stop ml-2 mr-4 leading-none'>Previous</p>
         </Link>
       )
     }
@@ -55,10 +55,9 @@ const calcUrls = (pagination: Paginator<{}>) => {
         <Link
           as='a'
           key={index.toString() + link.label}
-          className={`mr-4 hidden cursor-pointer border-t border-transparent px-2 pt-3
-                            text-sm font-medium leading-none hover:border-indigo-400 hover:text-indigo-700 md:flex ${
-                              link.active ? 'border-indigo-400 text-indigo-700' : 'text-gray-600'
-                            } `}
+          className={`small-1stop mr-4 hidden cursor-pointer border-t border-transparent px-2 pt-3 leading-none hover:border-indigo-400 hover:text-indigo-700 md:flex ${
+            link.active ? 'border-indigo-400 text-indigo-700' : 'text-gray-600'
+          } `}
           href={url}
         >
           {link.label}
@@ -73,7 +72,7 @@ const calcUrls = (pagination: Paginator<{}>) => {
           key={index.toString() + link.label}
           className='flex cursor-pointer items-center pt-3 text-gray-600 hover:text-indigo-700'
         >
-          <p className='mr-3 text-sm font-medium leading-none'>Next</p>
+          <p className='small-1stop mr-3 leading-none'>Next</p>
           <svg
             width={14}
             height={8}
@@ -116,8 +115,8 @@ const Pagination = ({ pagination }: { pagination: Paginator<{}> }) => {
   return (
     <div className='flex w-full flex-wrap items-center justify-between gap-y-4 py-2'>
       <p className='mt-auto self-center text-sm text-gray-700'>
-        Showing <span className='font-medium'>{pagination.from}</span> to{' '}
-        <span className='font-medium'>{pagination.to}</span> of {pagination.total}
+        Showing <span className='small-1stop'>{pagination.from}</span> to{' '}
+        <span className='small-1stop'>{pagination.to}</span> of {pagination.total}
       </p>
       <div className='border-t border-gray-200'>
         <nav

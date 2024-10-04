@@ -25,7 +25,7 @@ export default function Modal({
       transition={{ duration: 0.2 }}
       className={styles.modal}
     >
-      <div className='relative w-screen h-screen'>
+      <div className='relative h-screen w-screen'>
         <div
           className={styles.modalBackground}
           onClick={() => setShowModal(false)}
@@ -34,13 +34,13 @@ export default function Modal({
           <div
             role='alert'
             className={
-              'container mx-auto pt-20 flex w-11/12 justify-center md:w-2/3 ' +
+              'container mx-auto flex w-11/12 justify-center pt-20 md:w-2/3 ' +
               (large ? '' : 'max-w-lg')
             }
           >
             <div className='relative w-full rounded bg-white pb-8 shadow-lg'>
               <div className='flex w-full items-start justify-between p-2'>
-                <span className='text-lg font-semibold'>{title}</span>
+                <span className='body-1stop text-lg'>{title}</span>
                 <div
                   onClick={() => setShowModal(false)}
                   className='cursor-pointer transition ease-in-out hover:bg-gray-200'

@@ -36,8 +36,8 @@ export default function AlertMessage({ message, variant }: Readonly<Props>) {
   const icon = getIcon(variant)
 
   return (
-    <div className={`flex gap-2 items-center ${textColor}`}>
-      <i className={`la ${icon} text-lg font-bold`}></i>
+    <div className={`flex items-center gap-2 ${textColor}`}>
+      <i className={`la ${icon} subheader-sm-1stop text-lg`}></i>
       <StrongText>{message}</StrongText>
     </div>
   )

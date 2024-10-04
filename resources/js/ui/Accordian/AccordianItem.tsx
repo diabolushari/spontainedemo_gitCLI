@@ -11,14 +11,14 @@ const AccordionItem = ({ title, children }: Properties) => {
 
   return (
     <div>
-      <div className={` -2 shadow-2xl transition duration-200 ease-in-out hover:bg-gray-700`}>
+      <div className={`-2 shadow-2xl transition duration-200 ease-in-out hover:bg-gray-700`}>
         <div
           className={`${
             open ? 'border-b-2' : ''
-          } flex w-full justify-between text-sm font-extralight text-white border-b py-2 px-2`}
+          } body-1stop flex w-full justify-between border-b px-2 py-2 text-sm text-white`}
           onClick={() => setOpen(!open)}
         >
-          <div className='flex flex-col gap-2 px-4 py-1 md:flex-row md:gap-10 '>
+          <div className='flex flex-col gap-2 px-4 py-1 md:flex-row md:gap-10'>
             <span className='text-sm'>
               <b>{title}</b>
             </span>
@@ -26,13 +26,13 @@ const AccordionItem = ({ title, children }: Properties) => {
           <ChevronDownIcon
             className={`${
               open
-                ? 'rotate-180  transition-transform duration-200 ease-linear'
-                : 'transition-transform duration-200 ease-linear '
-            } ml-auto h-5 w-5 self-center rounded-lg `}
+                ? 'rotate-180 transition-transform duration-200 ease-linear'
+                : 'transition-transform duration-200 ease-linear'
+            } ml-auto h-5 w-5 self-center rounded-lg`}
           />
         </div>
         {open && (
-          <div className='flex flex-col gap-3 px-4 pt-4 pb-2 text-sm text-gray-500'>{children}</div>
+          <div className='flex flex-col gap-3 px-4 pb-2 pt-4 text-sm text-gray-500'>{children}</div>
         )}
       </div>
     </div>

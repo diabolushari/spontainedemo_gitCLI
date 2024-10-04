@@ -76,7 +76,6 @@ export default function AnalyticsDashboardLayout({
         description={description}
       />
       <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
-        {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
             <Link
@@ -94,11 +93,11 @@ export default function AnalyticsDashboardLayout({
             {headings.map((heading) => (
               <div
                 key={heading.value}
-                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'font-bold text-1stop-highlight' : 'text-gray-600'}`}
+                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'subheader-1stop 1stop-highlight' : '1stop-gray'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
                 <h1
-                  className={`font-h1stop text-lg ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-gray-300'}`}
+                  className={`subheader-1stop ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-1stop-gray'}`}
                 >
                   {heading.name}
                 </h1>
@@ -111,7 +110,7 @@ export default function AnalyticsDashboardLayout({
               ref={profileRef}
             >
               <div
-                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight font-h1-stop text-2xl text-white hover:bg-1stop-accent1'
+                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-accent1'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -136,7 +135,7 @@ export default function AnalyticsDashboardLayout({
             {isProfileDropdown && (
               <div className='absolute right-0 mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
                 <div className='px-4 py-2'>
-                  <p className='font-h2-1stop text-gray-900'>Logged in as {userName}</p>
+                  <p className='1stop-small-head text-gray-900'>Logged in as {userName}</p>
                 </div>
                 <div className='border-t border-gray-200'></div>
                 <div className='py-2'>
@@ -168,19 +167,19 @@ export default function AnalyticsDashboardLayout({
                 >
                   <Link
                     href={item.link}
-                    className='text-black-600 flex flex-col items-center font-h3-1stop'
+                    className='text-black-600 flex flex-col items-center'
                   >
                     <img
                       className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
                       src={item.image}
                       alt=''
                     />
-                    <span className='pt-1 text-center text-xs'>{item.title}</span>
+                    <span className='1stop-small-header pt-1 text-center'>{item.title}</span>
                   </Link>
                 </div>
               ))}
             </div>
-            <div className='mt-10 text-sm'>{findDescription(activeTab)}</div>
+            <div className='small-1stop mt-10'>{findDescription(activeTab)}</div>
           </div>
         )}
       </div>

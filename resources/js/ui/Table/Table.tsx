@@ -13,12 +13,12 @@ export default function Table({
     <div className='overflow-auto'>
       <table className='w-full'>
         <thead className=''>
-          <tr className='focus:outline-none leading-none text-gray-700 border-b-2 border-textbox-field'>
+          <tr className='border-b-2 border-textbox-field leading-none text-gray-700 focus:outline-none'>
             {heads.map((head) => {
               return (
                 <th
                   scope='col'
-                  className='px-3 py-3 text-sm text-left text-gray-600'
+                  className='px-3 py-3 text-left text-sm text-gray-600'
                   key={head}
                 >
                   {head}
@@ -28,7 +28,7 @@ export default function Table({
             {editColumn && (
               <th
                 scope='col'
-                className='px-3 py-3 text-left text-base font-semibold text-gray-500'
+                className='subheader-sm-1stop px-3 py-3 text-left text-base text-gray-500'
               ></th>
             )}
           </tr>
