@@ -3,6 +3,7 @@ import { MetaStructure } from '@/interfaces/meta_interfaces'
 import AddDataTableFields from '@/Components/DataDetail/DataTableFieldInfo/AddDataTableFields'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 interface Props {
   detail: DataDetail
@@ -11,13 +12,16 @@ interface Props {
 
 export default function InitDataTableInfoPage({ detail, structures }: Readonly<Props>) {
   return (
-    <AuthenticatedLayout>
+    <AnalyticsDashboardLayout
+      type='data'
+      subtype='data-tables'
+    >
       <DashboardPadding>
         <AddDataTableFields
           detail={detail}
           structures={structures}
         />
       </DashboardPadding>
-    </AuthenticatedLayout>
+    </AnalyticsDashboardLayout>
   )
 }

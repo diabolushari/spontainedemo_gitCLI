@@ -46,6 +46,7 @@ export default function DataLoaderJobIndex({
         key: 'name',
         label: 'Name',
         isCardHeader: true,
+        isLink: true,
       },
     ] as ListItemKeys<Partial<DataLoaderJob>>[]
   }, [])
@@ -61,6 +62,11 @@ export default function DataLoaderJobIndex({
           //   title: 'Show',
           //   url: route('loader-jobs.show', record.id),
           // },
+          {
+            title: 'Query : ' + record.loader_query?.name,
+            url: route('loader-queries.index', { search: record.loader_query?.name }),
+            textStyles: ' hover:scale-105 transition',
+          },
         ],
       }
     })
@@ -84,7 +90,7 @@ export default function DataLoaderJobIndex({
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Jobs'
       handleCardClick={handleCardClick}
-      cardStyles='p-4 hover:scale-105 transition'
+      cardStyles='p-4 '
       subheading='Multiple data loader jobs may be configured against each data source. Loaders may be scheduled to run based on time or other dependencies. Once scheduled, the loader jobs then continue to run automatically.'
     />
   )

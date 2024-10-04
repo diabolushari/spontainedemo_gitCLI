@@ -20,13 +20,23 @@ interface Props<
   gridStyles?: string
   cardStyles?: string
   handleCardClick?: (id: number | string) => void
+  layoutStyles?: string
 }
 
 export default function ListResourceCard<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
->({ keys, primaryKey, rows, addUrl, cardStyles, gridStyles, handleCardClick }: Props<U, T>) {
+>({
+  keys,
+  primaryKey,
+  rows,
+  addUrl,
+  cardStyles,
+  gridStyles,
+  handleCardClick,
+  layoutStyles,
+}: Props<U, T>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
@@ -50,7 +60,9 @@ export default function ListResourceCard<
   }
   // console.log(titleKey?.boxStyles)
   return (
-    <div className='grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+    <div
+      className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
+    >
       <AddButton link={addUrl} />
       {rows.map((row) => {
         return (

@@ -63,7 +63,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
   const data = useMemo(() => {
     return metaData.data.map((metaData) => ({
       id: metaData.id,
-      name: metaData.name,
+      name: metaData.name + ' : ' + metaData.meta_structure?.structure_name,
       structure: metaData.meta_structure?.structure_name,
       actionStyle: 'gap-8',
       actions: [

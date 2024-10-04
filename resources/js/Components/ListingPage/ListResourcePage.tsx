@@ -55,6 +55,7 @@ interface Props<
   oldValues?: Record<string, string>
   cardStyles?: string
   gridStyles?: string
+  layoutStyle?: string
   handleCardClick?: (id: number | string) => void
 }
 
@@ -92,6 +93,7 @@ export default function ListResourcePage<
   subheading,
   cardStyles,
   gridStyles,
+  layoutStyle,
   handleCardClick,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -173,6 +175,7 @@ export default function ListResourcePage<
           cardStyles={cardStyles}
           gridStyles={gridStyles}
           handleCardClick={handleCardClick}
+          layoutStyles={layoutStyle}
         />
         {paginator != null && <Pagination pagination={paginator} />}
 

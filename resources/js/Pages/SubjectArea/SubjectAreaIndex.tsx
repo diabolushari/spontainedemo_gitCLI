@@ -36,7 +36,13 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
     return [
       { key: 'name', label: 'Name', isCardHeader: true },
       { key: 'is_active', label: 'Is Active', isShownInCard: true, boxStyles: 'items-center ' },
-      { key: 'description', label: 'Description', isShownInCard: true, boxStyles: 'items-center' },
+      { key: '', label: 'Description', isShownInCard: true, boxStyles: 'items-center' },
+      {
+        key: 'description',
+        label: '',
+        isShownInCard: true,
+        boxStyles: 'items-center',
+      },
     ] as ListItemKeys<{
       name: string
       is_active: string
@@ -55,6 +61,11 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
           //   title: 'Show',
           //   url: route('subject-area.edit', { id: subjectArea.id }),
           // },
+          {
+            title: 'Edit',
+            url: route('subject-area.edit', subjectArea.id),
+            textStyles: 'hover:scale-105 transition',
+          },
         ],
       }
     })
@@ -75,9 +86,10 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       type='data'
       subtype='subject-area'
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
-      handleCardClick={handleCardClick}
+      // handleCardClick={handleCardClick}
       subheading='Subject areas are thematic regions that hold data, and will form logical groupings of reports and dashboards'
       cardStyles='p-4'
+      layoutStyle='min-w-full'
     />
   )
 }

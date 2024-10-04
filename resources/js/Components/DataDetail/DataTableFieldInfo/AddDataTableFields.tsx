@@ -223,130 +223,128 @@ export default function AddDataTableFields({ detail, structures }: Readonly<Prop
   }, [dateFields, dimensionFields, measureFields, detail, post])
 
   return (
-    <AuthenticatedLayout>
-      <DashboardPadding>
-        <Card>
-          <CardHeader title={`Add Field Into Table: ${detail.name}`} />
-        </Card>
-        <div className='flex flex-col space-y-4'>
-          <div className='flex flex-col p-5'>
-            <div className='flex items-center justify-between gap-5'>
-              <SubHeading>Dates</SubHeading>
-              <AddButton onClick={() => openModal('date')} />
-            </div>
-            <div className='flex flex-col'>
-              {dateFields.map((field) => (
-                <div
-                  key={field.column}
-                  className='flex items-center justify-between p-5'
-                >
-                  <NormalText>{field.field_name}</NormalText>
-                  <div className='flex gap-2'>
-                    <button
-                      className='text-blue-500'
-                      onClick={() => openDateForUpdate(field)}
-                      type='button'
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className='text-red-500'
-                      onClick={() => removeDateColumn(field.column)}
-                      type='button'
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+    <DashboardPadding>
+      <Card>
+        <CardHeader title={`Add Field Into Table: ${detail.name}`} />
+      </Card>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex flex-col p-5'>
+          <div className='flex items-center justify-between gap-5'>
+            <SubHeading>Dates</SubHeading>
+            <AddButton onClick={() => openModal('date')} />
           </div>
-          <div className='flex flex-col p-5'>
-            <div className='flex items-center justify-between gap-5'>
-              <SubHeading>Dimensions</SubHeading>
-              <AddButton onClick={() => openModal('dimension')} />
-            </div>
-            <div className='flex flex-col'>
-              {dimensionFields.map((field) => (
-                <div
-                  key={field.column}
-                  className='flex items-center justify-between p-5'
-                >
-                  <NormalText>
-                    {field.field_name}, {field.meta_structure_id}
-                  </NormalText>
-                  <div className='flex gap-2'>
-                    <button
-                      className='text-blue-500'
-                      onClick={() => openDimensionForUpdate(field)}
-                      type='button'
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className='text-red-500'
-                      onClick={() => removeMeasureColumn(field.column)}
-                      type='button'
-                    >
-                      Remove
-                    </button>
-                  </div>
+          <div className='flex flex-col'>
+            {dateFields.map((field) => (
+              <div
+                key={field.column}
+                className='flex items-center justify-between p-5'
+              >
+                <NormalText>{field.field_name}</NormalText>
+                <div className='flex gap-2'>
+                  <button
+                    className='text-blue-500'
+                    onClick={() => openDateForUpdate(field)}
+                    type='button'
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className='text-red-500'
+                    onClick={() => removeDateColumn(field.column)}
+                    type='button'
+                  >
+                    Remove
+                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
-          <div className='flex flex-col p-5'>
-            <div className='flex items-center justify-between gap-5'>
-              <SubHeading>Measures</SubHeading>
-              <AddButton onClick={() => openModal('measure')} />
-            </div>
-            <div className='flex flex-col gap-4'>
-              {measureFields.map((field) => (
-                <div
-                  key={field.column}
-                  className='flex items-center justify-between p-5'
-                >
-                  <NormalText>
-                    {field.field_name}, {field.unit_field_name}
-                  </NormalText>
-                  <div className='flex gap-2'>
-                    <button
-                      className='text-blue-500'
-                      onClick={() => openMeasureForUpdate(field)}
-                      type='button'
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className='text-red-500'
-                      onClick={() => removeDimensionColumn(field.column)}
-                      type='button'
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className='flex justify-start'>
-            <Button
-              label='Save'
-              onClick={submitData}
-            />
+              </div>
+            ))}
           </div>
         </div>
-        {showModal && (
-          <Modal setShowModal={setShowModal}>
-            <DataTableFieldInfoForm
-              fieldType={fieldType}
-              structures={structures}
-              onFormSubmit={onNewField}
-              selectedField={selectedField}
-            />
-          </Modal>
-        )}
-      </DashboardPadding>
-    </AuthenticatedLayout>
+        <div className='flex flex-col p-5'>
+          <div className='flex items-center justify-between gap-5'>
+            <SubHeading>Dimensions</SubHeading>
+            <AddButton onClick={() => openModal('dimension')} />
+          </div>
+          <div className='flex flex-col'>
+            {dimensionFields.map((field) => (
+              <div
+                key={field.column}
+                className='flex items-center justify-between p-5'
+              >
+                <NormalText>
+                  {field.field_name}, {field.meta_structure_id}
+                </NormalText>
+                <div className='flex gap-2'>
+                  <button
+                    className='text-blue-500'
+                    onClick={() => openDimensionForUpdate(field)}
+                    type='button'
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className='text-red-500'
+                    onClick={() => removeMeasureColumn(field.column)}
+                    type='button'
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className='flex flex-col p-5'>
+          <div className='flex items-center justify-between gap-5'>
+            <SubHeading>Measures</SubHeading>
+            <AddButton onClick={() => openModal('measure')} />
+          </div>
+          <div className='flex flex-col gap-4'>
+            {measureFields.map((field) => (
+              <div
+                key={field.column}
+                className='flex items-center justify-between p-5'
+              >
+                <NormalText>
+                  {field.field_name}, {field.unit_field_name}
+                </NormalText>
+                <div className='flex gap-2'>
+                  <button
+                    className='text-blue-500'
+                    onClick={() => openMeasureForUpdate(field)}
+                    type='button'
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className='text-red-500'
+                    onClick={() => removeDimensionColumn(field.column)}
+                    type='button'
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className='flex justify-start'>
+          <Button
+            label='Save'
+            onClick={submitData}
+          />
+        </div>
+      </div>
+      {showModal && (
+        <Modal setShowModal={setShowModal}>
+          <DataTableFieldInfoForm
+            fieldType={fieldType}
+            structures={structures}
+            onFormSubmit={onNewField}
+            selectedField={selectedField}
+          />
+        </Modal>
+      )}
+    </DashboardPadding>
   )
 }

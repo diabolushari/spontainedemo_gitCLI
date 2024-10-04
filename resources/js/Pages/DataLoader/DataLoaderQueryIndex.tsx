@@ -48,10 +48,16 @@ export default function DataLoaderQueryIndex({
         isCardHeader: true,
       },
       {
-        key: 'connection',
+        key: '',
         label: 'Connection',
         isShownInCard: true,
         boxStyles: 'items-center',
+      },
+      {
+        key: 'connection',
+
+        isShownInCard: true,
+        boxStyles: '',
       },
     ] as ListItemKeys<{
       id: number
@@ -89,8 +95,8 @@ export default function DataLoaderQueryIndex({
       addUrl={route('loader-queries.create', { type: 'loaders', subtype: 'queries' })}
       searchUrl={route('loader-queries.index', { type: 'loaders', subtype: 'queries' })}
       paginator={dataLoaderQueries}
-      type={type}
-      subtype={subtype}
+      type={type ?? 'loaders'}
+      subtype={subtype ?? 'queries'}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       title='Extraction Statements'

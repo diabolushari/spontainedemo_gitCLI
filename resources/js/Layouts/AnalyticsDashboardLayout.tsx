@@ -94,7 +94,7 @@ export default function AnalyticsDashboardLayout({
             </Link>
           </div>
 
-          <div className='flex flex-col justify-center px-1 md:flex-row md:space-x-12'>
+          <div className='flex flex-col items-center justify-center px-1 md:flex-row md:space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
@@ -164,7 +164,7 @@ export default function AnalyticsDashboardLayout({
               activeTab={activeTab}
               setActiveTab={changeTab}
             />
-            <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
+            <div className='mt-8 flex flex-wrap justify-center gap-4 sm:justify-normal md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
                 <div
                   key={item.title}
