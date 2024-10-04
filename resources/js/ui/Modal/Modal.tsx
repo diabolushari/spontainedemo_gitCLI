@@ -40,7 +40,7 @@ export default function Modal({
           >
             <div className='relative w-full rounded bg-white pb-8 shadow-lg'>
               <div className='flex w-full items-start justify-between p-2'>
-                <span className='font-h3-1stop text-lg'>{title}</span>
+                <span className='body-1stop text-lg'>{title}</span>
                 <div
                   onClick={() => setShowModal(false)}
                   className='cursor-pointer transition ease-in-out hover:bg-gray-200'

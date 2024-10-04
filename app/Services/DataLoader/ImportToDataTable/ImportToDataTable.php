@@ -7,6 +7,7 @@ use App\Models\SubjectArea\SubjectArea;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 readonly class ImportToDataTable
 {
@@ -35,6 +36,7 @@ readonly class ImportToDataTable
     public function importToDataTable(DataDetail $dataDetail, array $data): array
     {
 
+        Log::info('Importing data to data table');
         $status = [
             'is_successful' => false,
             'total_records' => 0,
@@ -46,6 +48,18 @@ readonly class ImportToDataTable
         // Import data to the data table
         if (empty($data)) {
             $status['error_message'] = 'No data to import';
+            $status['completed_at'] = now();
+
+            return $status;
+        }
+
+        //cancel import if data table already has data
+        $count = DB::table($dataDetail->subjectArea->table_name)
+            ->where('data_detail_id', $dataDetail->id)
+            ->count();
+
+        if ($count > 0) {
+            $status['error_message'] = 'Data table already has data';
             $status['completed_at'] = now();
 
             return $status;

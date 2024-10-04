@@ -54,9 +54,12 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
         <Card>
           <div className='p-8'>
             <div className='mb-6'>
-              <h1 className='font-h1-stop text-xl'>METADATA</h1>
-              <p className='text-sm text-gray-500'>
-                Metadata Search {'>'} <span className='font-h2-1stop'>Value Details</span>
+              <h1 className='subheader-1stop text-xl'>METADATA</h1>
+              <p className='small-1stop text-sm text-gray-500'>
+                Metadata Search {'>'}{' '}
+                <span>
+                  <b>Value Details</b>
+                </span>
               </p>
             </div>
             <div className='rounded-md bg-[#D9DEE8] p-6 shadow-lg'>
@@ -78,17 +81,17 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
               </div>
               <div className='grid grid-cols-2 gap-4'>
                 <div>
-                  <h2 className='font-h2-1stop text-sm text-gray-600'>VALUE NAME</h2>
-                  <p className='font-h1-stop text-xl'>{metaData.name}</p>
+                  <h2 className='1stop-small-header text-sm text-gray-600'>VALUE NAME</h2>
+                  <p className='body-1stop text-xl'>{metaData.name}</p>
                 </div>
                 <div>
-                  <h2 className='font-h2-1stop text-sm text-gray-600'>STRUCTURAL BLOCK</h2>
-                  <p className='font-h1-stop text-xl'>{metaData.meta_structure?.structure_name}</p>
+                  <h2 className='1stop-small-header text-sm text-gray-600'>STRUCTURAL BLOCK</h2>
+                  <p className='body-1stop text-xl'>{metaData.meta_structure?.structure_name}</p>
                 </div>
               </div>
               <div className='mt-4'>
-                <h2 className='font-h2-1stop text-sm text-gray-600'>DESCRIPTION</h2>
-                <p className='text-md font-body-1stop'>{metaData.description}</p>
+                <h2 className='1stop-small-header text-sm text-gray-600'>DESCRIPTION</h2>
+                <p className='text-md body-1stop'>{metaData.description}</p>
               </div>
               <div className='flex justify-end space-x-4 text-xs'>
                 <div
@@ -111,17 +114,21 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
               </div>
             </div>
             <div className='bg-white-100 rounded-md p-6'>
-              <h1 className='font-h2-stop text-lg'>
-                <b>{metaData.name} is a member of the following groups:</b>
+              <h1 className='body-1stop text-lg'>
+                {metaData.name} is a member of the following <b>groups:</b>
               </h1>
               <div className='flex flex-col gap-2 divide-y-2'>
-                {metaData.group_item?.length === 0 && <div>No groups</div>}
+                {metaData.group_item?.length === 0 && (
+                  <div className='body-1stop text-underline'>No groups</div>
+                )}
                 {metaData.group_item?.map((groupName) => (
                   <div
                     key={groupName.id}
                     className='flex justify-between gap-5 gap-y-2'
                   >
-                    <span className='font-subheader-1stop'>{groupName.meta_data_group?.name}</span>
+                    <span className='body-1stop text-underline'>
+                      {groupName.meta_data_group?.name}
+                    </span>
                     <img
                       src='/trash-icon.svg'
                       alt='Delete'
@@ -133,18 +140,20 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
               </div>
             </div>
             <div className='bg-white-100 rounded-md p-6'>
-              <h1 className='font-h2-1stop text-lg'>
-                <b>{metaData.name} is a member of the following dimensional hierarchies:</b>
+              <h1 className='body-1stop text-lg'>
+                {metaData.name} is a member of the following dimensional <b>hierarchies:</b>
               </h1>
               <div className='p-2'>
                 <div className='flex flex-col gap-2 divide-y-2'>
-                  {metaData.hierarchy_item?.length === 0 && <div>No hierarchys</div>}
+                  {metaData.hierarchy_item?.length === 0 && (
+                    <div className='body-1stop text-underline'>No hierarchys</div>
+                  )}
                   {metaData.hierarchy_item?.map((hierarchyName) => (
                     <div
                       key={hierarchyName.id}
                       className='flex justify-between gap-5 gap-y-2'
                     >
-                      <span className='font-subheader-1stop'>
+                      <span className='body-1stop text-underline'>
                         {hierarchyName.meta_hierarchy?.name}
                       </span>
                       <img

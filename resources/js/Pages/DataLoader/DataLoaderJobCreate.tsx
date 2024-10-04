@@ -178,6 +178,7 @@ export default function DataLoaderJobCreate({
       formStyles='w-1/2 md:grid-cols-1'
       type={type ?? 'loaders'}
       subtype={subtype ?? 'jobs'}
+      isPatchRequest={job != null}
     />
   )
 }

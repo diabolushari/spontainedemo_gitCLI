@@ -28,7 +28,7 @@ export default function Table({
             {editColumn && (
               <th
                 scope='col'
-                className='px-3 py-3 text-left font-h2-1stop text-base text-gray-500'
+                className='subheader-sm-1stop px-3 py-3 text-left text-base text-gray-500'
               ></th>
             )}
           </tr>

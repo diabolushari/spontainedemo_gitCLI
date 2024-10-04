@@ -121,7 +121,7 @@ class DataDetailController extends Controller
                 ]);
         }
 
-        $dataTable = $queryDataTable->query($dataDetail->subjectArea->table_name ?? '')->get();
+        $dataTable = $queryDataTable->query($dataDetail->subjectArea->table_name ?? '', $dataDetail->id)->get();
 
         return Inertia::render('DataDetail/DataDetailShow', [
             'detail' => $dataDetail,

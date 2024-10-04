@@ -114,7 +114,6 @@ const ComboBox = <
       {value != null && (
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
-         
             <span>
               {label}
               <br />
@@ -174,8 +173,7 @@ const ComboBox = <
                   return (
                     <div
                       key={item[dataKey]}
-                      className={`flex cursor-pointer flex-col py-3 px-2 text-sm
-                        ${highlightedIndex === index ? 'bg-gray-200 font-semibold' : ''}`}
+                      className={`flex cursor-pointer flex-col px-2 py-3 text-sm ${highlightedIndex === index ? 'subheader-sm-1stop bg-gray-200' : ''}`}
                       onClick={() => setValue(item)}
                       onMouseEnter={() => setHighlightedIndex(index)}
                     >

@@ -16,7 +16,7 @@ export const getFormStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
     }
 
     case 'dark': {
-      return 'flex h-11 items-center rounded border border-gray-300 bg-white pr-20 pl-10 text-sm font-normal text-gray-600 shadow focus:border focus:border-indigo-700 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:pr-52'
+      return 'flex h-11 items-center rounded border border-gray-300 bg-white pr-20 pl-10 text-sm body-1stop text-gray-600 shadow focus:border focus:border-indigo-700 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:pr-52'
     }
     default: {
       return ''

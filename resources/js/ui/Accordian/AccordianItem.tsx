@@ -11,11 +11,11 @@ const AccordionItem = ({ title, children }: Properties) => {
 
   return (
     <div>
-      <div className={`-2 shadow-2xl transition duration-200 ease-in-out hover:bg-gray-700`}>
+      <div className={`shadow-2xl transition duration-200 ease-in-out hover:bg-gray-700`}>
         <div
           className={`${
             open ? 'border-b-2' : ''
-          } flex w-full justify-between border-b px-2 py-2 font-body-1stop text-sm text-white`}
+          } body-1stop flex w-full justify-between border-b px-2 py-2 text-sm text-white`}
           onClick={() => setOpen(!open)}
         >
           <div className='flex flex-col gap-2 px-4 py-1 md:flex-row md:gap-10'>

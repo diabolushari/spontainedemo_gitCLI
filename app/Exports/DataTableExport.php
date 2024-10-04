@@ -62,7 +62,7 @@ class DataTableExport implements FromCollection
 
         $data->push($headers);
 
-        $this->queryDataTable->query($this->dataDetail->subjectArea->table_name ?? '')
+        $this->queryDataTable->query($this->dataDetail->subjectArea->table_name ?? '', $this->dataDetail->id)
             ->orderBy('id')
             ->chunk(10000, function ($records) use (&$data, $columns) {
                 $records->each(function ($record) use (&$data, $columns) {

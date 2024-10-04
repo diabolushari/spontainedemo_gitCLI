@@ -37,7 +37,7 @@ export default function AlertMessage({ message, variant }: Readonly<Props>) {
 
   return (
     <div className={`flex items-center gap-2 ${textColor}`}>
-      <i className={`la ${icon} font-h1-stop text-lg`}></i>
+      <i className={`la ${icon} subheader-sm-1stop text-lg`}></i>
       <StrongText>{message}</StrongText>
     </div>
   )
