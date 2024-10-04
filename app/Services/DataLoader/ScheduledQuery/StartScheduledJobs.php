@@ -6,6 +6,7 @@ use App\Events\ScheduledDataLoadEvent;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\CronTypes;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class StartScheduledJobs
 {
@@ -44,6 +45,7 @@ class StartScheduledJobs
             ->where('schedule_time', $time)
             ->get()
             ->each(function ($query) {
+                Log::info('Running daily query');
                 ScheduledDataLoadEvent::dispatch($query);
             });
     }
