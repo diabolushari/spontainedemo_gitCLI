@@ -30,10 +30,19 @@ class StartScheduledJobs
 
     private function runHourlyQueries(): void
     {
+
+        Log::info(
+            DataLoaderJob::where('cron_type', CronTypes::HOURLY)
+                ->active()
+                ->get()
+                ->toArray()
+        );
+
         DataLoaderJob::where('cron_type', CronTypes::HOURLY)
             ->active()
             ->get()
             ->each(function ($query) {
+                Log::info('Dispatching event');
                 ScheduledDataLoadEvent::dispatch($query);
             });
     }
