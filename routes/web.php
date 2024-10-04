@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\DataDetail\DataDetailController;
+use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
+use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
@@ -16,7 +18,6 @@ use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
-use App\Http\Controllers\MetaDataAnalyticsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -37,7 +38,7 @@ Route::get('/', function () {
     ]);
 });
 Route::get('/', function () {
-    return redirect()->route('dashboard'); 
+    return redirect()->route('dashboard');
 });
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
@@ -96,7 +97,11 @@ Route::get('queries-in-connection', QueryListController::class)
     ->name('queries-in-connection');
 
 Route::get('tab', [TabController::class, 'show'])->name('tab');
-Route::resource('meta-data-analytics', MetaDataAnalyticsController::class)
-    ->parameters(['meta-data-analytics' => 'metaData']);
 
-require __DIR__ . '/auth.php';
+Route::get('export-data-table/{dataDetail}', ExportDataTableController::class)
+    ->name('export-data-table');
+
+Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::class)
+    ->name('import-data-table');
+
+require __DIR__.'/auth.php';

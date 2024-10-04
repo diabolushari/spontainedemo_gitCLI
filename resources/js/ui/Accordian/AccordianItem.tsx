@@ -11,7 +11,7 @@ const AccordionItem = ({ title, children }: Properties) => {
 
   return (
     <div>
-      <div className={`-2 shadow-2xl transition duration-200 ease-in-out hover:bg-gray-700`}>
+      <div className={`shadow-2xl transition duration-200 ease-in-out hover:bg-gray-700`}>
         <div
           className={`${
             open ? 'border-b-2' : ''

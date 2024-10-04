@@ -4,6 +4,8 @@ import { User } from '@/interfaces/data_interfaces'
 import Tab from '@/ui/Tabs/Tab'
 import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
 import MetaTags from '@/Components/MetaTags'
+import { showError, showSuccess } from '@/ui/alerts'
+import { ToastContainer } from 'react-toastify'
 
 interface Properties {
   children?: ReactNode
@@ -23,6 +25,21 @@ export default function AnalyticsDashboardLayout({
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
+
+  const sessionFlash = usePage().props.flash as unknown as {
+    message: string | null
+    error: string | null
+  }
+
+  useEffect(() => {
+    console.log(sessionFlash)
+    if (sessionFlash.message != null) {
+      showSuccess(sessionFlash.message)
+    }
+    if (sessionFlash.error != null) {
+      showError(sessionFlash.error)
+    }
+  }, [sessionFlash])
 
   const profileRef = useRef<HTMLDivElement>(null)
 
@@ -48,19 +65,6 @@ export default function AnalyticsDashboardLayout({
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : 'G'
   const userName = User?.name || 'Guest'
 
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-  //     setIsProfileDropdown(false)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   document.addEventListener('mousedown', handleClickOutside)
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside)
-  //   }
-  // }, [])
-
   const changeTab = (newTab: string) => {
     setActiveTab(newTab)
     const tabInfo = dashboardMenuItems.find((tab) => tab.value === newTab)
@@ -75,6 +79,7 @@ export default function AnalyticsDashboardLayout({
         title={title}
         description={description}
       />
+      <ToastContainer />
       <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
         <div className='flex items-center justify-between'>
           <div className='flex-shrink-0'>
