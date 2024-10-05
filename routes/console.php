@@ -16,7 +16,6 @@ Schedule::call(function () {
 })->everyTenMinutes();
 
 Schedule::call(function () {
-    Log::info('Running scheduled job');
     $runScheduleQuery = new StartScheduledJobs;
     $runScheduleQuery->run();
 })->everyMinute();

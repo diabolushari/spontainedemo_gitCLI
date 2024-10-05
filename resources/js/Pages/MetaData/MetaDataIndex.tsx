@@ -1,10 +1,10 @@
-import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
-import useCustomForm from '@/hooks/useCustomForm'
-import { Paginator } from '@/ui/ui_interfaces'
-import { useCallback, useMemo, useState } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { FormItem } from '@/FormBuilder/FormBuilder'
+import useCustomForm from '@/hooks/useCustomForm'
+import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
+import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
+import { useCallback, useMemo, useState } from 'react'
 
 interface Props {
   structures: Partial<MetaStructure>[]

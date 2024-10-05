@@ -1,10 +1,3 @@
-import { MetaStructure } from '@/interfaces/meta_interfaces'
-import { useCallback, useState } from 'react'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import Card from '@/ui/Card/Card'
-import CardHeader from '@/ui/Card/CardHeader'
-import Modal from '@/ui/Modal/Modal'
 import DataTableFieldInfoForm, {
   DataTableFieldInfo,
   possibleDateFields,
@@ -12,20 +5,23 @@ import DataTableFieldInfoForm, {
   possibleMeasureFields,
 } from '@/Components/DataDetail/DataTableFieldInfo/DataTableFieldInfoForm'
 import {
-  DataDetail,
   TableDateField,
   TableDimensionField,
   TableMeasureField,
 } from '@/interfaces/data_interfaces'
-import { showError } from '@/ui/alerts'
-import SubHeading from '@/typograpy/SubHeading'
-import AddButton from '@/ui/button/AddButton'
+import { MetaStructure } from '@/interfaces/meta_interfaces'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
 import NormalText from '@/typograpy/NormalText'
-import Button from '@/ui/button/Button'
-import useInertiaPost from '@/hooks/useInertiaPost'
+import SubHeading from '@/typograpy/SubHeading'
+import { showError } from '@/ui/alerts'
+import AddButton from '@/ui/button/AddButton'
+import Card from '@/ui/Card/Card'
+import CardHeader from '@/ui/Card/CardHeader'
+import Modal from '@/ui/Modal/Modal'
+import { useCallback, useState } from 'react'
 
 interface Props {
-  detail: DataDetail
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
 }
 
@@ -42,7 +38,7 @@ const fieldFormDefaultValue = {
   meta_structure_id: '', // only for  dimension fields
 }
 
-export default function AddDataTableFields({ detail, structures }: Readonly<Props>) {
+export default function AddDataTableFields({ structures }: Readonly<Props>) {
   const [showModal, setShowModal] = useState(false)
   const [fieldType, setFieldType] = useState<'date' | 'dimension' | 'measure'>('date')
   const [dateFields, setDateFields] = useState<Omit<TableDateField, 'id' | 'data_detail_id'>[]>([])
@@ -55,9 +51,6 @@ export default function AddDataTableFields({ detail, structures }: Readonly<Prop
   const [dimensionFields, setDimensionFields] = useState<
     Omit<TableDimensionField, 'id' | 'data_detail_id'>[]
   >([])
-  const { post } = useInertiaPost('/data-detail-fields-info', {
-    showErrorToast: true,
-  })
 
   const openModal = (type: string) => {
     setShowModal(true)
@@ -213,20 +206,11 @@ export default function AddDataTableFields({ detail, structures }: Readonly<Prop
     setShowModal(true)
   }
 
-  const submitData = useCallback(() => {
-    post({
-      detail_id: detail.id,
-      dates: dateFields,
-      dimensions: dimensionFields,
-      measures: measureFields,
-    })
-  }, [dateFields, dimensionFields, measureFields, detail, post])
-
   return (
     <AuthenticatedLayout>
       <DashboardPadding>
         <Card>
-          <CardHeader title={`Add Field Into Table: ${detail.name}`} />
+          <CardHeader title={`Add Field Into Table: `} />
         </Card>
         <div className='flex flex-col space-y-4'>
           <div className='flex flex-col p-5'>
@@ -328,12 +312,6 @@ export default function AddDataTableFields({ detail, structures }: Readonly<Prop
                 </div>
               ))}
             </div>
-          </div>
-          <div className='flex justify-start'>
-            <Button
-              label='Save'
-              onClick={submitData}
-            />
           </div>
         </div>
         {showModal && (

@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('type');
-            $table->foreignId('subject_area_id')
-                ->constrained('subject_areas');
+            $table->string('subject_area');
             $table->boolean('is_active')->default(true);
+            $table->string('table_name');
             $table->foreignId('created_by')
                 ->nullable()
                 ->constrained('users');

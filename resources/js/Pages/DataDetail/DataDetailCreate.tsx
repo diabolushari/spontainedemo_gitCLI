@@ -1,20 +1,19 @@
-import { ReferenceData, SubjectArea } from '@/interfaces/data_interfaces'
-import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo } from 'react'
+import AddDataTableFields from '@/Components/DataDetail/DataTableFieldInfo/AddDataTableFields'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import useCustomForm from '@/hooks/useCustomForm'
+import { ReferenceData } from '@/interfaces/data_interfaces'
+import { useMemo } from 'react'
 
 interface Props {
-  subjectAreas: Pick<SubjectArea, 'id' | 'name'>[]
   types: ReferenceData[]
 }
 
-export default function DataDetailCreate({ subjectAreas, types }: Props) {
+export default function DataDetailCreate({ types }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: '',
     description: '',
-    type: '',
-    subject_area_id: '',
+    subject_area: '',
     is_active: true,
   })
 
@@ -36,7 +35,7 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
         label: 'Description',
         setValue: setFormValue('description'),
       },
-      type: {
+      subject_area: {
         type: 'select',
         label: 'Type',
         list: types,
@@ -44,17 +43,7 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
         dataKey: 'value_one',
         showAllOption: true,
         allOptionText: 'Select Type',
-        setValue: setFormValue('type'),
-      },
-      subject_area_id: {
-        type: 'select',
-        label: 'Subject Area',
-        list: subjectAreas,
-        displayKey: 'name',
-        dataKey: 'id',
-        showAllOption: true,
-        allOptionText: 'Select Subject Area',
-        setValue: setFormValue('subject_area_id'),
+        setValue: setFormValue('subject_area'),
       },
       is_active: {
         type: 'checkbox',
@@ -62,7 +51,7 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
         setValue: setFormValue('is_active'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue])
+  }, [setFormValue, types])
 
   return (
     <FormPage
@@ -74,6 +63,8 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
       formStyles='w-1/2 md:grid-cols-1'
       type='data'
       subtype='data-tables'
-    />
+    >
+      <AddDataTableFields structures={[]} />
+    </FormPage>
   )
 }

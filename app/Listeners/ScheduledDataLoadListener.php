@@ -19,7 +19,6 @@ class ScheduledDataLoadListener
     public function handle(ScheduledDataLoadEvent $event): void
     {
 
-        Log::info('Handling scheduled data load event');
         $event->dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
         $result = $this->job->run($event->dataLoaderJob);
         Log::info('operation result: '.json_encode($result));

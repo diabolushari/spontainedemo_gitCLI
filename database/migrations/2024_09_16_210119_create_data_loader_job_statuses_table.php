@@ -18,7 +18,7 @@ return new class extends Migration
             $table->dateTime('executed_at');
             $table->dateTime('completed_at')->nullable();
             $table->boolean('is_successful')->default(false);
-            $table->string('error_message')->nullable();
+            $table->longText('error_message')->nullable();
             $table->unsignedInteger('total_records')->nullable();
             $table->softDeletes();
             $table->timestamps();
