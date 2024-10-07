@@ -32,6 +32,12 @@ export default function MetaHierarchyShow({
         type: 'text',
         id: 2,
       },
+      {
+        label: 'Level',
+        content: metaHierarchy.items_count,
+        type: 'text',
+        id: 3,
+      },
     ] as ShowPageItem[]
   }, [metaHierarchy])
 

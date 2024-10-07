@@ -2,20 +2,18 @@ import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { MetaHierarchy, MetaHierarchyLevelInfo, MetaStructure } from '@/interfaces/meta_interfaces'
-import SelectList from '@/ui/form/SelectList'
+import ComboBox from '@/ui/form/ComboBox'
 import { useEffect, useMemo, useState } from 'react'
 
 interface HierarchyLevelInfo {
   level: number
-  meta_structure_id: string
+  meta_structure: MetaStructure | null
 }
 
 interface Properties {
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
   metaHierarchy?: MetaHierarchy
   levelInfos?: MetaHierarchyLevelInfo[]
-  type?: string
-  subtype?: string
 }
 
 function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
@@ -25,18 +23,12 @@ function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
   return levelInfos.map((item) => {
     return {
       level: item.level,
-      meta_structure_id: item.meta_structure_id.toString(),
+      meta_structure: item.structure,
     }
   })
 }
 
-export default function MetaHierarchyCreate({
-  structures,
-  metaHierarchy,
-  levelInfos,
-  type,
-  subtype,
-}: Readonly<Properties>) {
+export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Readonly<Properties>) {
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy?.name ?? '',
     description: metaHierarchy?.description ?? '',
@@ -63,7 +55,7 @@ export default function MetaHierarchyCreate({
       //if the number of levels is greater than the current length, add the rest
       const tempLength: HierarchyLevelInfo[] = []
       for (let i = oldValues.length + 1; i <= noOfLevels; i++) {
-        tempLength.push({ level: i, meta_structure_id: '' })
+        tempLength.push({ level: i, meta_structure: null })
       }
       return [...oldValues, ...tempLength]
     })
@@ -95,11 +87,11 @@ export default function MetaHierarchyCreate({
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 
-  const setHierarchyValue = (item: HierarchyLevelInfo, structureId: string) => {
+  const setHierarchyValue = (item: HierarchyLevelInfo, structure: MetaStructure | null) => {
     setHierarchyLevelInfos((oldValues) => {
       return oldValues.map((tempValues) => {
         if (tempValues.level === item.level) {
-          return { ...tempValues, meta_structure_id: structureId }
+          return { ...tempValues, meta_structure: structure }
         }
         return tempValues
       })
@@ -112,6 +104,7 @@ export default function MetaHierarchyCreate({
       hierarchy_level_infos: hierarchyLevelInfos,
     }
   }, [formData, hierarchyLevelInfos])
+  console.log(hierarchyLevelInfos)
 
   return (
     <FormPage
@@ -130,23 +123,40 @@ export default function MetaHierarchyCreate({
       type={'definitions'}
       subtype={'hierarchies'}
     >
-      {hierarchyLevelInfos.map((item) => {
-        return (
-          <div
-            className='flex flex-col'
-            key={item.level}
-          >
-            <SelectList
-              list={structures}
-              setValue={(name) => setHierarchyValue(item, name)}
-              dataKey='id'
-              displayKey='structure_name'
-              showAllOption
-              value={item.meta_structure_id}
-            />
+      {hierarchyLevelInfos.length > 0 && (
+        <>
+          <span className='small-1stop text-sm tracking-normal text-gray-800'>Select levels</span>
+          <div className='rounded-lg border-3 border-1stop-gray p-2'>
+            <a
+              className={`link small-1stop flex justify-end text-xs`}
+              href={route('meta-structure.index')}
+              target='_blank'
+              rel='noreferrer'
+            >
+              Structural blocks
+            </a>
+            {hierarchyLevelInfos.map((item) => {
+              return (
+                <div
+                  className='flex flex-col py-1'
+                  key={item.level}
+                >
+                  <ComboBox
+                    setValue={(name: MetaStructure | null) => setHierarchyValue(item, name)}
+                    dataKey='id'
+                    displayKey='structure_name'
+                    label={`Level ${item.level}`}
+                    value={item.meta_structure}
+                    url={route('meta-strucure-search', {
+                      search: '',
+                    })}
+                  />
+                </div>
+              )
+            })}
           </div>
-        )
-      })}
+        </>
+      )}
     </FormPage>
   )
 }

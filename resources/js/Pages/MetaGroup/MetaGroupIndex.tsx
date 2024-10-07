@@ -66,7 +66,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       },
       {
         key: 'items_count',
-        label: 'No. Of Items',
+        label: 'Members',
         isShownInCard: true,
         boxStyles: 'items-center',
       },

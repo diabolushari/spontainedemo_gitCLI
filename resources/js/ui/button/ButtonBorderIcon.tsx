@@ -65,9 +65,7 @@ const ButtonBorderIcon = ({
         <button
           onClick={onClick}
           disabled={disabled}
-          className={`flex items-center justify-center
-            rounded-lg border px-2 py-2 text-left text-sm uppercase
-            tracking-wider ring-offset-2 transition duration-150 ease-in-out focus:outline-none focus:ring-1 ${buttonStyle}`}
+          className={`flex items-center justify-center rounded-lg border px-2 py-2 text-left text-sm tracking-wider ring-offset-2 transition duration-150 ease-in-out focus:outline-none focus:ring-1 ${buttonStyle}`}
         >
           {children}
         </button>

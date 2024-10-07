@@ -6,9 +6,10 @@ import { PlusIcon } from 'lucide-react'
 interface Props {
   link?: string
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => unknown
+  buttonText?: string
 }
 
-export default function AddButton({ link, onClick }: Props) {
+export default function AddButton({ link, onClick, buttonText }: Props) {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (link != null) {
       router.get(link)
@@ -21,7 +22,10 @@ export default function AddButton({ link, onClick }: Props) {
 
   return (
     <ButtonBorderIcon onClick={handleClick}>
-      <PlusIcon className='h-6 w-6' />
+      <div className='body-1stop flex flex-col items-center'>
+        <PlusIcon className='h-6 w-6' />
+        {buttonText}
+      </div>
     </ButtonBorderIcon>
   )
 }
