@@ -10,12 +10,11 @@ interface Props {
   dataDetail: DataDetail
 }
 
-export default function DataDetailEdit({ subjectAreas, types, dataDetail }: Props) {
+export default function DataDetailEdit({ types, dataDetail }: Props) {
   const { formData, setFormValue } = useCustomForm({
     name: dataDetail.name,
     description: dataDetail.description ?? '',
-    type: dataDetail.type,
-    subject_area_id: dataDetail.subject_area_id.toString(),
+    subject_area: dataDetail.subject_area ?? '',
     is_active: dataDetail.is_active === 1,
   })
 
@@ -37,25 +36,15 @@ export default function DataDetailEdit({ subjectAreas, types, dataDetail }: Prop
         label: 'Description',
         setValue: setFormValue('description'),
       },
-      type: {
+      subject_area: {
         type: 'select',
-        label: 'Type',
+        label: 'Subject Area',
         list: types,
         displayKey: 'value_one',
         dataKey: 'value_two',
         showAllOption: true,
         allOptionText: 'Select Type',
-        setValue: setFormValue('type'),
-      },
-      subject_area_id: {
-        type: 'select',
-        label: 'Subject Area',
-        list: subjectAreas,
-        displayKey: 'name',
-        dataKey: 'id',
-        showAllOption: true,
-        allOptionText: 'Select Subject Area',
-        setValue: setFormValue('subject_area_id'),
+        setValue: setFormValue('subject_area'),
       },
       is_active: {
         type: 'checkbox',
