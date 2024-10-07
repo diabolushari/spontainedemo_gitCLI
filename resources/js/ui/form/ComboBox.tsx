@@ -16,7 +16,7 @@ interface Properties<
   V extends number | string | null,
   T extends Record<K, U> & Record<G, V>,
 > {
-  label: string
+  label?: string
   error?: string
   disabled?: boolean
   readonly?: boolean
@@ -28,6 +28,7 @@ interface Properties<
   url: string
   linkText?: string
   redirectLink?: string
+  placeholder?: string
 }
 
 const ComboBox = <
@@ -48,6 +49,7 @@ const ComboBox = <
   url,
   linkText,
   redirectLink,
+  placeholder,
 }: Properties<K, G, U, V, T>) => {
   const [textFieldValue, setTextFieldValue] = useState<string>('')
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
@@ -161,6 +163,7 @@ const ComboBox = <
               type='text'
               value={textFieldValue}
               onKeyDown={handleKeydown}
+              placeholder={placeholder}
               onChange={(event) => setTextFieldValue(event.target.value)}
               className={getFormStyle('normal')}
               disabled={disabled}

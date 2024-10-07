@@ -32,7 +32,6 @@ export default function AnalyticsDashboardLayout({
   }
 
   useEffect(() => {
-    console.log(sessionFlash)
     if (sessionFlash.message != null) {
       showSuccess(sessionFlash.message)
     }
@@ -111,11 +110,11 @@ export default function AnalyticsDashboardLayout({
           </div>
           <div>
             <div
-              className='sm:relative justify-center sm:justify-normal flex flex-shrink-0 items-center'
+              className='flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
               ref={profileRef}
             >
               <div
-                className='h1-stop hover:text-black flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-accent1'
+                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-accent1 hover:text-black'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -138,8 +137,8 @@ export default function AnalyticsDashboardLayout({
               </svg>
             </div>
             {isProfileDropdown && (
-              <div className='flex justify-center '>
-                <div className='bg:opacity-100 sm:absolute  sm:right-10 z-50 mt-4 w-48 rounded-xl border border-1stop-highlight bg-1stop-white p-2 shadow'>
+              <div className='flex justify-center'>
+                <div className='bg:opacity-100 z-50 mt-4 w-48 rounded-xl border border-1stop-highlight bg-1stop-white p-2 shadow sm:absolute sm:right-10'>
                   <div className='px-4 py-2'>
                     <p className='small-1stop text-gray-900'>Logged in as {userName}</p>
                   </div>

@@ -26,9 +26,9 @@ class MetaHierarchyFormRequest extends Data
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'hierarchy_level_info' => ['array', 'nullable'],
-            'hierarchy_level_info.*.level' => ['required', 'integer', 'min:1'],
-            'hierarchy_level_info.*.meta_structure_id' => ['required', 'integer', 'exists:meta_structures,id'],
+            'hierarchy_level_infos' => ['array', 'nullable'],
+            'hierarchy_level_infos.*.level' => ['required', 'integer', 'min:1'],
+            'hierarchy_level_infos.*.meta_structure_id' => ['required', 'integer', 'exists:meta_structures,id'],
         ];
     }
 }

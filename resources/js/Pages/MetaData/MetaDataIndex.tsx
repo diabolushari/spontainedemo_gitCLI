@@ -48,13 +48,14 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
         dataKey: 'id',
         displayKey: 'structure_name',
         linkText: 'Structural blocks',
+        placeholder: 'Limit to structural block..',
         redirectLink: route('meta-structure.index'),
         selectListUrl: route('meta-strucure-search', {
           search: '',
         }),
         setValue: (value: Pick<MetaStructure, 'id' | 'structure_name'>) => {
           setSelectedItem(value)
-          setFormValue('structure')(value?.id.toString() ?? '')
+          setFormValue('structure')(value?.structure_name ?? '')
         },
       },
     } as Record<U, FormItem<T[U], K, G, L>>
@@ -68,12 +69,12 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       actionStyle: 'gap-8',
       actions: [
         {
-          title: 'Groups ' + metaData.hierarchy_item?.length ?? '',
+          title: 'Groups ' + metaData.hierarchy_item?.length,
           url: route('meta-data-group.index', { search: metaData.name }),
           textStyles: ' hover:scale-105 transition',
         },
         {
-          title: 'Hierarchies ' + metaData.hierarchy_item?.length ?? '',
+          title: 'Hierarchies ' + metaData.hierarchy_item?.length,
           url: route('meta-hierarchy.index', { search: metaData.name }),
           textStyles: 'ml-auto  hover:scale-105 transition',
         },
@@ -102,7 +103,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       formData={formData}
       formItems={formItems}
       addUrl={route('meta-data.create')}
-      title={'Meta Data'}
+      title={'Metadata'}
       searchUrl={route('meta-data.index')}
       type={type ?? 'definitions'}
       subtype={subtype ?? 'metadata'}

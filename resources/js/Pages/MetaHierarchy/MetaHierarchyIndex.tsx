@@ -47,7 +47,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       },
       {
         key: 'items_count',
-        label: 'No. of items',
+        label: 'Members',
         isShownInCard: true,
         boxStyles: 'items-center',
       },
@@ -69,11 +69,11 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
           //     subtype: 'heirarchies',
           //   }),
           // },
-          {
-            title: 'EDIT',
-            url: route('meta-hierarchy.edit', { id: hierarchy.id }),
-            textStyles: 'ml-auto  hover:scale-105 transition',
-          },
+          // {
+          //   title: 'EDIT',
+          //   url: route('meta-hierarchy.edit', { id: hierarchy.id }),
+          //   textStyles: 'ml-auto  hover:scale-105 transition',
+          // },
         ],
       }
     })

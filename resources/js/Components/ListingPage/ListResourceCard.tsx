@@ -21,6 +21,7 @@ interface Props<
   cardStyles?: string
   handleCardClick?: (id: number | string) => void
   layoutStyles?: string
+  addButtonText?: string
 }
 
 export default function ListResourceCard<
@@ -36,6 +37,7 @@ export default function ListResourceCard<
   gridStyles,
   handleCardClick,
   layoutStyles,
+  addButtonText,
 }: Props<U, T>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
@@ -63,7 +65,10 @@ export default function ListResourceCard<
     <div
       className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
     >
-      <AddButton link={addUrl} />
+      <AddButton
+        link={addUrl}
+        buttonText={addButtonText ?? 'Add new'}
+      />
       {rows.map((row) => {
         return (
           <Card
