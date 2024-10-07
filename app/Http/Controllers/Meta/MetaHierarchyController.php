@@ -75,7 +75,7 @@ class MetaHierarchyController extends Controller
     ): Response {
 
         $metaHierarchy->load('levelInfos', 'levelInfos.structure:id,structure_name');
-    //dd($metaHierarchy);
+
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
             'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),

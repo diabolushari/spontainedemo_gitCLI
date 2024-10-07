@@ -101,10 +101,11 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
   const fullFormData = useMemo(() => {
     return {
       ...formData,
-      hierarchy_level_infos: hierarchyLevelInfos,
+      hierarchy_level_infos: hierarchyLevelInfos.map((item) => {
+        return { level: item.level, meta_structure_id: item.meta_structure?.id }
+      }),
     }
   }, [formData, hierarchyLevelInfos])
-  console.log(hierarchyLevelInfos)
 
   return (
     <FormPage
@@ -116,7 +117,7 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
       formData={formData}
       formItems={formItems}
       title='Create Meta Hierarchy'
-      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
+      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'hierarchies' })}
       formStyles='w-1/2 md:grid-cols-1'
       customSubmitData={fullFormData}
       isPatchRequest={metaHierarchy != null}
@@ -145,7 +146,7 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
                     setValue={(name: MetaStructure | null) => setHierarchyValue(item, name)}
                     dataKey='id'
                     displayKey='structure_name'
-                    label={`Level ${item.level}`}
+                    placeholder={`Level ${item.level}`}
                     value={item.meta_structure}
                     url={route('meta-strucure-search', {
                       search: '',

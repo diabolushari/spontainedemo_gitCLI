@@ -16,7 +16,7 @@ interface Properties<
   V extends number | string | null,
   T extends Record<K, U> & Record<G, V>,
 > {
-  label: string
+  label?: string
   error?: string
   disabled?: boolean
   readonly?: boolean
@@ -49,7 +49,7 @@ const ComboBox = <
   url,
   linkText,
   redirectLink,
-  placeholder
+  placeholder,
 }: Properties<K, G, U, V, T>) => {
   const [textFieldValue, setTextFieldValue] = useState<string>('')
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)

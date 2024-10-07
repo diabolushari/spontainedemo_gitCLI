@@ -43,6 +43,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         id: group.id,
         items_count: group.items_count,
         name: group.name,
+        description: group.description,
         actions: [
           // {
           //   title: 'SHOW',
@@ -56,13 +57,20 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       }
     })
   }, [groups])
-  console.log(data)
+
   const keys = useMemo(() => {
     return [
       {
         key: 'name',
         label: 'Name',
         isCardHeader: true,
+      },
+      { key: '', label: 'Description', isShownInCard: true, boxStyles: 'items-center' },
+      {
+        key: 'description',
+
+        isShownInCard: true,
+        boxStyles: 'items-center',
       },
       {
         key: 'items_count',
@@ -75,6 +83,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
   const handleCardClick = useCallback((id: number | string) => {
     router.get(route('meta-data-group.show', { id: id }))
   }, [])
+  console.log(keys)
   return (
     <ListResourcePage
       keys={keys}

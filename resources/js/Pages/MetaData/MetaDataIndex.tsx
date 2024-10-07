@@ -103,7 +103,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       formData={formData}
       formItems={formItems}
       addUrl={route('meta-data.create')}
-      title={'Meta Data'}
+      title={'Metadata'}
       searchUrl={route('meta-data.index')}
       type={type ?? 'definitions'}
       subtype={subtype ?? 'metadata'}

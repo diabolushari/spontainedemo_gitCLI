@@ -5,7 +5,6 @@ import { FormItem } from '@/FormBuilder/FormBuilder'
 import { useCallback, useMemo } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { router } from '@inertiajs/react'
-import { Description } from '@headlessui/react'
 
 interface Props {
   subjectAreas: Paginator<SubjectArea>

@@ -101,13 +101,18 @@ class MetaDataGroupController extends Controller
             ->with('metaData:id,name')
             ->with('metaData.metaStructure:id,structure_name')
             ->paginate(20)
+
             ->withQueryString();
 
         return Inertia::render('MetaGroup/MetaGroupShow', [
             'metaDataGroup' => $metaDataGroup,
             'groupItems' => $items,
             'type' => $request->type,
-            'subtype' => $request->subtype
+            'subtype' => $request->subtype,
+            'itemCount' => count(MetaGroupItem::where('meta_group_id', $metaDataGroup->id)
+            ->with('metaData:id,name')
+            ->with('metaData.metaStructure:id,structure_name')
+            ->get())
         ]);
     }
 }

@@ -7,5 +7,5 @@ interface Props {
 }
 
 export default function NormalText({ className = '', children }: Props) {
-  return <span className={cn(' ', className)}>{children}</span>
+  return <span className={cn(' body-1stop', className)}>{children}</span>
 }

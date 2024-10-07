@@ -39,7 +39,7 @@ export default function MetaHierarchyTreeNode({
               className=''
             ></div>
           )}
-          <div className='tree-node flex grow border border-blue-700 p-1'>
+          <div className='tree-node flex grow rounded border border-blue-700 p-1'>
             <div
               role='treeitem'
               aria-selected={node.expanded}
@@ -53,9 +53,10 @@ export default function MetaHierarchyTreeNode({
             <div className='flex gap-2'>
               <button
                 onClick={() => openAddNodeModal(node.record ?? null)}
-                className='text-green-500 hover:text-green-700'
+                className='small-1stop text-1stop-link underline hover:text-cyan-800'
               >
-                <i className='las la-plus'></i>
+                {/* <i className='las la-plus'></i> */}
+                Add child
               </button>
               <button
                 onClick={() => setShowDeleteModal(true)}
@@ -74,9 +75,11 @@ export default function MetaHierarchyTreeNode({
           onSuccess={onDeleteCompletion}
           title={`Delete ${node.nodeName}`}
           preserveState
+          large
         >
           <SubHeading className='red-text-500'>
-            Are you sure you want to delete <strong>{node.nodeName}</strong> and all its childern?
+            This node contains child elements. Deleting it will remove all child nodes from this
+            hierarchy. Are you sure?
           </SubHeading>
         </DeleteModal>
       )}
