@@ -87,7 +87,7 @@ export default function DataLoaderJobIndex({
       type={type}
       subtype={subtype}
       oldValues={oldValues}
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       title='Jobs'
       handleCardClick={handleCardClick}
       cardStyles='p-4 '

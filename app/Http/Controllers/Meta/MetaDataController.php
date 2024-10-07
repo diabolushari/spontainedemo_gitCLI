@@ -35,17 +35,21 @@ class MetaDataController extends Controller
 
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-
+        //dd($request->all());
         $records = MetaData::with([
             'metaStructure:id,structure_name',
             'hierarchyItem',
             'groupItem',
         ])
             ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
-            ->when($request->filled('structure'), fn(Builder $builder) => $builder->where('meta_structure_id', 'like', $request->input(key: 'structure')))
+            ->when($request->filled('structure'), function (Builder $query) use ($request) {
+                $query->whereHas('metaStructure',  function (Builder $query) use ($request) {
+                    return $query->where('structure_name', 'like', "%$request->structure%");
+                });
+            })
             ->paginate(20)
             ->withQueryString();
-
+            
         return Inertia::render('MetaData/MetaDataIndex', [
             'metaData' => $records,
             'structures' => $structures,

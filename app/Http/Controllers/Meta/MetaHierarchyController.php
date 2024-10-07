@@ -29,7 +29,12 @@ class MetaHierarchyController extends Controller
 
     public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
+        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), function (Builder $query) use ($request) {
+            $query->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
+                ->orWhereHas('items.metaHierarchy', function (Builder $query) use ($request) {
+                    return $query->where('name', 'like', "%$request->search%");
+                });
+        })
             ->withCount('items')
             ->paginate(20)
             ->withQueryString();
@@ -49,15 +54,13 @@ class MetaHierarchyController extends Controller
 
         return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
             'structures' => $structures,
-            'type' => $request->type,
-            'subtype' => $request->subtype
         ]);
     }
 
     public function edit(MetaHierarchy $metaHierarchy): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
-
+        $metaHierarchy->load('levelInfos.structure');
         return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
             'structures' => $structures,
             'metaHierarchy' => $metaHierarchy,
@@ -115,7 +118,7 @@ class MetaHierarchyController extends Controller
 
         $hierarchyLevels = $request->hierarchyLevelInfos;
         DB::beginTransaction();
-
+        // dd($hierarchyLevels);
         try {
             $metaHierarchy->update([
                 'name' => $request->name,

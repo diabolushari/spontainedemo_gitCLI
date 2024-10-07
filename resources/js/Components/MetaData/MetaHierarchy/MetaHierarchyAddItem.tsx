@@ -16,6 +16,7 @@ interface Props {
   currentNode: MetaHierarchyItem | null
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   levelInfos: MetaHierarchyLevelInfo[]
+  firstLevelInfo: MetaHierarchyLevelInfo | undefined
 }
 
 export default function MetaHierarchyAddItem({
@@ -23,6 +24,7 @@ export default function MetaHierarchyAddItem({
   currentNode,
   setShowModal,
   levelInfos,
+  firstLevelInfo,
 }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     meta_data_id: '',
@@ -89,7 +91,7 @@ export default function MetaHierarchyAddItem({
 
   return (
     <Modal
-      title={`Add Item to ${metaHierarchy.name}`}
+      title={`Add ${currentNode == null ? 'node' : 'child'} to ${currentNode != null ? currentNode?.meta_data?.name : firstLevelInfo?.structure?.structure_name}`}
       setShowModal={setShowModal}
     >
       <div className='w-full p-2'>
@@ -102,7 +104,7 @@ export default function MetaHierarchyAddItem({
           formItems={formItems}
           loading={false}
           formStyles='md:grid-cols-1'
-          buttonText='Add Node'
+          buttonText='Add'
           buttonAlignment='end'
           errors={errors}
         />

@@ -16,7 +16,7 @@ interface Properties<
   V extends number | string | null,
   T extends Record<K, U> & Record<G, V>,
 > {
-  label: string
+  label?: string
   error?: string
   disabled?: boolean
   readonly?: boolean
@@ -28,6 +28,7 @@ interface Properties<
   url: string
   linkText?: string
   redirectLink?: string
+  placeholder?: string
 }
 
 const ComboBox = <
@@ -48,6 +49,7 @@ const ComboBox = <
   url,
   linkText,
   redirectLink,
+  placeholder,
 }: Properties<K, G, U, V, T>) => {
   const [textFieldValue, setTextFieldValue] = useState<string>('')
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
@@ -113,7 +115,7 @@ const ComboBox = <
     <>
       {value != null && (
         <div className='flex flex-col gap-2'>
-          <div className='flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
+          <div className='small-1stop flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
             <span>
               {label}
               <br />
@@ -144,10 +146,12 @@ const ComboBox = <
         >
           <div className='flex flex-col'>
             <div className='flex justify-between'>
-              <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+              <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>
+                {label}
+              </label>
 
               <a
-                className={`link flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
+                className={`link small-1stop flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
                 href={redirectLink ?? ''}
                 target='_blank'
                 rel='noreferrer'
@@ -159,6 +163,7 @@ const ComboBox = <
               type='text'
               value={textFieldValue}
               onKeyDown={handleKeydown}
+              placeholder={placeholder}
               onChange={(event) => setTextFieldValue(event.target.value)}
               className={getFormStyle('normal')}
               disabled={disabled}

@@ -28,7 +28,7 @@ export default function FileInput({ file, label, error, setValue, accept }: Prop
     <>
       {file == null && (
         <>
-          <label className='standard-label'>{label}</label>
+          <label className='small-1stop standard-label'>{label}</label>
           <input
             type='file'
             name='name'
@@ -46,7 +46,7 @@ export default function FileInput({ file, label, error, setValue, accept }: Prop
           <button
             type='button'
             onClick={() => setValue(null)}
-            className='ml-2 text-red-500 hover:bg-gray-200 rounded-lg p-2 hover:text-white'
+            className='ml-2 rounded-lg p-2 text-red-500 hover:bg-gray-200 hover:text-white'
           >
             <XIcon size={20} />
           </button>

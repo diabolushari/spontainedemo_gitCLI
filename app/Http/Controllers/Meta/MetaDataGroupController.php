@@ -26,7 +26,12 @@ class MetaDataGroupController extends Controller
 
     public function index(Request $request): Response
     {
-        $groups = MetaGroup::when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
+        $groups = MetaGroup::when($request->filled(key: 'search'), function (Builder $query) use ($request) {
+            $query->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
+                ->orWhereHas('items.metaData', function (Builder $query) use ($request) {
+                    return $query->where('name', 'like', "%$request->search%");
+                });
+        })
             ->withCount('items')
             ->paginate(20)
             ->withQueryString();
@@ -41,9 +46,11 @@ class MetaDataGroupController extends Controller
 
     public function create(Request $request): Response
     {
-        
-        return Inertia::render('MetaGroup/MetaGroupCreate', 
-        ['type' => $request->type, 'subtype' => $request->subtype]);
+
+        return Inertia::render(
+            'MetaGroup/MetaGroupCreate',
+            ['type' => $request->type, 'subtype' => $request->subtype]
+        );
     }
 
     public function edit(MetaGroup $metaDataGroup): Response
@@ -94,13 +101,18 @@ class MetaDataGroupController extends Controller
             ->with('metaData:id,name')
             ->with('metaData.metaStructure:id,structure_name')
             ->paginate(20)
+
             ->withQueryString();
 
         return Inertia::render('MetaGroup/MetaGroupShow', [
             'metaDataGroup' => $metaDataGroup,
             'groupItems' => $items,
             'type' => $request->type,
-            'subtype' => $request->subtype
+            'subtype' => $request->subtype,
+            'itemCount' => count(MetaGroupItem::where('meta_group_id', $metaDataGroup->id)
+            ->with('metaData:id,name')
+            ->with('metaData.metaStructure:id,structure_name')
+            ->get())
         ]);
     }
 }

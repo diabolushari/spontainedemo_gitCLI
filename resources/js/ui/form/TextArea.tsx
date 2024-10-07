@@ -14,7 +14,7 @@ export default function TextArea({
 }: FormFieldProp) {
   return (
     <>
-      <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+      <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}

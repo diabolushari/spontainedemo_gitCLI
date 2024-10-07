@@ -63,7 +63,7 @@ export default function CardHeader({
           )}
         </div>
       </div>
-      <div className='body-1stop pl-4 text-primary'>{subheading ?? ''}</div>
+      <div className='small-1stop pl-4 text-primary'>{subheading ?? ''}</div>
     </div>
   )
 }

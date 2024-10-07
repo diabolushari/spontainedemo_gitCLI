@@ -10,18 +10,38 @@ interface Props {
   groupItems: Paginator<MetaDataGroupItem>
   type?: string
   subtype?: string
+  itemCount?: string
 }
 
-export default function MetaGroupShow({ metaDataGroup, groupItems, type, subtype }: Props) {
+export default function MetaGroupShow({
+  metaDataGroup,
+  groupItems,
+  type,
+  subtype,
+  itemCount,
+}: Props) {
   const displayedValues = useMemo(() => {
     return [
       {
         label: 'Name',
         content: metaDataGroup.name,
         id: 1,
+        type: 'text',
+      },
+      {
+        label: 'Description',
+        content: metaDataGroup.description,
+        type: 'text',
+        id: 2,
+      },
+      {
+        label: 'Members',
+        content: itemCount,
+        type: 'text',
+        id: 3,
       },
     ] as ShowPageItem[]
-  }, [metaDataGroup])
+  }, [metaDataGroup, itemCount])
 
   return (
     <ShowResourcePage

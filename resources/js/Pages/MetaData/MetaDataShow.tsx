@@ -62,7 +62,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
                 </span>
               </p>
             </div>
-            <div className='rounded-md bg-[#D9DEE8] p-6 shadow-lg'>
+            <div className='rounded-md bg-1stop-white p-6 shadow-lg'>
               <div className='mb-4 flex justify-end gap-2'>
                 <img
                   src='/edit-icon.svg'
@@ -81,16 +81,16 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
               </div>
               <div className='grid grid-cols-2 gap-4'>
                 <div>
-                  <h2 className='1stop-small-header text-sm text-gray-600'>VALUE NAME</h2>
+                  <h2 className='body-1stop text-sm text-gray-600'>VALUE NAME</h2>
                   <p className='body-1stop text-xl'>{metaData.name}</p>
                 </div>
                 <div>
-                  <h2 className='1stop-small-header text-sm text-gray-600'>STRUCTURAL BLOCK</h2>
+                  <h2 className='body-1stop text-sm text-gray-600'>STRUCTURAL BLOCK</h2>
                   <p className='body-1stop text-xl'>{metaData.meta_structure?.structure_name}</p>
                 </div>
               </div>
               <div className='mt-4'>
-                <h2 className='1stop-small-header text-sm text-gray-600'>DESCRIPTION</h2>
+                <h2 className='body-1stop text-sm text-gray-600'>DESCRIPTION</h2>
                 <p className='text-md body-1stop'>{metaData.description}</p>
               </div>
               <div className='flex justify-end space-x-4 text-xs'>

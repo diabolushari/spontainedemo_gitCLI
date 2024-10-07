@@ -121,7 +121,7 @@ export default function DataLoaderConnectionIndex({
       type={type}
       subtype={subtype}
       oldValues={oldValues}
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       subheading='Configure connections to source databases here. Please be sure to standard names, and descriptions.'
       handleCardClick={handleCardClick}
       cardStyles='p-4 hover:scale-105 transition'

@@ -43,7 +43,7 @@ export default function Tab({ tabItems, activeTab, setActiveTab }: Readonly<Prop
         <Dropdown
           list={tabItems}
           dataKey='value'
-          displayKey='value'
+          displayKey='name'
           data={activeTab}
           setData={setActiveTab}
         />

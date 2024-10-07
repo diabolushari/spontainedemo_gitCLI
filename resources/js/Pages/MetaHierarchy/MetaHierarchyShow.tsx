@@ -19,20 +19,34 @@ export default function MetaHierarchyShow({
   levelInfos,
 }: Readonly<Props>) {
   const displayItems = useMemo(() => {
-    return [
+    let index = 1
+    const records: ShowPageItem[] = [
       {
         label: 'Hierarchy',
         content: metaHierarchy.name,
         type: 'text',
-        id: 1,
+        id: index++,
       },
       {
         label: 'Description',
         content: metaHierarchy.description,
         type: 'text',
-        id: 2,
+        id: index++,
       },
-    ] as ShowPageItem[]
+    ]
+
+    records.push()
+
+    levelInfos.map((field) => {
+      records.push({
+        id: index++,
+        label: 'Level ' + field.level,
+        content: field.structure?.structure_name,
+        type: 'text',
+      })
+    })
+
+    return records
   }, [metaHierarchy])
 
   return (

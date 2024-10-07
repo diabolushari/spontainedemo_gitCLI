@@ -56,7 +56,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         actions: [
           {
             title: `${structure.meta_data_count} Records`,
-            url: route('meta-data.index', { structure: structure.id }, false),
+            url: route('meta-data.index', { structure: structure.structure_name }, false),
             textStyles: 'hover:scale-105 transition',
           },
           {
@@ -82,7 +82,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
       type={type ?? 'definitions'}
       subtype={subtype ?? 'blocks'}
       oldValues={oldValues}
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       title='Structural Blocks'
       subheading='Each metdata element will be a distinct value of a structural block.
 e.g: "Yellow" is a valid dimensional value of a structural block called "Colour".'

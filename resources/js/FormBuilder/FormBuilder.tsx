@@ -247,6 +247,7 @@ export default function FormBuilder<
                 label={formItems[keyValue].label}
                 error={errors != null ? errors[keyValue] : undefined}
                 linkText={formItems[keyValue].linkText}
+                placeholder={formItems[keyValue].placeholder}
                 redirectLink={formItems[keyValue].redirectLink}
               />
             )}

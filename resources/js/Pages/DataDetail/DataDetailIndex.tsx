@@ -71,7 +71,7 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       primaryKey='id'
       type='data'
       subtype='data-tables'
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       title='Data Tables'
       handleCardClick={handleCardClick}
       cardStyles='p-4 hover:scale-105 transition'

@@ -98,7 +98,7 @@ export default function DataLoaderQueryIndex({
       type={type ?? 'loaders'}
       subtype={subtype ?? 'queries'}
       oldValues={oldValues}
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       title='Extraction Statements'
       pageDescription='Extraction statements are SQL'
       handleCardClick={handleCardClick}

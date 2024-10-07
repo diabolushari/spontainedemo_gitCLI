@@ -65,7 +65,7 @@ export default function SelectList<
 
   return (
     <>
-      {label != null && showLabel && <label className='standard-label'>{label}</label>}
+      {label != null && showLabel && <label className='standard-label small-1stop'>{label}</label>}
       <select
         name='type'
         value={selectedOption}
