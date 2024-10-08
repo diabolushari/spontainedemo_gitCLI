@@ -5,13 +5,8 @@ import DashboardPadding from '@/Layouts/DashboardPadding'
 import CardHeader from '@/ui/Card/CardHeader'
 import Pagination from '@/ui/Pagination/Pagination'
 import { Paginator } from '@/ui/ui_interfaces'
-import Pagination from '@/ui/Pagination/Pagination'
-import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import { router } from '@inertiajs/react'
-import React, { useCallback, useEffect, useRef } from 'react'
-import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
-import CardHeader from '@/ui/Card/CardHeader'
-import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import React, { useCallback, useRef } from 'react'
 import FilterOldValues from '../OldSearch/FilterOldValues'
 
 export interface ListItemKeys<T> {
@@ -60,6 +55,7 @@ interface Props<
   oldValues?: Record<string, string>
   cardStyles?: string
   gridStyles?: string
+  layoutStyle?: string
   handleCardClick?: (id: number | string) => void
 }
 
