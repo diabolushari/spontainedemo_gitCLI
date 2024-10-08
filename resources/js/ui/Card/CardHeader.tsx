@@ -41,7 +41,7 @@ export default function CardHeader({
               onClick={onBackClick}
             />
           )}
-          <Heading className='subheader-1stop'>{title}</Heading>
+          <Heading className='subheader-1stop uppercase'>{title}</Heading>
         </div>
         <div className='flex flex-wrap gap-2'>
           {(editUrl != null || onEditClick != null) && (
