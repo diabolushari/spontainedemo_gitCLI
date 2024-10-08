@@ -6,6 +6,7 @@ import CardHeader from '@/ui/Card/CardHeader'
 import SubHeading from '@/typograpy/SubHeading'
 import NormalText from '@/typograpy/NormalText'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import BreadCrumbs from '../BreadCrumbs'
 
 export interface ShowPageItem {
   id: number
@@ -53,6 +54,11 @@ export default function ShowResourcePage({
     >
       <DashboardPadding>
         <Card>
+          <BreadCrumbs
+            item={subtype}
+            searchLink={backUrl}
+          />
+
           <CardHeader
             title={title}
             backUrl={backUrl}
