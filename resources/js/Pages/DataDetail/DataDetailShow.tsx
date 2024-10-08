@@ -11,11 +11,13 @@ import { MetaData } from '@/interfaces/meta_interfaces'
 import CardGridView from '@/Components/ListingPage/CardGridView'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
+import { router } from '@inertiajs/react'
 
 interface Props {
   detail: DataDetail
   dataTableItems: Paginator<DataTableItem>
   jobs: DataLoaderJob[]
+  tab?: string
 }
 
 const tabItems = [
@@ -23,8 +25,13 @@ const tabItems = [
   { name: 'Loader Jobs', value: 'jobs' },
 ]
 
-export default function DataDetailShow({ detail, dataTableItems, jobs }: Readonly<Props>) {
-  const [activeTab, setActiveTab] = useState('data')
+export default function DataDetailShow({
+  detail,
+  dataTableItems,
+  jobs,
+  tab = 'data',
+}: Readonly<Props>) {
+  const [activeTab, setActiveTab] = useState(tab)
 
   const data = useMemo(() => {
     return jobs.map((job) => ({
@@ -48,11 +55,11 @@ export default function DataDetailShow({ detail, dataTableItems, jobs }: Readonl
   }, [])
 
   const onAddClick = () => {
-    window.open(route('loader-jobs.create', { dataDetail: detail.id }), '_blank')
+    router.get(route('loader-jobs.create', { dataDetail: detail.id }))
   }
 
   const handleJobCardClick = (id: number | string) => {
-    window.open(route('loader-jobs.edit', id), '_blank')
+    router.get(route('loader-jobs.show', id))
   }
 
   return (

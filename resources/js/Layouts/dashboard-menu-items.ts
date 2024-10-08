@@ -26,13 +26,6 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         permission: 'data-tables',
         subtype: 'data-tables',
       },
-      {
-        title: 'SUBJECT AREAS',
-        link: '/subject-area?type=data&subtype=subject-area',
-        image: '/subject-area.png',
-        permission: 'subject-area',
-        subtype: 'subject-area',
-      },
     ],
   },
   {
@@ -76,7 +69,7 @@ const dashboardMenuItems: DashboardMenuItem[] = [
     name: 'Loaders',
     value: 'loaders',
     url: '/loader-jobs?type=loaders&subtype=jobs',
-    tabDescription: `Loaders are scheduled or conditional jobs that are 
+    tabDescription: `Loaders are scheduled or conditional jobs that are
     used to automatically extract and load data into pre-defined data tables.`,
     links: [
       {
@@ -85,13 +78,6 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         image: '/data-sources.png',
         permission: 'loader-connection',
         subtype: 'data-sources',
-      },
-      {
-        title: 'JOBS',
-        link: '/loader-jobs?type=loaders&subtype=jobs',
-        image: '/jobs.png',
-        permission: 'loader-job',
-        subtype: 'jobs',
       },
       {
         title: 'EXTRACTION STATEMENTS',

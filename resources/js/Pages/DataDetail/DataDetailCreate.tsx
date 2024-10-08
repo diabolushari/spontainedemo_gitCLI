@@ -109,7 +109,10 @@ export default function DataDetailCreate({ types }: Readonly<Props>) {
   }
 
   return (
-    <AnalyticsDashboardLayout>
+    <AnalyticsDashboardLayout
+      type='data'
+      subtype='data-tables'
+    >
       <DashboardPadding>
         <CardHeader
           title='Create Data Table'

@@ -1,11 +1,16 @@
 import React from 'react'
 import { Link } from '@inertiajs/react'
 
-const BreadCrumbs = ({ item, searchLink }) => {
+interface Props {
+  item?: string | null
+  searchLink?: string | null
+}
+
+const BreadCrumbs = ({ item, searchLink }: Props) => {
   return (
     <div className='flex'>
       <Link
-        href={searchLink}
+        href={searchLink ?? ''}
         className='small-1stop cursor-pointer'
       >
         {item} search

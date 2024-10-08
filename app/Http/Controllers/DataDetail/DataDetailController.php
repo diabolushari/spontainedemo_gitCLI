@@ -16,6 +16,7 @@ use App\Services\DataTable\QueryDataTable;
 use App\Services\SubjectArea\CreateDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -188,7 +189,7 @@ class DataDetailController extends Controller
             ->route('data-detail.show', $dataDetail->id);
     }
 
-    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable): RedirectResponse|Response
+    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable, Request $request): RedirectResponse|Response
     {
         $dataDetail->load('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea');
 
@@ -204,6 +205,7 @@ class DataDetailController extends Controller
             'detail' => $dataDetail,
             'dataTableItems' => $dataTable,
             'jobs' => $jobs,
+            'tab' => $request->input('tab', 'data'),
         ]);
     }
 }

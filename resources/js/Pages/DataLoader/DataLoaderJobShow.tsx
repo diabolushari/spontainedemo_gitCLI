@@ -45,13 +45,16 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
     <ShowResourcePage
       title={''}
       items={displayedValues}
-      backUrl={route('loader-jobs.index', { type: 'loaders', subtype: 'jobs' })}
+      backUrl={route('data-detail.show', {
+        dataDetail: dataLoaderJob.data_detail_id,
+        tab: 'jobs',
+      })}
       editUrl={route('loader-jobs.edit', dataLoaderJob.id)}
       onDeleteClick={() => {
         setShowDeleteModal(true)
       }}
-      type='loaders'
-      subtype='jobs'
+      type='data'
+      subtype='data-tables'
     >
       {/**more content**/}
       {showDeleteModal && (

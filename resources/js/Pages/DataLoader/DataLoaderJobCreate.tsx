@@ -21,6 +21,7 @@ interface Props {
   connectionId?: number | null
   type?: string
   subtype?: string
+  dataDetail?: string | null
 }
 
 export default function DataLoaderJobCreate({
@@ -30,6 +31,7 @@ export default function DataLoaderJobCreate({
   connectionId,
   type,
   subtype,
+  dataDetail,
 }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: job?.name ?? '',
@@ -168,16 +170,32 @@ export default function DataLoaderJobCreate({
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, formData.cron_type, connections, dataTables, formData.connection_id])
 
+  const backUrl = useMemo(() => {
+    if (job != null) {
+      return route('data-detail.show', {
+        dataDetail: job.data_detail_id,
+        tab: 'jobs',
+      })
+    }
+
+    return dataDetail == null
+      ? route('data-detail.index')
+      : route('data-detail.show', {
+          dataDetail: dataDetail,
+          tab: 'jobs',
+        })
+  }, [dataDetail, job])
+
   return (
     <FormPage
       url={job == null ? route('loader-jobs.store') : route('loader-jobs.update', job.id)}
       formData={formData}
       formItems={formItems}
       title={job == null ? 'Create Job' : 'Edit Job'}
-      backUrl={route('loader-jobs.index', { type: 'loaders', subtype: 'jobs' })}
+      backUrl={backUrl}
       formStyles='w-1/2 md:grid-cols-1'
-      type={type ?? 'loaders'}
-      subtype={subtype ?? 'jobs'}
+      type='data'
+      subtype='data-tables'
       isPatchRequest={job != null}
     />
   )

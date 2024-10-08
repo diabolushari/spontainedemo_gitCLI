@@ -52,7 +52,7 @@ export default function DataDetailEdit({ types, dataDetail }: Props) {
         setValue: setFormValue('is_active'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue])
+  }, [setFormValue, types])
 
   return (
     <FormPage

@@ -32,15 +32,15 @@ class DataLoaderJobController extends Controller
     public function index(DataLoaderJobSearchRequest $request): Response
     {
         /** @var LengthAwarePaginator<DataLoaderJob> $dataLoaderJobs */
-        $dataLoaderJobs = DataLoaderJob::paginate(20)
+        $dataLoaderJobs = DataLoaderJob::with('loaderQuery')
+            ->paginate(20)
             ->withQueryString();
-        $dataLoaderJobs->load('loaderQuery');
 
         return Inertia::render('DataLoader/DataLoaderJobIndex', [
             'dataLoaderJobs' => $dataLoaderJobs,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all()
+            'oldValues' => $request->all(),
         ]);
     }
 
@@ -59,7 +59,8 @@ class DataLoaderJobController extends Controller
             'connections' => $connections,
             'dataTables' => $dataTables,
             'type' => $request->type,
-            'subtype' => $request->subtype
+            'subtype' => $request->subtype,
+            'dataDetail' => $request->input('dataDetail', null),
         ]);
     }
 
@@ -120,7 +121,10 @@ class DataLoaderJobController extends Controller
         }
 
         return redirect()
-            ->route('loader-jobs.show', $dataLoaderJob->id)
+            ->route('data-detail.show', [
+                'dataDetail' => $dataLoaderJob->id,
+                'tab' => 'jobs',
+            ])
             ->with(['message' => 'Record updated successfully.']);
     }
 

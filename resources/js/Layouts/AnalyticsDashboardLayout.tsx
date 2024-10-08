@@ -13,7 +13,7 @@ interface Properties {
   subtype?: string
   title?: string
   description?: string
-  handleCardRef: () => void
+  handleCardRef?: () => void
 }
 
 export default function AnalyticsDashboardLayout({
@@ -78,6 +78,12 @@ export default function AnalyticsDashboardLayout({
   useEffect(() => {
     cardRef.current?.click()
   }, [])
+
+  const handleScroll = () => {
+    if (handleCardRef != null) {
+      handleCardRef()
+    }
+  }
 
   return (
     <div className='min-h-screen'>
@@ -198,7 +204,7 @@ export default function AnalyticsDashboardLayout({
                   className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-1stop-accent2 hover:opacity-50'} p-8`}
                 >
                   <div
-                    onClick={handleCardRef}
+                    onClick={handleScroll}
                     ref={cardRef}
                     className='hidden'
                   >
