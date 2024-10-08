@@ -1,3 +1,4 @@
+import BreadCrumbs from '@/Components/BreadCrumbs'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
@@ -83,6 +84,10 @@ export default function FormPage<
     >
       <DashboardPadding>
         <Card>
+          <BreadCrumbs
+            item={subtype}
+            searchLink={backUrl}
+          />
           <div className='flex flex-col gap-5'>
             <CardHeader
               title={title}

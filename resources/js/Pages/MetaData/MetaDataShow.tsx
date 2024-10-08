@@ -15,6 +15,7 @@ import NormalText from '@/typography/NormalText'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
+import BreadCrumbs from '@/Components/BreadCrumbs'
 
 interface Props {
   metaData: MetaData
@@ -51,9 +52,13 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
       subtype='metadata'
     >
       <DashboardPadding>
+        <BreadCrumbs
+          item='Meta Data'
+          searchLink='/meta-data'
+        />
         <Card>
           <div className='p-8'>
-            <div className='mb-6'>
+            {/* <div className='mb-6'>
               <h1 className='subheader-1stop text-xl'>METADATA</h1>
               <p className='small-1stop text-sm text-gray-500'>
                 Metadata Search {'>'}{' '}
@@ -61,7 +66,8 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
                   <b>Value Details</b>
                 </span>
               </p>
-            </div>
+            </div> */}
+
             <div className='rounded-md bg-1stop-white p-6 shadow-lg'>
               <div className='mb-4 flex justify-end gap-2'>
                 <img
@@ -216,7 +222,6 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
                 </NormalText>
               </DeleteModal>
             )}
-
             {showDeleteModal && (
               <DeleteModal
                 setShowModal={setShowDeleteModal}
