@@ -13,6 +13,7 @@ interface Properties {
   subtype?: string
   title?: string
   description?: string
+  handleCardRef: () => void
 }
 
 export default function AnalyticsDashboardLayout({
@@ -21,6 +22,7 @@ export default function AnalyticsDashboardLayout({
   subtype,
   title,
   description,
+  handleCardRef,
 }: Properties) {
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
@@ -41,6 +43,7 @@ export default function AnalyticsDashboardLayout({
   }, [sessionFlash])
 
   const profileRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const headings = [
     { name: 'MANAGE', value: 'manage' },
@@ -71,6 +74,10 @@ export default function AnalyticsDashboardLayout({
       router.get(tabInfo.url)
     }
   }
+
+  useEffect(() => {
+    cardRef.current?.click()
+  }, [])
 
   return (
     <div className='min-h-screen'>
@@ -114,7 +121,7 @@ export default function AnalyticsDashboardLayout({
               ref={profileRef}
             >
               <div
-                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-accent1 hover:text-black'
+                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:text-black'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -147,9 +154,28 @@ export default function AnalyticsDashboardLayout({
                     <Link
                       href='/logout'
                       method='post'
-                      className='text-black-700 small-1stop block w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
+                      className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
                     >
-                      Logout
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='icon icon-tabler icon-tabler-logout'
+                        width={20}
+                        height={20}
+                        viewBox='0 0 24 24'
+                        strokeWidth='1.5'
+                        stroke='currentColor'
+                        fill='none'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      >
+                        <path
+                          stroke='none'
+                          d='M0 0h24v24H0z'
+                        />
+                        <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+                        <path d='M7 12h14l-3 -3m0 6l3 -3' />
+                      </svg>
+                      <span className='ml-2 text-sm'>Sign out</span>
                     </Link>
                   </div>
                 </div>
@@ -171,6 +197,13 @@ export default function AnalyticsDashboardLayout({
                   key={item.title}
                   className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-1stop-accent2 hover:opacity-50'} p-8`}
                 >
+                  <div
+                    onClick={handleCardRef}
+                    ref={cardRef}
+                    className='hidden'
+                  >
+                    scroll anchor
+                  </div>
                   <Link
                     href={item.link}
                     className='text-black-600 flex flex-col items-center'
@@ -188,8 +221,18 @@ export default function AnalyticsDashboardLayout({
             <div className='small-1stop mt-10'>{findDescription(activeTab)}</div>
           </div>
         )}
+        <button
+          className='fixed bottom-12 left-4 flex h-8 w-8 items-center justify-center rounded bg-1stop-highlight hover:opacity-50 hover:shadow-xl'
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          <img
+            src='scroll_up.svg'
+            alt='GO TO TOP'
+            className='h-6 w-6'
+          />
+        </button>
       </div>
-      {children}
+      <div>{children}</div>
     </div>
   )
 }

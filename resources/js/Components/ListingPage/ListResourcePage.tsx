@@ -6,7 +6,7 @@ import CardHeader from '@/ui/Card/CardHeader'
 import Pagination from '@/ui/Pagination/Pagination'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 import FilterOldValues from '../OldSearch/FilterOldValues'
 
 export interface ListItemKeys<T> {
@@ -116,27 +116,39 @@ export default function ListResourcePage<
     router.get(addUrl)
   }, [addUrl])
 
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleCardRef = useCallback(() => {
+    if (cardRef.current == null) {
+      return
+    }
+    cardRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
   return (
     <AnalyticsDashboardLayout
       type={type}
       subtype={subtype}
       title={title}
       description={subheading}
+      handleCardRef={handleCardRef}
     >
       <DashboardPadding>
         <div className='flex flex-col gap-5'>
-          <CardHeader
-            title={title}
-            // addUrl={addUrl}
-            backUrl={backUrl}
-            onBackClick={onBackClick}
-            onAddClick={onAddClick}
-            editUrl={editUrl}
-            onEditClick={onEditClick}
-            deleteUrl={deleteUrl}
-            onDeleteClick={onDeleteClick}
-            subheading={subheading}
-          />
+          <div ref={cardRef}>
+            <CardHeader
+              title={title}
+              // addUrl={addUrl}
+              backUrl={backUrl}
+              onBackClick={onBackClick}
+              onAddClick={onAddClick}
+              editUrl={editUrl}
+              onEditClick={onEditClick}
+              deleteUrl={deleteUrl}
+              onDeleteClick={onDeleteClick}
+              subheading={subheading}
+            />
+          </div>
           <div className='flex flex-col gap-10 px-5 py-5'>
             <div className='flex flex-col gap-5'>
               <FormBuilder
@@ -150,6 +162,7 @@ export default function ListResourcePage<
             </div>
           </div>
         </div>
+
         <FilterOldValues
           oldValues={oldValues}
           searchUrl={searchUrl}
@@ -165,6 +178,17 @@ export default function ListResourcePage<
           layoutStyles={layoutStyle}
         />
         {paginator != null && <Pagination pagination={paginator} />}
+
+        {/* {viewType === 'table' && (
+          <Card className='p-5'>
+            <ListResourceTable
+              keys={keys}
+              primaryKey={primaryKey}
+              rows={rows}
+            />
+            {paginator != null && <Pagination pagination={paginator} />}
+          </Card>
+        )} */}
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

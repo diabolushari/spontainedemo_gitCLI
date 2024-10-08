@@ -30,6 +30,7 @@ export default function CardHeader({
   onDeleteClick,
   subheading,
 }: Props) {
+  CardHeader
   return (
     <div className=''>
       <div className='flex flex-wrap items-center justify-between gap-5 py-4'>
@@ -40,7 +41,7 @@ export default function CardHeader({
               onClick={onBackClick}
             />
           )}
-          <Heading>{title}</Heading>
+          <Heading className='subheader-1stop uppercase'>{title}</Heading>
         </div>
         <div className='flex flex-wrap gap-2'>
           {(editUrl != null || onEditClick != null) && (
