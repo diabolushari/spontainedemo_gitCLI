@@ -5,7 +5,9 @@ import {
   MetaHierarchyItem,
   MetaHierarchyLevelInfo,
 } from '@/interfaces/meta_interfaces'
-import { useMemo } from 'react'
+import NormalText from '@/typography/NormalText'
+import DeleteModal from '@/ui/Modal/DeleteModal'
+import { useMemo, useState } from 'react'
 
 interface Props {
   metaHierarchy: MetaHierarchy
@@ -18,6 +20,8 @@ export default function MetaHierarchyShow({
   hierarchyList,
   levelInfos,
 }: Readonly<Props>) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
   const displayItems = useMemo(() => {
     let index = 1
     const records: ShowPageItem[] = [
@@ -49,13 +53,17 @@ export default function MetaHierarchyShow({
     return records
   }, [metaHierarchy])
 
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true)
+  }
+
   return (
     <ShowResourcePage
       title={metaHierarchy.name}
       items={displayItems}
       backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       editUrl={route('meta-hierarchy.edit', metaHierarchy.id)}
-      deleteUrl={route('meta-hierarchy.destroy', metaHierarchy.id)}
+      onDeleteClick={handleDeleteClick}
       type={'definitions'}
       subtype={'hierarchies'}
     >
@@ -64,6 +72,16 @@ export default function MetaHierarchyShow({
         hierarchyList={hierarchyList}
         levelInfos={levelInfos}
       />
+
+      {showDeleteModal && (
+        <DeleteModal
+          setShowModal={setShowDeleteModal}
+          title={`Delete ${metaHierarchy.name}`}
+          url={route('meta-hierarchy.destroy', metaHierarchy.id)}
+        >
+          <p>Are you sure you want to delete {metaHierarchy.name}?</p>
+        </DeleteModal>
+      )}
     </ShowResourcePage>
   )
 }

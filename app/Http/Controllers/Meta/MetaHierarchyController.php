@@ -162,4 +162,17 @@ class MetaHierarchyController extends Controller
             ->route('meta-hierarchy.show', $metaHierarchy->id)
             ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
     }
+     public function destroy(MetaHierarchy $metaHierarchy): RedirectResponse
+    {
+        try {
+            $metaHierarchy->delete();
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('meta-hierarchy.index')
+            ->with(['message' => "Meta Hierarchy: $metaHierarchy->name deleted successfully"]);
+    }
 }
