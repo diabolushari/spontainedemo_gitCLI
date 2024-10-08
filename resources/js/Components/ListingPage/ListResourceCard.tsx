@@ -63,7 +63,10 @@ export default function ListResourceCard<
   // console.log(titleKey?.boxStyles)
   return (
     <div
-      className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
+      className={cn(
+        'grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+        layoutStyles
+      )}
     >
       <AddButton
         link={addUrl}
@@ -72,7 +75,12 @@ export default function ListResourceCard<
       {rows.map((row) => {
         return (
           <Card
-            className={`bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
+            className={cn(
+              `bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
+              row['viewStyle'],
+              cardStyles
+            )}
+            // className={`bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
             key={row[primaryKey] as string}
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >

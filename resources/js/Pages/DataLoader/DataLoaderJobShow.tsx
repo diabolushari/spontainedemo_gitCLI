@@ -4,7 +4,6 @@ import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderJob, JobStatuses } from '@/interfaces/data_interfaces'
 import JobStatusesTable from '@/Components/DataLoader/Jobs/JobStatusesTable'
 import JobDetailModal from '@/Components/DataLoader/Jobs/JobDetailModal'
-import Modal from '@/ui/Modal/Modal'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
@@ -23,22 +22,23 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
         content: dataLoaderJob.name,
         type: 'text',
       },
+      { id: 2, label: 'Description', content: dataLoaderJob.description, type: 'text' },
       {
-        id: 2,
+        id: 3,
         label: 'Target Table',
         content: route('data-detail.show', dataLoaderJob.data_detail_id),
         contentDescription: dataLoaderJob.detail?.name,
         type: 'link',
       },
       {
-        id: 3,
+        id: 4,
         label: 'Query',
         content: route('loader-queries.show', dataLoaderJob.query_id),
         contentDescription: dataLoaderJob.loader_query?.name,
         type: 'link',
       },
       {
-        id: 4,
+        id: 5,
         label: 'Cron Type',
         content: dataLoaderJob.cron_type,
         type: 'text',

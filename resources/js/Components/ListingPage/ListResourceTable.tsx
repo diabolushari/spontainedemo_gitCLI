@@ -41,7 +41,7 @@ export default function ListResourceTable<
                 )
               })}
               {row.actions != null && (
-                <td className='standard-td flex gap-2 flex-wrap'>
+                <td className='standard-td flex flex-wrap gap-2'>
                   {row.actions.map((action) => {
                     return (
                       <Link

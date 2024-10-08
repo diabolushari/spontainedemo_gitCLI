@@ -35,7 +35,7 @@ class DataLoaderJobController extends Controller
         /** @var LengthAwarePaginator<DataLoaderJob> $dataLoaderJobs */
         $dataLoaderJobs = DataLoaderJob::paginate(20)
             ->withQueryString();
-        $dataLoaderJobs->load('loaderQuery');
+        $dataLoaderJobs->load('loaderQuery', 'latest');
 
         return Inertia::render('DataLoader/DataLoaderJobIndex', [
             'dataLoaderJobs' => $dataLoaderJobs,

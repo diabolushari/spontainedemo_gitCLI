@@ -6,7 +6,7 @@ import JobsTable from '@/ui/Table/JobsTable'
 import React from 'react'
 
 interface Properties {
-  statuses: JobStatuses[]
+  statuses?: JobStatuses[]
   showDetails: (status: JobStatuses) => void
 }
 const heads = ['DATE', 'RAN AT', 'STATUS', 'ROWS']
@@ -16,7 +16,7 @@ export default function JobStatusesTable({ statuses, showDetails }: Properties) 
       <Card className='px-10'>
         <JobsTable heads={heads}>
           <tbody>
-            {statuses.map((status) => {
+            {statuses?.map((status) => {
               return (
                 <tr
                   className=''

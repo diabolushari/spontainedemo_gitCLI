@@ -142,7 +142,8 @@ export interface DataLoaderJob extends Model {
   query_id: number
   detail?: Partial<DataDetail> | null
   loader_query?: Partial<DataLoaderQuery> | null
-  statuses: JobStatuses[]
+  statuses?: JobStatuses[]
+  latest?: JobStatuses
 }
 
 export interface DataTableItem extends Model {

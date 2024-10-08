@@ -19,6 +19,7 @@ export interface ListItemKeys<T> {
   hideLabel?: boolean
   isLink?: boolean
   actionStyle?: string
+  viewStyle?: string
 }
 
 interface Props<

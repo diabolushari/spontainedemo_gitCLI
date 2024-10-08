@@ -72,4 +72,11 @@ class DataLoaderJob extends Model
     {
         return $this->hasMany(DataLoaderJobStatus::class, 'loader_job_id', 'id');
     }
+    /**
+     * @return HasOne<DataLoaderJobStatus>
+     */
+    public function latest(): HasOne
+    {
+        return $this->hasOne(DataLoaderJobStatus::class, 'loader_job_id', 'id')->latestOfMany();
+    }
 }
