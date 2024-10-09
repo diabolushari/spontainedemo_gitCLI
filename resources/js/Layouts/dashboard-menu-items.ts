@@ -38,10 +38,17 @@ const dashboardMenuItems: DashboardMenuItem[] = [
   {
     name: 'Definitions',
     value: 'definitions',
-    url: '/meta-data?type=definitions&subtype=metadata',
+    url: '/meta-structure?type=definitions&subtype=blocks',
     tabDescription: `It is important to ensure quality of data that is stored in this analytical repository.
      The definitions in this section will be used to validate data upon import.`,
     links: [
+      {
+        title: 'STRUCTURAL BLOCKS',
+        link: '/meta-structure?type=definitions&subtype=blocks',
+        image: '/structblock.png',
+        permission: 'metadata-structural-block',
+        subtype: 'blocks',
+      },
       {
         title: 'METADATA',
         link: '/meta-data?type=definitions&subtype=metadata',
@@ -62,13 +69,6 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         image: '/hierarchies.png',
         permission: 'metadata-hierarchy',
         subtype: 'hierarchies',
-      },
-      {
-        title: 'STRUCTURAL BLOCKS',
-        link: '/meta-structure?type=definitions&subtype=blocks',
-        image: '/structblock.png',
-        permission: 'metadata-structural-block',
-        subtype: 'blocks',
       },
     ],
   },
