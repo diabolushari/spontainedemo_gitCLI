@@ -5,6 +5,7 @@ namespace App\Models\DataLoader;
 use App\Models\DataDetail\DataDetail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -70,5 +71,19 @@ class DataLoaderJob extends Model
                 $query->whereDate('end_date', '>=', $now)
                     ->orWhereNull('end_date');
             });
+    }
+    /**
+     * @return HasMany<DataLoaderJobStatus>
+     */
+    public function statuses(): HasMany
+    {
+        return $this->hasMany(DataLoaderJobStatus::class, 'loader_job_id', 'id');
+    }
+    /**
+     * @return HasOne<DataLoaderJobStatus>
+     */
+    public function latest(): HasOne
+    {
+        return $this->hasOne(DataLoaderJobStatus::class, 'loader_job_id', 'id')->latestOfMany();
     }
 }

@@ -12,6 +12,7 @@ class DataLoaderJobFormRequest extends Data
 {
     public function __construct(
         public string $name,
+        public ?string $description,
         public string $cronType,
         public ?string $startDate,
         public ?string $endDate,
@@ -29,6 +30,7 @@ class DataLoaderJobFormRequest extends Data
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
             'cronType' => ['required', 'string', 'max:255'],
             'startDate' => ['nullable', 'date'],
             'endDate' => ['nullable', 'date', 'after_or_equal:startDate'],

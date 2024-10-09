@@ -12,6 +12,7 @@ import CardGridView from '@/Components/ListingPage/CardGridView'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import { router } from '@inertiajs/react'
+import { DisplayTime, monthList } from '@/libs/dates'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
@@ -33,25 +34,77 @@ export default function DataDetailShow({
   tab = 'data',
 }: Readonly<Props>) {
   const [activeTab, setActiveTab] = useState(tab)
+  const cronResult = (record: DataLoaderJob) => {
+    if (record.cron_type === 'HOURLY') {
+      return record.cron_type
+    }
+    if (record.cron_type === 'DAILY') {
+      return 'DAILY, ' + DisplayTime(record.schedule_time)
+    }
+    if (record.cron_type === 'WEEKLY') {
+      return 'WEEKLY, ' + record.day_of_week + ', ' + DisplayTime(record.schedule_time)
+    }
+    if (record.cron_type === 'MONTHLY') {
+      return 'MONTHLY, Day ' + record.day_of_month + ', ' + DisplayTime(record.schedule_time)
+    }
+    if (record.cron_type === 'YEARLY') {
+      const month = monthList.find((value) => {
+        if (value.id === record.month_of_year) {
+          return value
+        }
+      })
+      console.log(month)
+      return (
+        'YEARLY, ' +
+        month?.name +
+        ', ' +
+        record.day_of_month +
+        ', ' +
+        DisplayTime(record.schedule_time)
+      )
+    }
+  }
 
   const data = useMemo(() => {
-    return jobs.map((job) => ({
-      id: job.id,
-      name: job.name,
-      executed_at: job.last_status?.executed_at ?? 'N/A',
+    return jobs.map((record) => ({
+      id: record.id,
+      name: record.name,
+      description: record.description,
       status:
-        job.last_status?.is_successful === 1
-          ? `Inserted ${job.last_status.total_records ?? 0} Records.`
-          : (job.last_status?.error_message ?? ''),
+        record.latest != null
+          ? record.latest?.is_successful == 1
+            ? 'SUCCESS'
+            : 'FAILED'
+          : 'WAITING',
+      cronType: cronResult(record),
+      lastRun: record.latest != null ? 'Last run: ' + record.latest?.executed_at : '',
+      rows: record.latest != null ? record.latest?.total_records + ' rows' : '',
+      viewStyle:
+        record.latest != null
+          ? record.latest?.is_successful == 1
+            ? 'bg-[#D2DDCA]'
+            : 'bg-[#DA999A]'
+          : '',
       actions: [],
     }))
   }, [jobs])
 
   const keys = useMemo(() => {
     return [
-      { key: 'name', label: 'Name', isCardHeader: true },
-      { key: 'executed_at', label: 'Executed At', isShownInCard: true },
-      { key: 'status', label: 'Status', isShownInCard: true, hideLabel: true },
+      {
+        key: 'name',
+        isShownInCard: true,
+        boxStyles: 'mr-auto',
+      },
+      {
+        key: 'status',
+        isShownInCard: true,
+        boxStyles: 'ml-auto',
+      },
+      { key: 'cronType', isShownInCard: true, boxStyles: 'col-span-2 mr-auto' },
+      { key: 'description', isShownInCard: true, boxStyles: 'col-span-2 ml-2 line-clamp-1' },
+      { key: 'lastRun', isShownInCard: true, boxStyles: 'min-w-full' },
+      { key: 'rows', isShownInCard: true, boxStyles: 'ml-auto' },
     ] as ListItemKeys<Partial<MetaData>>[]
   }, [])
 
@@ -117,6 +170,7 @@ export default function DataDetailShow({
               rows={data}
               onAddClick={onAddClick}
               onCardClick={handleJobCardClick}
+              layoutStyles='lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'
             />
           )}
         </div>

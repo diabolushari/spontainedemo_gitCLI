@@ -4,6 +4,7 @@ import { MetaStructure } from '@/interfaces/meta_interfaces'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
+import { describe } from 'node:test'
 
 interface Props {
   structures: Paginator<MetaStructure>
@@ -44,6 +45,13 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         label: 'Structure',
         isCardHeader: true,
       },
+      {
+        key: 'description',
+
+        isShownInCard: true,
+        boxStyles: 'gap-0 ',
+        textStyles: 'small-1stop',
+      },
     ] as ListItemKeys<Partial<MetaStructure>>[]
   }, [])
 
@@ -53,9 +61,10 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
       return {
         id: structure.id,
         structure_name: structure.structure_name,
+        description: structure.description,
         actions: [
           {
-            title: `${structure.meta_data_count} Records`,
+            title: `${structure.meta_data_count} Members`,
             url: route('meta-data.index', { structure: structure.structure_name }, false),
             textStyles: 'hover:scale-105 transition',
           },

@@ -4,6 +4,11 @@
  * @param month
  * @param year
  */
+
+const toTwoDigit = (num: number) => {
+  return num < 10 ? `0${num}` : `${num}`
+}
+
 export const getDatesInMonth = (month: number, year: number): Date[] => {
   const date = new Date(year, month, 1)
   const dates = []
@@ -32,6 +37,42 @@ export const splitDateTime = (date: string): string[] => {
   return []
 }
 
+export const getForrmatDateTime = (dateTime: string | null | undefined): string | null => {
+  if (dateTime == null) {
+    return null
+  }
+  const explodedDateTime = splitDateTime(dateTime)
+  const date = explodedDateTime[0]
+  const time = explodedDateTime[1]?.split('.')[0]
+  return `${getDisplayDate(date)} ${time}`
+}
+
+export const DisplayTime = (time?: string | null) => {
+  if (time == null) {
+    return ''
+  }
+
+  const splitTime = time?.split(':')
+
+  if (!splitTime) {
+    return ''
+  }
+
+  if (splitTime.length !== 3 && splitTime.length !== 2) {
+    return ''
+  }
+
+  const hour = Number.parseInt(splitTime[0])
+  const minute = Number.parseInt(splitTime[1])
+
+  if (Number.isNaN(hour) || Number.isNaN(minute)) {
+    return ''
+  }
+
+  return `${toTwoDigit(hour > 12 ? hour - 12 : hour)}:${toTwoDigit(minute)} ${
+    hour >= 12 ? 'PM' : 'AM'
+  }`
+}
 /**
  * Return Date in d, M Y format taking Y-m-d as input
  *

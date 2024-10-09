@@ -43,13 +43,18 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         label: 'Hierarchy',
         key: 'name',
         isCardHeader: true,
-        isLink: true,
+      },
+      {
+        key: 'description',
+
+        isShownInCard: true,
+        boxStyles: 'items-center gap-0',
       },
       {
         key: 'items_count',
-        label: 'Members',
+
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'items-center gap-0',
       },
     ] as ListItemKeys<{ name: string; items_count: number }>[]
   }, [])
@@ -59,7 +64,8 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       return {
         id: hierarchy.id,
         name: hierarchy.name,
-        items_count: hierarchy.items_count ?? 0,
+        description: hierarchy.description,
+        items_count: 'Members ' + hierarchy.items_count,
         actions: [
           // {
           //   title: 'SHOW',
@@ -101,7 +107,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         'Hierarchies can be particularly helpful when automatically drilling down or rolling up data. A hierarchy is a multi level,  "one parent to multiple children" structure'
       }
       handleCardClick={handleCardClick}
-      cardStyles='p-4 '
+      cardStyles='p-4 cursor-pointer transition hover:scale-105'
     />
   )
 }

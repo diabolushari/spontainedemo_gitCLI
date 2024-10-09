@@ -21,6 +21,7 @@ interface Props<
   cardStyles?: string
   onCardClick?: (id: number | string) => void
   layoutStyles?: string
+  addButtonText?: string
 }
 
 export default function CardGridView<
@@ -36,6 +37,7 @@ export default function CardGridView<
   gridStyles,
   onCardClick,
   layoutStyles,
+  addButtonText,
 }: Readonly<Props<U, T>>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
@@ -61,13 +63,23 @@ export default function CardGridView<
 
   return (
     <div
-      className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
+      className={cn(
+        'grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+        layoutStyles
+      )}
     >
-      <AddButton onClick={onAddClick} />
+      <AddButton
+        onClick={onAddClick}
+        buttonText={addButtonText ?? 'Add new'}
+      />
       {rows.map((row) => {
         return (
           <Card
-            className={`bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
+            className={cn(
+              `bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
+              row['viewStyle' as keyof typeof row] as string | undefined,
+              cardStyles
+            )}
             key={row[primaryKey] as string}
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
@@ -84,7 +96,10 @@ export default function CardGridView<
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className={`${cn(`flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`, rowKey.boxStyles)}`}
+                    className={cn(
+                      `flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
+                      rowKey.boxStyles
+                    )}
                     key={rowKey.key as string}
                     // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
@@ -92,12 +107,12 @@ export default function CardGridView<
                       <StrongText className='body-1stop'>{rowKey.label as string}</StrongText>
                     )}
                     <NormalText
-                      className={
-                        'text-base ' +
-                        (rowKey.textStyles != null
+                      className={cn(
+                        '',
+                        rowKey.textStyles != null
                           ? (row[rowKey.textStyles as keyof typeof row] as string)
-                          : '')
-                      }
+                          : ''
+                      )}
                     >
                       {row[rowKey.key] as string}
                     </NormalText>
@@ -108,7 +123,7 @@ export default function CardGridView<
                   <Link
                     as='a'
                     href={action.url}
-                    className={`text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
+                    className={`small-1stop text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
                     key={action.title}
                   >
                     {action.title}

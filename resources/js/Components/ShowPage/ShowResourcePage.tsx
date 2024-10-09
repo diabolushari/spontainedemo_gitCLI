@@ -15,6 +15,7 @@ export interface ShowPageItem {
   content?: string | number | null
   contentDescription?: string
   type: 'text' | 'link' | 'date' | 'html' | 'image' | 'video'
+  boxStyles?: string
 }
 
 interface Props {
@@ -30,6 +31,7 @@ interface Props {
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   type?: string
+  cardStyle?: string
   subtype?: string
   breadCrumbs?: BreadcrumbItemLink[]
 }
@@ -48,6 +50,7 @@ export default function ShowResourcePage({
   addUrl,
   type,
   subtype,
+  cardStyle,
   breadCrumbs,
 }: Props) {
   const cardRef = useRef<HTMLDivElement>(null)

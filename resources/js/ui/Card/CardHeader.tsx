@@ -37,7 +37,7 @@ export default function CardHeader({
   CardHeader
   return (
     <div className=''>
-      <div className='flex flex-wrap items-center justify-between gap-5 py-4'>
+      <div className='flex flex-wrap items-center justify-between gap-5 px-4 py-4'>
         <div className='flex items-center gap-5'>
           {(backUrl != null || onBackClick != null) && (
             <BackButton

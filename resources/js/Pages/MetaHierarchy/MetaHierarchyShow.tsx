@@ -73,7 +73,7 @@ export default function MetaHierarchyShow({
     <ShowResourcePage
       title={metaHierarchy.name}
       items={displayItems}
-      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
+      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'hierarchies' })}
       editUrl={route('meta-hierarchy.edit', metaHierarchy.id)}
       onDeleteClick={handleDeleteClick}
       type={'definitions'}

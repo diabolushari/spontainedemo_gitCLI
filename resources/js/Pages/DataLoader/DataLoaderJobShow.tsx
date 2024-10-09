@@ -1,7 +1,9 @@
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import { DataLoaderJob } from '@/interfaces/data_interfaces'
+import { DataLoaderJob, JobStatuses } from '@/interfaces/data_interfaces'
+import JobStatusesTable from '@/Components/DataLoader/Jobs/JobStatusesTable'
+import JobDetailModal from '@/Components/DataLoader/Jobs/JobDetailModal'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
@@ -9,7 +11,9 @@ interface Props {
 
 export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
+  const [showStatusModal, setShowStatusModal] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState<JobStatuses | null>(null)
+  console.log(dataLoaderJob)
   const displayedValues = useMemo(() => {
     return [
       {
@@ -18,29 +22,33 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
         content: dataLoaderJob.name,
         type: 'text',
       },
+      { id: 2, label: 'Description', content: dataLoaderJob.description, type: 'text' },
       {
-        id: 2,
+        id: 3,
         label: 'Target Table',
         content: route('data-detail.show', dataLoaderJob.data_detail_id),
         contentDescription: dataLoaderJob.detail?.name,
         type: 'link',
       },
       {
-        id: 3,
+        id: 4,
         label: 'Query',
         content: route('loader-queries.show', dataLoaderJob.query_id),
         contentDescription: dataLoaderJob.loader_query?.name,
         type: 'link',
       },
       {
-        id: 4,
+        id: 5,
         label: 'Cron Type',
         content: dataLoaderJob.cron_type,
         type: 'text',
       },
     ] as ShowPageItem[]
   }, [])
-
+  const showDetails = (status: JobStatuses) => {
+    setShowStatusModal(true)
+    setSelectedStatus(status)
+  }
   return (
     <ShowResourcePage
       title={''}

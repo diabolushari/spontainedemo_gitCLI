@@ -6,6 +6,6 @@ interface Props {
   children: React.ReactNode
 }
 
-export default function NormalText({ className = '', children }: Props) {
-  return <span className={cn(' body-1stop', className)}>{children}</span>
+export default function NormalText({ className = 'small-1stop', children }: Props) {
+  return <span className={cn('', className)}>{children}</span>
 }
