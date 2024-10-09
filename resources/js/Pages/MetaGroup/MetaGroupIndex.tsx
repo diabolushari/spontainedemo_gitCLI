@@ -44,16 +44,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         items_count: 'Members ' + group.items_count,
         name: group.name,
         description: group.description,
-        actions: [
-          // {
-          //   title: 'SHOW',
-          //   url: route('meta-data-group.show', {
-          //     metaDataGroup: group.id,
-          //     type: 'definitions',
-          //     subtype: 'groups',
-          //   }),
-          // },
-        ],
+        actions: [],
       }
     })
   }, [groups])
@@ -65,27 +56,29 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         label: 'Name',
         isCardHeader: true,
       },
-
       {
         key: 'description',
-
         isShownInCard: true,
         boxStyles: 'items-center gap-0',
         textStyles: 'small-1stop ',
       },
       {
         key: 'items_count',
-       
         isShownInCard: true,
         boxStyles: 'items-center gap-0',
         textStyles: 'small-1stop ',
       },
-    ] as ListItemKeys<Partial<MetaDataGroup>>[]
+    ] as ListItemKeys<{
+      name: string
+      description: string | null | undefined
+      items_count: string
+    }>[]
   }, [])
+
   const handleCardClick = useCallback((id: number | string) => {
     router.get(route('meta-data-group.show', { id: id }))
   }, [])
-  console.log(keys)
+
   return (
     <ListResourcePage
       keys={keys}
@@ -101,7 +94,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       subtype={subtype ?? 'groups'}
       oldValues={oldValues}
       formStyles='bg-1stop-white p-4 rounded-lg'
-      subheading='Dimensional groups can come in handy when creating report sections etc. 
+      subheading='Dimensional groups can come in handy when creating report sections etc.
 e.g. An extruded steel section can be in groups "All materials" and "Steel materials"'
       handleCardClick={handleCardClick}
       cardStyles='p-4 hover:scale-105 transition'

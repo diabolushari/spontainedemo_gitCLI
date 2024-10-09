@@ -9,7 +9,6 @@ use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
 use Exception;
-use Illuminate\Support\Facades\Log;
 
 readonly class RunScheduledJob
 {
@@ -24,8 +23,6 @@ readonly class RunScheduledJob
     public function run(
         DataLoaderJob $dataLoaderJob
     ): OperationResult {
-
-        Log::info('Running scheduled job');
 
         $startTime = now();
 
@@ -66,8 +63,6 @@ readonly class RunScheduledJob
             $dataLoaderJob->detail,
             $data,
         );
-
-        Log::info($result);
 
         try {
             DataLoaderJobStatus::create([

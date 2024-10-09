@@ -9,10 +9,10 @@ use App\Models\DataTable\DataTableMeasure;
 class MapColumnsToField
 {
     /**
-     * @param  array<string>  $fieldNames
+     * @param  array<string>  $excelFieldNames
      * @return TableColumnInfo[]
      */
-    public function map(array $fieldNames, int $dataDetailId): array
+    public function map(array $excelFieldNames, int $dataDetailId): array
     {
 
         /**
@@ -21,12 +21,12 @@ class MapColumnsToField
         $fieldInfo = [];
 
         DataTableDate::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableDate $tableField) use (&$fieldInfo, $fieldNames) {
-                foreach ($fieldNames as $fieldName) {
+            ->each(function (DataTableDate $tableField) use (&$fieldInfo, $excelFieldNames) {
+                foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldInfo,
                         $tableField->field_name,
-                        $fieldName,
+                        $excelFieldName,
                         $tableField->column,
                         false,
                         null
@@ -35,12 +35,12 @@ class MapColumnsToField
             });
 
         DataTableDimension::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableDimension $tableField) use (&$fieldInfo, $fieldNames) {
-                foreach ($fieldNames as $fieldName) {
+            ->each(function (DataTableDimension $tableField) use (&$fieldInfo, $excelFieldNames) {
+                foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldInfo,
                         $tableField->field_name,
-                        $fieldName,
+                        $excelFieldName,
                         $tableField->column,
                         true,
                         $tableField->meta_structure_id
@@ -49,12 +49,12 @@ class MapColumnsToField
             });
 
         DataTableMeasure::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableMeasure $tableField) use (&$fieldInfo, $fieldNames) {
-                foreach ($fieldNames as $fieldName) {
+            ->each(function (DataTableMeasure $tableField) use (&$fieldInfo, $excelFieldNames) {
+                foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldInfo,
                         $tableField->field_name,
-                        $fieldName,
+                        $excelFieldName,
                         $tableField->column,
                         false,
                         null
@@ -63,7 +63,7 @@ class MapColumnsToField
                         $this->insertToList(
                             $fieldInfo,
                             $tableField->unit_field_name,
-                            $fieldName,
+                            $excelFieldName,
                             $tableField->unit_column,
                             false,
                             null
@@ -82,19 +82,19 @@ class MapColumnsToField
     private function insertToList(
         array &$list,
         string $tableFieldName,
-        string $dataFieldName,
+        string $excelFieldName,
         string $tableColumn,
         bool $isMetaData,
         ?int $metaStructureId
     ): void {
-        $formattedFieldName = implode(' ', explode('_', $dataFieldName));
+        $formattedFieldName = implode(' ', explode('_', $excelFieldName));
         $lowerTableFieldName = strtolower($tableFieldName);
 
         if (
             $lowerTableFieldName == strtolower($formattedFieldName)
-            || $lowerTableFieldName == strtolower($dataFieldName)
+            || $lowerTableFieldName == strtolower($excelFieldName)
         ) {
-            $list[] = new TableColumnInfo($tableColumn, $dataFieldName, $isMetaData, $metaStructureId);
+            $list[] = new TableColumnInfo($tableColumn, $excelFieldName, $isMetaData, $metaStructureId);
         }
 
     }

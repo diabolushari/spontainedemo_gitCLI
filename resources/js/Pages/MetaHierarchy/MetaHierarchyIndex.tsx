@@ -52,11 +52,10 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       },
       {
         key: 'items_count',
-
         isShownInCard: true,
         boxStyles: 'items-center gap-0',
       },
-    ] as ListItemKeys<{ name: string; items_count: number }>[]
+    ] as ListItemKeys<{ name: string; items_count: string }>[]
   }, [])
 
   const data = useMemo(() => {
@@ -66,21 +65,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         name: hierarchy.name,
         description: hierarchy.description,
         items_count: 'Members ' + hierarchy.items_count,
-        actions: [
-          // {
-          //   title: 'SHOW',
-          //   url: route('meta-hierarchy.show', {
-          //     metaHierarchy: hierarchy.id,
-          //     type: 'definitions',
-          //     subtype: 'heirarchies',
-          //   }),
-          // },
-          // {
-          //   title: 'EDIT',
-          //   url: route('meta-hierarchy.edit', { id: hierarchy.id }),
-          //   textStyles: 'ml-auto  hover:scale-105 transition',
-          // },
-        ],
+        actions: [],
       }
     })
   }, [hierarchies])

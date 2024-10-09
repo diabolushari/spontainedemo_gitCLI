@@ -7,10 +7,10 @@ export function generateSnakeCaseName(name: string): string {
   if (name == '') {
     return ''
   }
-  //remove all special characters except space
-  const tableName = name.replace(/[^a-zA-Z0-9 ]/g, '')
-  //replace all spaces with underscore
-  return tableName.replace(/ /g, '_').toLowerCase()
+  //convert to lowercase
+  const tableName = name.toLowerCase()
+  //replace all non alphanumeric characters with underscore
+  return tableName.replace(/[^a-z0-9]/g, '_')
 }
 
 export default function SubjectAreaCreate() {

@@ -124,7 +124,7 @@ class DataLoaderJobController extends Controller
 
         return redirect()
             ->route('data-detail.show', [
-                'dataDetail' => $dataLoaderJob->id,
+                'dataDetail' => $dataLoaderJob->data_detail_id,
                 'tab' => 'jobs',
             ])
             ->with(['message' => 'Record updated successfully.']);

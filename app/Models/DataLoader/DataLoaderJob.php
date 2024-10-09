@@ -54,7 +54,8 @@ class DataLoaderJob extends Model
      */
     public function lastStatus(): HasOne
     {
-        return $this->hasOne(DataLoaderJobStatus::class, 'loader_job_id', 'id');
+        return $this->hasOne(DataLoaderJobStatus::class, 'loader_job_id', 'id')
+            ->latest();
     }
 
     //scopes

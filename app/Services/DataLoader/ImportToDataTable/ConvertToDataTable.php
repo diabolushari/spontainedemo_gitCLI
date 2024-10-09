@@ -20,7 +20,6 @@ readonly class ConvertToDataTable
 
         foreach ($data as $row) {
             $record = [
-                'data_detail_id' => $dataDetailId,
                 'created_at' => $time,
                 'updated_at' => $time,
             ];

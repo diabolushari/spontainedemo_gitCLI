@@ -11,7 +11,6 @@ use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
 use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
-use App\Services\SubjectArea\CreateDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -73,7 +72,6 @@ class DataDetailController extends Controller
 
     public function store(
         DataDetailFormRequest $request,
-        CreateDataTable $createDataTable,
         SetupDataTable $setupDataTable
     ): RedirectResponse {
 

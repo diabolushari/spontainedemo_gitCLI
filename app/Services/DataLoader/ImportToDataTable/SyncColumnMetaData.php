@@ -21,14 +21,14 @@ readonly class SyncColumnMetaData
     {
 
         $uniqueValues = array_unique($values);
-        $metaData = MetaData::where('meta_structure_id', $structureId)
+        $existingMetaData = MetaData::where('meta_structure_id', $structureId)
             ->get();
 
-        $metaDataInfo = [];
+        $metaDataMap = [];
         $existingIds = [];
 
-        foreach ($metaData as $meta) {
-            $metaDataInfo[strtolower($meta->name)] = $meta->id;
+        foreach ($existingMetaData as $meta) {
+            $metaDataMap[strtolower($meta->name)] = $meta->id;
             $existingIds[] = $meta->id;
         }
 
@@ -42,7 +42,7 @@ readonly class SyncColumnMetaData
 
             $lowerCaseValue = strtolower($value);
 
-            if (! array_key_exists($lowerCaseValue, $metaDataInfo)) {
+            if (! array_key_exists($lowerCaseValue, $metaDataMap)) {
                 $newMetaDataRecords[] = [
                     'name' => $value,
                     'meta_structure_id' => $structureId,
@@ -53,7 +53,7 @@ readonly class SyncColumnMetaData
         }
 
         if (empty($newMetaDataRecords)) {
-            return $metaDataInfo;
+            return $metaDataMap;
         }
 
         MetaData::insert($newMetaDataRecords);
@@ -63,9 +63,9 @@ readonly class SyncColumnMetaData
             ->get();
 
         foreach ($newlyInsertedMetaData as $meta) {
-            $metaDataInfo[strtolower($meta->name)] = $meta->id;
+            $metaDataMap[strtolower($meta->name)] = $meta->id;
         }
 
-        return $metaDataInfo;
+        return $metaDataMap;
     }
 }

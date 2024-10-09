@@ -92,7 +92,10 @@ readonly class ImportToDataTable
         foreach ($dataTable as &$record) {
             foreach ($fieldInfo as $field) {
                 if ($field->isMetaData) {
-                    $newValue = $metaDataIds[$field->column][strtolower($record[$field->column])] ?? null;
+                    $newValue = null;
+                    if ($record[$field->column] !== null && $record[$field->column] !== '') {
+                        $newValue = $metaDataIds[$field->column][strtolower($record[$field->column])] ?? null;
+                    }
                     $record[$field->column] = $newValue;
                 }
             }

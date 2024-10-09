@@ -6,7 +6,6 @@ use App\Events\ScheduledDataLoadEvent;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\CronTypes;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class StartScheduledJobs
 {
@@ -22,7 +21,6 @@ class StartScheduledJobs
         if ($this->now->minute == 0) {
             $this->runHourlyQueries();
         }
-        Log::info('Running scheduled jobs: '.$this->now->toTimeString());
         $this->runDailyQueries($this->now->toTimeString());
         $this->runWeeklyQueries($this->now->toTimeString(), $this->now->dayName);
         $this->runMonthlyQueries($this->now->toTimeString(), $this->now->day);
@@ -35,7 +33,6 @@ class StartScheduledJobs
             ->active()
             ->get()
             ->each(function ($query) {
-                Log::info('Dispatching event');
                 ScheduledDataLoadEvent::dispatch($query);
             });
     }
@@ -43,19 +40,11 @@ class StartScheduledJobs
     private function runDailyQueries(string $time): void
     {
 
-        Log::info(
-            DataLoaderJob::where('cron_type', CronTypes::DAILY)
-                ->active()
-                ->where('schedule_time', $time)
-                ->get()
-        );
-
         DataLoaderJob::where('cron_type', CronTypes::DAILY)
             ->active()
             ->where('schedule_time', $time)
             ->get()
             ->each(function ($query) {
-                Log::info('Running daily query');
                 ScheduledDataLoadEvent::dispatch($query);
             });
     }

@@ -13,8 +13,6 @@ class CreateDataTable
     ): void {
         Schema::create($request->tableName, function (Blueprint $table) use ($request) {
             $table->id();
-            $table->foreignId('data_detail_id')
-                ->constrained('data_details');
 
             foreach ($request->dates as $date) {
                 $table->date($date->column)->nullable()
@@ -29,7 +27,7 @@ class CreateDataTable
 
             foreach ($request->measures as $measure) {
                 $table->double($measure->column)->nullable();
-                if ($measure->unitColumn != null) {
+                if ($measure->unitColumn != null && $measure->unitFieldName != null) {
                     $table->string($measure->unitColumn)->nullable();
                 }
             }
