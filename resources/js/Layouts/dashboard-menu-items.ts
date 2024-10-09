@@ -68,7 +68,7 @@ const dashboardMenuItems: DashboardMenuItem[] = [
   {
     name: 'Loaders',
     value: 'loaders',
-    url: '/loader-jobs?type=loaders&subtype=jobs',
+    url: '/loader-connections?type=loaders&subtype=data-sources',
     tabDescription: `Loaders are scheduled or conditional jobs that are
     used to automatically extract and load data into pre-defined data tables.`,
     links: [

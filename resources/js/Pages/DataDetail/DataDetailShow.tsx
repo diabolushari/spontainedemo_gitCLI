@@ -34,23 +34,40 @@ export default function DataDetailShow({
   const [activeTab, setActiveTab] = useState(tab)
 
   const data = useMemo(() => {
-    return jobs.map((job) => ({
-      id: job.id,
-      name: job.name,
-      executed_at: job.last_status?.executed_at ?? 'N/A',
-      status:
-        job.last_status?.is_successful === 1
-          ? `Inserted ${job.last_status.total_records ?? 0} Records.`
-          : (job.last_status?.error_message ?? ''),
+    return jobs.map((record) => ({
+      id: record.id,
+      name: record.name,
+      description: record.description,
+      status: record.latest?.is_successful == 1 ? 'WAITING' : 'FAILED',
+      cronType:
+        record.cron_type != null
+          ? record.cron_type
+          : '' + ' ' + record.schedule_time != null
+            ? record.schedule_time
+            : '',
+      lastRun: 'Last run: ' + record.latest?.executed_at,
+      rows: record.latest?.total_records + ' rows',
+      viewStyle: record.latest?.is_successful == 1 ? '' : 'bg-[#DA999A]',
       actions: [],
     }))
   }, [jobs])
 
   const keys = useMemo(() => {
     return [
-      { key: 'name', label: 'Name', isCardHeader: true },
-      { key: 'executed_at', label: 'Executed At', isShownInCard: true },
-      { key: 'status', label: 'Status', isShownInCard: true, hideLabel: true },
+      {
+        key: 'name',
+        isShownInCard: true,
+        boxStyles: 'mr-auto',
+      },
+      {
+        key: 'status',
+        isShownInCard: true,
+        boxStyles: 'ml-auto',
+      },
+      { key: 'cronType', isShownInCard: true, boxStyles: 'col-span-2 mr-auto' },
+      { key: 'description', isShownInCard: true, boxStyles: 'col-span-2' },
+      { key: 'lastRun', isShownInCard: true, boxStyles: 'min-w-full' },
+      { key: 'rows', isShownInCard: true, boxStyles: 'ml-auto' },
     ] as ListItemKeys<Partial<MetaData>>[]
   }, [])
 

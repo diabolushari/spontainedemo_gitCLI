@@ -49,7 +49,8 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         key: 'description',
 
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'gap-0 ',
+        textStyles: 'small-1stop',
       },
     ] as ListItemKeys<Partial<MetaStructure>>[]
   }, [])

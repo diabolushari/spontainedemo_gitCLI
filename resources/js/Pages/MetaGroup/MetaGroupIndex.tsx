@@ -41,7 +41,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
     return groups.data.map((group) => {
       return {
         id: group.id,
-        items_count: group.items_count,
+        items_count: 'Members ' + group.items_count,
         name: group.name,
         description: group.description,
         actions: [
@@ -70,14 +70,15 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         key: 'description',
 
         isShownInCard: true,
-        boxStyles: 'items-center',
-        textStyles: 'small-1stop',
+        boxStyles: 'items-center gap-0',
+        textStyles: 'small-1stop ',
       },
       {
         key: 'items_count',
-        label: 'Members',
+       
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'items-center gap-0',
+        textStyles: 'small-1stop ',
       },
     ] as ListItemKeys<Partial<MetaDataGroup>>[]
   }, [])

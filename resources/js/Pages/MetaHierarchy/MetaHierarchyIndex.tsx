@@ -48,13 +48,13 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         key: 'description',
 
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'items-center gap-0',
       },
       {
         key: 'items_count',
-        label: 'Members',
+
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'items-center gap-0',
       },
     ] as ListItemKeys<{ name: string; items_count: number }>[]
   }, [])
@@ -65,7 +65,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         id: hierarchy.id,
         name: hierarchy.name,
         description: hierarchy.description,
-        items_count: hierarchy.items_count ?? 0,
+        items_count: 'Members ' + hierarchy.items_count,
         actions: [
           // {
           //   title: 'SHOW',

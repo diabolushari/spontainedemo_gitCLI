@@ -21,6 +21,7 @@ interface Props<
   cardStyles?: string
   onCardClick?: (id: number | string) => void
   layoutStyles?: string
+  addButtonText?: string
 }
 
 export default function CardGridView<
@@ -36,6 +37,7 @@ export default function CardGridView<
   gridStyles,
   onCardClick,
   layoutStyles,
+  addButtonText,
 }: Readonly<Props<U, T>>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
@@ -66,7 +68,10 @@ export default function CardGridView<
         layoutStyles
       )}
     >
-      <AddButton onClick={onAddClick} />
+      <AddButton
+        onClick={onAddClick}
+        buttonText={addButtonText ?? 'Add new'}
+      />
       {rows.map((row) => {
         return (
           <Card
@@ -98,12 +103,12 @@ export default function CardGridView<
                       <StrongText className='body-1stop'>{rowKey.label as string}</StrongText>
                     )}
                     <NormalText
-                      className={
-                        'text-base ' +
-                        (rowKey.textStyles != null
+                      className={cn(
+                        '',
+                        rowKey.textStyles != null
                           ? (row[rowKey.textStyles as keyof typeof row] as string)
-                          : '')
-                      }
+                          : ''
+                      )}
                     >
                       {row[rowKey.key] as string}
                     </NormalText>
