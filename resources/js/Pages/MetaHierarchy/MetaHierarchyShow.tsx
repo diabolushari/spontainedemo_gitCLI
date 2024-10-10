@@ -22,7 +22,7 @@ const breadCrumb: BreadcrumbItemLink[] = [
     link: '/meta-hierarchy',
   },
   {
-    item: 'Meta hierarchy show',
+    item: 'Meta hierarchy',
     link: '',
   },
 ]

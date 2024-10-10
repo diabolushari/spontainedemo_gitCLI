@@ -19,7 +19,7 @@ const breadCrumb: BreadcrumbItemLink[] = [
     link: '/meta-data-group',
   },
   {
-    item: 'Meta group show',
+    item: 'Meta group ',
     link: '',
   },
 ]

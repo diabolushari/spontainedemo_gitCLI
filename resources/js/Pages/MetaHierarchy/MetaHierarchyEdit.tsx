@@ -42,7 +42,7 @@ export default function MetaHierarchyEdit({ metaHierarchy }: Props) {
       link: '/meta-hierarchy',
     },
     {
-      item: 'Meta hierarchy show',
+      item: 'Meta hierarchy',
       link: '/meta-hierarchy.show',
     },
     {
