@@ -123,7 +123,7 @@ class DataDetailController extends Controller
             ->withQueryString();
 
         $jobs = DataLoaderJob::where('data_detail_id', $dataDetail->id)
-            ->with('lastStatus')
+            ->with('lastStatus', 'loaderQuery', 'latest')
             ->get();
 
         return Inertia::render('DataDetail/DataDetailShow', [
@@ -152,6 +152,5 @@ class DataDetailController extends Controller
             ->with([
                 'message' => "Data Detail $dataDetail->name deleted successfully.",
             ]);
-
     }
 }

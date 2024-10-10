@@ -70,8 +70,8 @@ const ReferenceDataIndex = ({
         domain: row.domain,
         parameter: row.parameter,
         sort_order: row.sort_order,
-        value_one: row.value_one,
-        value_two: row.value_two,
+        value_one: 'Value One ' + row.value_one,
+        value_two: 'Value Two ' + row.value_two,
         actions: [
           {
             title: 'Edit',
@@ -102,15 +102,13 @@ const ReferenceDataIndex = ({
       },
       {
         key: 'value_one',
-        label: 'Value One',
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'items-center gap-0',
       },
       {
         key: 'value_two',
-        label: 'Value Two',
         isShownInCard: true,
-        boxStyles: 'items-center',
+        boxStyles: 'items-center gap-0',
       },
     ] as ListItemKeys<Partial<ReferenceData>>[]
   }, [])
