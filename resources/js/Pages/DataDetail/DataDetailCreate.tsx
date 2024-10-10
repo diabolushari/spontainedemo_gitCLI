@@ -136,6 +136,7 @@ export default function DataDetailCreate({ types }: Readonly<Props>) {
           <Button
             label='Save'
             onClick={postData}
+            processing={loading}
           />
         </div>
       </DashboardPadding>
