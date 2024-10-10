@@ -66,9 +66,10 @@ class MetaStructureController extends Controller
             ->with(['message' => 'Meta structure '.$request->structureName.' created successfully']);
     }
 
-    public function show(MetaStructure $metaStructure)
+    public function show(int $id):Response
     {
-        //
+        $metaStructure = MetaStructure::find($id);
+        return Inertia::render('MetaStructure/MetaStructureShow',['metaStructure' => $metaStructure]);
     }
 
     public function edit(MetaStructure $metaStructure): Response

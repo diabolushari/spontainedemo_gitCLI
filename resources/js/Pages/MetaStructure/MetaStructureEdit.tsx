@@ -20,6 +20,10 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
       link: '/meta-structure',
     },
     {
+      item: 'Meta structure',
+      link: route('meta-structure.show', { id: metaStructure.id }),
+    },
+    {
       item: 'Meta structure edit',
       link: '',
     },
@@ -46,7 +50,7 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
       formData={formData}
       title={'Update Meta Structure'}
       url={route('meta-structure.update', { id: metaStructure.id })}
-      backUrl={route('meta-structure.index')}
+      backUrl={route('meta-structure.show', { id: metaStructure.id })}
       formStyles='md:w-1/2  md:grid-cols-1'
       isPatchRequest
       type={'definitions'}
