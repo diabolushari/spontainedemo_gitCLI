@@ -73,11 +73,11 @@ export default function MetaGroupShow({
 
   const breadCrumb: BreadcrumbItemLink[] = [
     {
-      item: 'Data sources',
+      item: 'Data source index',
       link: route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' }),
     },
     {
-      item: 'Data source show',
+      item: 'Data source ',
       link: '',
     },
   ]

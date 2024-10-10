@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { MetaDataGroup } from '@/interfaces/meta_interfaces'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   group: MetaDataGroup
@@ -14,6 +15,20 @@ export default function MetaGroupEdit({ group }: Props) {
     description: group.description ?? '',
   })
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta group index',
+      link: '/meta-data-group',
+    },
+    {
+      item: 'Meta group ',
+      link: route('meta-data-group.show', group.id),
+    },
+    {
+      item: 'Meta group edit',
+      link: '',
+    },
+  ]
   const formItems = useMemo(<
     T,
     U extends keyof T,
@@ -40,9 +55,10 @@ export default function MetaGroupEdit({ group }: Props) {
       url={route('meta-data-group.store')}
       formData={formData}
       formItems={formItems}
-      title='Create Meta Data Group'
+      title='Update Meta Data Group'
       backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
       formStyles='w-1/2 md:grid-cols-1'
+      breadCrumbs={breadCrumb}
     />
   )
 }

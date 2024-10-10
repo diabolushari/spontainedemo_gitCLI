@@ -115,4 +115,19 @@ class MetaDataGroupController extends Controller
             ->get())
         ]);
     }
+     public function destroy(MetaGroup $metaDataGroup ): RedirectResponse
+    {
+        try {
+            $metaDataGroup->delete();
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('meta-data-group.index')
+            ->with(['success' => 'Meta Data Group '.$metaDataGroup->name.' deleted successfully']);
+    }
+
+
 }

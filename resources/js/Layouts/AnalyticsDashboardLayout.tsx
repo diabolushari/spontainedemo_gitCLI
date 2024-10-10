@@ -231,11 +231,25 @@ export default function AnalyticsDashboardLayout({
           className='fixed bottom-12 left-4 flex h-8 w-8 items-center justify-center rounded bg-1stop-highlight hover:opacity-50 hover:shadow-xl'
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
-          <img
-            src='scroll_up.svg'
-            alt='GO TO TOP'
-            className='h-6 w-6'
-          />
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='icon icon-tabler icon-tabler-custom'
+            width={20}
+            height={20}
+            viewBox='0 0 24 24'
+            strokeWidth='1.5'
+            stroke='currentColor'
+            fill='none'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
+            <path
+              stroke='none'
+              d='M0 0h24v24H0z'
+            />
+            <path d='M4.5 18.75l7.5-7.5 7.5 7.5' />
+            <path d='M4.5 12.75l7.5-7.5 7.5 7.5' />
+          </svg>
         </button>
       </div>
       <div>{children}</div>

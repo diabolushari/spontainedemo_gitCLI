@@ -121,7 +121,7 @@ export default function DataDetailShow({
       link: '/data-detail',
     },
     {
-      item: 'Data detail show',
+      item: 'Data detail',
       link: '',
     },
   ]

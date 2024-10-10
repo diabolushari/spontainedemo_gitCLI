@@ -22,7 +22,7 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
       link: '/meta-data',
     },
     {
-      item: 'Meta data show',
+      item: 'Meta data ',
       link: route('meta-data.show', metaData.id),
     },
     {

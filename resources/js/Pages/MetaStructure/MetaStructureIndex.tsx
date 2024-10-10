@@ -1,10 +1,11 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { MetaStructure } from '@/interfaces/meta_interfaces'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
 import { describe } from 'node:test'
+import { router } from '@inertiajs/react'
 
 interface Props {
   structures: Paginator<MetaStructure>
@@ -64,19 +65,22 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         description: structure.description,
         actions: [
           {
-            title: `${structure.meta_data_count} Members`,
+            title: `Members ${structure.meta_data_count}`,
             url: route('meta-data.index', { structure: structure.structure_name }, false),
             textStyles: 'hover:scale-105 transition',
           },
-          {
-            title: 'Edit',
-            url: route('meta-structure.edit', structure.id, false),
-            textStyles: 'ml-auto  hover:scale-105 transition',
-          },
+          // {
+          //   title: 'Edit',
+          //   url: route('meta-structure.edit', structure.id, false),
+          //   textStyles: 'ml-auto  hover:scale-105 transition',
+          // },
         ],
       }
     })
   }, [structures])
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('meta-structure.show', { id: id }))
+  }, [])
 
   return (
     <ListResourcePage
@@ -96,6 +100,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
       subheading='Each metdata element will be a distinct value of a structural block.
 e.g: "Yellow" is a valid dimensional value of a structural block called "Colour".'
       cardStyles='p-4'
+      handleCardClick={handleCardClick}
     />
   )
 }

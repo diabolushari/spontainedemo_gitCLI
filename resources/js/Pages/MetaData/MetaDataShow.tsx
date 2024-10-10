@@ -59,7 +59,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
       link: '/meta-data',
     },
     {
-      item: 'Meta data show',
+      item: 'Meta data ',
       link: '',
     },
   ]

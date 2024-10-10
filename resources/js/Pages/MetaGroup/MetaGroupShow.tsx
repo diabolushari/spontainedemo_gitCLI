@@ -1,10 +1,11 @@
 import { MetaDataGroup, MetaDataGroupItem } from '@/interfaces/meta_interfaces'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import MetaGroupAddItem from '@/Components/MetaData/MetaDataGroup/MetaGroupAddItem'
 import { Paginator } from '@/ui/ui_interfaces'
 import MetaGroupItemList from '@/Components/MetaData/MetaDataGroup/MetaGroupItemList'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import DeleteModal from '@/ui/Modal/DeleteModal'
 
 interface Props {
   metaDataGroup: MetaDataGroup
@@ -20,7 +21,7 @@ const breadCrumb: BreadcrumbItemLink[] = [
     link: '/meta-data-group',
   },
   {
-    item: 'Meta group show',
+    item: 'Meta group ',
     link: '',
   },
 ]
@@ -55,6 +56,12 @@ export default function MetaGroupShow({
     ] as ShowPageItem[]
   }, [metaDataGroup, itemCount])
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true)
+  }
+
   return (
     <ShowResourcePage
       title={metaDataGroup.name}
@@ -63,12 +70,24 @@ export default function MetaGroupShow({
       type={type ?? 'definitions'}
       subtype={subtype ?? 'groups'}
       breadCrumbs={breadCrumb}
+      onDeleteClick={handleDeleteClick}
+      editUrl={route('meta-data-group.edit', metaDataGroup.id)}
     >
       <MetaGroupAddItem metaDataGroup={metaDataGroup} />
       <MetaGroupItemList
         metaGroup={metaDataGroup}
         groupItems={groupItems}
       />
+
+      {showDeleteModal && (
+        <DeleteModal
+          setShowModal={setShowDeleteModal}
+          title={`Delete ${metaDataGroup.name}`}
+          url={route('meta-data-group.destroy', metaDataGroup.id)}
+        >
+          <p>Are you sure you want to delete {metaDataGroup.name}?</p>
+        </DeleteModal>
+      )}
     </ShowResourcePage>
   )
 }

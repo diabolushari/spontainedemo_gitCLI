@@ -2,6 +2,7 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Properties {
   type?: string
@@ -15,6 +16,16 @@ export const databaseDrivers = [
   { value: 'mariadb', label: 'MariaDB' },
 ]
 
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Data source index',
+    link: route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' }),
+  },
+  {
+    item: 'Data source create',
+    link: '',
+  },
+]
 export default function DataLoaderConnectionCreate({ type, subtype }: Properties) {
   const { formData, setFormValue } = useCustomForm({
     name: '',
@@ -92,6 +103,7 @@ export default function DataLoaderConnectionCreate({ type, subtype }: Properties
       buttonText={'Add & Verify'}
       type={type}
       subtype={subtype}
+      breadCrumbs={breadCrumb}
     />
   )
 }
