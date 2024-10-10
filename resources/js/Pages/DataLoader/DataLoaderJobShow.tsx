@@ -2,6 +2,7 @@ import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResour
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderJob } from '@/interfaces/data_interfaces'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
@@ -9,6 +10,20 @@ interface Props {
 
 export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Loader job index',
+      link: route('data-detail.show', {
+        dataDetail: dataLoaderJob.data_detail_id,
+        tab: 'jobs',
+      }),
+    },
+    {
+      item: 'Loader job',
+      link: '',
+    },
+  ]
 
   const displayedValues = useMemo(() => {
     return [
@@ -55,6 +70,7 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
       }}
       type='data'
       subtype='data-tables'
+      breadCrumbs={breadCrumb}
     >
       {/**more content**/}
       {showDeleteModal && (

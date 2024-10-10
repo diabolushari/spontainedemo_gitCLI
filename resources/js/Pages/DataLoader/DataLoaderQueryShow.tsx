@@ -24,11 +24,11 @@ export default function MetaGroupShow({
 
   const breadCrumb: BreadcrumbItemLink[] = [
     {
-      item: 'Extraction Statements',
+      item: 'Extraction statement index',
       link: route('loader-queries.index', { type: 'loaders', subtype: 'queries' }),
     },
     {
-      item: 'Extraction Statement Show',
+      item: 'Extraction statement',
       link: '',
     },
   ]

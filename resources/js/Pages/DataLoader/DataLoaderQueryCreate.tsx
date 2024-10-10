@@ -3,12 +3,23 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { DataLoaderConnection } from '@/interfaces/data_interfaces'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
   type?: string
   subtype?: string
 }
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Extraction statement index',
+    link: route('loader-queries.index', { type: 'loaders', subtype: 'queries' }),
+  },
+  {
+    item: 'Extraction statement create',
+    link: '',
+  },
+]
 
 export default function DataLoaderQueryCreate({ connections, type, subtype }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
@@ -64,6 +75,7 @@ export default function DataLoaderQueryCreate({ connections, type, subtype }: Re
       buttonText='Save & Test'
       type={type}
       subtype={subtype}
+      breadCrumbs={breadCrumb}
     />
   )
 }

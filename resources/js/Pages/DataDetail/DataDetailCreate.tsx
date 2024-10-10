@@ -10,6 +10,7 @@ import useInertiaPost from '@/hooks/useInertiaPost'
 import { DataTableFieldInfo } from '@/Components/DataDetail/DataTableFieldInfo/DataTableFieldInfoForm'
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 import Button from '@/ui/button/Button'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   types: ReferenceData[]
@@ -19,6 +20,20 @@ interface FieldInfo extends DataTableFieldInfo {
   column: string
   unit_column?: string | null
 }
+
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Data table index',
+    link: route('data-detail.index', {
+      type: 'definitions',
+      subtype: 'data',
+    }),
+  },
+  {
+    item: 'Data table create',
+    link: '',
+  },
+]
 
 export default function DataDetailCreate({ types }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
@@ -120,6 +135,7 @@ export default function DataDetailCreate({ types }: Readonly<Props>) {
             type: 'definitions',
             subtype: 'data',
           })}
+          breadCrumb={breadCrumb}
         />
         <FormBuilder
           formData={formData}

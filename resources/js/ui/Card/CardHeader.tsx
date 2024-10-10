@@ -4,8 +4,7 @@ import React from 'react'
 import AddButton from '@/ui/button/AddButton'
 import EditButton from '@/ui/button/EditButton'
 import DeleteButton from '@/ui/button/DeleteButton'
-import BreadcrumbItemLink from '@/Components/breadcrumb-item-link'
-import BreadCrumbs from '@/Components/BreadCrumbs'
+import BreadCrumbs, { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   title: string
