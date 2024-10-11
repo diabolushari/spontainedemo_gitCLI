@@ -52,7 +52,7 @@ export default function MetaHierarchyTree({
           onClick={() => openAddNodeModal(null)}
           onKeyUp={(event) => handleEnterPress(event, () => openAddNodeModal(null))}
           tabIndex={0}
-          className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 rounded border border-blue-700 p-1 hover:border-green-500 hover:text-green-500 hover:shadow'
+          className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 rounded border border-1stop-link p-1 hover:border-1stop-highlight hover:text-1stop-highlight hover:shadow'
         >
           <StrongText>
             <i className='las la-plus-circle'></i> Add{' '}

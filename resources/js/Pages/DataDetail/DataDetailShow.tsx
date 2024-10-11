@@ -64,7 +64,7 @@ export default function DataDetailShow({
       )
     }
   }
-console.log(jobs)
+
   const data = useMemo(() => {
     return jobs.map((record) => ({
       id: record.id,

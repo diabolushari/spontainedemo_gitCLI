@@ -39,14 +39,14 @@ export default function MetaHierarchyTreeNode({
               className=''
             ></div>
           )}
-          <div className='tree-node flex grow rounded border border-blue-700 p-1'>
+          <div className='tree-node flex grow rounded border border-1stop-link p-1'>
             <div
               role='treeitem'
               aria-selected={node.expanded}
               onClick={() => toggleNode(node.nodeId)}
               onKeyUp={(event) => handleEnterPress(event, () => toggleNode(node.nodeId))}
               tabIndex={0}
-              className='tree-node-content flex grow cursor-pointer'
+              className='tree-node-content flex grow cursor-pointer hover:text-1stop-highlight'
             >
               <StrongText>{node.nodeName}</StrongText>
             </div>

@@ -64,6 +64,12 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
       type='data'
       subtype='data-tables'
     >
+      {showStatusModal && <JobDetailModal selectedStatus={selectedStatus} />}
+
+      <JobStatusesTable
+        statuses={dataLoaderJob.statuses}
+        showDetails={showDetails}
+      />
       {/**more content**/}
       {showDeleteModal && (
         <DeleteModal
