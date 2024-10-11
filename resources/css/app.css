@@ -42,7 +42,7 @@ body {
 }
 
 .tree-node:has(.tree-node-content:hover) {
-  @apply border-green-500 text-green-500;
+  @apply border-1stop-highlight text-1stop-highlight;
 }
 
 .spinner_circle {

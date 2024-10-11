@@ -36,6 +36,9 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       return {
         id: detail.id,
         name: detail.name,
+        description: detail.description,
+        type: 'Subject area ' + detail.subject_area,
+        tableName: 'Table name ' + detail.table_name,
         is_active: detail.is_active === 1 ? 'Yes' : 'No',
         actions: [
           // {
@@ -50,7 +53,10 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
   const keys = useMemo(() => {
     return [
       { key: 'name', label: 'Name', isCardHeader: true },
-      { key: 'is_active', label: 'Is Active', isShownInCard: true, boxStyles: 'items-center' },
+      // { key: 'is_active', label: 'Is Active', isShownInCard: true, boxStyles: 'items-center' },
+      { key: 'description', isShownInCard: true, boxStyles: 'items-center gap-0' },
+      { key: 'type', isShownInCard: true, boxStyles: 'items-center gap-0' },
+      { key: 'tableName', isShownInCard: true, boxStyles: 'items-center gap-0' },
     ] as ListItemKeys<{
       name: string
       is_active: string

@@ -48,7 +48,6 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
       },
       {
         key: 'description',
-
         isShownInCard: true,
         boxStyles: 'gap-0 ',
         textStyles: 'small-1stop',
