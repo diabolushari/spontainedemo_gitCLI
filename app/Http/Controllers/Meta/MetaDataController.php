@@ -41,7 +41,14 @@ class MetaDataController extends Controller
             'hierarchyItem',
             'groupItem',
         ])
-            ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
+            ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder
+            ->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
+            ->orWhereHas('groupItem.metaDataGroup', function (Builder $query) use ($request) {
+                return $query->where('name', $request->search);
+                })
+            ->orWhereHas('hierarchyItem.metaHierarchy',function(Builder $query) use ($request){
+                return $query->where('name',$request->search);
+            }))
             ->when($request->filled('structure'), function (Builder $query) use ($request) {
                 $query->whereHas('metaStructure',  function (Builder $query) use ($request) {
                     return $query->where('structure_name', 'like', "%$request->structure%");

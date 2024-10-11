@@ -41,10 +41,16 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
     return groups.data.map((group) => {
       return {
         id: group.id,
-        items_count: 'Members ' + group.items_count,
+        // items_count: 'Members ' + group.items_count,
         name: group.name,
         description: group.description,
-        actions: [],
+        actions: [
+          {
+            title: `Members ${group.items_count}`,
+            url: route('meta-data.index', { search: group.name }, false),
+            textStyles: 'hover:scale-105 transition',
+          },
+        ],
       }
     })
   }, [groups])
@@ -55,6 +61,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         key: 'name',
         label: 'Name',
         isCardHeader: true,
+        isLink: true,
       },
       {
         key: 'description',
@@ -62,12 +69,13 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         boxStyles: 'items-center gap-0',
         textStyles: 'small-1stop ',
       },
-      {
-        key: 'items_count',
-        isShownInCard: true,
-        boxStyles: 'items-center gap-0',
-        textStyles: 'small-1stop ',
-      },
+      // {
+      //   key: 'items_count',
+      //   isShownInCard: true,
+      //   boxStyles: 'items-center gap-0',
+      //   textStyles: 'small-1stop ',
+      //   isLink: true,
+      // },
     ] as ListItemKeys<{
       name: string
       description: string | null | undefined
@@ -97,7 +105,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       subheading='Dimensional groups can come in handy when creating report sections etc.
 e.g. An extruded steel section can be in groups "All materials" and "Steel materials"'
       handleCardClick={handleCardClick}
-      cardStyles='p-4 hover:scale-105 transition'
+      cardStyles='p-4'
     />
   )
 }
