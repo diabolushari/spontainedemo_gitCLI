@@ -36,7 +36,7 @@ export default function MetaHierarchyTree({
   }, [levelInfos])
 
   return (
-    <div className='mt-10 flex w-full flex-col justify-center gap-5'>
+    <div className='my-10 flex w-full flex-col justify-center gap-5'>
       <div className='flex w-10/12 flex-col gap-2 lg:w-7/12 xl:w-6/12'>
         {tree.map((item) => (
           <MetaHierarchyTreeNode
@@ -46,19 +46,21 @@ export default function MetaHierarchyTree({
             openAddNodeModal={openAddNodeModal}
           />
         ))}
-        <div
-          role='treeitem'
-          aria-selected={false}
-          onClick={() => openAddNodeModal(null)}
-          onKeyUp={(event) => handleEnterPress(event, () => openAddNodeModal(null))}
-          tabIndex={0}
-          className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 rounded border border-1stop-link p-1 hover:border-1stop-highlight hover:text-1stop-highlight hover:shadow'
-        >
-          <StrongText>
-            <i className='las la-plus-circle'></i> Add{' '}
-            {firstLevelInfo?.structure?.structure_name ?? 'New Item'}
-          </StrongText>
-        </div>
+        {tree.length === 0 && (
+          <div
+            role='treeitem'
+            aria-selected={false}
+            onClick={() => openAddNodeModal(null)}
+            onKeyUp={(event) => handleEnterPress(event, () => openAddNodeModal(null))}
+            tabIndex={0}
+            className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 rounded border border-1stop-link p-1 hover:border-1stop-highlight hover:text-1stop-highlight hover:shadow'
+          >
+            <StrongText>
+              <i className='las la-plus-circle'></i> Add{' '}
+              {firstLevelInfo?.structure?.structure_name ?? 'New Item'}
+            </StrongText>
+          </div>
+        )}
       </div>
       {showModal && (
         <MetaHierarchyAddItem
