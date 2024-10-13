@@ -6,6 +6,7 @@ import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
 import MetaTags from '@/Components/MetaTags'
 import { showError, showSuccess } from '@/ui/alerts'
 import { ToastContainer } from 'react-toastify'
+import oneStopLogo from '../../../public/one-stop-logo.svg'
 
 interface Properties {
   children?: ReactNode
@@ -100,8 +101,9 @@ export default function AnalyticsDashboardLayout({
               className='cursor-pointer hover:opacity-50'
             >
               <img
-                src='/one-stop-logo.png'
+                src={oneStopLogo}
                 alt='Logo'
+                className='h-24 w-auto rounded-2xl'
               />
             </Link>
           </div>
@@ -214,12 +216,19 @@ export default function AnalyticsDashboardLayout({
                     href={item.link}
                     className='text-black-600 flex flex-col items-center'
                   >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src={item.image}
-                      alt=''
-                    />
-                    <span className='body-1stop pt-1 text-center'>{item.title}</span>
+                    {typeof item.image === 'string' ? (
+                      <img
+                        className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                        src={item.image}
+                        alt=''
+                      />
+                    ) : (
+                      <div
+                        className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                        dangerouslySetInnerHTML={{ __html: item.image.svg }}
+                      />
+                    )}
+                    <span className='subheader-sm-1stop pt-4 text-center'>{item.title}</span>
                   </Link>
                 </div>
               ))}
@@ -261,8 +270,9 @@ export default function AnalyticsDashboardLayout({
                 className='cursor-pointer hover:opacity-50'
               >
                 <img
-                  src='/one-stop-logo.png'
+                  src={oneStopLogo}
                   alt='Logo'
+                  className='h-24 w-auto rounded-2xl'
                 />
               </Link>
             </div>
@@ -374,12 +384,19 @@ export default function AnalyticsDashboardLayout({
                     href={item.link}
                     className='text-black-600 flex flex-col items-center'
                   >
-                    <img
-                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
-                      src={item.image}
-                      alt=''
-                    />
-                    <span className='body-1stop pt-1 text-center'>{item.title}</span>
+                    {typeof item.image === 'string' ? (
+                      <img
+                        className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                        src={item.image}
+                        alt=''
+                      />
+                    ) : (
+                      <div
+                        className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                        dangerouslySetInnerHTML={{ __html: item.image.svg }}
+                      />
+                    )}
+                    <span className='subheader-sm-1stop pt-1 text-center'>{item.title}</span>
                   </Link>
                 </div>
               ))}
