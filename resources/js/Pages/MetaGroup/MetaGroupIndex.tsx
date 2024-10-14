@@ -66,7 +66,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Rea
       {
         key: 'description',
         isShownInCard: true,
-        boxStyles: 'items-center gap-0',
+        boxStyles: 'items-center gap-0 line-clamp-1',
         textStyles: 'small-1stop ',
       },
     ] as ListItemKeys<{
