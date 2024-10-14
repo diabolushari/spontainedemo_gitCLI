@@ -84,11 +84,24 @@ export default function CardGridView<
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
             {titleKey != null && (
+              // <SubHeading
+              //   onClick={() => handleTitleClick(row[primaryKey] as string | number)}
+              //   className={`${!isUsingTitleClick ? '' : 'cursor-pointer font-bold transition hover:scale-105'}`}
+              // >
+              //   {row[titleKey.key] as string}
+              // </SubHeading>
               <SubHeading
                 onClick={() => handleTitleClick(row[primaryKey] as string | number)}
                 className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
               >
-                {row[titleKey.key] as string}
+                {typeof row[titleKey.key] === 'string' && row[titleKey.key].includes(':') ? (
+                  <>
+                    <span>{row[titleKey.key].split(':')[0]}</span>
+                    <span className='font-bold'> :{row[titleKey.key].split(':')[1]}</span>
+                  </>
+                ) : (
+                  <span className='font-bold'>{row[titleKey.key] as string}</span>
+                )}
               </SubHeading>
             )}
             <div className={`${cn('grid grid-cols-1', gridStyles)}`}>

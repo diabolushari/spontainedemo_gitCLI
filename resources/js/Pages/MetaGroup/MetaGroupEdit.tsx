@@ -52,9 +52,10 @@ export default function MetaGroupEdit({ group }: Props) {
 
   return (
     <FormPage
-      url={route('meta-data-group.store')}
+      url={route('meta-data-group.update', group.id)}
       formData={formData}
       formItems={formItems}
+      isPatchRequest
       title='Update Meta Data Group'
       backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
       formStyles='w-1/2 md:grid-cols-1'
