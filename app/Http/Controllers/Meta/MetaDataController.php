@@ -42,13 +42,13 @@ class MetaDataController extends Controller
             'groupItem',
         ])
             ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder
-            ->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
-            ->orWhereHas('groupItem.metaDataGroup', function (Builder $query) use ($request) {
-                return $query->where('name', $request->search);
+                ->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
+                ->orWhereHas('groupItem.metaDataGroup', function (Builder $query) use ($request) {
+                    return $query->where('name', $request->search);
                 })
-            ->orWhereHas('hierarchyItem.metaHierarchy',function(Builder $query) use ($request){
-                return $query->where('name',$request->search);
-            }))
+                ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $query) use ($request) {
+                    return $query->where('name', $request->search);
+                }))
             ->when($request->filled('structure'), function (Builder $query) use ($request) {
                 $query->whereHas('metaStructure',  function (Builder $query) use ($request) {
                     return $query->where('structure_name', 'like', "%$request->structure%");
@@ -56,7 +56,7 @@ class MetaDataController extends Controller
             })
             ->paginate(20)
             ->withQueryString();
-            
+
         return Inertia::render('MetaData/MetaDataIndex', [
             'metaData' => $records,
             'structures' => $structures,
@@ -147,5 +147,10 @@ class MetaDataController extends Controller
         return redirect()
             ->route('meta-data.index')
             ->with(['message' => "Meta Data: $metaData->name deleted successfully"]);
+    }
+
+    public function test(): Response
+    {
+        return Inertia::render('Test/test');
     }
 }

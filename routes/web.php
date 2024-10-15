@@ -102,4 +102,6 @@ Route::get('export-data-table/{dataDetail}', ExportDataTableController::class)
 Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::class)
     ->name('import-data-table');
 
+Route::get('test', [MetaDataController::class,'test']);
+
 require __DIR__.'/auth.php';
