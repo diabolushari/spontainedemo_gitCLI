@@ -94,11 +94,14 @@ export default function CardGridView<
                 onClick={() => handleTitleClick(row[primaryKey] as string | number)}
                 className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
               >
-                {typeof row[titleKey.key] === 'string' && row[titleKey.key].includes(':') ? (
-                  <>
-                    <span>{row[titleKey.key].split(':')[0]}</span>
-                    <span className='font-bold'> :{row[titleKey.key].split(':')[1]}</span>
-                  </>
+                {(row[titleKey.key as keyof typeof row] as string) !== null &&
+                row[titleKey.key as keyof typeof row]?.toString().includes(':') ? (
+                  <div>
+                    <span>{row[titleKey.key as keyof typeof row]?.toString().split(':')[0]}</span>
+                    <span className='font-bold'>
+                      :{row[titleKey.key as keyof typeof row]?.toString().split(':')[1]}
+                    </span>
+                  </div>
                 ) : (
                   <span className='font-bold'>{row[titleKey.key] as string}</span>
                 )}
