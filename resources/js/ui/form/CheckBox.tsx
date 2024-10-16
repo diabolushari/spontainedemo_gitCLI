@@ -41,7 +41,7 @@ export default function CheckBox({
             </svg>
           </div>
         </div>
-        <p className='body-1stop ml-1 leading-4'>{label}</p>
+        <p className='small-1stop ml-1 leading-4'>{label}</p>
         {/* Code block ends */}
         <style>
           {`.checkbox:checked + .check-icon {
