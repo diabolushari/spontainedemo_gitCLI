@@ -13,14 +13,14 @@ interface Props {
   metaHierarchy: MetaHierarchy
   hierarchyList: MetaHierarchyItem[]
   levelInfos: MetaHierarchyLevelInfo[]
-  pageNo: string
+  page: string
 }
 
 export default function MetaHierarchyShow({
   metaHierarchy,
   hierarchyList,
   levelInfos,
-  pageNo,
+  page,
 }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
@@ -62,7 +62,7 @@ export default function MetaHierarchyShow({
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta hierarchy index',
-      link: '/meta-hierarchy?page=' + pageNo,
+      link: '/meta-hierarchy?page=' + page,
     },
     {
       item: 'Meta hierarchy',
@@ -77,9 +77,9 @@ export default function MetaHierarchyShow({
       backUrl={route('meta-hierarchy.index', {
         type: 'definitions',
         subtype: 'hierarchies',
-        page: pageNo,
+        page: page,
       })}
-      editUrl={route('meta-hierarchy.edit', { metaHierarchy: metaHierarchy.id, page: pageNo })}
+      editUrl={route('meta-hierarchy.edit', { metaHierarchy: metaHierarchy.id, page: page })}
       onDeleteClick={handleDeleteClick}
       type={'definitions'}
       subtype={'hierarchies'}

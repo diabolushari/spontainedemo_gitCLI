@@ -80,8 +80,9 @@ class MetaDataGroupController extends Controller
             ]);
     }
 
-    public function update(MetaGroup $metaDataGroup, MetaDataGroupFormRequest $request): RedirectResponse
+    public function update(MetaGroup $metaDataGroup, MetaDataGroupFormRequest $request, Request $page): RedirectResponse
     {
+        $pageNo = $page->query('page', '1');
         try {
             $metaDataGroup->update($request->all());
         } catch (Exception $exception) {
@@ -91,7 +92,7 @@ class MetaDataGroupController extends Controller
         }
 
         return redirect()
-            ->route('meta-data-group.show',$metaDataGroup)
+            ->route('meta-data-group.show',['metaDataGroup'=>$metaDataGroup,'page'=>$pageNo])
             ->with([
                 'message' => "Meta data group: $metaDataGroup->name updated successfully",
             ]);

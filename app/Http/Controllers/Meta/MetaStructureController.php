@@ -82,8 +82,10 @@ class MetaStructureController extends Controller
         ]);
     }
 
-    public function update(MetaStructureFormRequest $request, MetaStructure $metaStructure): RedirectResponse
+    public function update(MetaStructureFormRequest $request, MetaStructure $metaStructure,Request $page): RedirectResponse
     {
+        
+         $pageNo = $page->query('page', '1');
         try {
             $metaStructure->update($request->all());
         } catch (Exception $e) {
@@ -92,7 +94,7 @@ class MetaStructureController extends Controller
         }
 
         return redirect()
-            ->route('meta-structure.show',$metaStructure)
+            ->route('meta-structure.show',['metaStructure'=>$metaStructure,'pageNo' => $pageNo,])
             ->with(['message' => 'Meta structure '.$request->structureName.' updated successfully']);
     }
 

@@ -53,7 +53,7 @@ export default function MetaGroupEdit({ group, pageNo }: Props) {
 
   return (
     <FormPage
-      url={route('meta-data-group.update', group.id)}
+      url={route('meta-data-group.update', { metaDataGroup: group.id, page: pageNo })}
       formData={formData}
       formItems={formItems}
       isPatchRequest
@@ -62,6 +62,8 @@ export default function MetaGroupEdit({ group, pageNo }: Props) {
         metaDataGroup: group.id,
         page: pageNo,
       })}
+      type='definitions'
+      subtype='groups'
       formStyles='w-1/2 md:grid-cols-1'
       breadCrumbs={breadCrumb}
     />

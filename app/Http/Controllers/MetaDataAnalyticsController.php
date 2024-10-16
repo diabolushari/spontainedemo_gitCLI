@@ -30,7 +30,6 @@ class MetaDataAnalyticsController extends Controller
             ->when($request->filled('structure'), fn(Builder $builder) => $builder->where('meta_structure_id', 'like', $request->input(key: 'structure')))
             ->paginate(20)
             ->withQueryString();
-// dd($request->type);
         return Inertia::render('AnalyticsDashboard/MetaDataUi', [
             'metaData' => $records,
             'structures' => $structures,

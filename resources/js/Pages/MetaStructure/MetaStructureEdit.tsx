@@ -50,7 +50,7 @@ export default function MetaStructureEdit({ metaStructure, pageNo }: Props) {
       formItems={formItems}
       formData={formData}
       title={'Update Meta Structure'}
-      url={route('meta-structure.update', { id: metaStructure.id })}
+      url={route('meta-structure.update', { id: metaStructure.id, page: pageNo })}
       backUrl={route('meta-structure.show', { metaStructure: metaStructure.id, page: pageNo })}
       formStyles='md:w-1/2  md:grid-cols-1'
       isPatchRequest

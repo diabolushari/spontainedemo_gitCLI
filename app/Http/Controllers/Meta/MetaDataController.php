@@ -122,8 +122,9 @@ class MetaDataController extends Controller
             ->with(['message' => "Meta Data: $record->name created successfully"]);
     }
 
-    public function update(MetaDataFormRequest $request, MetaData $metaData): RedirectResponse
+    public function update(MetaDataFormRequest $request, MetaData $metaData, Request $page): RedirectResponse
     {
+        $pageNo = $page->query('page', '1');
         try {
             $metaData->update($request->all());
         } catch (Exception $e) {
@@ -132,7 +133,7 @@ class MetaDataController extends Controller
         }
 
         return redirect()
-            ->route('meta-data.index')
+            ->route('meta-data.show',['metaData'=>$metaData,'page'=>$pageNo ])
             ->with(['message' => "Meta Data: $request->name updated successfully"]);
     }
 

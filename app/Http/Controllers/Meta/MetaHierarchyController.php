@@ -61,11 +61,13 @@ class MetaHierarchyController extends Controller
     {
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
         $metaHierarchy->load('levelInfos.structure');
+        $pageNo = $request->query('page', '1');
 
         return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
             'structures' => $structures,
             'metaHierarchy' => $metaHierarchy,
             'levelInfos' => $metaHierarchy->levelInfos,
+            'page' => $pageNo,
         ]);
     }
 
@@ -74,14 +76,13 @@ class MetaHierarchyController extends Controller
         Request $request,
         HierarchyList $hierarchyList
     ): Response {
-        
         $metaHierarchy->load('levelInfos', 'levelInfos.structure:id,structure_name');
         $pageNo = $request->query('page', '1');
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
             'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),
             'levelInfos' => $metaHierarchy->levelInfos,
-            'pageNo' => $pageNo,
+            'page' => $pageNo,
         ]);
     }
 
@@ -115,8 +116,9 @@ class MetaHierarchyController extends Controller
             ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
     }
 
-    public function update(MetaHierarchyFormRequest $request, MetaHierarchy $metaHierarchy): RedirectResponse
+    public function update(MetaHierarchyFormRequest $request, MetaHierarchy $metaHierarchy,Request $page): RedirectResponse
     {
+        $pageNo = $page->query('page', '1');
         $hierarchyLevels = $request->hierarchyLevelInfos;
         DB::beginTransaction();
         try {
@@ -159,7 +161,7 @@ class MetaHierarchyController extends Controller
         DB::commit();
 
         return redirect()
-            ->route('meta-hierarchy.show', $metaHierarchy->id)
+            ->route('meta-hierarchy.show', ['metaHierarchy'=>$metaHierarchy->id,'page'=>$pageNo])
             ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
     }
 
