@@ -8,6 +8,37 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property int $meta_structure_id
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Meta\MetaGroupItem> $groupItem
+ * @property-read int|null $group_item_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Meta\MetaHierarchyItem> $hierarchyItem
+ * @property-read int|null $hierarchy_item_count
+ * @property-read \App\Models\Meta\MetaStructure $metaStructure
+ * @method static Builder|MetaData joinStructure()
+ * @method static Builder|MetaData newModelQuery()
+ * @method static Builder|MetaData newQuery()
+ * @method static Builder|MetaData onlyTrashed()
+ * @method static Builder|MetaData query()
+ * @method static Builder|MetaData whereCreatedAt($value)
+ * @method static Builder|MetaData whereDeletedAt($value)
+ * @method static Builder|MetaData whereDescription($value)
+ * @method static Builder|MetaData whereId($value)
+ * @method static Builder|MetaData whereMetaStructureId($value)
+ * @method static Builder|MetaData whereName($value)
+ * @method static Builder|MetaData whereUpdatedAt($value)
+ * @method static Builder|MetaData withTrashed()
+ * @method static Builder|MetaData withoutTrashed()
+ * @mixin \Eloquent
+ */
 class MetaData extends Model
 {
     use SoftDeletes;

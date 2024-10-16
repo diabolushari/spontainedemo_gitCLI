@@ -21,6 +21,8 @@ use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
+use App\Http\Controllers\Subset\SubsetCreateController;
+use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -102,5 +104,11 @@ Route::get('export-data-table/{dataDetail}', ExportDataTableController::class)
 
 Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::class)
     ->name('import-data-table');
+
+Route::get('subset/create/{dataDetail}', SubsetCreateController::class)
+    ->name('subset.create');
+
+Route::post('subset/{dataDetail}', SubsetStoreController::class)
+    ->name('subset.store');
 
 require __DIR__.'/auth.php';

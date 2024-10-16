@@ -7,6 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $meta_group_id
+ * @property int $meta_data_id
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Meta\MetaData $metaData
+ * @property-read \App\Models\Meta\MetaGroup $metaDataGroup
+ * @method static Builder|MetaGroupItem joinMetaData()
+ * @method static Builder|MetaGroupItem joinMetaroup()
+ * @method static Builder|MetaGroupItem newModelQuery()
+ * @method static Builder|MetaGroupItem newQuery()
+ * @method static Builder|MetaGroupItem onlyTrashed()
+ * @method static Builder|MetaGroupItem query()
+ * @method static Builder|MetaGroupItem whereCreatedAt($value)
+ * @method static Builder|MetaGroupItem whereDeletedAt($value)
+ * @method static Builder|MetaGroupItem whereId($value)
+ * @method static Builder|MetaGroupItem whereMetaDataId($value)
+ * @method static Builder|MetaGroupItem whereMetaGroupId($value)
+ * @method static Builder|MetaGroupItem whereUpdatedAt($value)
+ * @method static Builder|MetaGroupItem withTrashed()
+ * @method static Builder|MetaGroupItem withoutTrashed()
+ * @mixin \Eloquent
+ */
 class MetaGroupItem extends Model
 {
     use SoftDeletes;

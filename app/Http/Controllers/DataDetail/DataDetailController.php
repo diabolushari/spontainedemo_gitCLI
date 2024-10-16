@@ -9,6 +9,7 @@ use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
+use App\Models\Subset\SubsetDetail;
 use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
 use Exception;
@@ -131,6 +132,7 @@ class DataDetailController extends Controller
             'dataTableItems' => $dataTable,
             'jobs' => $jobs,
             'tab' => $request->input('tab', 'data'),
+            'subsets' => SubsetDetail::where('data_detail_id', $dataDetail->id)->get(),
         ]);
     }
 

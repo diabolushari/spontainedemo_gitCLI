@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Requests\Subset;
+
+use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+
+/**
+ * @property int[]|null $filters
+ */
+#[MapName(SnakeCaseMapper::class)]
+class SubsetDimensionField extends Data
+{
+    public function __construct(
+        public int $fieldId,
+        public int $filterOnly,
+        public ?string $columnExpression,
+        public ?array $filters,
+    ) {}
+}
