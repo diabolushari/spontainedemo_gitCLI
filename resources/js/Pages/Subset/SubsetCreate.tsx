@@ -17,6 +17,7 @@ import {
 } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import React, { useMemo, useState } from 'react'
+import CardHeader from '@/ui/Card/CardHeader'
 
 interface Props {
   dataDetail: DataDetail
@@ -92,6 +93,13 @@ export default function SubsetCreate({
       subtype='data-tables'
     >
       <DashboardPadding>
+        <CardHeader
+          title={`Create Subset for ${dataDetail.name}`}
+          backUrl={route('data-detail.show', {
+            dataDetail: dataDetail.id,
+            tab: 'subset',
+          })}
+        />
         <FormBuilder
           formData={formData}
           onFormSubmit={submitForm}

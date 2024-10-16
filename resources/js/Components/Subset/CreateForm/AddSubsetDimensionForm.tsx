@@ -99,6 +99,9 @@ export default function AddSubsetDimensionForm({
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (formData.field_id == '') {
+      return
+    }
     onSubmit({
       field_id: Number(formData.field_id),
       column_expression: formData.use_expression ? formData.column_expression : '',

@@ -12,6 +12,7 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SubsetStoreController extends Controller
 {
@@ -64,7 +65,6 @@ class SubsetStoreController extends Controller
                 'subset_detail_id' => $record->id,
                 'created_by' => $user,
                 'updated_by' => $user,
-                'filters' => null,
                 ...$dimension->toArray(),
             ];
         }, $request->dimensions);
@@ -80,9 +80,12 @@ class SubsetStoreController extends Controller
 
         try {
             SubsetDetailDate::insert($dates);
-            SubsetDetailDimension::insert($dimensions);
+            foreach ($dimensions as $dimension) {
+                SubsetDetailDimension::create($dimension);
+            }
             SubsetDetailMeasure::insert($measures);
         } catch (Exception $e) {
+            Log::info($e);
             DB::rollBack();
 
             return redirect()

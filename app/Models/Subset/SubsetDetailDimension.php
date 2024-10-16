@@ -2,8 +2,13 @@
 
 namespace App\Models\Subset;
 
+use App\Models\DataTable\DataTableDimension;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -12,31 +17,31 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $filter_only
  * @property string|null $column_expression
  * @property string|null $filters
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $deleted_at
  * @property int|null $created_by
  * @property int|null $updated_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension query()
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereColumn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereColumnExpression($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereFilterOnly($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereFilters($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereSubsetDetailId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension whereUpdatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|SubsetDetailDimension withoutTrashed()
+ * @method static Builder|SubsetDetailDimension newModelQuery()
+ * @method static Builder|SubsetDetailDimension newQuery()
+ * @method static Builder|SubsetDetailDimension onlyTrashed()
+ * @method static Builder|SubsetDetailDimension query()
+ * @method static Builder|SubsetDetailDimension whereColumn($value)
+ * @method static Builder|SubsetDetailDimension whereColumnExpression($value)
+ * @method static Builder|SubsetDetailDimension whereCreatedAt($value)
+ * @method static Builder|SubsetDetailDimension whereCreatedBy($value)
+ * @method static Builder|SubsetDetailDimension whereDeletedAt($value)
+ * @method static Builder|SubsetDetailDimension whereFilterOnly($value)
+ * @method static Builder|SubsetDetailDimension whereFilters($value)
+ * @method static Builder|SubsetDetailDimension whereId($value)
+ * @method static Builder|SubsetDetailDimension whereSubsetDetailId($value)
+ * @method static Builder|SubsetDetailDimension whereUpdatedAt($value)
+ * @method static Builder|SubsetDetailDimension whereUpdatedBy($value)
+ * @method static Builder|SubsetDetailDimension withTrashed()
+ * @method static Builder|SubsetDetailDimension withoutTrashed()
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SubsetDetailDimension extends Model
 {
@@ -55,4 +60,12 @@ class SubsetDetailDimension extends Model
     protected $casts = [
         'filters' => 'array',
     ];
+
+    /**
+     * @return HasOne<DataTableDimension>
+     */
+    public function info(): HasOne
+    {
+        return $this->hasOne(DataTableDimension::class, 'id', 'field_id');
+    }
 }

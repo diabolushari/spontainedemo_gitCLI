@@ -2,7 +2,7 @@ import CardGridView from '@/Components/ListingPage/CardGridView'
 import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { DataDetail, SubsetDetail } from '@/interfaces/data_interfaces'
 import { router } from '@inertiajs/react'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 interface Props {
   detail: DataDetail
@@ -34,6 +34,10 @@ export default function SubsetList({ detail, subsets }: Readonly<Props>) {
     router.get(route('subset.create', { dataDetail: detail.id }))
   }
 
+  const onCardClick = useCallback((id: number | string) => {
+    router.get(route('subset.show', id))
+  }, [])
+
   return (
     <CardGridView
       keys={keys}
@@ -41,6 +45,7 @@ export default function SubsetList({ detail, subsets }: Readonly<Props>) {
       rows={data}
       onAddClick={onAddClick}
       layoutStyles='lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'
+      onCardClick={onCardClick}
     />
   )
 }

@@ -63,6 +63,9 @@ export default function AddSubsetMeasure({
 
   const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
+    if (formData.field_id == '') {
+      return
+    }
     onSubmit({
       field_id: Number(formData.field_id),
       aggregation: formData.aggregation,

@@ -23,9 +23,9 @@ return new class extends Migration
             $table->boolean('use_last_found_data')->default(true);
             $table->string('dynamic_start_type')->nullable();
             $table->string('dynamic_end_type')->nullable();
-            $table->integer('dynamic_start_offset')->default(0);
+            $table->integer('dynamic_start_offset')->nullable();
             $table->string('dynamic_start_unit')->nullable();
-            $table->integer('dynamic_end_offset')->default(0);
+            $table->integer('dynamic_end_offset')->nullable();
             $table->string('dynamic_end_unit')->nullable();
             $table->string('date_field_expression')->nullable();
             $table->softDeletes();

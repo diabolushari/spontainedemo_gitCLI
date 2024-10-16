@@ -22,6 +22,7 @@ use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\SubsetCreateController;
+use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
@@ -110,5 +111,8 @@ Route::get('subset/create/{dataDetail}', SubsetCreateController::class)
 
 Route::post('subset/{dataDetail}', SubsetStoreController::class)
     ->name('subset.store');
+
+Route::get('subset/{subsetDetail}', SubsetDataController::class)
+    ->name('subset.show');
 
 require __DIR__.'/auth.php';
