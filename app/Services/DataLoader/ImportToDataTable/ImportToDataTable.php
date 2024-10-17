@@ -65,7 +65,7 @@ readonly class ImportToDataTable
 
         $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id);
 
-        dd($data);
+        dd($fieldInfo);
 
         //map fieldInfo/data into data table
         $dataTable = $this->convertToDataTable->convert($fieldInfo, $data, $dataDetail->id);
