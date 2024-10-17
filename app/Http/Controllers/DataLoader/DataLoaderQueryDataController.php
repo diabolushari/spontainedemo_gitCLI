@@ -35,6 +35,8 @@ class DataLoaderQueryDataController extends Controller
             }
         }
 
+        Log::info(count($result));
+
         return response()
             ->json([
                 'error' => $error->error,
