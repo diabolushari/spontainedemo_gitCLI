@@ -6,6 +6,7 @@ use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
+use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
 use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\Meta\MetaDataController;
@@ -24,6 +25,9 @@ use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
+use App\Http\Controllers\Subset\SubsetCreateController;
+use App\Http\Controllers\Subset\SubsetDataController;
+use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -57,7 +61,8 @@ Route::get('cascaded-ref-data', [ReferenceDataAPIController::class, 'cascadedVal
     ->name('cascaded-ref-data');
 
 //meta data
-Route::resource('meta-structure', MetaStructureController::class);
+Route::resource('meta-structure', MetaStructureController::class)
+    ->parameters(['meta-structure' => 'metaStructure']);
 Route::resource('meta-data', MetaDataController::class)
     ->parameters(['meta-data' => 'metaData']);
 Route::resource('meta-data-group', MetaDataGroupController::class)
@@ -91,6 +96,9 @@ Route::resource('loader-connections', DataLoaderConnectionController::class)
 Route::resource('loader-queries', DataLoaderQueryController::class)
     ->parameters(['loader-queries' => 'dataLoaderQuery']);
 
+Route::get('loader-query-data/{dataLoaderQuery}', DataLoaderQueryDataController::class)
+    ->name('loader-query-data');
+
 Route::resource('loader-jobs', DataLoaderJobController::class)
     ->parameters(['loader-jobs' => 'dataLoaderJob']);
 
@@ -105,10 +113,19 @@ Route::get('export-data-table/{dataDetail}', ExportDataTableController::class)
 Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::class)
     ->name('import-data-table');
 
-Route::get('test', [MetaDataController::class,'test']);
+
 
 Route::resource('service-delivery', ServiceDeliveryController::class);
 Route::resource('operation', OperationsController::class);
 Route::resource('finance', FinancialController::class);
-    
-require __DIR__.'/auth.php';
+
+Route::get('subset/create/{dataDetail}', SubsetCreateController::class)
+    ->name('subset.create');
+
+Route::post('subset/{dataDetail}', SubsetStoreController::class)
+    ->name('subset.store');
+
+Route::get('subset/{subsetDetail}', SubsetDataController::class)
+    ->name('subset.show');
+
+require __DIR__ . '/auth.php';

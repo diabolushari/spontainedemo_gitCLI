@@ -1,30 +1,38 @@
-import { DataDetail, DataLoaderJob, DataTableItem } from '@/interfaces/data_interfaces'
-import { useMemo, useState } from 'react'
-import DataSetTable from '@/Components/DataExplorer/DataSetTable'
-import DataTableExcelImport from '@/Components/DataDetail/DataTableExcelImport/DataTableExcelImport'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import CardHeader from '@/ui/Card/CardHeader'
-import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
-import Tab from '@/ui/Tabs/Tab'
-import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
-import { MetaData } from '@/interfaces/meta_interfaces'
-import CardGridView from '@/Components/ListingPage/CardGridView'
-import { Paginator } from '@/ui/ui_interfaces'
-import Pagination from '@/ui/Pagination/Pagination'
-import { router } from '@inertiajs/react'
-import { DisplayTime, monthList } from '@/libs/dates'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import DataTableExcelImport from '@/Components/DataDetail/DataTableExcelImport/DataTableExcelImport'
+import DataSetTable from '@/Components/DataExplorer/DataSetTable'
+import CardGridView from '@/Components/ListingPage/CardGridView'
+import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import SubsetList from '@/Components/Subset/SubsetList'
+import {
+  DataDetail,
+  DataLoaderJob,
+  DataTableItem,
+  SubsetDetail,
+} from '@/interfaces/data_interfaces'
+import { MetaData } from '@/interfaces/meta_interfaces'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import { DisplayTime, monthList } from '@/libs/dates'
+import CardHeader from '@/ui/Card/CardHeader'
+import Pagination from '@/ui/Pagination/Pagination'
+import Tab from '@/ui/Tabs/Tab'
+import { Paginator } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
+import { useMemo, useState } from 'react'
 
 interface Props {
   detail: DataDetail
   dataTableItems: Paginator<DataTableItem>
   jobs: DataLoaderJob[]
+  subsets: SubsetDetail[]
   tab?: string
 }
 
 const tabItems = [
   { name: 'Data', value: 'data' },
   { name: 'Loader Jobs', value: 'jobs' },
+  { name: 'Subset', value: 'subset' },
 ]
 
 export default function DataDetailShow({
@@ -32,6 +40,7 @@ export default function DataDetailShow({
   dataTableItems,
   jobs,
   tab = 'data',
+  subsets,
 }: Readonly<Props>) {
   const [activeTab, setActiveTab] = useState(tab)
   const cronResult = (record: DataLoaderJob) => {
@@ -171,6 +180,12 @@ export default function DataDetailShow({
               onAddClick={onAddClick}
               onCardClick={handleJobCardClick}
               layoutStyles='lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'
+            />
+          )}
+          {activeTab == 'subset' && (
+            <SubsetList
+              detail={detail}
+              subsets={subsets}
             />
           )}
         </div>

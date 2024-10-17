@@ -22,6 +22,7 @@ interface Props<
   onCardClick?: (id: number | string) => void
   layoutStyles?: string
   addButtonText?: string
+  isAddButton?: boolean
 }
 
 export default function CardGridView<
@@ -38,6 +39,7 @@ export default function CardGridView<
   onCardClick,
   layoutStyles,
   addButtonText,
+  isAddButton = true,
 }: Readonly<Props<U, T>>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
@@ -68,10 +70,13 @@ export default function CardGridView<
         layoutStyles
       )}
     >
-      <AddButton
-        onClick={onAddClick}
-        buttonText={addButtonText ?? 'Add new'}
-      />
+      {isAddButton && (
+        <AddButton
+          onClick={onAddClick}
+          buttonText={addButtonText ?? 'Add new'}
+        />
+      )}
+
       {rows.map((row) => {
         return (
           <Card
@@ -84,11 +89,27 @@ export default function CardGridView<
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
             {titleKey != null && (
+              // <SubHeading
+              //   onClick={() => handleTitleClick(row[primaryKey] as string | number)}
+              //   className={`${!isUsingTitleClick ? '' : 'cursor-pointer font-bold transition hover:scale-105'}`}
+              // >
+              //   {row[titleKey.key] as string}
+              // </SubHeading>
               <SubHeading
                 onClick={() => handleTitleClick(row[primaryKey] as string | number)}
                 className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
               >
-                {row[titleKey.key] as string}
+                {(row[titleKey.key as keyof typeof row] as string) !== null &&
+                row[titleKey.key as keyof typeof row]?.toString().includes(':') ? (
+                  <div>
+                    <span>{row[titleKey.key as keyof typeof row]?.toString().split(':')[0]}</span>
+                    <span className='font-bold'>
+                      :{row[titleKey.key as keyof typeof row]?.toString().split(':')[1]}
+                    </span>
+                  </div>
+                ) : (
+                  <span className='font-bold'>{row[titleKey.key] as string}</span>
+                )}
               </SubHeading>
             )}
             <div className={`${cn('grid grid-cols-1', gridStyles)}`}>

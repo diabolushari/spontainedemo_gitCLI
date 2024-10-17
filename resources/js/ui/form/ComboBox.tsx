@@ -1,13 +1,12 @@
+import ErrorText from '@/typography/ErrorText'
+import NormalText from '@/typography/NormalText'
+import SubHeading from '@/typography/SubHeading'
+import axios from 'axios'
+import { XIcon } from 'lucide-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useClick from '../../hooks/useClick'
-import axios from 'axios'
 import { handleHttpErrors } from '../alerts'
 import { getFormStyle } from './Input'
-import { XIcon } from 'lucide-react'
-import SubHeading from '@/typography/SubHeading'
-import NormalText from '@/typography/NormalText'
-import ErrorText from '@/typography/ErrorText'
-import { Link } from '@inertiajs/react'
 
 interface Properties<
   K extends keyof T,
@@ -85,6 +84,11 @@ const ComboBox = <
     setTextFieldValue('')
   }, [value])
 
+  const handleSelection = (item: T | null) => {
+    setValue(item)
+    setList([])
+  }
+
   // navigate through list with arrow keys
   const handleKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown') {
@@ -106,7 +110,7 @@ const ComboBox = <
     } else if (event.key === 'Enter') {
       event.preventDefault()
       if (list.length > 0 && highlightedIndex >= 0 && highlightedIndex < list.length) {
-        setValue(list[highlightedIndex])
+        handleSelection(list[highlightedIndex])
       }
     }
   }
@@ -130,7 +134,7 @@ const ComboBox = <
             {!disabled && (
               <button
                 className='cursor-pointer rounded-full p-1 hover:bg-gray-50'
-                onClick={() => setValue(null)}
+                onClick={() => handleSelection(null)}
               >
                 <XIcon />
               </button>
@@ -179,7 +183,7 @@ const ComboBox = <
                     <div
                       key={item[dataKey]}
                       className={`flex cursor-pointer flex-col px-2 py-3 text-sm ${highlightedIndex === index ? 'subheader-sm-1stop bg-gray-200' : ''}`}
-                      onClick={() => setValue(item)}
+                      onClick={() => handleSelection(item)}
                       onMouseEnter={() => setHighlightedIndex(index)}
                     >
                       <SubHeading>{item[displayKey]}</SubHeading>

@@ -66,7 +66,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Rea
       {
         key: 'description',
         isShownInCard: true,
-        boxStyles: 'items-center gap-0',
+        boxStyles: 'items-center gap-0 line-clamp-1',
         textStyles: 'small-1stop ',
       },
     ] as ListItemKeys<{
@@ -76,7 +76,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Rea
   }, [])
 
   const handleCardClick = useCallback((id: number | string) => {
-    router.get(route('meta-data-group.show', { id: id }))
+    router.get(route('meta-data-group.show', { metaDataGroup: id, page: groups.current_page }))
   }, [])
 
   return (

@@ -16,14 +16,16 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import BreadCrumbs, { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import { router } from '@inertiajs/react'
 
 interface Props {
   metaData: MetaData
   metaGroup: MetaDataGroup
   metaHierarchy: MetaHierarchy
+  pageNo: string
 }
 
-export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Props) {
+export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageNo }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showAddGroupModal, setShowAddGroupModal] = useState(false)
   const [showAddHierarchyModal, setShowAddHierarchyModal] = useState(false)
@@ -56,7 +58,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta data index',
-      link: '/meta-data',
+      link: '/meta-data?page=' + pageNo,
     },
     {
       item: 'Meta data ',
@@ -64,6 +66,10 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
     },
   ]
 
+  const handleEditClick = (metaDataId: number, pageNo: string) => {
+    router.visit(route('meta-data.edit', { metaData: metaDataId, page: pageNo }))
+  }
+  console.log(pageNo)
   return (
     <AnalyticsDashboardLayout
       type='definitions'
@@ -89,12 +95,11 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
                 <div className='mb-4 flex justify-end gap-2'>
                   <img
                     src='/edit-icon.svg'
-                    alt='Delete'
+                    alt='Edit'
                     className='size-6 cursor-pointer justify-end'
-                    onClick={() => {
-                      window.location.href = route('meta-data.edit', metaData.id)
-                    }}
+                    onClick={() => handleEditClick(metaData.id, pageNo)}
                   />
+
                   <img
                     src='/trash-icon.svg'
                     alt='Delete'

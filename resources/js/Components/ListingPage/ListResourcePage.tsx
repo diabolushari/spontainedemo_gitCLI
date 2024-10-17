@@ -57,6 +57,7 @@ interface Props<
   gridStyles?: string
   layoutStyle?: string
   handleCardClick?: (id: number | string) => void
+  isAddButton?: boolean
 }
 
 export default function ListResourcePage<
@@ -94,6 +95,7 @@ export default function ListResourcePage<
   gridStyles,
   layoutStyle,
   handleCardClick,
+  isAddButton = true,
 }: Readonly<Props<U, T, Q, P, R, S, L>>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -175,6 +177,7 @@ export default function ListResourcePage<
           gridStyles={gridStyles}
           onCardClick={handleCardClick}
           layoutStyles={layoutStyle}
+          isAddButton={isAddButton}
         />
         {paginator != null && <Pagination pagination={paginator} />}
       </DashboardPadding>

@@ -83,7 +83,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
   }, [metaData])
 
   const handleCardClick = useCallback((id: number | string) => {
-    router.get(route('meta-data.show', { id: id }))
+    router.get(route('meta-data.show', { metaData: id, page: metaData.current_page }))
   }, [])
 
   const keys = useMemo(() => {

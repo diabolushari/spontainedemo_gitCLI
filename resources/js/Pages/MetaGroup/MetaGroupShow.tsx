@@ -13,18 +13,8 @@ interface Props {
   type?: string
   subtype?: string
   itemCount?: string
+  pageNo?: string
 }
-
-const breadCrumb: BreadcrumbItemLink[] = [
-  {
-    item: 'Meta group index',
-    link: '/meta-data-group',
-  },
-  {
-    item: 'Meta group ',
-    link: '',
-  },
-]
 
 export default function MetaGroupShow({
   metaDataGroup,
@@ -32,6 +22,7 @@ export default function MetaGroupShow({
   type,
   subtype,
   itemCount,
+  pageNo,
 }: Props) {
   const displayedValues = useMemo(() => {
     return [
@@ -61,17 +52,31 @@ export default function MetaGroupShow({
   const handleDeleteClick = () => {
     setShowDeleteModal(true)
   }
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta group index',
+      link: '/meta-data-group?page=' + pageNo,
+    },
+    {
+      item: 'Meta group ',
+      link: '',
+    },
+  ]
 
   return (
     <ShowResourcePage
       title={metaDataGroup.name}
       items={displayedValues}
-      backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
+      backUrl={route('meta-data-group.index', {
+        type: 'definitions',
+        subtype: 'groups',
+        page: pageNo,
+      })}
       type={type ?? 'definitions'}
       subtype={subtype ?? 'groups'}
       breadCrumbs={breadCrumb}
       onDeleteClick={handleDeleteClick}
-      editUrl={route('meta-data-group.edit', metaDataGroup.id)}
+      editUrl={route('meta-data-group.edit', { metaDataGroup: metaDataGroup.id, page: pageNo })}
     >
       <MetaGroupAddItem metaDataGroup={metaDataGroup} />
       <MetaGroupItemList

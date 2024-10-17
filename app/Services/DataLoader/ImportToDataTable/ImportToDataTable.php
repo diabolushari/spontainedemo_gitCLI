@@ -54,12 +54,12 @@ readonly class ImportToDataTable
         $count = DB::table($dataDetail->table_name)
             ->count();
 
-        if ($count > 0) {
-            $status['error_message'] = 'Data table already has data';
-            $status['completed_at'] = now();
-
-            return $status;
-        }
+        //        if ($count > 0) {
+        //            $status['error_message'] = 'Data table already has data';
+        //            $status['completed_at'] = now();
+        //
+        //            return $status;
+        //        }
 
         $dataColumns = array_keys($data[0]);
 

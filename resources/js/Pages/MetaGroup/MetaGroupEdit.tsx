@@ -7,9 +7,10 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   group: MetaDataGroup
+  pageNo: string
 }
 
-export default function MetaGroupEdit({ group }: Props) {
+export default function MetaGroupEdit({ group, pageNo }: Props) {
   const { formData, setFormValue } = useCustomForm({
     name: group.name,
     description: group.description ?? '',
@@ -18,11 +19,11 @@ export default function MetaGroupEdit({ group }: Props) {
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta group index',
-      link: '/meta-data-group',
+      link: '/meta-data-group?page=' + pageNo,
     },
     {
       item: 'Meta group ',
-      link: route('meta-data-group.show', group.id),
+      link: route('meta-data-group.show', { metaDataGroup: group.id, page: pageNo }),
     },
     {
       item: 'Meta group edit',
@@ -52,11 +53,17 @@ export default function MetaGroupEdit({ group }: Props) {
 
   return (
     <FormPage
-      url={route('meta-data-group.store')}
+      url={route('meta-data-group.update', { metaDataGroup: group.id, page: pageNo })}
       formData={formData}
       formItems={formItems}
+      isPatchRequest
       title='Update Meta Data Group'
-      backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
+      backUrl={route('meta-data-group.show', {
+        metaDataGroup: group.id,
+        page: pageNo,
+      })}
+      type='definitions'
+      subtype='groups'
       formStyles='w-1/2 md:grid-cols-1'
       breadCrumbs={breadCrumb}
     />

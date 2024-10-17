@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataLoader\DataLoaderQueryFormRequest;
 use App\Http\Requests\DataLoader\DataLoaderQuerySearchRequest;
 use App\Libs\ExceptionMessage;
-use App\Libs\OperationResult;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderQuery;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
@@ -86,30 +85,11 @@ class DataLoaderQueryController extends Controller
         DataLoaderQuery $dataLoaderQuery,
         RunLoaderQuery $runLoaderQuery
     ): Response {
-        $dataLoaderQuery->load('loaderConnection');
-
-        $error = new OperationResult(false, '');
-
-        $result = [];
-
-        if ($dataLoaderQuery->loaderConnection == null) {
-            $error->message = 'Connection not found';
-        } else {
-            try {
-                $result = $runLoaderQuery->runQuery($dataLoaderQuery->loaderConnection, $dataLoaderQuery);
-                $noOfRecords = count($result);
-                $error->message = "Query executed successfully, $noOfRecords records found.";
-            } catch (Exception $e) {
-                $error->error = true;
-                $error->message = ExceptionMessage::getMessage($e);
-            }
-        }
-
         return Inertia::render('DataLoader/DataLoaderQueryShow', [
             'dataLoaderQuery' => $dataLoaderQuery,
-            'error' => $error->error,
-            'errorMessage' => $error->message,
-            'result' => $result,
+            'error' => '',
+            'errorMessage' => '',
+            'result' => [],
         ]);
     }
 

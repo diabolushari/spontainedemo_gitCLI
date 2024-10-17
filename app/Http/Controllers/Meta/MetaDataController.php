@@ -35,7 +35,6 @@ class MetaDataController extends Controller
 
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-        //dd($request->all());
         $records = MetaData::with([
             'metaStructure:id,structure_name',
             'hierarchyItem',
@@ -76,22 +75,23 @@ class MetaDataController extends Controller
         ]);
     }
 
-    public function edit(MetaData $metaData): Response
+    public function edit(MetaData $metaData, Request $request): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-
+         $pageNo = $request->query('page', '1');
         return Inertia::render('MetaData/MetaDataEdit', [
             'metaData' => $metaData,
             'structures' => $structures,
+            'pageNo' => $pageNo ,
         ]);
     }
 
-    public function show(MetaData $metaData): Response
-    {
+    public function show(MetaData $metaData, Request $request): Response
+    { 
         $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
-
+        $pageNo = $request->query('page', '1');
         $metaGroup = MetaGroup::select('id', 'name')
             ->get();
 
@@ -104,6 +104,7 @@ class MetaDataController extends Controller
             ]),
             'metaGroup' => $metaGroup,
             'metaHierarchy' => $metaHierarchy,
+            'pageNo' => $pageNo 
         ]);
     }
 
@@ -121,8 +122,9 @@ class MetaDataController extends Controller
             ->with(['message' => "Meta Data: $record->name created successfully"]);
     }
 
-    public function update(MetaDataFormRequest $request, MetaData $metaData): RedirectResponse
+    public function update(MetaDataFormRequest $request, MetaData $metaData, Request $page): RedirectResponse
     {
+        $pageNo = $page->query('page', '1');
         try {
             $metaData->update($request->all());
         } catch (Exception $e) {
@@ -131,7 +133,7 @@ class MetaDataController extends Controller
         }
 
         return redirect()
-            ->route('meta-data.index')
+            ->route('meta-data.show',['metaData'=>$metaData,'page'=>$pageNo ])
             ->with(['message' => "Meta Data: $request->name updated successfully"]);
     }
 

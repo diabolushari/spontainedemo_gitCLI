@@ -9,6 +9,42 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\JoinClause;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $domain_id
+ * @property int $parameter_id
+ * @property int|null $sort_order
+ * @property string $value_one
+ * @property string|null $value_two
+ * @property int|null $created_by
+ * @property int|null $updated_by
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static Builder|ReferenceData filter(\App\Http\Requests\ReferenceDataRequests\ReferenceDataSearchRequest $searchRequest)
+ * @method static Builder|ReferenceData fullData()
+ * @method static Builder|ReferenceData joinedData()
+ * @method static Builder|ReferenceData newModelQuery()
+ * @method static Builder|ReferenceData newQuery()
+ * @method static Builder|ReferenceData onlyTrashed()
+ * @method static Builder|ReferenceData query()
+ * @method static Builder|ReferenceData whereCreatedAt($value)
+ * @method static Builder|ReferenceData whereCreatedBy($value)
+ * @method static Builder|ReferenceData whereDeletedAt($value)
+ * @method static Builder|ReferenceData whereDomainId($value)
+ * @method static Builder|ReferenceData whereId($value)
+ * @method static Builder|ReferenceData whereParameterId($value)
+ * @method static Builder|ReferenceData whereSortOrder($value)
+ * @method static Builder|ReferenceData whereUpdatedAt($value)
+ * @method static Builder|ReferenceData whereUpdatedBy($value)
+ * @method static Builder|ReferenceData whereValueOne($value)
+ * @method static Builder|ReferenceData whereValueTwo($value)
+ * @method static Builder|ReferenceData withTrashed()
+ * @method static Builder|ReferenceData withoutTrashed()
+ * @mixin \Eloquent
+ */
 class ReferenceData extends Model
 {
     use HasFactory;

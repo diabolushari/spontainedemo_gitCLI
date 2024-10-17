@@ -45,11 +45,12 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         key: 'structure_name',
         label: 'Structure',
         isCardHeader: true,
+        isLink: true,
       },
       {
         key: 'description',
         isShownInCard: true,
-        boxStyles: 'gap-0 ',
+        boxStyles: 'gap-0 line-clamp-1',
         textStyles: 'small-1stop',
       },
     ] as ListItemKeys<Partial<MetaStructure>>[]
@@ -78,9 +79,9 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
     })
   }, [structures])
   const handleCardClick = useCallback((id: number | string) => {
-    router.get(route('meta-structure.show', { id: id }))
+    router.get(route('meta-structure.show', { metaStructure: id, page: structures.current_page }))
   }, [])
-
+  console.log(structures.current_page)
   return (
     <ListResourcePage
       keys={keys}

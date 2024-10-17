@@ -53,10 +53,13 @@ class MetaDataGroupController extends Controller
         );
     }
 
-    public function edit(MetaGroup $metaDataGroup): Response
+    public function edit(MetaGroup $metaDataGroup,Request $request): Response
     {
+        $pageNo = $request->query('page', '1');
         return Inertia::render('MetaGroup/MetaGroupEdit', [
             'group' => $metaDataGroup,
+            'pageNo' => $pageNo,
+
         ]);
     }
 
@@ -77,8 +80,9 @@ class MetaDataGroupController extends Controller
             ]);
     }
 
-    public function update(MetaGroup $metaDataGroup, MetaDataGroupFormRequest $request): RedirectResponse
+    public function update(MetaGroup $metaDataGroup, MetaDataGroupFormRequest $request, Request $page): RedirectResponse
     {
+        $pageNo = $page->query('page', '1');
         try {
             $metaDataGroup->update($request->all());
         } catch (Exception $exception) {
@@ -88,7 +92,7 @@ class MetaDataGroupController extends Controller
         }
 
         return redirect()
-            ->route('meta-data-group.index')
+            ->route('meta-data-group.show',['metaDataGroup'=>$metaDataGroup,'page'=>$pageNo])
             ->with([
                 'message' => "Meta data group: $metaDataGroup->name updated successfully",
             ]);
@@ -96,6 +100,7 @@ class MetaDataGroupController extends Controller
 
     public function show(MetaGroup $metaDataGroup, Request $request): Response
     {
+        $pageNo = $request->query('page', '1');
 
         $items = MetaGroupItem::where('meta_group_id', $metaDataGroup->id)
             ->with('metaData:id,name')
@@ -109,6 +114,7 @@ class MetaDataGroupController extends Controller
             'groupItems' => $items,
             'type' => $request->type,
             'subtype' => $request->subtype,
+            'pageNo' => $pageNo,
             'itemCount' => count(MetaGroupItem::where('meta_group_id', $metaDataGroup->id)
             ->with('metaData:id,name')
             ->with('metaData.metaStructure:id,structure_name')

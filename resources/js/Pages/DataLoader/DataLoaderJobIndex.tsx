@@ -104,6 +104,7 @@ export default function DataLoaderJobIndex({
       searchUrl={route('loader-jobs.index', { type: 'loaders', subtype: 'jobs' })}
       paginator={dataLoaderJobs}
       type={type}
+      isAddButton={false}
       subtype={subtype}
       oldValues={oldValues}
       formStyles='bg-1stop-white p-4 rounded-lg'

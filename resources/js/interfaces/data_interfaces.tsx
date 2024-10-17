@@ -1,4 +1,4 @@
-import { MetaStructure } from '@/interfaces/meta_interfaces'
+import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
 
 export interface Model {
   id: number
@@ -72,6 +72,44 @@ export interface TableMeasureField extends Model {
   unit_column: string | null
   field_name: string
   unit_field_name: string | null
+}
+
+export interface SubsetDetail extends Model {
+  name: string
+  description: string | null
+  group_data: 0 | 1
+}
+
+export interface SubsetDateField extends Model {
+  subset_detail_id: number
+  field_id: number
+  start_date: string | null
+  end_date: string | null
+  use_expression: 0 | 1
+  date_field_expression: string | null
+  use_dynamic_date: 0 | 1
+  use_last_found_data: 0 | 1
+  dynamic_start_type: string | null
+  dynamic_start_offset: number | null
+  dynamic_start_unit: string | null
+  dynamic_end_type: string | null
+  dynamic_end_offset: number | null
+  dynamic_end_unit: string | null
+}
+
+export interface SubsetDimensionField extends Model {
+  subset_detail_id: number
+  field_id: number
+  filter_only: 0 | 1
+  column_expression: string | null
+  filters: number[] | null
+  filter_values?: Partial<MetaData>[] | null
+}
+
+export interface SubsetMeasureField extends Model {
+  subset_detail_id: number
+  field_id: number
+  aggregation: string | null
 }
 
 export interface DataLoaderConnection extends Model {

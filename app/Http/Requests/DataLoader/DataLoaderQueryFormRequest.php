@@ -16,7 +16,7 @@ class DataLoaderQueryFormRequest extends Data
         public readonly string $name,
         #[Max(1000)]
         public readonly ?string $description,
-        #[Max(2000)]
+        #[Max(10000)]
         public readonly string $query,
         #[Exists('loader_connections', 'id')]
         public readonly int $connectionId,

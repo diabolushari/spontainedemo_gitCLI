@@ -7,9 +7,10 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaHierarchy: MetaHierarchy
+  page: string
 }
 
-export default function MetaHierarchyEdit({ metaHierarchy }: Props) {
+export default function MetaHierarchyEdit({ metaHierarchy, page }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy.name,
     description: metaHierarchy.description ?? '',
@@ -53,7 +54,7 @@ export default function MetaHierarchyEdit({ metaHierarchy }: Props) {
 
   return (
     <FormPage
-      url={route('meta-hierarchy.edit', metaHierarchy.id)}
+      url={route('meta-hierarchy.edit', { metaHierarchy: metaHierarchy.id, page: page })}
       formData={formData}
       formItems={formItems}
       title='Edit Meta Hierarchy'

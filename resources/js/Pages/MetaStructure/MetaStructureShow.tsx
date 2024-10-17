@@ -9,20 +9,16 @@ interface Props {
   itemCount?: string
   type?: string
   subtype?: string
+  pageNo: string
 }
 
-const breadCrumb: BreadcrumbItemLink[] = [
-  {
-    item: 'Meta structure index',
-    link: '/meta-structure',
-  },
-  {
-    item: 'Meta structure ',
-    link: '',
-  },
-]
-
-export default function MetaStructureShow({ metaStructure, type, subtype, itemCount }: Props) {
+export default function MetaStructureShow({
+  metaStructure,
+  type,
+  subtype,
+  itemCount,
+  pageNo,
+}: Props) {
   const displayedValues = useMemo(() => {
     return [
       {
@@ -48,6 +44,17 @@ export default function MetaStructureShow({ metaStructure, type, subtype, itemCo
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta structure index',
+      link: '/meta-structure?page=' + pageNo,
+    },
+    {
+      item: 'Meta structure ',
+      link: '',
+    },
+  ]
+
   const handleDeleteClick = () => {
     setShowDeleteModal(true)
   }
@@ -58,9 +65,9 @@ export default function MetaStructureShow({ metaStructure, type, subtype, itemCo
       items={displayedValues}
       type={type ?? 'definitions'}
       subtype={subtype ?? 'blocks'}
-      backUrl={route('meta-structure.index')}
+      backUrl={route('meta-structure.index', { page: pageNo })}
       onDeleteClick={handleDeleteClick}
-      editUrl={route('meta-structure.edit', metaStructure.id)}
+      editUrl={route('meta-structure.edit', { page: pageNo, metaStructure: metaStructure.id })}
       breadCrumbs={breadCrumb}
     >
       {showDeleteModal && (

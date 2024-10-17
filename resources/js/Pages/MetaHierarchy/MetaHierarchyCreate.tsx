@@ -15,6 +15,7 @@ interface Properties {
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
   metaHierarchy?: MetaHierarchy
   levelInfos?: MetaHierarchyLevelInfo[]
+  page?: string
 }
 
 function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
@@ -29,7 +30,11 @@ function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
   })
 }
 
-export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Readonly<Properties>) {
+export default function MetaHierarchyCreate({
+  metaHierarchy,
+  levelInfos,
+  page,
+}: Readonly<Properties>) {
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy?.name ?? '',
     description: metaHierarchy?.description ?? '',
@@ -42,7 +47,7 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta hierarchy index',
-      link: '/meta-hierarchy',
+      link: '/meta-hierarchy?page=' + page,
     },
     {
       item: 'Meta hierarchy create',
@@ -122,13 +127,17 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
     <FormPage
       url={
         metaHierarchy != null
-          ? route('meta-hierarchy.update', metaHierarchy.id)
+          ? route('meta-hierarchy.update', { metaHierarchy: metaHierarchy.id, page: page })
           : route('meta-hierarchy.store')
       }
       formData={formData}
       formItems={formItems}
       title='Create Meta Hierarchy'
-      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'hierarchies' })}
+      backUrl={route('meta-hierarchy.index', {
+        type: 'definitions',
+        subtype: 'hierarchies',
+        page: page,
+      })}
       formStyles='w-1/2 md:grid-cols-1'
       customSubmitData={fullFormData}
       isPatchRequest={metaHierarchy != null}

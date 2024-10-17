@@ -7,9 +7,10 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaStructure: MetaStructure
+  pageNo: string
 }
 
-export default function MetaStructureEdit({ metaStructure }: Props) {
+export default function MetaStructureEdit({ metaStructure, pageNo }: Props) {
   const { formData, setFormValue } = useCustomForm({
     structure_name: metaStructure.structure_name,
     description: metaStructure.description ?? '',
@@ -17,11 +18,11 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta structure index',
-      link: '/meta-structure',
+      link: '/meta-structure?page=' + pageNo,
     },
     {
       item: 'Meta structure',
-      link: route('meta-structure.show', { id: metaStructure.id }),
+      link: route('meta-structure.show', { metaStructure: metaStructure.id, page: pageNo }),
     },
     {
       item: 'Meta structure edit',
@@ -49,8 +50,8 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
       formItems={formItems}
       formData={formData}
       title={'Update Meta Structure'}
-      url={route('meta-structure.update', { id: metaStructure.id })}
-      backUrl={route('meta-structure.show', { id: metaStructure.id })}
+      url={route('meta-structure.update', { id: metaStructure.id, page: pageNo })}
+      backUrl={route('meta-structure.show', { metaStructure: metaStructure.id, page: pageNo })}
       formStyles='md:w-1/2  md:grid-cols-1'
       isPatchRequest
       type={'definitions'}

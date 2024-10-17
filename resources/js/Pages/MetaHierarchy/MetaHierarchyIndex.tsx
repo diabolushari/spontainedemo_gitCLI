@@ -49,7 +49,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         key: 'description',
 
         isShownInCard: true,
-        boxStyles: 'items-center gap-0',
+        boxStyles: 'items-center gap-0 line-clamp-1',
       },
       // {
       //   key: 'items_count',
@@ -77,7 +77,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
     })
   }, [hierarchies])
   const handleCardClick = useCallback((id: number | string) => {
-    router.get(route('meta-hierarchy.show', { id: id }))
+    router.get(route('meta-hierarchy.show', { metaHierarchy: id, page: hierarchies.current_page }))
   }, [])
 
   return (

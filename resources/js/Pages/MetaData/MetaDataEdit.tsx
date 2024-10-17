@@ -7,10 +7,11 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaData: MetaData
+  pageNo: string
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
 }
 
-export default function MetaDataEdit({ metaData, structures }: Props) {
+export default function MetaDataEdit({ metaData, structures, pageNo }: Props) {
   const { formData, setFormValue } = useCustomForm({
     name: metaData.name,
     description: metaData.description,
@@ -19,11 +20,11 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta data index',
-      link: '/meta-data',
+      link: '/meta-data?page=' + pageNo,
     },
     {
       item: 'Meta data ',
-      link: route('meta-data.show', metaData.id),
+      link: route('meta-data.show', { id: metaData.id, page: pageNo }) + '?page=' + pageNo,
     },
     {
       item: 'Meta data edit',
@@ -61,11 +62,11 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
 
   return (
     <FormPage
-      url={route('meta-data.update', metaData.id)}
+      url={route('meta-data.update', { metaData: metaData.id, page: pageNo })}
       formData={formData}
       formItems={formItems}
       title={'Update Meta Data'}
-      backUrl={route('meta-data.show', metaData.id)}
+      backUrl={route('meta-data.show', { metaData: metaData.id, page: pageNo })}
       isPatchRequest
       type='definitions'
       subtype='metadata'
