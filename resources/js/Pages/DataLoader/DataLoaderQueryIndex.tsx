@@ -57,7 +57,7 @@ export default function DataLoaderQueryIndex({
         key: 'connection',
 
         isShownInCard: true,
-        boxStyles: '',
+        boxStyles: 'gap-0',
       },
     ] as ListItemKeys<{
       id: number

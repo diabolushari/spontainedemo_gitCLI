@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
+import { DisplayTime, monthList } from '@/libs/dates'
 
 interface Props {
   dataLoaderJobs: Paginator<DataLoaderJob>
@@ -59,6 +60,37 @@ export default function DataLoaderJobIndex({
     ] as ListItemKeys<Partial<DataLoaderJob>>[]
   }, [])
 
+  const cronResult = (record: DataLoaderJob) => {
+    if (record.cron_type === 'HOURLY') {
+      return record.cron_type
+    }
+    if (record.cron_type === 'DAILY') {
+      return 'DAILY, ' + DisplayTime(record.schedule_time)
+    }
+    if (record.cron_type === 'WEEKLY') {
+      return 'WEEKLY, ' + record.day_of_week + ', ' + DisplayTime(record.schedule_time)
+    }
+    if (record.cron_type === 'MONTHLY') {
+      return 'MONTHLY, Day ' + record.day_of_month + ', ' + DisplayTime(record.schedule_time)
+    }
+    if (record.cron_type === 'YEARLY') {
+      const month = monthList.find((value) => {
+        if (value.id === record.month_of_year) {
+          return value
+        }
+      })
+      console.log(month)
+      return (
+        'YEARLY, ' +
+        month?.name +
+        ', ' +
+        record.day_of_month +
+        ', ' +
+        DisplayTime(record.schedule_time)
+      )
+    }
+  }
+
   //table data
   const data = useMemo(() => {
     return dataLoaderJobs.data.map((record) => {
@@ -66,16 +98,25 @@ export default function DataLoaderJobIndex({
         id: record.id,
         name: record.name,
         description: record.description,
-        status: record.latest?.is_successful == 1 ? 'WAITING' : 'FAILED',
-        cronType:
-          record.cron_type != null
-            ? record.cron_type
-            : '' + ' ' + record.schedule_time != null
-              ? record.schedule_time
-              : '',
-        lastRun: 'Last run: ' + record.latest?.executed_at,
-        rows: record.latest?.total_records + ' rows',
-        viewStyle: record.latest?.is_successful == 1 ? '' : 'bg-[#DA999A]',
+        status:
+          record.latest != null
+            ? record.latest?.is_successful == 1
+              ? 'SUCCESS'
+              : 'FAILED'
+            : 'WAITING',
+        cronType: cronResult(record),
+        //lastRun: 'Last run: ' + record.latest?.executed_at,
+        //rows: record.latest?.total_records + ' rows',
+        //viewStyle: record.latest?.is_successful == 1 ? '' : 'bg-[#DA999A]',
+
+        lastRun: record.latest != null ? 'Last run: ' + record.latest?.executed_at : '',
+        rows: record.latest != null ? record.latest?.total_records + ' rows' : '',
+        viewStyle:
+          record.latest != null
+            ? record.latest?.is_successful == 1
+              ? 'bg-success'
+              : 'bg-fail'
+            : '',
         actions: [
           // {
           //   title: 'Show',

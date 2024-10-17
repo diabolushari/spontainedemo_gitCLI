@@ -95,22 +95,24 @@ export default function CardGridView<
               // >
               //   {row[titleKey.key] as string}
               // </SubHeading>
-              <SubHeading
-                onClick={() => handleTitleClick(row[primaryKey] as string | number)}
-                className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
-              >
-                {(row[titleKey.key as keyof typeof row] as string) !== null &&
-                row[titleKey.key as keyof typeof row]?.toString().includes(':') ? (
-                  <div>
-                    <span>{row[titleKey.key as keyof typeof row]?.toString().split(':')[0]}</span>
-                    <span className='font-bold'>
-                      :{row[titleKey.key as keyof typeof row]?.toString().split(':')[1]}
-                    </span>
-                  </div>
-                ) : (
-                  <span className='font-bold'>{row[titleKey.key] as string}</span>
-                )}
-              </SubHeading>
+              <div className='body-1stop'>
+                <SubHeading
+                  onClick={() => handleTitleClick(row[primaryKey] as string | number)}
+                  className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
+                >
+                  {(row[titleKey.key as keyof typeof row] as string) !== null &&
+                  row[titleKey.key as keyof typeof row]?.toString().includes(':') ? (
+                    <div>
+                      <span>{row[titleKey.key as keyof typeof row]?.toString().split(':')[0]}</span>
+                      <span className='font-bold'>
+                        :{row[titleKey.key as keyof typeof row]?.toString().split(':')[1]}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className='font-bold'>{row[titleKey.key] as string}</span>
+                  )}
+                </SubHeading>
+              </div>
             )}
             <div className={`${cn('grid grid-cols-1', gridStyles)}`}>
               {keys
@@ -125,7 +127,7 @@ export default function CardGridView<
                     // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
                     {!(rowKey.hideLabel ?? false) && (
-                      <StrongText className='body-1stop'>{rowKey.label as string}</StrongText>
+                      <StrongText className='small-1stop'>{rowKey.label as string}</StrongText>
                     )}
                     <NormalText
                       className={cn(

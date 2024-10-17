@@ -27,6 +27,7 @@ use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
+use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
@@ -128,4 +129,8 @@ Route::post('subset/{dataDetail}', SubsetStoreController::class)
 Route::get('subset/{subsetDetail}', SubsetDataController::class)
     ->name('subset.show');
 
+Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
+    ->name('subset.preview');
+
+require __DIR__.'/auth.php';
 require __DIR__ . '/auth.php';

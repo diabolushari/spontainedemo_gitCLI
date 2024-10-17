@@ -50,17 +50,6 @@ readonly class ImportToDataTable
             return $status;
         }
 
-        //cancel import if data table already has data
-        $count = DB::table($dataDetail->table_name)
-            ->count();
-
-        //        if ($count > 0) {
-        //            $status['error_message'] = 'Data table already has data';
-        //            $status['completed_at'] = now();
-        //
-        //            return $status;
-        //        }
-
         $dataColumns = array_keys($data[0]);
 
         $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id);

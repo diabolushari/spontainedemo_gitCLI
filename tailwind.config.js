@@ -54,6 +54,8 @@ export default {
 
         'tab-base': 'var(--color-tab-base)',
         'tab-accent': 'var(--color-tab-accent)',
+        success: 'var(--color-success)',
+        fail: 'var(--color-fail)',
 
         light: 'var(--color-light)',
         dark: 'var(--color-dark)',

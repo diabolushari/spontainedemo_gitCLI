@@ -150,7 +150,7 @@ class DataDetailController extends Controller
         }
 
         return redirect()
-            ->route('data-detail.show', $dataDetail->id)
+            ->route('data-detail.index')
             ->with([
                 'message' => "Data Detail $dataDetail->name deleted successfully.",
             ]);

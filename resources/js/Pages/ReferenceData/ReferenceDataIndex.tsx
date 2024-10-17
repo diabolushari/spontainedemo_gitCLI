@@ -67,11 +67,10 @@ const ReferenceDataIndex = ({
     return referenceData.data.map((row) => {
       return {
         id: row.id,
-        domain: row.domain,
-        parameter: row.parameter,
+        domainParameter: `${row.domain} (${row.parameter})`,
         sort_order: row.sort_order,
-        value_one: 'Value One ' + row.value_one,
-        value_two: 'Value Two ' + row.value_two,
+        value_one: row.value_one,
+        value_two: row.value_two ? 'Value 2: ' + row.value_two : '',
         actions: [
           {
             title: 'Edit',
@@ -86,12 +85,12 @@ const ReferenceDataIndex = ({
   const keys = useMemo(() => {
     return [
       {
-        key: 'domain',
+        key: 'value_one',
         label: 'Domain',
         isCardHeader: true,
       },
       {
-        key: 'parameter',
+        key: 'domainParameter',
         label: 'Parameter',
         isShownInCard: true,
         hideLabel: true,
@@ -101,7 +100,7 @@ const ReferenceDataIndex = ({
         label: 'Position',
       },
       {
-        key: 'value_one',
+        key: '',
         isShownInCard: true,
         boxStyles: 'items-center gap-0',
       },

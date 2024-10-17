@@ -15,6 +15,7 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { DisplayTime, monthList } from '@/libs/dates'
 import CardHeader from '@/ui/Card/CardHeader'
+import DeleteModal from '@/ui/Modal/DeleteModal'
 import Pagination from '@/ui/Pagination/Pagination'
 import Tab from '@/ui/Tabs/Tab'
 import { Paginator } from '@/ui/ui_interfaces'
@@ -74,6 +75,8 @@ export default function DataDetailShow({
     }
   }
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
   const data = useMemo(() => {
     return jobs.map((record) => ({
       id: record.id,
@@ -89,11 +92,7 @@ export default function DataDetailShow({
       lastRun: record.latest != null ? 'Last run: ' + record.latest?.executed_at : '',
       rows: record.latest != null ? record.latest?.total_records + ' rows' : '',
       viewStyle:
-        record.latest != null
-          ? record.latest?.is_successful == 1
-            ? 'bg-[#D2DDCA]'
-            : 'bg-[#DA999A]'
-          : '',
+        record.latest != null ? (record.latest?.is_successful == 1 ? 'bg-success' : 'bg-fail') : '',
       actions: [],
     }))
   }, [jobs])
@@ -134,6 +133,9 @@ export default function DataDetailShow({
       link: '',
     },
   ]
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true)
+  }
 
   return (
     <AnalyticsDashboardLayout
@@ -146,6 +148,7 @@ export default function DataDetailShow({
             title={`Data Table: ${detail.name}`}
             backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
             breadCrumb={breadCrumb}
+            onDeleteClick={handleDeleteClick}
           />
           <Tab
             tabItems={tabItems}
@@ -189,6 +192,15 @@ export default function DataDetailShow({
             />
           )}
         </div>
+        {showDeleteModal && (
+          <DeleteModal
+            setShowModal={setShowDeleteModal}
+            title={`Delete ${detail.name}`}
+            url={route('data-detail.destroy', detail.id)}
+          >
+            <p>Are you sure you want to delete {detail.name}?</p>
+          </DeleteModal>
+        )}
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

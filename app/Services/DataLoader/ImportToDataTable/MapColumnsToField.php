@@ -87,12 +87,10 @@ class MapColumnsToField
         bool $isMetaData,
         ?int $metaStructureId
     ): void {
-        $formattedFieldName = implode(' ', explode('_', $excelFieldName));
-        $lowerTableFieldName = strtolower($tableFieldName);
+        $excelColumn = preg_replace('/[^a-zA-Z0-9]/', '_', $excelFieldName);
 
         if (
-            $lowerTableFieldName == strtolower($formattedFieldName)
-            || $lowerTableFieldName == strtolower($excelFieldName)
+            $tableColumn === strtolower($excelColumn)
         ) {
             $list[] = new TableColumnInfo($tableColumn, $excelFieldName, $isMetaData, $metaStructureId);
         }

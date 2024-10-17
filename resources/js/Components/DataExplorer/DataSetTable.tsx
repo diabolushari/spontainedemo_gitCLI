@@ -41,6 +41,8 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
     return cols
   }, [dataDetail])
 
+  console.log(tableCols)
+
   const colHeads = useMemo(() => {
     return tableCols.map((col) => col.name)
   }, [tableCols])

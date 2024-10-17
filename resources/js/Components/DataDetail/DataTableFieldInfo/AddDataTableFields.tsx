@@ -55,7 +55,8 @@ export default function AddDataTableFields({ fields, setFields }: Readonly<Props
         return
       }
       const column = generateSnakeCaseName(data.field_name)
-      const unitColumnName = data.unit_field_name != null ? column + '_unit' : null
+      const unitColumnName =
+        data.unit_field_name != null && data.unit_field_name != '' ? column + '_unit' : null
       const newField = { ...data, column, unit_column: unitColumnName }
       setFields((prev) => {
         //check if the field is already added

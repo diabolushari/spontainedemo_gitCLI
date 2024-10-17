@@ -120,6 +120,8 @@ body {
     --color-card--progressbar: #93ab6d;
     --color-dropdown: #b3c7a3;
     --color-background: #f6f2f2;
+    --color-success: #d2ddca;
+    --color-fail: #da999a;
   }
   @font-face {
     font-family: 'Poppins-Regular';
