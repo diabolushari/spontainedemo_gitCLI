@@ -14,7 +14,7 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showStatusModal, setShowStatusModal] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<JobStatuses | null>(null)
-  console.log(dataLoaderJob)
+
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Loader job index',
@@ -64,6 +64,7 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
     setShowStatusModal(true)
     setSelectedStatus(status)
   }
+
   return (
     <ShowResourcePage
       title={''}

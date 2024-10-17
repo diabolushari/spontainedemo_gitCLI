@@ -35,7 +35,7 @@ export default function SubsetList({ detail, subsets }: Readonly<Props>) {
   }
 
   const onCardClick = useCallback((id: number | string) => {
-    router.get(route('subset.show', id))
+    router.get(route('subset.preview', id))
   }, [])
 
   return (

@@ -24,10 +24,9 @@ use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
+use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\TabController;
-use App\Models\DataLoader\DataLoaderJob;
-use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -121,12 +120,7 @@ Route::post('subset/{dataDetail}', SubsetStoreController::class)
 Route::get('subset/{subsetDetail}', SubsetDataController::class)
     ->name('subset.show');
 
-Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
-
-    $dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
-
-    return $job->run($dataLoaderJob);
-
-});
+Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
+    ->name('subset.preview');
 
 require __DIR__.'/auth.php';

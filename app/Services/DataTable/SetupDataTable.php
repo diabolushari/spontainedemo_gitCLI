@@ -25,6 +25,8 @@ readonly class SetupDataTable
         try {
             $this->createDataTable->create($formRequest);
         } catch (Exception $exception) {
+            Schema::dropIfExists($formRequest->tableName);
+
             return OperationResult::from([
                 'error' => true,
                 'message' => ExceptionMessage::getMessage($exception),
@@ -37,7 +39,7 @@ readonly class SetupDataTable
                 'created_by' => auth()->id(),
             ]);
         } catch (Exception $e) {
-            Schema::drop($formRequest->tableName);
+            Schema::dropIfExists($formRequest->tableName);
 
             return OperationResult::from([
                 'error' => true,
@@ -54,7 +56,7 @@ readonly class SetupDataTable
             DataTableDimension::insert($dimensionField);
             DataTableMeasure::insert($measureField);
         } catch (Exception $exception) {
-            Schema::drop($record->table_name);
+            Schema::dropIfExists($record->table_name);
 
             return OperationResult::from([
                 'error' => true,

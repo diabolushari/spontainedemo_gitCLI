@@ -8,7 +8,6 @@ use App\Models\Subset\SubsetDetail;
 use App\Services\DataTable\JoinDataTable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SubsetQueryBuilder
 {
@@ -94,7 +93,7 @@ class SubsetQueryBuilder
 
     }
 
-    public function filterData(DataDetail $dataDetail, SubsetDetail $subsetDetail, Builder $builder): void
+    private function filterData(DataDetail $dataDetail, SubsetDetail $subsetDetail, Builder $builder): void
     {
 
         $subsetDetail->dates->each(function ($date) use ($builder, $dataDetail) {
@@ -109,7 +108,6 @@ class SubsetQueryBuilder
                     $builder->where($date->info->column, '<=', $date->end_date);
                 }
             }
-            Log::info('Use Dynamic Date: '.$date->use_dynamic_date);
             if ($date->use_dynamic_date === 1) {
                 if ($date->dynamic_start_type !== null && $date->dynamic_start_offset !== null && $date->dynamic_start_unit !== null) {
                     $relativeTime = $this->getRelativeTime->getRelativeTime(
