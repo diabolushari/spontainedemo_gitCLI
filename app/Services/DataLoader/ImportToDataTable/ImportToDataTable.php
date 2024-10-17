@@ -63,8 +63,6 @@ readonly class ImportToDataTable
 
         $dataColumns = array_keys($data[0]);
 
-        dd($dataColumns);
-
         $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id);
 
         dd($fieldInfo);
