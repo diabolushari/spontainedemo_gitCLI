@@ -10,7 +10,7 @@ interface Props {
   page: string
 }
 
-export default function MetaHierarchyEdit({ metaHierarchy, page }: Props) {
+export default function MetaHierarchyEdit({ metaHierarchy, page }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy.name,
     description: metaHierarchy.description ?? '',

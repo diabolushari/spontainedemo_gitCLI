@@ -6,6 +6,7 @@ use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
+use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
 use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
@@ -91,6 +92,9 @@ Route::resource('loader-connections', DataLoaderConnectionController::class)
 
 Route::resource('loader-queries', DataLoaderQueryController::class)
     ->parameters(['loader-queries' => 'dataLoaderQuery']);
+
+Route::get('loader-query-data/{dataLoaderQuery}', DataLoaderQueryDataController::class)
+    ->name('loader-query-data');
 
 Route::resource('loader-jobs', DataLoaderJobController::class)
     ->parameters(['loader-jobs' => 'dataLoaderJob']);
