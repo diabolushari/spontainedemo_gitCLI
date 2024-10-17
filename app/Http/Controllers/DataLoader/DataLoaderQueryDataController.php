@@ -9,7 +9,6 @@ use App\Models\DataLoader\DataLoaderQuery;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class DataLoaderQueryDataController extends Controller
 {
@@ -33,10 +32,6 @@ class DataLoaderQueryDataController extends Controller
                 $error->message = ExceptionMessage::getMessage($e);
             }
         }
-
-        Log::info(
-            $result[0]['consumer_category']
-        );
 
         return response()
             ->json([
