@@ -7,6 +7,7 @@ use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\QueryListController;
+use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -18,8 +19,10 @@ use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
+use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
+use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
@@ -104,4 +107,8 @@ Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::cl
 
 Route::get('test', [MetaDataController::class,'test']);
 
+Route::resource('service-delivery', ServiceDeliveryController::class);
+Route::resource('operation', OperationsController::class);
+Route::resource('finance', FinancialController::class);
+    
 require __DIR__.'/auth.php';

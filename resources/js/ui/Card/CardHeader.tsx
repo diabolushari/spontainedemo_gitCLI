@@ -18,6 +18,7 @@ interface Props {
   onDeleteClick?: () => unknown
   subheading?: string
   breadCrumb?: BreadcrumbItemLink[]
+  titleClassName?: string
 }
 
 export default function CardHeader({
@@ -32,6 +33,7 @@ export default function CardHeader({
   onDeleteClick,
   subheading,
   breadCrumb,
+  titleClassName
 }: Props) {
   CardHeader
   return (
@@ -45,7 +47,7 @@ export default function CardHeader({
             />
           )}
           <div className='flex flex-col'>
-            <Heading className='subheader-1stop uppercase'>{title}</Heading>
+            <Heading className={`subheader-1stop uppercase ${titleClassName}`}>{title}</Heading>
             <BreadCrumbs breadcrumbItems={breadCrumb} />
           </div>
         </div>

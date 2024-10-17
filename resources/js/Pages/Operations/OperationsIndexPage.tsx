@@ -1,19 +1,15 @@
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import Card from '@/ui/Card/Card'
 import React from 'react'
 
-const test = () => {
+const OperationsIndexPage = () => {
   return (
-    <DashboardLayout>
+    <DashboardLayout type='operations'>
       <DashboardPadding>
-        <Card className='mt-10'>
-          <div className=''>test</div>
-          <div className=''>test</div>
-        </Card>
+        <div className=''>Operations</div>
       </DashboardPadding>
     </DashboardLayout>
   )
 }
 
-export default test
+export default OperationsIndexPage
