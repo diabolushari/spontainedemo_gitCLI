@@ -24,7 +24,7 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
     dataDetail.dimension_fields?.forEach((dimension) => {
       cols.push({
         name: dimension.field_name ?? '',
-        source: `${dimension.column}_name`,
+        source: `${dimension.column}`,
         type: 'string',
       })
     })

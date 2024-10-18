@@ -25,7 +25,7 @@ readonly class QueryDataTable
 
         $selectDimensions = '';
         foreach ($dataDetail->dimensionFields as $dimension) {
-            $selectDimensions .= ', '.$dimension->column.'_record.name as '.$dimension->column.'_name ';
+            $selectDimensions .= ', '.$dimension->column.'_record.name as '.$dimension->column;
         }
 
         return $query->selectRaw("$tableName.* $selectDimensions");
