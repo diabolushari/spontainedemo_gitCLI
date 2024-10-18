@@ -36,7 +36,7 @@ readonly class SyncColumnMetaData
         $currentTime = now()->toDateTimeString();
         foreach ($uniqueValues as $value) {
 
-            if (empty($value)) {
+            if ($value === '' || $value === null) {
                 continue;
             }
 
