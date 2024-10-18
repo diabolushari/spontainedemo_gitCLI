@@ -130,4 +130,12 @@ Route::get('subset/{subsetDetail}', SubsetDataController::class)
 Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
     ->name('subset.preview');
 
+Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
+
+    $dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
+
+    return $job->run($dataLoaderJob);
+
+});
+
 require __DIR__.'/auth.php';
