@@ -34,7 +34,7 @@
         "eslint-plugin-react-hooks": "^4.6.2",
         "eslint-plugin-sonarjs": "^2.0.2",
         "eslint-plugin-unicorn": "^54.0.0",
-        "framer-motion": "^11.3.8",
+        "framer-motion": "^11.11.9",
         "lucide-react": "^0.412.0",
         "merge": "^2.1.1",
         "prettier": "^3.3.3",

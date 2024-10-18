@@ -1,4 +1,4 @@
-interface SvgImage {
+export interface SvgImage {
   svg: string
 }
 

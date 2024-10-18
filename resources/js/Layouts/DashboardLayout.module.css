@@ -1,0 +1,13 @@
+@keyframes hoverAnimation {
+  from {
+    min-width: 0;
+  }
+  to {
+    min-width: fit-content;
+  }
+}
+
+.sidebar:hover  {
+    animation-name: hoverAnimation;
+    animation-duration: 2s;
+}
