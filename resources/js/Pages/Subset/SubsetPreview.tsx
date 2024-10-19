@@ -1,6 +1,8 @@
 import { DataDetail, DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
 import ShowResourcePage from '@/Components/ShowPage/ShowResourcePage'
 import DataSetTable from '@/Components/DataExplorer/DataSetTable'
+import { useCallback, useState } from 'react'
+import DeleteModal from '@/ui/Modal/DeleteModal'
 
 interface Props {
   subset: SubsetDetail
@@ -9,16 +11,32 @@ interface Props {
 }
 
 export default function SubsetPreview({ subset, dataDetail, data }: Readonly<Props>) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  const handleDeleteClick = useCallback(() => {
+    setShowDeleteModal(true)
+  }, [])
+
   return (
     <ShowResourcePage
       title={subset.name}
       backUrl={route('data-detail.show', dataDetail.id)}
       items={[]}
+      onDeleteClick={handleDeleteClick}
     >
       <DataSetTable
         dataDetail={dataDetail}
         dataTableItems={data}
       />
+      {showDeleteModal && (
+        <DeleteModal
+          setShowModal={setShowDeleteModal}
+          title={`Delete ${subset.name}`}
+          url={route('subset.destroy', subset.id)}
+        >
+          <p>Are you sure you want to delete {subset.name}?</p>
+        </DeleteModal>
+      )}
     </ShowResourcePage>
   )
 }

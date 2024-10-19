@@ -33,9 +33,8 @@ export default function CardHeader({
   onDeleteClick,
   subheading,
   breadCrumb,
-  titleClassName
+  titleClassName,
 }: Props) {
-  CardHeader
   return (
     <div className=''>
       <div className='flex flex-wrap items-center justify-between gap-5 px-4 py-4'>
