@@ -179,6 +179,7 @@ export interface DataLoaderJob extends Model {
   month_of_year: number | null
   data_detail_id: number
   query_id: number
+  delete_existing_data: 0 | 1
   detail?: Partial<DataDetail> | null
   loader_query?: Partial<DataLoaderQuery> | null
   statuses?: JobStatuses[]

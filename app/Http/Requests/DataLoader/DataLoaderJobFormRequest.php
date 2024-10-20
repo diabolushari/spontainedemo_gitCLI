@@ -22,6 +22,7 @@ class DataLoaderJobFormRequest extends Data
         public ?string $dayOfMonth,
         public int $queryId,
         public int $dataDetailId,
+        public bool $deleteExistingData
     ) {
         //
     }

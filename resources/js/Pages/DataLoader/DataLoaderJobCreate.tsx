@@ -20,8 +20,6 @@ interface Props {
   dataTables: Pick<DataDetail, 'id' | 'name'>[]
   job?: DataLoaderJob | null
   connectionId?: number | null
-  type?: string
-  subtype?: string
   dataDetail?: string | null
 }
 
@@ -30,11 +28,9 @@ export default function DataLoaderJobCreate({
   connections,
   dataTables,
   connectionId,
-  type,
-  subtype,
   dataDetail,
 }: Readonly<Props>) {
-  const { formData, setFormValue } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean } = useCustomForm({
     name: job?.name ?? '',
     description: job?.description ?? '',
     start_date: job?.start_date ?? '',
@@ -47,6 +43,7 @@ export default function DataLoaderJobCreate({
     data_detail_id: job?.data_detail_id ?? '',
     connection_id: connectionId ?? '',
     query_id: job?.query_id ?? '',
+    delete_existing_data: job?.delete_existing_data === 1,
   })
 
   useEffect(() => {
@@ -138,6 +135,11 @@ export default function DataLoaderJobCreate({
         setValue: setFormValue('schedule_time'),
         hidden: formData.cron_type === 'HOURLY',
       },
+      delete_existing_data: {
+        type: 'checkbox',
+        label: 'Delete Existing Data When Running A Job',
+        setValue: toggleBoolean('delete_existing_data'),
+      },
       data_detail_id: {
         type: 'select',
         label: 'Target Data Table',
@@ -169,7 +171,14 @@ export default function DataLoaderJobCreate({
         allOptionText: 'Select a query',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, formData.cron_type, connections, dataTables, formData.connection_id])
+  }, [
+    setFormValue,
+    formData.cron_type,
+    connections,
+    dataTables,
+    formData.connection_id,
+    toggleBoolean,
+  ])
 
   const backUrl = useMemo(() => {
     if (job != null) {

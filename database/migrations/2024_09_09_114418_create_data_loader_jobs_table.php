@@ -25,6 +25,8 @@ return new class extends Migration
             $table->unsignedBigInteger('day_of_month')->nullable(); // required for type monthly, yearly
             $table->unsignedBigInteger('month_of_year')->nullable(); // required for type yearly
 
+            $table->boolean('delete_existing_data')->default(false);
+
             $table->foreignId('query_id')
                 ->constrained('loader_queries');
 
