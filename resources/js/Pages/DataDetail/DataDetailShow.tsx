@@ -63,7 +63,6 @@ export default function DataDetailShow({
           return value
         }
       })
-      console.log(month)
       return (
         'YEARLY, ' +
         month?.name +

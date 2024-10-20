@@ -31,11 +31,24 @@ export default function AddDataTableFields({ fields, setFields }: Readonly<Props
   const updateField = useCallback(
     (selectedField: FieldInfo, data: DataTableFieldInfo) => {
       const column = generateSnakeCaseName(selectedField.field_name)
-      const unitColumnName = data.unit_field_name != null ? column + '_unit' : null
+      const unitColumnName =
+        data.unit_field_name != null && data.unit_field_name !== '' ? column + '_unit' : null
+      // if column name is changed, then check if the column name is duplicate
+      if (selectedField.column !== column) {
+        if (fields.find((field) => field.column === column) != null) {
+          showError('Duplicate Field: Field is already present in list.')
+          return
+        }
+      }
       setFields((prev) => {
         return prev.map((field) => {
           if (field.column === selectedField.column) {
-            return { ...data, column: column, unit_column: unitColumnName }
+            return {
+              ...data,
+              column: column,
+              unit_column:
+                field.type === 'measure' && data.create_unit_column ? unitColumnName : null,
+            }
           }
           if (unitColumnName != null && field.column === selectedField.unit_column) {
             return { ...selectedField, column: unitColumnName }
@@ -57,7 +70,10 @@ export default function AddDataTableFields({ fields, setFields }: Readonly<Props
       const column = generateSnakeCaseName(data.field_name)
       const unitColumnName =
         data.unit_field_name != null && data.unit_field_name != '' ? column + '_unit' : null
-      const newField = { ...data, column, unit_column: unitColumnName }
+      const newField =
+        data.type === 'measure' && data.create_unit_column
+          ? { ...data, column, unit_column: unitColumnName }
+          : { ...data, column }
       setFields((prev) => {
         //check if the field is already added
         if (fields.find((field) => field.column === column) != null) {

@@ -14,6 +14,7 @@ export interface DataTableFieldInfo {
   type: string
   field_name: string
   unit_field_name?: string
+  create_unit_column: boolean
   meta_structure: MetaStructure | null
 }
 
@@ -28,11 +29,12 @@ export default function DataTableFieldInfoForm({
   selectedField,
   onDelete,
 }: Readonly<Props>) {
-  const { formData, setFormValue } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     type: selectedField?.type ?? 'date',
     field_name: selectedField?.field_name ?? '',
     meta_structure: selectedField?.meta_structure ?? (null as MetaStructure | null), // only for dimension fields
     unit_field_name: selectedField?.unit_field_name ?? '', // only for measure fields
+    create_unit_column: selectedField?.create_unit_column ?? false,
   })
 
   const formItems = useMemo(<
@@ -49,13 +51,27 @@ export default function DataTableFieldInfoForm({
         list: types,
         displayKey: 'structure_name',
         dataKey: 'id',
-        setValue: setFormValue('type'),
+        setValue: (type: string) => {
+          setAll({
+            type,
+            field_name: '',
+            meta_structure: null,
+            unit_field_name: '',
+            create_unit_column: false,
+          })
+        },
       },
       field_name: { type: 'text', label: 'Field Name', setValue: setFormValue('field_name') },
       unit_field_name: {
         type: 'text',
         label: 'Unit Field(Optional)',
         setValue: setFormValue('unit_field_name'),
+        hidden: formData.type !== 'measure',
+      },
+      create_unit_column: {
+        type: 'checkbox',
+        label: 'Units data is stored in separate column',
+        setValue: toggleBoolean('create_unit_column'),
         hidden: formData.type !== 'measure',
       },
       meta_structure: {
@@ -73,7 +89,7 @@ export default function DataTableFieldInfoForm({
         hidden: formData.type !== 'dimension',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, formData.type, formData.meta_structure])
+  }, [setFormValue, formData.type, formData.meta_structure, toggleBoolean, setAll])
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

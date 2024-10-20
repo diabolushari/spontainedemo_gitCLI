@@ -30,18 +30,26 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
     })
 
     dataDetail.measure_fields?.forEach((measure) => {
-      cols.push({ name: measure.field_name ?? '', source: measure.column ?? '', type: 'string' })
+      const fieldName =
+        measure.unit_field_name != null && measure.unit_column == null
+          ? `${measure.field_name} (${measure.unit_field_name})`
+          : measure.field_name
       cols.push({
-        name: measure.unit_field_name ?? '',
-        source: measure.unit_column ?? '',
-        type: 'number',
+        name: fieldName ?? '',
+        source: measure.column ?? '',
+        type: 'string',
       })
+      if (measure.unit_column != null) {
+        cols.push({
+          name: measure.unit_field_name ?? '',
+          source: measure.unit_column ?? '',
+          type: 'number',
+        })
+      }
     })
 
     return cols
   }, [dataDetail])
-
-  console.log(tableCols)
 
   const colHeads = useMemo(() => {
     return tableCols.map((col) => col.name)
