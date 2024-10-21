@@ -1,18 +1,21 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
-import { DataDetail } from '@/interfaces/data_interfaces'
+import { DataDetail, ReferenceData } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import { useCallback, useMemo } from 'react'
+import { types } from 'util'
 
 interface Props {
   details: Paginator<DataDetail>
+  types: ReferenceData[]
 }
 
-export default function DataDetailIndex({ details }: Readonly<Props>) {
+export default function DataDetailIndex({ details, types }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
+    type: '',
   })
 
   const formItems = useMemo(<
@@ -25,8 +28,19 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
     return {
       search: {
         type: 'text',
+        placeholder: 'Search by name',
         label: 'Search',
         setValue: setFormValue('search'),
+      },
+      type: {
+        type: 'select',
+        label: 'Type',
+        list: types,
+        displayKey: 'value_one',
+        dataKey: 'value_one',
+        showAllOption: true,
+        allOptionText: 'Select Type',
+        setValue: setFormValue('type'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
