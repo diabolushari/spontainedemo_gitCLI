@@ -6,6 +6,7 @@ import { SvgImage } from './dashboard-menu-items'
 import { cn } from '@/utils'
 import { motion } from 'framer-motion'
 import styles from './DashboardLayout.module.css'
+import SideBar from './SideBar'
 
 interface Properties {
   children?: ReactNode
@@ -170,8 +171,8 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : ''
   const userName = User?.name || ''
   return (
-    <div className='relative flex min-h-screen flex-col'>
-      <div className='relative flex min-h-screen'>
+    <div className='absolute flex h-full flex-col border-r sm:relative'>
+      <div className='absolute flex h-full border-r sm:relative'>
         <div
           className={`absolute top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6 ${styles['sidebar']} `}
           onMouseOut={() => setFocused(false)}
@@ -197,9 +198,9 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
                   >
                     {item.image.svg}
                   </div>
-                  <span className={`body-1stop uppercase ${focused ? '' : 'hidden'}`}>
+                  {/* <span className={`body-1stop uppercase ${focused ? '' : 'hidden'}`}>
                     {item.name}
-                  </span>
+                  </span> */}
                 </Link>
               )
             })}
@@ -219,9 +220,12 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
                 }}
               />
             </Link>
-            {focused && <span className='uppercase'>admin</span>}
+            {/* {focused && <span className='uppercase'>admin</span>} */}
           </div>
         </div>
+
+        <SideBar focused={focused} />
+
         <div className='absolute right-0 ml-auto mr-10 flex gap-16 pt-10'>
           <div className='flex min-w-48 flex-col'>
             <SelectList

@@ -14,8 +14,66 @@ const ServideDeliveryIndexPage = () => {
         />
         <div className='ml-3 flex flex-col gap-5'>
           <div className='flex flex-col gap-5 md:flex-row'>
-            <Card className=''>
-              <div className=''>test</div>
+            <Card className='relative flex h-full grid-cols-2 gap-4 p-10'>
+              <div className='flex flex-col'>
+                <div className='h1-1stop pt-7'>22.23K</div>
+                <div className='body-1stop'>Total Active Connections</div>
+                <div className='grid grid-cols-2 gap-1 pt-7'>
+                  <div className='h3-1stop'>18,234</div>
+                  <div className='h3-1stop'>3,248</div>
+                  <div className='small-1stop'>LT</div>
+                  <div className='small-1stop'>HT</div>
+                </div>
+              </div>
+              <div className='flex flex-col gap-4 p-5'>
+                <div className='body-1stop font-bold'>Inactive A/c Statuses</div>
+                <div className='flex-cols-2 flex gap-5'>
+                  <div className='flex flex-col'>
+                    <div className='small-1stop'>DC</div>
+                    <div className='small-1stop'>NU</div>
+                    <div className='small-1stop'>DM</div>
+                    <div className='small-1stop'>AC</div>
+                    <div className='small-1stop'>RR</div>
+                  </div>
+
+                  <div className='flex flex-col'>
+                    <div className='pt-1'>
+                      <img
+                        src='DC Rectangle.png'
+                        alt=''
+                      />
+                    </div>
+                    <div className='pt-2'>
+                      <img
+                        src='NU Rectangle.png'
+                        alt=''
+                      />
+                    </div>
+                    <div className='pt-2'>
+                      <img
+                        src='DM Rectangle.png'
+                        alt=''
+                      />
+                    </div>
+                    <div className='pt-2'>
+                      <img
+                        src='AC Rectangle.png'
+                        alt=''
+                      />
+                    </div>
+                    <div className='pt-2'>
+                      <img
+                        src='RR Rectangle.png'
+                        alt=''
+                      />
+                    </div>
+                    <hr className='my-4 border-t border-black' />
+                  </div>
+                </div>
+                <div className='small-1stop absolute bottom-0 right-10 pb-2 text-right'>
+                  LAST UPDATED 10/09/2024 5:30AM
+                </div>
+              </div>
             </Card>
             <Card className=''>
               <div className=''>test</div>
