@@ -21,6 +21,7 @@ export default {
         'subheader-1stop': ['var(--font-subheader-1stop)', ...defaultTheme.fontFamily.sans],
         'body-1stop': ['var(--font-body-1stop)', ...defaultTheme.fontFamily.sans],
         'small-1stop': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
+        'small-1stop-header': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
       },
 
       colors: {
