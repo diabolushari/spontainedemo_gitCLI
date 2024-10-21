@@ -13,6 +13,7 @@ use App\Models\Subset\SubsetDetail;
 use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
 use Exception;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -29,16 +30,31 @@ class DataDetailController extends Controller
         return ['auth'];
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+    
+        $details = DataDetail::when($request->filled('search'), function (Builder $builder) use ($request) {
+                $builder->where('name', 'like', '%' . $request->input('search') . '%');
+               
+            })->when($request->filled('type'), function (Builder $builder) use ($request) {
+                $builder->where('subject_area',$request->type);})
+            ->paginate(20);
 
-        $details = DataDetail::paginate(20)
-            ->withQueryString();
-
+        
+        
+         $referenceData = ReferenceData::fullData()
+            ->where('domain', 'Data Detail')
+            ->where('parameter', 'Type')
+            ->get();
+        
         return Inertia::render('DataDetail/DataDetailIndex', [
             'details' => $details,
+            'types' => $referenceData
         ]);
     }
+
+
+
 
     public function create(): Response
     {
