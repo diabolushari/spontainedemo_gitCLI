@@ -1,3 +1,4 @@
+import RequestsCompleted from '@/Components/Dashboard/RequestsCompleted'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
@@ -76,7 +77,9 @@ const ServideDeliveryIndexPage = () => {
               </div>
             </Card>
             <Card className=''>
-              <div className=''>test</div>
+              <div className='rounded-xl bg-white p-4 shadow-md'>
+                <RequestsCompleted />
+              </div>
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
