@@ -40,7 +40,7 @@ class SubsetPreviewController extends Controller
         return Inertia::render('Subset/SubsetPreview', [
             'subset' => $subsetDetail,
             'dataDetail' => $dataDetail,
-            'data' => $builder->query($subsetDetail),
+            'data' => $builder->query($subsetDetail)->limit(100)->get(),
         ]);
     }
 }

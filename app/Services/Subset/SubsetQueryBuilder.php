@@ -9,14 +9,14 @@ use App\Services\DataTable\JoinDataTable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
-class SubsetQueryBuilder
+readonly class SubsetQueryBuilder
 {
     public function __construct(
-        private readonly JoinDataTable $joinDataTable,
-        private readonly GetRelativeTime $getRelativeTime
+        private JoinDataTable $joinDataTable,
+        private GetRelativeTime $getRelativeTime
     ) {}
 
-    public function query(SubsetDetail $subsetDetail)
+    public function query(SubsetDetail $subsetDetail): Builder
     {
 
         /** @var string[] $groupingColumns */
@@ -88,8 +88,7 @@ class SubsetQueryBuilder
 
         $this->filterData($detail, $subsetDetail, $query);
 
-        return $query->selectRaw($selectStatement)
-            ->get();
+        return $query->selectRaw($selectStatement);
 
     }
 
