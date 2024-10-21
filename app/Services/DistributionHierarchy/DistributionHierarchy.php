@@ -65,7 +65,7 @@ class DistributionHierarchy
     }
 
     /**
-     * @return array[]
+     * @return array<array-key, array<array-key, string|int|float|null>>
      */
     public function findAllSection(int|string $officeCode): array
     {

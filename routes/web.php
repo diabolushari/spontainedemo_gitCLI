@@ -136,7 +136,7 @@ Route::delete('subset/{detail}', SubsetDeleteController::class)
     ->name('subset.destroy');
 
 Route::get('test', function (DistributionHierarchy $findDistributionLevel) {
-    return $findDistributionLevel->findAllSection('4001');
+    return $findDistributionLevel->findAllSection('4502');
 });
 
 //Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
