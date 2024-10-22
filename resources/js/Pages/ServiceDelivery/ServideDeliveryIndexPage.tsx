@@ -80,8 +80,14 @@ const ServideDeliveryIndexPage = () => {
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
-            <Card className='w-full md:w-2/3'>
-              <div className=''>test</div>
+            <Card className='w-full p-10 md:w-2/3'>
+              <div className='h3-1stop'>Category-wise SLA Performance</div>
+              <div className='pt-7'>
+                <img
+                  src='SLA Performance.png'
+                  alt=''
+                />
+              </div>
             </Card>
             <Card className='w-full md:w-1/3'>
               <div className=''>test</div>
