@@ -2,7 +2,7 @@ import React from 'react'
 
 const RequestsCompleted = () => {
   return (
-    <div>
+    <div className='rounded-lg bg-white p-4'>
       <h2 className='h1-1stop'>33/64</h2>
       <p className='body-1stop'>Requests Completed</p>
       <p className='body-1stop'> Within SLA</p>
@@ -22,7 +22,7 @@ const RequestsCompleted = () => {
           <p className='small-1stop font-bold'>Beyond SLA</p>
         </div>
       </div>
-      <p className='small-1stop-header text-right'>Last Updated 10/09/2024 05:30AM</p>
+      <p className='small-1stop-header mt-10 text-right'>Last Updated 10/09/2024 05:30AM</p>
     </div>
   )
 }
