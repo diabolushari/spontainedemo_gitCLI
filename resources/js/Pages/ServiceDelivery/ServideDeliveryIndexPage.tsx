@@ -1,11 +1,15 @@
 import RequestsCompleted from '@/Components/Dashboard/RequestsCompleted'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
+import React, { ReactNode, useMemo, useRef, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
-import React from 'react'
+import SelectList from '@/ui/form/SelectList'
 
 const ServideDeliveryIndexPage = () => {
+  const [title, setTitle] = useState('')
+  const categoryList: CategoryList[] = [{ name: 'test 1' }, { name: 'test 2' }]
+  const tariffList: TariffList[] = [{ name: 'test 1' }, { name: 'test 2' }]
   return (
     <DashboardLayout>
       <DashboardPadding>
@@ -83,11 +87,51 @@ const ServideDeliveryIndexPage = () => {
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
-            <Card className='w-full md:w-2/3'>
-              <div className=''>test</div>
+            <Card className='w-full p-10 md:w-2/3'>
+              <div className='h3-1stop'>Category-wise SLA Performance</div>
+              <div className='pt-7'>
+                <img
+                  src='SLA Performance.png'
+                  alt=''
+                />
+              </div>
             </Card>
             <Card className='w-full md:w-1/3'>
-              <div className=''>test</div>
+              <div className='h3-1stop pl-10 pt-10'>Pendancy Beyond SLA</div>
+              <div className='flex w-full flex-col gap-2 p-2'>
+                <div className='flex justify-end'>
+                  <div className='mr-7 flex w-48 flex-col'>
+                    <SelectList
+                      setValue={() => setTitle}
+                      list={categoryList}
+                      dataKey='id'
+                      displayKey='name'
+                      label='ALL CATEGORIES'
+                      showAllOption
+                      value={title}
+                    />
+                  </div>
+                </div>
+                <div className='flex justify-end'>
+                  <div className='mr-7 flex w-48 flex-col pt-2'>
+                    <SelectList
+                      setValue={() => setTitle}
+                      list={tariffList}
+                      dataKey='name'
+                      displayKey='name'
+                      label='ALL TARIFFS'
+                      showAllOption
+                      value={title}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className='flex min-h-screen justify-center p-5'>
+                <img
+                  src='SLA.png'
+                  alt=''
+                />
+              </div>
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
