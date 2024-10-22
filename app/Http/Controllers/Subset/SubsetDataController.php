@@ -28,7 +28,7 @@ class SubsetDataController extends Controller
             request()->all()
         );
 
-        return $query->limit(100)->get();
+        return $query->get();
 
     }
 }
