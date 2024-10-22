@@ -75,15 +75,13 @@ const ServideDeliveryIndexPage = () => {
                     <hr className='my-4 border-t border-black' />
                   </div>
                 </div>
-                <div className='small-1stop absolute bottom-0 right-10 pb-2 text-right'>
+                <div className='small-1stop-header absolute bottom-0 right-10 pb-2 text-right'>
                   LAST UPDATED 10/09/2024 5:30AM
                 </div>
               </div>
             </Card>
             <Card className=''>
-              <div className='rounded-xl bg-white p-4 shadow-md'>
-                <RequestsCompleted />
-              </div>
+              <RequestsCompleted />
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
