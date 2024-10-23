@@ -351,29 +351,48 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <UserPlus />
-                    <span>Invite users</span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      <DropdownMenuItem>
-                        <Mail />
-                        <span>Email</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <MessageSquare />
-                        <span>Message</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <PlusCircle />
-                        <span>More...</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
+                {officeStructures.map((circle) => {
+                  return (
+                    <DropdownMenuSub key={circle.circle_code}>
+                      <DropdownMenuSubTrigger>{circle.circle_name} </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          {circle.divisions.map((division) => {
+                            return (
+                              <DropdownMenuSub key={division.division_code}>
+                                <DropdownMenuSubTrigger>
+                                  {division.division_name}
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuSubContent>
+                                  {division.subdivisions.map((subdivision) => {
+                                    return (
+                                      <DropdownMenuSub key={subdivision.subdivision_code}>
+                                        <DropdownMenuSubTrigger>
+                                          {subdivision.subdivision_name}
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuSubContent>
+                                          {subdivision.sections.map((section) => {
+                                            return (
+                                              <DropdownMenuSub key={section.section_code}>
+                                                <DropdownMenuItem>
+                                                  {section.section_name}
+                                                </DropdownMenuItem>
+                                              </DropdownMenuSub>
+                                            )
+                                          })}
+                                        </DropdownMenuSubContent>
+                                      </DropdownMenuSub>
+                                    )
+                                  })}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuSub>
+                            )
+                          })}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                  )
+                })}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
             </DropdownMenuContent>
