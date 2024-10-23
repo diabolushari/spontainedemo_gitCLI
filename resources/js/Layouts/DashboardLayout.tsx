@@ -23,6 +23,8 @@ import useFetchList from '@/hooks/useFetchList'
 interface Properties {
   children?: ReactNode
   type?: string
+  sectionCode?: string
+  setSectionCode?: React.Dispatch<React.SetStateAction<string>>
 }
 
 interface OfficeInfo extends Model {
@@ -200,6 +202,7 @@ const findDivisions = (circleCode: string, officesInCircle: OfficeInfo[]) => {
     }[]
   }[] = []
   officesInCircle.forEach((office) => {
+    if (office.circle_code != circleCode) return
     const ifExists = divisions.find((division) => division.division_code === office.division_code)
     if (ifExists == null) {
       divisions.push({
@@ -220,6 +223,7 @@ const findSubdivisions = (divisionCode: string, officesInCircle: OfficeInfo[]) =
   }[] = []
 
   officesInCircle.forEach((office) => {
+    if (office.division_code != divisionCode) return
     const ifExists = subdivisions.find(
       (subdivision) => subdivision.subdivision_code === office.subdivision_code
     )
@@ -240,19 +244,27 @@ const findSections = (subdivisionCode: string, officesInCircle: OfficeInfo[]) =>
 
   officesInCircle.forEach((office) => {
     if (office.subdivision_code === subdivisionCode) {
-      sections.push({
-        section_code: office.section_code ?? '',
-        section_name: office.section_name ?? '',
-      })
+      const ifExists = sections.find((section) => section.section_code === office.section_code)
+      if (ifExists == null) {
+        sections.push({
+          section_code: office.section_code ?? '',
+          section_name: office.section_name ?? '',
+        })
+      }
     }
   })
 
   return sections
 }
 
-export default function DashboardLayout({ children, type = 'Service delivery' }: Properties) {
+export default function DashboardLayout({
+  children,
+  type = 'Service delivery',
+  sectionCode,
+  setSectionCode,
+}: Properties) {
   const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
-
+  const [sectionName, setSectionName] = useState('SELECT SECTION')
   const officeStructures = useMemo(() => {
     const circles: OfficeStructure[] = []
     dropdownValues.forEach((officeInfo) => {
@@ -271,8 +283,6 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
     return circles
   }, [dropdownValues])
 
-  console.log(officeStructures)
-
   const [isShowSideBar, setIsShowSideBar] = useState(false)
 
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
@@ -286,7 +296,12 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
   }, [userInfo])
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : ''
   const userName = User?.name || ''
-
+  const selectSection = (section_code: string, section_name: string) => {
+    if (setSectionCode != null) {
+      setSectionCode(section_code)
+    }
+    setSectionName(section_name)
+  }
   return (
     <div className='flex h-full flex-col border-r sm:relative'>
       <div className={`flex h-full border-r sm:relative ${isShowSideBar ? 'z-[999]' : ''}`}>
@@ -300,10 +315,24 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className='text-white'
+                className='flex items-center gap-2 rounded-xl bg-white p-2 text-black'
                 aria-label='Customise options'
               >
-                SECTION: ALL
+                <span>{sectionName}</span>{' '}
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth='1.5'
+                  stroke='currentColor'
+                  className='size-6'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5'
+                  />
+                </svg>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
@@ -331,7 +360,14 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
                                           {subdivision.sections.map((section) => {
                                             return (
                                               <DropdownMenuSub key={section.section_code}>
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                  onClick={() =>
+                                                    selectSection(
+                                                      section.section_code,
+                                                      section.section_name
+                                                    )
+                                                  }
+                                                >
                                                   {section.section_name}
                                                 </DropdownMenuItem>
                                               </DropdownMenuSub>
@@ -423,7 +459,7 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 100 }}
         transition={{ duration: 0.3 }}
-        className=''
+        className='inset-0'
       >
         <main className={cn(`ml-24 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
