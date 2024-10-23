@@ -273,7 +273,7 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
 
   console.log(officeStructures)
 
-  const [focused, setFocused] = useState(false)
+  const [isShowSideBar, setIsShowSideBar] = useState(false)
 
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
@@ -288,32 +288,73 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
   const userName = User?.name || ''
 
   return (
-    <div className='absolute flex h-full flex-col border-r sm:relative'>
-      <div className='absolute flex h-full border-r sm:relative'>
+    <div className='flex h-full flex-col border-r sm:relative'>
+      <div className={`flex h-full border-r sm:relative ${isShowSideBar ? 'z-[999]' : ''}`}>
         <SideBar
-          focused={focused}
+          isShowSideBar={isShowSideBar}
+          setIsShowSideBar={setIsShowSideBar}
           type={type}
         />
 
-        <div className='absolute right-0 ml-auto mr-10 flex gap-16 pt-10'>
-          <div className='flex min-w-48 flex-col'>
-            <SelectList
-              setValue={() => setTitle}
-              list={sidebarList}
-              dataKey='name'
-              displayKey='name'
-              value={title}
-            />
-          </div>
-          <div className='flex min-w-48 flex-col'>
-            <SelectList
-              setValue={() => setTitle}
-              list={sidebarList}
-              dataKey='name'
-              displayKey='name'
-              value={title}
-            />
-          </div>
+        <div className='right-0 ml-auto mr-10 flex gap-16 pt-10'>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className='text-white'
+                aria-label='Customise options'
+              >
+                SECTION: ALL
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-56'>
+              <DropdownMenuGroup>
+                {officeStructures.map((circle) => {
+                  return (
+                    <DropdownMenuSub key={circle.circle_code}>
+                      <DropdownMenuSubTrigger>{circle.circle_name} </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          {circle.divisions.map((division) => {
+                            return (
+                              <DropdownMenuSub key={division.division_code}>
+                                <DropdownMenuSubTrigger>
+                                  {division.division_name}
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuSubContent>
+                                  {division.subdivisions.map((subdivision) => {
+                                    return (
+                                      <DropdownMenuSub key={subdivision.subdivision_code}>
+                                        <DropdownMenuSubTrigger>
+                                          {subdivision.subdivision_name}
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuSubContent>
+                                          {subdivision.sections.map((section) => {
+                                            return (
+                                              <DropdownMenuSub key={section.section_code}>
+                                                <DropdownMenuItem>
+                                                  {section.section_name}
+                                                </DropdownMenuItem>
+                                              </DropdownMenuSub>
+                                            )
+                                          })}
+                                        </DropdownMenuSubContent>
+                                      </DropdownMenuSub>
+                                    )
+                                  })}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuSub>
+                            )
+                          })}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                  )
+                })}
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <div className=''>
             <div
               className='flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
@@ -382,9 +423,9 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 100 }}
         transition={{ duration: 0.3 }}
-        className='fixed inset-0'
+        className=''
       >
-        <main className={cn(`ml-24 mt-20 flex flex-col`, `${focused ? 'ml-64' : ''}`)}>
+        <main className={cn(`ml-24 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
         </main>
       </motion.div>

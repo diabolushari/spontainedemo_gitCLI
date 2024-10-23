@@ -2,8 +2,9 @@ import { Link } from '@inertiajs/react'
 import React, { useState } from 'react'
 
 interface Properties {
-  focused?: boolean
+  isShowSideBar?: boolean
   type?: string
+  setIsShowSideBar: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const dashboardSidebarItems = [
@@ -137,9 +138,7 @@ const dashboardSidebarItems = [
   },
 ]
 
-const SideBar = ({ focused = true, type }: Properties) => {
-  const [isShowSideBar, setIsShowSideBar] = useState(false)
-
+const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) => {
   const handleSideBarClick = () => {
     setIsShowSideBar(!isShowSideBar)
   }
@@ -148,7 +147,7 @@ const SideBar = ({ focused = true, type }: Properties) => {
     <div>
       {isShowSideBar ? (
         <div
-          className={`absolute top-0 z-40 flex min-h-screen cursor-pointer flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
+          className={`absolute top-0 flex min-h-screen cursor-pointer flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
           onClick={handleSideBarClick}
         >
           <div className='cursor-pointer'>
