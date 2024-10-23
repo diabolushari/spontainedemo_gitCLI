@@ -4,6 +4,7 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react'
 import { cn } from '@/utils'
 import { motion } from 'framer-motion'
 import styles from './DashboardLayout.module.css'
+import SideBar from './SideBar'
 import { Mail, MessageSquare, PlusCircle, UserPlus } from 'lucide-react'
 import {
   DropdownMenu,
@@ -287,117 +288,32 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
   const userName = User?.name || ''
 
   return (
-    <div className='relative flex min-h-screen flex-col'>
-      <div className='relative flex min-h-screen'>
-        <div
-          className={`absolute top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6 ${styles['sidebar']} `}
-          onMouseOut={() => setFocused(false)}
-          onMouseOver={() => setFocused(true)}
-        >
-          <div className='cursor-pointer'>
-            <img
-              src='/one-stop-logo.svg'
-              alt='one stop logo'
-              className='h-14 w-14'
+    <div className='absolute flex h-full flex-col border-r sm:relative'>
+      <div className='absolute flex h-full border-r sm:relative'>
+        <SideBar
+          focused={focused}
+          type={type}
+        />
+
+        <div className='absolute right-0 ml-auto mr-10 flex gap-16 pt-10'>
+          <div className='flex min-w-48 flex-col'>
+            <SelectList
+              setValue={() => setTitle}
+              list={sidebarList}
+              dataKey='name'
+              displayKey='name'
+              value={title}
             />
           </div>
-          <div className='mt-44 flex flex-col gap-20'>
-            {dashboardSidebarItems.map((item) => {
-              return (
-                <Link
-                  href={item.link}
-                  className='mr-auto flex items-center gap-3'
-                  key={item.name}
-                >
-                  <div
-                    className={`rounded-full p-2 ${type === item.name ? 'bg-1stop-highlight' : 'bg-[#D9DEE8]'}`}
-                  >
-                    {item.image.svg}
-                  </div>
-                  <span className={`body-1stop uppercase ${focused ? '' : 'hidden'}`}>
-                    {item.name}
-                  </span>
-                </Link>
-              )
-            })}
+          <div className='flex min-w-48 flex-col'>
+            <SelectList
+              setValue={() => setTitle}
+              list={sidebarList}
+              dataKey='name'
+              displayKey='name'
+              value={title}
+            />
           </div>
-          <div className='mr-auto mt-auto flex items-center gap-3 rounded-full'>
-            <Link
-              href=''
-              className='rounded-full bg-[#D9DEE8]'
-            >
-              <div
-                className='rounded-full bg-[#D9DEE8] p-2'
-                dangerouslySetInnerHTML={{
-                  __html: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="2" stroke-linejoin="round"/>
-<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="2" stroke-linejoin="round"/>
-</svg>`,
-                }}
-              />
-            </Link>
-            {focused && <span className='uppercase'>admin</span>}
-          </div>
-        </div>
-        <div className='absolute right-0 z-40 ml-auto mr-10 flex gap-16 pt-10'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className='text-white'
-                aria-label='Customise options'
-              >
-                SECTION: ALL
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='w-56'>
-              <DropdownMenuGroup>
-                {officeStructures.map((circle) => {
-                  return (
-                    <DropdownMenuSub key={circle.circle_code}>
-                      <DropdownMenuSubTrigger>{circle.circle_name} </DropdownMenuSubTrigger>
-                      <DropdownMenuPortal>
-                        <DropdownMenuSubContent>
-                          {circle.divisions.map((division) => {
-                            return (
-                              <DropdownMenuSub key={division.division_code}>
-                                <DropdownMenuSubTrigger>
-                                  {division.division_name}
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuSubContent>
-                                  {division.subdivisions.map((subdivision) => {
-                                    return (
-                                      <DropdownMenuSub key={subdivision.subdivision_code}>
-                                        <DropdownMenuSubTrigger>
-                                          {subdivision.subdivision_name}
-                                        </DropdownMenuSubTrigger>
-                                        <DropdownMenuSubContent>
-                                          {subdivision.sections.map((section) => {
-                                            return (
-                                              <DropdownMenuSub key={section.section_code}>
-                                                <DropdownMenuItem>
-                                                  {section.section_name}
-                                                </DropdownMenuItem>
-                                              </DropdownMenuSub>
-                                            )
-                                          })}
-                                        </DropdownMenuSubContent>
-                                      </DropdownMenuSub>
-                                    )
-                                  })}
-                                </DropdownMenuSubContent>
-                              </DropdownMenuSub>
-                            )
-                          })}
-                        </DropdownMenuSubContent>
-                      </DropdownMenuPortal>
-                    </DropdownMenuSub>
-                  )
-                })}
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-            </DropdownMenuContent>
-          </DropdownMenu>
-
           <div className=''>
             <div
               className='flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'

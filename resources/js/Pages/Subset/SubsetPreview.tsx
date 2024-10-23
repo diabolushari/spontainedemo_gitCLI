@@ -3,11 +3,13 @@ import ShowResourcePage from '@/Components/ShowPage/ShowResourcePage'
 import DataSetTable from '@/Components/DataExplorer/DataSetTable'
 import { useCallback, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+import { Paginator } from '@/ui/ui_interfaces'
+import Pagination from '@/ui/Pagination/Pagination'
 
 interface Props {
   subset: SubsetDetail
   dataDetail: DataDetail
-  data: DataTableItem[]
+  data: Paginator<DataTableItem>
 }
 
 export default function SubsetPreview({ subset, dataDetail, data }: Readonly<Props>) {
@@ -26,8 +28,12 @@ export default function SubsetPreview({ subset, dataDetail, data }: Readonly<Pro
     >
       <DataSetTable
         dataDetail={dataDetail}
-        dataTableItems={data}
+        dataTableItems={data.data}
       />
+      <div className='my-5'>
+        <Pagination pagination={data} />
+      </div>
+
       {showDeleteModal && (
         <DeleteModal
           setShowModal={setShowDeleteModal}

@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
+use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetQueryBuilder;
+use Illuminate\Support\Collection;
 
 class SubsetDataController extends Controller
 {
+    /**
+     * @return string[]
+     */
     public static function middleware(): array
     {
         return [
@@ -15,12 +20,25 @@ class SubsetDataController extends Controller
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder)
-    {
+    /**
+     * @return Collection<int, mixed>
+     */
+    public function __invoke(
+        SubsetDetail $subsetDetail,
+        SubsetQueryBuilder $queryBuilder,
+        SubsetFilterBuilder $filterBuilder
+    ): Collection {
         $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info');
 
-        return $queryBuilder->query(
-            $subsetDetail
+        $query = $queryBuilder->query($subsetDetail);
+
+        $filterBuilder->filter(
+            $query,
+            $subsetDetail,
+            request()->all()
         );
+
+        return $query->get();
+
     }
 }
