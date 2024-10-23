@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react'
-import { User } from '@/interfaces/data_interfaces'
+import { Model, User } from '@/interfaces/data_interfaces'
 import React, { ReactNode, useMemo, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { SvgImage } from './dashboard-menu-items'
@@ -7,19 +7,69 @@ import { cn } from '@/utils'
 import { motion } from 'framer-motion'
 import styles from './DashboardLayout.module.css'
 
+import Button from '@/ui/button/Button'
+import {
+  Cloud,
+  LifeBuoy,
+  Mail,
+  MessageSquare,
+  Plus,
+  PlusCircle,
+  Settings,
+  UserPlus,
+} from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu'
+import useFetchList from '@/hooks/useFetchList'
+
 interface Properties {
   children?: ReactNode
   type?: string
 }
 
-interface DashboardSidebarList {
-  name: string
+interface OfficeInfo extends Model {
+  circle_code?: string
+  circle_id?: string
+  circle_name?: string
+  data_date?: string
+  division_code?: string
+  division_id?: string
+  division_name?: string
+  region_code?: string
+  region_id?: string
+  region_name?: string
+  section_code?: string
+  section_id?: string
+  section_name?: string
+  subdivision_code?: string
+  subdivision_id?: string
+  subdivision_name?: string
 }
 
-interface DashboardSidebarItems {
-  name: string
-  image: SvgImage | string
-  link: string
+interface DropdownVales {
+  circle_name: string
+  circle_code: string
+  divisions: {
+    division_code: string
+    division_name: string
+    subdivisions: {
+      subdivision_code: string
+      subdivision_name: string
+      sections: { section_code: string; section_name: string }[]
+    }[]
+  }[]
 }
 
 const dashboardSidebarItems = [
@@ -153,11 +203,30 @@ const dashboardSidebarItems = [
   },
 ]
 
-const sidebarList: DashboardSidebarList[] = [{ name: 'test 1' }, { name: 'test 2' }]
-
 export default function DashboardLayout({ children, type = 'Service delivery' }: Properties) {
+  const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
+
+  const tempObject = useMemo(() => {
+    const circles: DropdownVales[] = []
+    dropdownValues.forEach((officeInfo) => {
+      const ifExist = circles.find((circle) => circle.circle_code === officeInfo.circle_code)
+      if (ifExist == null) {
+        circles.push({
+          circle_name: officeInfo.circle_name ?? '',
+          circle_code: officeInfo.circle_code ?? '',
+          divisions: dropdownValues
+            .filter((office) => officeInfo.circle_code === office.circle_code)
+            .map((divison) => {
+              return null
+            }),
+        })
+      }
+    })
+    return circles
+  }, [dropdownValues])
+  console.log(tempObject)
   const [focused, setFocused] = useState(false)
-  const [title, setTitle] = useState('')
+
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
   const userInfo = usePage().props.auth as unknown as { user: User | null }
@@ -169,6 +238,7 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
   }, [userInfo])
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : ''
   const userName = User?.name || ''
+
   return (
     <div className='relative flex min-h-screen flex-col'>
       <div className='relative flex min-h-screen'>
@@ -222,25 +292,46 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
             {focused && <span className='uppercase'>admin</span>}
           </div>
         </div>
-        <div className='absolute right-0 ml-auto mr-10 flex gap-16 pt-10'>
-          <div className='flex min-w-48 flex-col'>
-            <SelectList
-              setValue={() => setTitle}
-              list={sidebarList}
-              dataKey='name'
-              displayKey='name'
-              value={title}
-            />
-          </div>
-          <div className='flex min-w-48 flex-col'>
-            <SelectList
-              setValue={() => setTitle}
-              list={sidebarList}
-              dataKey='name'
-              displayKey='name'
-              value={title}
-            />
-          </div>
+        <div className='absolute right-0 z-40 ml-auto mr-10 flex gap-16 pt-10'>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className='text-white'
+                aria-label='Customise options'
+              >
+                SECTION: ALL
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-56'>
+              <DropdownMenuGroup>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <UserPlus />
+                    <span>Invite users</span>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem>
+                        <Mail />
+                        <span>Email</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <MessageSquare />
+                        <span>Message</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <PlusCircle />
+                        <span>More...</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <div className=''>
             <div
               className='flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'

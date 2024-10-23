@@ -7,6 +7,8 @@ use App\Models\DataDetail\DataDetail;
 use App\Models\DataTable\DataTableDate;
 use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
+use App\Models\Subset\SubsetDetail;
+use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Http\Request;
 
 class SubsetCreateController extends Controller
@@ -21,13 +23,14 @@ class SubsetCreateController extends Controller
         ];
     }
 
-    public function __invoke(Request $request, DataDetail $dataDetail)
+    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder)
     {
-        return inertia('Subset/SubsetCreate', [
-            'dataDetail' => $dataDetail,
-            'dateFields' => DataTableDate::where('data_detail_id', $dataDetail->id)->get(),
-            'dimensionFields' => DataTableDimension::where('data_detail_id', $dataDetail->id)->get(),
-            'measureFields' => DataTableMeasure::where('data_detail_id', $dataDetail->id)->get(),
-        ]);
+        return null;
+        // return inertia('Subset/SubsetCreate', [
+        //     'dataDetail' => $dataDetail,
+        //     'dateFields' => DataTableDate::where('data_detail_id', $dataDetail->id)->get(),
+        //     'dimensionFields' => DataTableDimension::where('data_detail_id', $dataDetail->id)->get(),
+        //     'measureFields' => DataTableMeasure::where('data_detail_id', $dataDetail->id)->get(),
+        // ]);
     }
 }
