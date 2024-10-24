@@ -145,7 +145,7 @@ export default function DataDetailShow({
         <div className='flex flex-col gap-8'>
           <CardHeader
             title={`Data Table: ${detail.name}`}
-            backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
+            backUrl={route('data-detail.index')}
             breadCrumb={breadCrumb}
             onDeleteClick={handleDeleteClick}
           />
