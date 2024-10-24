@@ -2,12 +2,21 @@ import React, { useMemo } from 'react'
 import InactiveGraph from './Graphs/InactiveGraph'
 import Card from '@/ui/Card/Card'
 import useFetchList from '@/hooks/useFetchList'
+import { Model } from '@/interfaces/data_interfaces'
 interface Properties {
   section_code?: string
 }
 
+export interface InactiveGraphValues {
+  conn_status_code: string
+  consumer_count: number
+  data_date: string
+  section_code: string
+  section_name: string
+  voltage: string
+}
 const ActiveConnection = ({ section_code }: Properties) => {
-  const [graphValues] = useFetchList(`subset/12?section_code=${section_code}`)
+  const [graphValues] = useFetchList<InactiveGraphValues>(`subset/12?section_code=${section_code}`)
 
   const activeConnection = useMemo(() => {
     let activeSum = 0
@@ -23,6 +32,7 @@ const ActiveConnection = ({ section_code }: Properties) => {
 
     return activeSum
   }, [graphValues])
+  console.log(graphValues)
   const LTConnection = useMemo(() => {
     let LTSum = 0
     graphValues.forEach((graphValue) => {
@@ -73,7 +83,7 @@ const ActiveConnection = ({ section_code }: Properties) => {
           </div>
         </div>
         <div className='small-1stop-header absolute bottom-0 right-10 pb-2 text-right'>
-          {graphValues.length > 0 && graphValues[0].data_date }
+          {graphValues.length > 0 && graphValues[0].data_date}
         </div>
       </div>
     </Card>
