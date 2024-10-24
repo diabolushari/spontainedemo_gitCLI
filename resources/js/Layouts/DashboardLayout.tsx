@@ -318,7 +318,7 @@ export default function DashboardLayout({
                 className='flex items-center gap-2 rounded-xl bg-white p-2 text-black'
                 aria-label='Customise options'
               >
-                <span>{sectionName}</span>{' '}
+                <span className='small-1stop'>{sectionName}</span>{' '}
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
