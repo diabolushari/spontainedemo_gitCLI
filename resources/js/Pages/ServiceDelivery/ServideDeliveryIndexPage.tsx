@@ -5,6 +5,8 @@ import React, { useState } from 'react'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import SelectList from '@/ui/form/SelectList'
+import InactiveGraph from '@/Components/ServiceDelivery/Graphs/InactiveGraph'
+import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 
@@ -12,8 +14,12 @@ const ServideDeliveryIndexPage = () => {
   const [title, setTitle] = useState('')
   const categoryList = [{ name: 'test 1' }, { name: 'test 2' }]
   const tariffList = [{ name: 'test 1' }, { name: 'test 2' }]
+  const [sectionCode, setSectionCode] = useState('')
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      sectionCode={sectionCode}
+      setSectionCode={setSectionCode}
+    >
       <DashboardPadding>
         <CardHeader
           title='CONNECTION'
@@ -21,34 +27,7 @@ const ServideDeliveryIndexPage = () => {
         />
         <div className='ml-3 flex flex-col gap-5'>
           <div className='flex flex-col gap-5 md:flex-row'>
-            <Card className='flex h-full grid-cols-2 gap-4 p-6'>
-              <div className='mx-8'>
-                <h1 className='h1-1stop'>22.23K</h1>
-                <p className='body-1stop'>Total Active Connections</p>
-                <div className='mt-10 flex space-x-8'>
-                  <div className=''>
-                    <h3 className='h3-1stop mt-10'>18,234</h3>
-                    <p className='small-1stop'>LT</p>
-                  </div>
-                  <div className=''>
-                    <h3 className='h3-1stop mt-10'>3,248</h3>
-                    <p className='small-1stop'>HT</p>
-                  </div>
-                </div>
-              </div>
-              <div className='mt-6'>
-                <p className='body-1stop font-bold'>Inactive A/c Statuses</p>
-                <div className='mt-4'>
-                  <img
-                    src='Inactive Account.png'
-                    alt=''
-                  />
-                </div>
-                <p className='small-1stop-header mt-10 text-right'>
-                  LAST UPDATED 10/09/2024 05:30AM
-                </p>
-              </div>
-            </Card>
+            <ActiveConnection section_code={sectionCode} />
             <Card className=''>
               <RequestsCompleted />
             </Card>

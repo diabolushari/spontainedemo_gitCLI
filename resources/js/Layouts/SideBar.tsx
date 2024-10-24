@@ -2,8 +2,9 @@ import { Link } from '@inertiajs/react'
 import React, { useState } from 'react'
 
 interface Properties {
-  focused?: boolean
+  isShowSideBar?: boolean
   type?: string
+  setIsShowSideBar: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const dashboardSidebarItems = [
@@ -137,9 +138,7 @@ const dashboardSidebarItems = [
   },
 ]
 
-const SideBar = ({ focused = true, type }: Properties) => {
-  const [isShowSideBar, setIsShowSideBar] = useState(false)
-
+const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) => {
   const handleSideBarClick = () => {
     setIsShowSideBar(!isShowSideBar)
   }

@@ -28,8 +28,10 @@ use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
+use App\Http\Controllers\Subset\SubsetDropdownApiController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
+
 use App\Http\Controllers\TabController;
 use App\Services\DistributionHierarchy\DistributionHierarchy;
 use Illuminate\Foundation\Application;
@@ -135,9 +137,12 @@ Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
 Route::delete('subset/{detail}', SubsetDeleteController::class)
     ->name('subset.destroy');
 
+Route::get('subset-level', SubsetDropdownApiController::class)
+    ->name('subset.level');
 Route::get('test', function (DistributionHierarchy $findDistributionLevel) {
     return $findDistributionLevel->findAllSection('4502');
 });
+
 
 //Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
 //
@@ -147,4 +152,4 @@ Route::get('test', function (DistributionHierarchy $findDistributionLevel) {
 //
 //});
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
