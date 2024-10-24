@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { InactiveGraphValues } from '../ActiveConnection'
 
 interface IBarChartLabel {
   x: number
@@ -20,7 +21,7 @@ interface IBarChartLabel {
 
 interface Properties {
   section_code?: string
-  graphValues?: []
+  graphValues?: InactiveGraphValues[]
 }
 
 const InactiveGraph = ({ section_code, graphValues }: Properties) => {
