@@ -30,40 +30,45 @@ class MetaDataController extends Controller
         ];
     }
 
-    public function index(Request $request): Response
-    {
+    
+public function index(Request $request): Response
+{
+    $structures = MetaStructure::select(['id', 'structure_name'])->get();
 
-        $structures = MetaStructure::select(['id', 'structure_name'])
-            ->get();
-        $records = MetaData::with([
-            'metaStructure:id,structure_name',
-            'hierarchyItem',
-            'groupItem',
-        ])
-            ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder
-                ->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
-                ->orWhereHas('groupItem.metaDataGroup', function (Builder $query) use ($request) {
-                    return $query->where('name', $request->search);
-                })
-                ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $query) use ($request) {
-                    return $query->where('name', $request->search);
-                }))
-            ->when($request->filled('structure'), function (Builder $query) use ($request) {
-                $query->whereHas('metaStructure',  function (Builder $query) use ($request) {
-                    return $query->where('structure_name', 'like', "%$request->structure%");
-                });
-            })
-            ->paginate(20)
-            ->withQueryString();
+    $records = MetaData::with([
+        'metaStructure:id,structure_name',
+        'hierarchyItem',
+        'groupItem',
+    ])
+        ->when($request->filled('search'), function (Builder $builder) use ($request) {
+            $searchTerm = '%' . $request->input('search') . '%';
 
-        return Inertia::render('MetaData/MetaDataIndex', [
-            'metaData' => $records,
-            'structures' => $structures,
-            'type' => $request->type,
-            'subtype' => $request->subtype,
-            'oldValues' => $request->all()
-        ]);
-    }
+            $builder->where(function ($query) use ($searchTerm, $request) {
+                $query->where('name', 'like', $searchTerm)
+                    ->orWhereHas('groupItem.metaDataGroup', function (Builder $subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->input('search') . '%');
+                    })
+                    ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->input('search') . '%');
+                    });
+            });
+        })
+        ->when($request->filled('structure'), function (Builder $builder) use ($request) {
+            $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
+                $query->where('structure_name', 'like', '%' . $request->input('structure') . '%');
+            });
+        })
+        ->paginate(20)
+        ->withQueryString();
+
+    return Inertia::render('MetaData/MetaDataIndex', [
+        'metaData' => $records,
+        'structures' => $structures,
+        'type' => $request->type,
+        'subtype' => $request->subtype,
+        'oldValues' => $request->all()
+    ]);
+}
 
     public function create(): Response
     {
