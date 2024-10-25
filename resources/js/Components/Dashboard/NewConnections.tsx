@@ -76,7 +76,7 @@ const NewConnections = ({ section_code }: Properties) => {
     <div className='flex h-full flex-col justify-between rounded-lg bg-white p-6'>
       <div className='flex items-center justify-between'>
         <div className='w-1/2 text-left'>
-          <h2 className='h1-1stop text-4xl font-bold'>
+          <h2 className='h1-1stop mt-7 text-4xl font-bold'>
             {totalCompleted}/{totalReceived}
           </h2>
           <p className='body-1stop text-lg'>New Connections</p>
@@ -104,32 +104,27 @@ const NewConnections = ({ section_code }: Properties) => {
         </div>
 
         <div className='small-1stop w-1/2'>
-          <ResponsiveContainer
-            width='100%'
-            height={300}
+          <PieChart
+            width={300}
+            height={200}
           >
-            <PieChart
-              width={300}
-              height={200}
+            <Pie
+              data={data}
+              innerRadius={50}
+              outerRadius={80}
+              paddingAngle={2}
+              dataKey='value'
+              stroke='none'
             >
-              <Pie
-                data={data}
-                innerRadius={50}
-                outerRadius={80}
-                paddingAngle={2}
-                dataKey='value'
-                stroke='none'
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Legend content={renderLegend} />
-            </PieChart>
-          </ResponsiveContainer>
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Legend content={renderLegend} />
+          </PieChart>
         </div>
       </div>
 
