@@ -9,9 +9,17 @@ use App\Models\ReferenceData\ReferenceData;
 use App\Models\ReferenceData\ReferenceDataParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class ReferenceDataAPIController extends Controller
+class ReferenceDataAPIController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth',
+        ];
+    }
+
     public function parameterList(Request $request): JsonResponse
     {
         if (! $request->filled('domain')) {

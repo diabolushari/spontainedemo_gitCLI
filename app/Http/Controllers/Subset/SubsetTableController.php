@@ -9,10 +9,11 @@ use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use App\Services\Subset\SubsetQueryBuilder;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SubsetTableController extends Controller
+class SubsetTableController extends Controller implements HasMiddleware
 {
     public static function middleware()
     {

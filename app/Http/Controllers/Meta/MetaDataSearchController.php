@@ -7,8 +7,9 @@ use App\Models\Meta\MetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaDataSearchController extends Controller
+class MetaDataSearchController extends Controller implements HasMiddleware
 {
     public static function middleware()
     {

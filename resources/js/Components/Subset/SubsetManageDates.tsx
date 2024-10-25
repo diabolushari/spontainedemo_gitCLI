@@ -38,6 +38,10 @@ function SubsetManageDates({
         field_id: addedField.field_id,
         field: `${dateField?.field_name} ${addedField.use_expression ? addedField.date_field_expression : ''}`,
         value,
+        usingLastFoundData:
+          addedField.use_last_found_data === 1
+            ? 'Will use last found data if no data is found on selected date.'
+            : '',
         actions: [],
       }
     })
@@ -59,6 +63,13 @@ function SubsetManageDates({
       {
         key: 'value',
         label: 'Value',
+        isCardHeader: false,
+        hideLabel: true,
+        isShownInCard: true,
+      },
+      {
+        key: 'usingLastFoundData',
+        label: 'Using Last Found Data',
         isCardHeader: false,
         hideLabel: true,
         isShownInCard: true,

@@ -185,12 +185,18 @@ export default function AddSubsetDateForm({
     if (formData.field_id == '') {
       return
     }
+
+    let useLastFoundData: 0 | 1 = 0
+    if (!formData.use_static_date && formData.use_last_found_data) {
+      useLastFoundData = 1
+    }
+
     onSubmit({
       field_id: Number(formData.field_id),
       use_expression: formData.use_expression ? 1 : 0,
       date_field_expression: formData.use_expression ? formData.date_field_expression : '',
       use_dynamic_date: formData.use_static_date ? 0 : 1,
-      use_last_found_data: formData.use_last_found_data ? 1 : 0,
+      use_last_found_data: useLastFoundData,
       start_date: !formData.use_static_date ? null : formData.start_date,
       end_date: !formData.use_static_date ? null : formData.end_date,
       dynamic_start_type: !formData.use_static_date ? formData.dynamic_start_type : null,

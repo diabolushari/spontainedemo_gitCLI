@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class OperationsController extends Controller
+class OperationsController extends Controller implements HasMiddleware
 {
-      /**
+    /**
      * @return string[]
      */
     public static function middleware(): array
@@ -17,6 +17,7 @@ class OperationsController extends Controller
             'auth',
         ];
     }
+
     public function index(): Response
     {
         return Inertia::render('Operations/OperationsIndexPage');

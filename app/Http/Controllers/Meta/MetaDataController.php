@@ -13,10 +13,11 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MetaDataController extends Controller
+class MetaDataController extends Controller implements HasMiddleware
 {
     /**
      * Get the middleware for the controller.
@@ -30,45 +31,44 @@ class MetaDataController extends Controller
         ];
     }
 
-    
-public function index(Request $request): Response
-{
-    $structures = MetaStructure::select(['id', 'structure_name'])->get();
+    public function index(Request $request): Response
+    {
+        $structures = MetaStructure::select(['id', 'structure_name'])->get();
 
-    $records = MetaData::with([
-        'metaStructure:id,structure_name',
-        'hierarchyItem',
-        'groupItem',
-    ])
-        ->when($request->filled('search'), function (Builder $builder) use ($request) {
-            $searchTerm = '%' . $request->input('search') . '%';
+        $records = MetaData::with([
+            'metaStructure:id,structure_name',
+            'hierarchyItem',
+            'groupItem',
+        ])
+            ->when($request->filled('search'), function (Builder $builder) use ($request) {
+                $searchTerm = '%'.$request->input('search').'%';
 
-            $builder->where(function ($query) use ($searchTerm, $request) {
-                $query->where('name', 'like', $searchTerm)
-                    ->orWhereHas('groupItem.metaDataGroup', function (Builder $subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->input('search') . '%');
-                    })
-                    ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->input('search') . '%');
-                    });
-            });
-        })
-        ->when($request->filled('structure'), function (Builder $builder) use ($request) {
-            $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
-                $query->where('structure_name', 'like', '%' . $request->input('structure') . '%');
-            });
-        })
-        ->paginate(20)
-        ->withQueryString();
+                $builder->where(function ($query) use ($searchTerm, $request) {
+                    $query->where('name', 'like', $searchTerm)
+                        ->orWhereHas('groupItem.metaDataGroup', function (Builder $subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%'.$request->input('search').'%');
+                        })
+                        ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%'.$request->input('search').'%');
+                        });
+                });
+            })
+            ->when($request->filled('structure'), function (Builder $builder) use ($request) {
+                $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
+                    $query->where('structure_name', 'like', '%'.$request->input('structure').'%');
+                });
+            })
+            ->paginate(20)
+            ->withQueryString();
 
-    return Inertia::render('MetaData/MetaDataIndex', [
-        'metaData' => $records,
-        'structures' => $structures,
-        'type' => $request->type,
-        'subtype' => $request->subtype,
-        'oldValues' => $request->all()
-    ]);
-}
+        return Inertia::render('MetaData/MetaDataIndex', [
+            'metaData' => $records,
+            'structures' => $structures,
+            'type' => $request->type,
+            'subtype' => $request->subtype,
+            'oldValues' => $request->all(),
+        ]);
+    }
 
     public function create(): Response
     {
@@ -84,16 +84,17 @@ public function index(Request $request): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-         $pageNo = $request->query('page', '1');
+        $pageNo = $request->query('page', '1');
+
         return Inertia::render('MetaData/MetaDataEdit', [
             'metaData' => $metaData,
             'structures' => $structures,
-            'pageNo' => $pageNo ,
+            'pageNo' => $pageNo,
         ]);
     }
 
     public function show(MetaData $metaData, Request $request): Response
-    { 
+    {
         $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
         $pageNo = $request->query('page', '1');
@@ -109,7 +110,7 @@ public function index(Request $request): Response
             ]),
             'metaGroup' => $metaGroup,
             'metaHierarchy' => $metaHierarchy,
-            'pageNo' => $pageNo 
+            'pageNo' => $pageNo,
         ]);
     }
 
@@ -138,7 +139,7 @@ public function index(Request $request): Response
         }
 
         return redirect()
-            ->route('meta-data.show',['metaData'=>$metaData,'page'=>$pageNo ])
+            ->route('meta-data.show', ['metaData' => $metaData, 'page' => $pageNo])
             ->with(['message' => "Meta Data: $request->name updated successfully"]);
     }
 

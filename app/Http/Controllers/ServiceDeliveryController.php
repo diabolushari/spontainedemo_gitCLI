@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ServiceDeliveryController extends Controller
+class ServiceDeliveryController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

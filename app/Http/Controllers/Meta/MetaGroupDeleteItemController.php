@@ -7,8 +7,9 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaGroupItem;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaGroupDeleteItemController extends Controller
+class MetaGroupDeleteItemController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

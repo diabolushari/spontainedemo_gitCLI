@@ -9,9 +9,10 @@ use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetQueryBuilder;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Inertia\Response;
 
-class SubsetCreateController extends Controller
+class SubsetCreateController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -23,7 +24,7 @@ class SubsetCreateController extends Controller
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder ,DataDetail $dataDetail)
+    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder, DataDetail $dataDetail): Response
     {
         return inertia('Subset/SubsetCreate', [
             'dataDetail' => $dataDetail,

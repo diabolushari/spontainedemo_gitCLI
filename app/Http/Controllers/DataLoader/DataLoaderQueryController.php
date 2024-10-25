@@ -13,10 +13,11 @@ use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DataLoaderQueryController extends Controller
+class DataLoaderQueryController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

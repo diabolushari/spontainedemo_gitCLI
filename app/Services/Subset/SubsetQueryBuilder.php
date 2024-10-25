@@ -43,6 +43,9 @@ readonly class SubsetQueryBuilder
             if ($dimension->info == null) {
                 return;
             }
+            if ($dimension->filter_only === 1) {
+                return;
+            }
             if ($dimension->column_expression != null) {
                 $groupingColumns[] = $dimension->column_expression;
                 $selectColumns[] = $dimension->column_expression.' as '.$dimension->info->column;

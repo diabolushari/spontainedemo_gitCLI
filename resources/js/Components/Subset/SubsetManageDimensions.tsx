@@ -31,11 +31,16 @@ export default function SubsetManageDimensions({
       const dimensionField = dimensionFields.find(
         (measureField) => measureField.id === addedField.field_id
       )
+      let appliedFilters = 'No Filters Applied'
+      if (addedField.filter_values != null && addedField.filter_values.length > 0) {
+        appliedFilters =
+          'Applied Filters: ' + addedField.filter_values?.map((filter) => filter.name).join(', ')
+      }
       return {
         field_id: addedField.field_id,
         field: dimensionField?.field_name ?? '',
-        filter:
-          'Applied Filters: ' + addedField.filter_values?.map((filter) => filter.name).join(', '),
+        filters: appliedFilters,
+        is_filter: addedField.filter_only === 1 ? 'Is used only for filtering data.' : '',
         actions: [],
       }
     })
@@ -50,7 +55,14 @@ export default function SubsetManageDimensions({
         hideLabel: true,
       },
       {
-        key: 'filter',
+        key: 'is_filter',
+        label: 'Filter Only',
+        isCardHeader: false,
+        hideLabel: true,
+        isShownInCard: true,
+      },
+      {
+        key: 'filters',
         label: 'Filter',
         isCardHeader: false,
         hideLabel: true,

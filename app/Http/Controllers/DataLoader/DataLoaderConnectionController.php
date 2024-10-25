@@ -14,10 +14,11 @@ use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DataLoaderConnectionController extends Controller
+class DataLoaderConnectionController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -34,7 +35,7 @@ class DataLoaderConnectionController extends Controller
         /** @var LengthAwarePaginator<DataLoaderConnection> $dataLoaderConnections */
         $dataLoaderConnections = DataLoaderConnection::when(
             $request->search != null,
-            fn($query) => $query->where('name', 'like', "%$request->search%")
+            fn ($query) => $query->where('name', 'like', "%$request->search%")
         )
             ->withCount('queries')
             ->paginate(20)
@@ -44,7 +45,7 @@ class DataLoaderConnectionController extends Controller
             'dataLoaderConnections' => $dataLoaderConnections,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all()
+            'oldValues' => $request->all(),
         ]);
     }
 
@@ -76,7 +77,7 @@ class DataLoaderConnectionController extends Controller
                 $dataLoaderConnection
             ),
             'type' => $parameters->type,
-            'subtype' => $parameters->subtype
+            'subtype' => $parameters->subtype,
         ]);
     }
 

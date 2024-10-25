@@ -8,13 +8,14 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaGroup;
 use App\Models\Meta\MetaGroupItem;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MetaDataGroupController extends Controller
+class MetaDataGroupController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -27,7 +28,7 @@ class MetaDataGroupController extends Controller
     public function index(Request $request): Response
     {
         $groups = MetaGroup::when($request->filled(key: 'search'), function (Builder $query) use ($request) {
-            $query->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
+            $query->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%')
                 ->orWhereHas('items.metaData', function (Builder $query) use ($request) {
                     return $query->where('name', 'like', "%$request->search%");
                 });
@@ -40,7 +41,7 @@ class MetaDataGroupController extends Controller
             'groups' => $groups,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all()
+            'oldValues' => $request->all(),
         ]);
     }
 
@@ -53,9 +54,10 @@ class MetaDataGroupController extends Controller
         );
     }
 
-    public function edit(MetaGroup $metaDataGroup,Request $request): Response
+    public function edit(MetaGroup $metaDataGroup, Request $request): Response
     {
         $pageNo = $request->query('page', '1');
+
         return Inertia::render('MetaGroup/MetaGroupEdit', [
             'group' => $metaDataGroup,
             'pageNo' => $pageNo,
@@ -92,7 +94,7 @@ class MetaDataGroupController extends Controller
         }
 
         return redirect()
-            ->route('meta-data-group.show',['metaDataGroup'=>$metaDataGroup,'page'=>$pageNo])
+            ->route('meta-data-group.show', ['metaDataGroup' => $metaDataGroup, 'page' => $pageNo])
             ->with([
                 'message' => "Meta data group: $metaDataGroup->name updated successfully",
             ]);
@@ -116,12 +118,13 @@ class MetaDataGroupController extends Controller
             'subtype' => $request->subtype,
             'pageNo' => $pageNo,
             'itemCount' => count(MetaGroupItem::where('meta_group_id', $metaDataGroup->id)
-            ->with('metaData:id,name')
-            ->with('metaData.metaStructure:id,structure_name')
-            ->get())
+                ->with('metaData:id,name')
+                ->with('metaData.metaStructure:id,structure_name')
+                ->get()),
         ]);
     }
-     public function destroy(MetaGroup $metaDataGroup ): RedirectResponse
+
+    public function destroy(MetaGroup $metaDataGroup): RedirectResponse
     {
         try {
             $metaDataGroup->delete();
@@ -134,6 +137,4 @@ class MetaDataGroupController extends Controller
             ->route('meta-data-group.index')
             ->with(['success' => 'Meta Data Group '.$metaDataGroup->name.' deleted successfully']);
     }
-
-
 }

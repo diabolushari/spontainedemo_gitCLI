@@ -8,8 +8,9 @@ use App\Models\Meta\MetaHierarchyItem;
 use App\Services\MetaData\Hierarchy\HierarchyChildList;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaHierarchyDeleteItemController extends Controller
+class MetaHierarchyDeleteItemController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

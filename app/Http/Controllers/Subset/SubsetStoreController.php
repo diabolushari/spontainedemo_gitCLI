@@ -11,10 +11,11 @@ use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use Exception;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class SubsetStoreController extends Controller
+class SubsetStoreController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

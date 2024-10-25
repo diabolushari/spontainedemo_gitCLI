@@ -7,8 +7,9 @@ use App\Models\Meta\MetaStructure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaStructureSearchController extends Controller
+class MetaStructureSearchController extends Controller implements HasMiddleware
 {
     public static function middleware()
     {
