@@ -5,6 +5,8 @@ import useFetchList from '@/hooks/useFetchList'
 import { Model } from '@/interfaces/data_interfaces'
 interface Properties {
   section_code?: string
+  levelName: string
+  levelCode: string
 }
 
 export interface InactiveGraphValues {
@@ -15,8 +17,9 @@ export interface InactiveGraphValues {
   section_name: string
   voltage: string
 }
-const ActiveConnection = ({ section_code }: Properties) => {
-  const [graphValues] = useFetchList<InactiveGraphValues>(`subset/12?section_code=${section_code}`)
+const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
+  console.log(`subset/12?office_code=${levelCode}`)
+  const [graphValues] = useFetchList<InactiveGraphValues>(`subset/12?office_code=${levelCode}`)
 
   const activeConnection = useMemo(() => {
     let activeSum = 0
