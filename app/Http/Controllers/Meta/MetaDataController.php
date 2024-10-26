@@ -13,10 +13,11 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MetaDataController extends Controller
+class MetaDataController extends Controller implements HasMiddleware
 {
     /**
      * Get the middleware for the controller.
@@ -32,25 +33,29 @@ class MetaDataController extends Controller
 
     public function index(Request $request): Response
     {
+        $structures = MetaStructure::select(['id', 'structure_name'])->get();
 
-        $structures = MetaStructure::select(['id', 'structure_name'])
-            ->get();
         $records = MetaData::with([
             'metaStructure:id,structure_name',
             'hierarchyItem',
             'groupItem',
         ])
-            ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder
-                ->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
-                ->orWhereHas('groupItem.metaDataGroup', function (Builder $query) use ($request) {
-                    return $query->where('name', $request->search);
-                })
-                ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $query) use ($request) {
-                    return $query->where('name', $request->search);
-                }))
-            ->when($request->filled('structure'), function (Builder $query) use ($request) {
-                $query->whereHas('metaStructure',  function (Builder $query) use ($request) {
-                    return $query->where('structure_name', 'like', "%$request->structure%");
+            ->when($request->filled('search'), function (Builder $builder) use ($request) {
+                $searchTerm = '%'.$request->input('search').'%';
+
+                $builder->where(function ($query) use ($searchTerm, $request) {
+                    $query->where('name', 'like', $searchTerm)
+                        ->orWhereHas('groupItem.metaDataGroup', function (Builder $subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%'.$request->input('search').'%');
+                        })
+                        ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%'.$request->input('search').'%');
+                        });
+                });
+            })
+            ->when($request->filled('structure'), function (Builder $builder) use ($request) {
+                $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
+                    $query->where('structure_name', 'like', '%'.$request->input('structure').'%');
                 });
             })
             ->paginate(20)
@@ -61,7 +66,7 @@ class MetaDataController extends Controller
             'structures' => $structures,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all()
+            'oldValues' => $request->all(),
         ]);
     }
 
@@ -79,16 +84,17 @@ class MetaDataController extends Controller
     {
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-         $pageNo = $request->query('page', '1');
+        $pageNo = $request->query('page', '1');
+
         return Inertia::render('MetaData/MetaDataEdit', [
             'metaData' => $metaData,
             'structures' => $structures,
-            'pageNo' => $pageNo ,
+            'pageNo' => $pageNo,
         ]);
     }
 
     public function show(MetaData $metaData, Request $request): Response
-    { 
+    {
         $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
         $pageNo = $request->query('page', '1');
@@ -104,7 +110,7 @@ class MetaDataController extends Controller
             ]),
             'metaGroup' => $metaGroup,
             'metaHierarchy' => $metaHierarchy,
-            'pageNo' => $pageNo 
+            'pageNo' => $pageNo,
         ]);
     }
 
@@ -133,7 +139,7 @@ class MetaDataController extends Controller
         }
 
         return redirect()
-            ->route('meta-data.show',['metaData'=>$metaData,'page'=>$pageNo ])
+            ->route('meta-data.show', ['metaData' => $metaData, 'page' => $pageNo])
             ->with(['message' => "Meta Data: $request->name updated successfully"]);
     }
 

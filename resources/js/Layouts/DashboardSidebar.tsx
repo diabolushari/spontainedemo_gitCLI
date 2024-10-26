@@ -1,5 +1,5 @@
 import DashboardSidebarLinks from './DashboardSidebarLinks'
-import { motion } from 'framer-motion'
+import * as motion from 'framer-motion/client'
 import { ChevronLeft } from 'lucide-react'
 
 interface Properties {
@@ -23,8 +23,7 @@ const DashboardSidebar = ({ showSideBar, setShowSideBar }: Properties) => {
             <div className='flex w-full justify-end'>
               <button
                 onClick={() => setShowSideBar(false)}
-                className='bg-header-dark cursor-pointer rounded rounded-l-md
-                  p-2 text-white shadow hover:bg-gray-700'
+                className='cursor-pointer rounded rounded-l-md bg-header-dark p-2 text-white shadow hover:bg-gray-700'
               >
                 <ChevronLeft size={20} />
               </button>
@@ -52,17 +51,13 @@ const DashboardSidebar = ({ showSideBar, setShowSideBar }: Properties) => {
             className='absolute h-full w-full bg-gray-800 opacity-50 lg:hidden'
             onClick={() => setShowSideBar(false)}
           />
-          <div
-            className='absolute z-40 h-full w-52 overflow-auto bg-emerald-600 pb-4 shadow
-            transition duration-150 ease-in-out sm:relative md:w-96 lg:hidden'
-          >
+          <div className='absolute z-40 h-full w-52 overflow-auto bg-emerald-600 pb-4 shadow transition duration-150 ease-in-out sm:relative md:w-96 lg:hidden'>
             <div className='flex h-full w-full flex-col justify-between'>
               <div className='flex flex-wrap pt-2'>
                 <div className='flex w-full justify-end'>
                   <button
                     onClick={() => setShowSideBar(false)}
-                    className='bg-header-dark cursor-pointer rounded rounded-l-md
-                  p-2 text-white shadow hover:bg-gray-700'
+                    className='cursor-pointer rounded rounded-l-md bg-header-dark p-2 text-white shadow hover:bg-gray-700'
                   >
                     <ChevronLeft />
                   </button>

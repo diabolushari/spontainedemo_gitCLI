@@ -9,9 +9,17 @@ use App\Models\DataLoader\DataLoaderQuery;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class DataLoaderQueryDataController extends Controller
+class DataLoaderQueryDataController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth',
+        ];
+    }
+
     public function __invoke(
         DataLoaderQuery $dataLoaderQuery,
         RunLoaderQuery $runLoaderQuery

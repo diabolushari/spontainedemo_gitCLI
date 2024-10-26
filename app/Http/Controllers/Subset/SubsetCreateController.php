@@ -9,9 +9,10 @@ use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetQueryBuilder;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Inertia\Response;
 
-class SubsetCreateController extends Controller
+class SubsetCreateController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -23,14 +24,13 @@ class SubsetCreateController extends Controller
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder)
+    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder, DataDetail $dataDetail): Response
     {
-        return null;
-        // return inertia('Subset/SubsetCreate', [
-        //     'dataDetail' => $dataDetail,
-        //     'dateFields' => DataTableDate::where('data_detail_id', $dataDetail->id)->get(),
-        //     'dimensionFields' => DataTableDimension::where('data_detail_id', $dataDetail->id)->get(),
-        //     'measureFields' => DataTableMeasure::where('data_detail_id', $dataDetail->id)->get(),
-        // ]);
+        return inertia('Subset/SubsetCreate', [
+            'dataDetail' => $dataDetail,
+            'dateFields' => DataTableDate::where('data_detail_id', $dataDetail->id)->get(),
+            'dimensionFields' => DataTableDimension::where('data_detail_id', $dataDetail->id)->get(),
+            'measureFields' => DataTableMeasure::where('data_detail_id', $dataDetail->id)->get(),
+        ]);
     }
 }

@@ -10,10 +10,11 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MetaStructureController extends Controller
+class MetaStructureController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -66,26 +67,28 @@ class MetaStructureController extends Controller
             ->with(['message' => 'Meta structure '.$request->structureName.' created successfully']);
     }
 
-    public function show( MetaStructure $metaStructure, Request $request):Response
+    public function show(MetaStructure $metaStructure, Request $request): Response
     {
-        
+
         $pageNo = $request->query('page', '1');
-        return Inertia::render('MetaStructure/MetaStructureShow',['metaStructure' => $metaStructure,'pageNo' => $pageNo ,]);
+
+        return Inertia::render('MetaStructure/MetaStructureShow', ['metaStructure' => $metaStructure, 'pageNo' => $pageNo]);
     }
 
-    public function edit(MetaStructure $metaStructure,Request $request): Response
-    {  
+    public function edit(MetaStructure $metaStructure, Request $request): Response
+    {
         $pageNo = $request->query('page', '1');
+
         return Inertia::render('MetaStructure/MetaStructureEdit', [
             'metaStructure' => $metaStructure,
             'pageNo' => $pageNo,
         ]);
     }
 
-    public function update(MetaStructureFormRequest $request, MetaStructure $metaStructure,Request $page): RedirectResponse
+    public function update(MetaStructureFormRequest $request, MetaStructure $metaStructure, Request $page): RedirectResponse
     {
-        
-         $pageNo = $page->query('page', '1');
+
+        $pageNo = $page->query('page', '1');
         try {
             $metaStructure->update($request->all());
         } catch (Exception $e) {
@@ -94,7 +97,7 @@ class MetaStructureController extends Controller
         }
 
         return redirect()
-            ->route('meta-structure.show',['metaStructure'=>$metaStructure,'pageNo' => $pageNo,])
+            ->route('meta-structure.show', ['metaStructure' => $metaStructure, 'pageNo' => $pageNo])
             ->with(['message' => 'Meta structure '.$request->structureName.' updated successfully']);
     }
 

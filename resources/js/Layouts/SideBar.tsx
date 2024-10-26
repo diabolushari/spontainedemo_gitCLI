@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react'
-import React, { useState } from 'react'
+import React from 'react'
 
 interface Properties {
   isShowSideBar?: boolean
@@ -147,7 +147,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
     <div className=''>
       {isShowSideBar ? (
         <div
-          className={`absolute top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
+          className={`fixed top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
           // onClick={handleSideBarClick}
         >
           <div className='flex'>
@@ -222,7 +222,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
         </div>
       ) : (
         <div
-          className={`absolute top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
+          className={`fixed top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
         >
           <div className='cursor-pointer'>
             <Link href='/service-delivery'>

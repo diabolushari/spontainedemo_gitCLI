@@ -46,6 +46,8 @@ class SubsetDetailMeasure extends Model
     protected $fillable = [
         'subset_detail_id',
         'field_id',
+        'weight_field_id',
+        'expression',
         'aggregation',
         'created_by',
         'updated_by',
@@ -57,5 +59,13 @@ class SubsetDetailMeasure extends Model
     public function info(): HasOne
     {
         return $this->hasOne(DataTableMeasure::class, 'id', 'field_id');
+    }
+
+    /**
+     * @return HasOne<DataTableMeasure>
+     */
+    public function weightInfo(): HasOne
+    {
+        return $this->hasOne(DataTableMeasure::class, 'id', 'weight_field_id');
     }
 }

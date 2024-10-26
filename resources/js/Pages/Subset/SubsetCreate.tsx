@@ -69,7 +69,7 @@ export default function SubsetCreate({
         placeholder: 'description',
       },
       group_data: {
-        label: 'Group & Aggregate Data',
+        label: 'Perform Grouping & Aggregation Operations on Data',
         type: 'checkbox' as const,
         setValue: toggleBoolean('group_data'),
         disabled: measures.length > 0,

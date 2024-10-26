@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\DataDetail;
 
 use App\Exports\DataTableExport;
+use App\Http\Controllers\Controller;
 use App\Models\DataDetail\DataDetail;
 use App\Services\DataTable\QueryDataTable;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class ExportDataTableController
+class ExportDataTableController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

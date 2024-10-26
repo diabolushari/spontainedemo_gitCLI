@@ -56,7 +56,10 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
   }, [tableCols])
 
   return (
-    <Table heads={colHeads}>
+    <Table
+      heads={colHeads}
+      className='h-[70vh]'
+    >
       <tbody>
         {dataTableItems.map((item, index) => {
           return (

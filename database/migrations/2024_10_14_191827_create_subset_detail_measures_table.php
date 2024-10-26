@@ -19,6 +19,10 @@ return new class extends Migration
                 ->constrained('data_table_measures');
             $table->string('column')->nullable();
             $table->string('aggregation')->nullable();
+            $table->longText('expression')->nullable();
+            $table->foreignId('weight_field_id')
+                ->nullable()
+                ->constrained('data_table_measures');
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()

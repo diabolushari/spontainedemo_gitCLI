@@ -43,6 +43,9 @@ readonly class SubsetQueryBuilder
             if ($dimension->info == null) {
                 return;
             }
+            if ($dimension->filter_only === 1) {
+                return;
+            }
             if ($dimension->column_expression != null) {
                 $groupingColumns[] = $dimension->column_expression;
                 $selectColumns[] = $dimension->column_expression.' as '.$dimension->info->column;
@@ -56,16 +59,29 @@ readonly class SubsetQueryBuilder
             if ($measure->info == null) {
                 return;
             }
-
-            if ($measure->aggregation != null) {
-                $measureColumns[] = $measure->aggregation.'('.$measure->info->column.') as '.$measure->info->column;
-            } else {
-                $measureColumns[] = $measure->info->column;
-            }
-
             if ($measure->info->unit_column != null) {
                 $measureColumns[] = $measure->info->unit_column;
                 $groupingColumns[] = $measure->info->unit_column;
+            }
+            if ($measure->expression != null) {
+                $measureColumns[] = $measure->expression.' as '.$measure->info->column;
+
+                return;
+            }
+            if ($measure->aggregation != null) {
+                if ($measure->weightInfo == null) {
+                    return;
+                }
+                //if weighted avg then use weight aggregation
+                if ($measure->aggregation === 'WEIGHTED_AVG') {
+                    $measureColumns[] = 'SUM('.$measure->info->column.' * '.$measure->weightInfo->column.') / SUM('
+                        .$measure->weightInfo->column.') as '.$measure->info->column;
+
+                    return;
+                }
+                $measureColumns[] = $measure->aggregation.'('.$measure->info->column.') as '.$measure->info->column;
+            } else {
+                $measureColumns[] = $measure->info->column;
             }
 
         });

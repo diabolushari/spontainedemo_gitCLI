@@ -26,10 +26,12 @@ export default function SubsetPreview({ subset, dataDetail, data }: Readonly<Pro
       items={[]}
       onDeleteClick={handleDeleteClick}
     >
-      <DataSetTable
-        dataDetail={dataDetail}
-        dataTableItems={data.data}
-      />
+      <div className='snap-y snap-mandatory'>
+        <DataSetTable
+          dataDetail={dataDetail}
+          dataTableItems={data.data}
+        />
+      </div>
       <div className='my-5'>
         <Pagination pagination={data} />
       </div>

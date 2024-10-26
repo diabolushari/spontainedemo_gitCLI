@@ -1,19 +1,14 @@
-import RequestsCompleted from '@/Components/Dashboard/RequestsCompleted'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import React, { useState } from 'react'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
-import SelectList from '@/ui/form/SelectList'
-import InactiveGraph from '@/Components/ServiceDelivery/Graphs/InactiveGraph'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
+import NewConnections from '@/Components/Dashboard/NewConnections'
 
 const ServideDeliveryIndexPage = () => {
-  const [title, setTitle] = useState('')
-  const categoryList = [{ name: 'test 1' }, { name: 'test 2' }]
-  const tariffList = [{ name: 'test 1' }, { name: 'test 2' }]
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
@@ -39,12 +34,12 @@ const ServideDeliveryIndexPage = () => {
               levelName={levelName}
             />
             <Card className=''>
-              <RequestsCompleted />
+              <NewConnections section_code={sectionCode} />
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
             <Card className='w-full p-10 md:w-2/3'>
-              <SlaPerformance />
+              <SlaPerformance section_code={sectionCode} />
             </Card>
             <Card className='w-full md:w-1/3'>
               <PendancyCard />

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
-use App\Models\DataDetail\DataDetail;
 use App\Services\DistributionHierarchy\DistributionHierarchy;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class SubsetDropdownApiController extends Controller
+class SubsetDropdownApiController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {

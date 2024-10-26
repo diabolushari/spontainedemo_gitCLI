@@ -36,7 +36,7 @@ const PendancyCard = () => {
           </div>
         </div>
       </div>
-      <div className='flex min-h-screen justify-center p-5'>
+      <div className='flex justify-center p-5'>
         <img
           src='SLA.png'
           alt=''

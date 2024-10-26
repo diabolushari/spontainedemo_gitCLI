@@ -31,6 +31,7 @@ export default function SubsetManageMeasures({
       return {
         field_id: addedField.field_id,
         field: measureField?.field_name ?? '',
+        expression: addedField.expression ?? '',
         aggregate: addedField.aggregation,
         actions: [],
       }
@@ -44,6 +45,13 @@ export default function SubsetManageMeasures({
         label: 'Field',
         isCardHeader: true,
         hideLabel: true,
+      },
+      {
+        key: 'expression',
+        label: 'Expression',
+        isCardHeader: false,
+        hideLabel: true,
+        isShownInCard: true,
       },
       {
         key: 'aggregate',

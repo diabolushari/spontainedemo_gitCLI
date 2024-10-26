@@ -110,6 +110,8 @@ export interface SubsetMeasureField extends Model {
   subset_detail_id: number
   field_id: number
   aggregation: string | null
+  expression: string | null
+  weight_field_id: number | null
 }
 
 export interface DataLoaderConnection extends Model {

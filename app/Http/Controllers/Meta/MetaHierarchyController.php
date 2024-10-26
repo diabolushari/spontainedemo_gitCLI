@@ -13,11 +13,12 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MetaHierarchyController extends Controller
+class MetaHierarchyController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -57,7 +58,7 @@ class MetaHierarchyController extends Controller
         ]);
     }
 
-    public function edit(MetaHierarchy $metaHierarchy,Request $request): Response
+    public function edit(MetaHierarchy $metaHierarchy, Request $request): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
         $metaHierarchy->load('levelInfos.structure');
@@ -78,6 +79,7 @@ class MetaHierarchyController extends Controller
     ): Response {
         $metaHierarchy->load('levelInfos', 'levelInfos.structure:id,structure_name');
         $pageNo = $request->query('page', '1');
+
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
             'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),
@@ -116,7 +118,7 @@ class MetaHierarchyController extends Controller
             ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
     }
 
-    public function update(MetaHierarchyFormRequest $request, MetaHierarchy $metaHierarchy,Request $page): RedirectResponse
+    public function update(MetaHierarchyFormRequest $request, MetaHierarchy $metaHierarchy, Request $page): RedirectResponse
     {
         $pageNo = $page->query('page', '1');
         $hierarchyLevels = $request->hierarchyLevelInfos;
@@ -161,7 +163,7 @@ class MetaHierarchyController extends Controller
         DB::commit();
 
         return redirect()
-            ->route('meta-hierarchy.show', ['metaHierarchy'=>$metaHierarchy->id,'page'=>$pageNo])
+            ->route('meta-hierarchy.show', ['metaHierarchy' => $metaHierarchy->id, 'page' => $pageNo])
             ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
     }
 

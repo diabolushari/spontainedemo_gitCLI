@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class FinancialController extends Controller
+class FinancialController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -17,6 +17,7 @@ class FinancialController extends Controller
             'auth',
         ];
     }
+
     public function index(): Response
     {
         return Inertia::render('Finance/FinanceIndexPage');

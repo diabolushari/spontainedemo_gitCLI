@@ -10,13 +10,14 @@ use App\Models\SubjectArea\SubjectArea;
 use App\Services\SubjectArea\CreateDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
 use function request;
 
-class SubjectAreaController extends Controller
+class SubjectAreaController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

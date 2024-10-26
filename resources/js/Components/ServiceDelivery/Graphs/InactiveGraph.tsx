@@ -25,8 +25,6 @@ interface Properties {
 }
 
 const InactiveGraph = ({ section_code, graphValues }: Properties) => {
-  console.log(graphValues)
-
   return (
     <div className='min-w-96'>
       <ResponsiveContainer

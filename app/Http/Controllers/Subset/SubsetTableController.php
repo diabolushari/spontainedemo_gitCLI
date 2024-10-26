@@ -13,23 +13,19 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SubsetPreviewController extends Controller implements HasMiddleware
+class SubsetTableController extends Controller implements HasMiddleware
 {
-    /**
-     * @return string[]
-     */
-    public static function middleware(): array
+    public static function middleware()
     {
         return [
             'auth',
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $builder): Response
+    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder): Response
     {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
-        $dataDetail = DataDetail::find($subsetDetail->data_detail_id);
+        $dataDetail = DataDetail::findOrFail($subsetDetail->data_detail_id);
 
         $dates = SubsetDetailDate::where('subset_detail_id', $subsetDetail->id)
             ->select('field_id')
@@ -37,7 +33,6 @@ class SubsetPreviewController extends Controller implements HasMiddleware
             ->toArray();
 
         $dimensions = SubsetDetailDimension::where('subset_detail_id', $subsetDetail->id)
-            ->where('filter_only', '0')
             ->select('field_id')
             ->pluck('field_id')
             ->toArray();
@@ -53,10 +48,10 @@ class SubsetPreviewController extends Controller implements HasMiddleware
             'measureFields' => fn ($query) => $query->whereIn('id', $measures),
         ]);
 
-        return Inertia::render('Subset/SubsetPreview', [
+        return Inertia::render('Subset/SubsetTablePage', [
             'subset' => $subsetDetail,
             'dataDetail' => $dataDetail,
-            'data' => $builder->query($subsetDetail)
+            'data' => $queryBuilder->query($subsetDetail)
                 ->paginate(50)
                 ->withQueryString(),
         ]);

@@ -9,16 +9,16 @@ use App\Libs\ExceptionMessage;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderJob;
-use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Models\DataLoader\DataLoaderQuery;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DataLoaderJobController extends Controller
+class DataLoaderJobController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

@@ -167,10 +167,12 @@ export default function DataDetailShow({
                 </a>
                 <DataTableExcelImport dataDetail={detail} />
               </div>
-              <DataSetTable
-                dataDetail={detail}
-                dataTableItems={dataTableItems.data}
-              />
+              <div className='snap-y snap-mandatory'>
+                <DataSetTable
+                  dataDetail={detail}
+                  dataTableItems={dataTableItems.data}
+                />
+              </div>
               <Pagination pagination={dataTableItems} />
             </>
           )}

@@ -8,10 +8,11 @@ use App\Models\DataDetail\DataDetail;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-class DataTableExcelUploadController extends Controller
+class DataTableExcelUploadController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetQueryBuilder;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Collection;
 
-class SubsetDataController extends Controller
+class SubsetDataController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -28,7 +29,7 @@ class SubsetDataController extends Controller
         SubsetQueryBuilder $queryBuilder,
         SubsetFilterBuilder $filterBuilder
     ): Collection {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info');
+        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
         $query = $queryBuilder->query($subsetDetail);
 

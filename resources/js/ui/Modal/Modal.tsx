@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import * as motion from 'framer-motion/client'
 import React from 'react'
 import styles from './Modal.module.css'
 

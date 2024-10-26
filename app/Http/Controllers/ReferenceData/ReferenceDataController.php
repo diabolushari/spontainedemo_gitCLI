@@ -10,10 +10,11 @@ use App\Models\ReferenceData\ReferenceDataDomain;
 use App\Services\ReferenceData\HasSecondValue;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ReferenceDataController extends Controller
+class ReferenceDataController extends Controller implements HasMiddleware
 {
     public static function middleware()
     {

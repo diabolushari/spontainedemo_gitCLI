@@ -8,8 +8,9 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaHierarchyItem;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaHierarchyAddItemController extends Controller
+class MetaHierarchyAddItemController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

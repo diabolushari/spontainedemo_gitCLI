@@ -16,11 +16,12 @@ use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DataDetailController extends Controller
+class DataDetailController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

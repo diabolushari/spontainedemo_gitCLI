@@ -1,18 +1,21 @@
 import React from 'react'
+import { cn } from '@/utils'
 
 export default function Table({
   children,
   heads,
   editColumn,
-}: {
-  children?: JSX.Element
+  className = '',
+}: Readonly<{
+  children?: React.ReactNode
   heads: string[]
   editColumn?: boolean
-}) {
+  className?: string
+}>) {
   return (
-    <div className='overflow-auto'>
-      <table className='w-full'>
-        <thead className=''>
+    <div className={cn('snap-center overflow-auto', className)}>
+      <table className='relative w-full'>
+        <thead className='sticky top-0 bg-white'>
           <tr className='border-b-2 border-textbox-field leading-none text-gray-700 focus:outline-none'>
             {heads.map((head) => {
               return (

@@ -8,8 +8,9 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaGroupItem;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaGroupAddItemController extends Controller
+class MetaGroupAddItemController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

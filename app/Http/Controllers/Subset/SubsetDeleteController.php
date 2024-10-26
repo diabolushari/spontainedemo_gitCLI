@@ -7,8 +7,9 @@ use App\Libs\ExceptionMessage;
 use App\Models\Subset\SubsetDetail;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetDeleteController extends Controller
+class SubsetDeleteController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

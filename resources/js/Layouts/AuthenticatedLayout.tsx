@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import { showError, showSuccess } from '@/ui/alerts'
 import { usePage } from '@inertiajs/react'
 import { LaravelFlash } from '@/ui/ui_interfaces'
-import { motion } from 'framer-motion'
+import * as motion from 'framer-motion/client'
 import { Menu } from 'lucide-react'
 import ApplicationLogo from '@/Components/ApplicationLogo'
 import DashboardSidebar from '@/Layouts/DashboardSidebar'
@@ -49,9 +49,9 @@ export default function AuthenticatedLayout({ children }: Props) {
         theme='dark'
         toastClassName='toast-container'
       />
-      <nav className='bg-1stop-accent1 fixed inset-0 z-50 flex h-20 items-center justify-between px-2 shadow lg:px-10'>
+      <nav className='fixed inset-0 z-50 flex h-20 items-center justify-between bg-1stop-accent1 px-2 shadow lg:px-10'>
         <div
-          className='cursor-pointer rounded p-2 transition duration-300 hover:bg-gray-400 hover:text-primary-700'
+          className='hover:text-primary-700 cursor-pointer rounded p-2 transition duration-300 hover:bg-gray-400'
           onClick={toggle}
         >
           <Menu size={20} />

@@ -1,7 +1,7 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataDetail, SubsetMeasureField, TableMeasureField } from '@/interfaces/data_interfaces'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 interface Props {
   dataDetail: DataDetail
@@ -12,6 +12,8 @@ interface Props {
   removeField: (fieldId: number) => void
 }
 
+const WEIGHTED_AVG = 'WEIGHTED_AVG'
+
 const aggregations = [
   { key: 'SUM' },
   { key: 'AVG' },
@@ -19,6 +21,7 @@ const aggregations = [
   { key: 'MAX' },
   { key: 'COUNT' },
   { key: 'STDDEV' },
+  { key: WEIGHTED_AVG },
 ]
 
 export default function AddSubsetMeasure({
@@ -28,9 +31,12 @@ export default function AddSubsetMeasure({
   usingGroup,
   removeField,
 }: Readonly<Props>) {
-  const { formData, setFormValue } = useCustomForm({
-    field_id: '',
-    aggregation: '',
+  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+    field_id: selectedField?.field_id ?? '',
+    aggregation: selectedField?.aggregation ?? '',
+    expression: selectedField?.expression ?? '',
+    weight_field_id: selectedField?.weight_field_id ?? '',
+    use_expression: selectedField?.expression != null,
   })
 
   const formItems = useMemo(<
@@ -49,6 +55,17 @@ export default function AddSubsetMeasure({
         dataKey: 'id',
         displayKey: 'field_name',
       },
+      use_expression: {
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('use_expression'),
+        label: 'Use SQL Expression',
+      },
+      expression: {
+        type: 'textarea' as const,
+        setValue: setFormValue('expression'),
+        placeholder: 'Enter SQL Expression',
+        hidden: !formData.use_expression,
+      },
       aggregation: {
         type: 'select' as const,
         setValue: setFormValue('aggregation'),
@@ -56,10 +73,26 @@ export default function AddSubsetMeasure({
         list: aggregations,
         dataKey: 'key',
         displayKey: 'key',
-        hidden: !usingGroup,
+        hidden: !usingGroup || formData.use_expression,
+      },
+      weight_field_id: {
+        type: 'select' as const,
+        setValue: setFormValue('weight_field_id'),
+        label: 'Weight Field',
+        list: measureFields,
+        dataKey: 'id',
+        displayKey: 'field_name',
+        hidden: !usingGroup || formData.aggregation !== WEIGHTED_AVG || formData.use_expression,
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, measureFields, usingGroup])
+  }, [
+    setFormValue,
+    measureFields,
+    usingGroup,
+    toggleBoolean,
+    formData.use_expression,
+    formData.aggregation,
+  ])
 
   const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
@@ -68,7 +101,12 @@ export default function AddSubsetMeasure({
     }
     onSubmit({
       field_id: Number(formData.field_id),
-      aggregation: formData.aggregation,
+      aggregation: usingGroup ? formData.aggregation : null,
+      expression: formData.use_expression ? formData.expression : null,
+      weight_field_id:
+        usingGroup && formData.aggregation === WEIGHTED_AVG
+          ? Number(formData.weight_field_id)
+          : null,
     })
   }
 
