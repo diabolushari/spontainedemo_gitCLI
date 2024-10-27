@@ -114,7 +114,7 @@ const Pagination = ({ pagination }: { pagination: Paginator<{}> }) => {
 
   return (
     <div className='flex w-full flex-wrap items-center justify-between gap-y-4 py-2'>
-      <p className='mt-auto self-center text-sm text-gray-700'>
+      <p className='small-1stop mt-auto self-center text-gray-700'>
         Showing <span className='small-1stop'>{pagination.from}</span> to{' '}
         <span className='small-1stop'>{pagination.to}</span> of {pagination.total}
       </p>

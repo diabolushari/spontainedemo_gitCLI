@@ -47,7 +47,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
   }
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center bg-blue-100'>
+    <div className='mt-4 flex min-h-screen flex-col items-center justify-center rounded-2xl bg-blue-100 py-4'>
       <div className='w-full max-w-sm rounded-lg bg-blue-100 p-8'>
         <div className='mb-4 flex justify-center'>
           <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
@@ -55,19 +55,19 @@ export default function Login({ status }: { status?: string; canResetPassword: b
         <h1 className='text-black-700 subheader-1stop text-center tracking-widest'>
           ONE STOP ANALYTICS
         </h1>
-        <p className='text-md text-black-600 body-1stop mb-8 mt-4 text-center'>sign in</p>
+        <p className='text-md text-black-600 body-1stop mb-8 mt-4 text-center'>sign in:</p>
         <FormBuilder
           formItems={formItems}
           formData={formData}
-          formStyles='md:grid-cols-1 gap-5'
+          formStyles='md:grid-cols-1 gap-5 px-10'
           onFormSubmit={handleSubmit}
           loading={loading}
           buttonText='sign in'
-          buttonAlignment='center'
+          buttonAlignment='full'
         />
         <div className='text-black-500 small-1stop mt-6 text-center'>
           <p>
-            forgot password or trouble signing in ? <br />
+            Forgot password or trouble signing in ? <br />
             contact{' '}
             <Link
               href={''}
