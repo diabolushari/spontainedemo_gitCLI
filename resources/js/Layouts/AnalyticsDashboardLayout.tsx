@@ -88,7 +88,7 @@ export default function AnalyticsDashboardLayout({
   }
 
   return (
-    <div className='min-h-screen rounded-2xl bg-1stop-background'>
+    <div className='mx-2 my-0 min-h-screen rounded-2xl bg-1stop-background md:mx-6 md:my-6'>
       <MetaTags
         title={title}
         description={description}

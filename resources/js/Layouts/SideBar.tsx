@@ -1,3 +1,4 @@
+import ApplicationLogo from '@/Components/ApplicationLogo'
 import { Link } from '@inertiajs/react'
 import React from 'react'
 
@@ -13,8 +14,8 @@ const dashboardSidebarItems = [
     image: {
       svg: (
         <svg
-          width='38'
-          height='38'
+          width='30'
+          //   height='38'
           viewBox='0 0 38 38'
           fill='none'
           xmlns='http://www.w3.org/2000/svg'
@@ -69,8 +70,8 @@ const dashboardSidebarItems = [
     image: {
       svg: (
         <svg
-          width='38'
-          height='38'
+          width='30'
+          //   height='38'
           viewBox='0 0 38 38'
           fill='none'
           xmlns='http://www.w3.org/2000/svg'
@@ -111,8 +112,8 @@ const dashboardSidebarItems = [
     image: {
       svg: (
         <svg
-          width='38'
-          height='38'
+          width='30'
+          //   height='38'
           viewBox='0 0 38 38'
           fill='none'
           xmlns='http://www.w3.org/2000/svg'
@@ -147,45 +148,50 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
     <div className=''>
       {isShowSideBar ? (
         <div
-          className={`fixed top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
+          className={`fixed top-0 z-40 flex min-h-screen flex-col border-r border-gray-200 bg-1stop-white py-6 pl-1 shadow-2xl`}
           // onClick={handleSideBarClick}
         >
-          <div className='flex'>
+          <div className='flex pb-2'>
             <div className='cursor-pointer'>
               <Link href='/service-delivery'>
-                <img
-                  src='/one-stop-logo.svg'
-                  alt='one stop logo'
-                  className='h-14 w-14'
-                />
+                <ApplicationLogo className='h-20 w-20' />
               </Link>
             </div>
+            <div className='flex items-end'>
+              <span className='subheader-1stop ml-3 mt-5'>
+                ANALYTICS <br /> DASHBOARD
+              </span>
+            </div>
             <div className='flex'>
-              <span className='small-1stop-header ml-3 mt-5 text-xs'>ANALYTICS DASHBOARD</span>
               <svg
                 onClick={handleSideBarClick}
-                width={24}
-                height={24}
+                className='cursor-pointer'
+                width='24'
+                height='24'
                 viewBox='0 0 24 24'
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
-                className='ml-auto mt-4 cursor-pointer'
               >
                 <path
-                  d='M10.828 12L15.778 16.95L14.364 18.364L8 12L14.364 5.636L15.778 7.05L10.828 12Z'
-                  fill='#1F2937'
+                  d='M3 10C3 4.47715 7.47715 0 13 0H24V24H13C7.47715 24 3 19.5228 3 14V10Z'
+                  fill='var(--colour-1stop-highlight)'
+                />
+                <path
+                  d='M11.828 12.364L16.778 17.314L15.364 18.728L9 12.364L15.364 6L16.778 7.414L11.828 12.364Z'
+                  fill='white'
                 />
               </svg>
             </div>
           </div>
-          <div className='mt-44 flex flex-col gap-20'>
+          <hr className='mt-4 border-1stop-gray' />
+          <div className='ml-4 mt-10 flex flex-col gap-10'>
             {dashboardSidebarItems.map((item) => (
               <div
                 className='mr-auto flex items-center gap-3'
                 key={item.name}
               >
                 <div
-                  className={`rounded-full p-2 ${type === item.name ? 'bg-1stop-highlight' : 'cursor-pointer bg-[#D9DEE8]'}`}
+                  className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'}`}
                 >
                   <Link href={item.link}>{item.image.svg}</Link>
                 </div>
@@ -202,11 +208,11 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
             ))}
           </div>
 
-          <div className='mr-auto mt-auto flex items-center gap-3 rounded-full'>
+          <div className='ml-4 mt-auto flex items-center gap-3 rounded-full'>
             <div
-              className='rounded-full bg-[#D9DEE8] p-2'
+              className='rounded-full p-2'
               dangerouslySetInnerHTML={{
-                __html: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="2" stroke-linejoin="round"/>
 <path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="2" stroke-linejoin="round"/>
 </svg>`,
@@ -222,18 +228,15 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
         </div>
       ) : (
         <div
-          className={`fixed top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6`}
+          className={`fixed top-0 z-40 flex min-h-screen flex-col items-center gap-10 border-r border-gray-200 bg-1stop-white px-1 py-6 shadow-2xl`}
+          onMouseEnter={() => setIsShowSideBar(true)}
         >
-          <div className='cursor-pointer'>
+          <div className='cursor-pointer pb-2'>
             <Link href='/service-delivery'>
-              <img
-                src='/one-stop-logo.svg'
-                alt='one stop logo'
-                className='h-14 w-14'
-              />
+              <ApplicationLogo className='h-20 w-20' />
             </Link>
           </div>
-          <div className='mt-44 flex flex-col gap-20'>
+          <div className='mt-4 flex flex-col gap-10'>
             {dashboardSidebarItems.map((item) => (
               <div
                 onClick={handleSideBarClick}
@@ -241,7 +244,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                 key={item.name}
               >
                 <div
-                  className={`rounded-full p-2 ${type === item.name ? 'bg-1stop-highlight' : 'bg-[#D9DEE8]'} `}
+                  className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'} `}
                   onMouseEnter={() => setIsShowSideBar(true)}
                 >
                   {item.image.svg}
@@ -249,16 +252,16 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
               </div>
             ))}
           </div>
-          <div className='mr-auto mt-auto flex items-center gap-3 rounded-full'>
+          <div className='mt-auto flex items-center justify-center gap-3 rounded-full'>
             <Link
               href=''
-              className='rounded-full bg-[#D9DEE8]'
+              className='rounded-full'
               onMouseEnter={() => setIsShowSideBar(true)}
             >
               <div
-                className='rounded-full bg-[#D9DEE8] p-2'
+                className='rounded-full p-2'
                 dangerouslySetInnerHTML={{
-                  __html: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="2" stroke-linejoin="round"/>
 <path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="2" stroke-linejoin="round"/>
 </svg>`,

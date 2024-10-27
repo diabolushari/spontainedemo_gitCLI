@@ -3,6 +3,7 @@ import InactiveGraph from './Graphs/InactiveGraph'
 import Card from '@/ui/Card/Card'
 import useFetchList from '@/hooks/useFetchList'
 import { Model } from '@/interfaces/data_interfaces'
+import MoreButton from '../MoreButton'
 interface Properties {
   section_code?: string
   levelName: string
@@ -56,36 +57,39 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
   }, [graphValues])
 
   return (
-    <Card className='relative flex h-full grid-cols-2 gap-4 p-10'>
-      <div className='flex w-full flex-col'>
-        <div className='h1-1stop'>{activeConnection}</div>
-        <div className='body-1stop'>Total Active Connections</div>
-        <div className='flex gap-2'>
+    <Card className='flex flex-row gap-10 p-4'>
+      <div className='flex flex-col gap-10 p-5'>
+        <div>
+          <p className='xlmetric-1stop'>{activeConnection}</p>
+          <p className='body-1stop'>Total Active Connections</p>
+        </div>
+        <div className='flex gap-10'>
           <div className='flex flex-col'>
-            {' '}
-            <div className='h3-1stop'>{LTConnection}</div>
-            <div className='small-1stop'>LT</div>
+            <p className='h3-1stop'>{LTConnection}</p>
+            <p className='small-1stop'>LT</p>
           </div>
           <div className='flex flex-col'>
-            {' '}
-            <div className='h3-1stop'>{HTConnection}</div>
-            <div className='small-1stop'>HT</div>
+            <p className='h3-1stop'>{HTConnection}</p>
+            <p className='small-1stop'>HT</p>
           </div>
         </div>
       </div>
-      <div className='flex w-full flex-col gap-4 p-5'>
-        <div className='h3-1stop flex justify-end'>Inactive A/c Statuses</div>
+      <div className='flex flex-col gap-2 p-4'>
+        <div className='body-1stop flex'>Conn. Categories (non Domestic)</div>
         <div className='flex-cols-2 flex gap-5'>
           <div className='flex flex-col'>
             <InactiveGraph
               section_code={section_code}
               graphValues={graphValues}
             />
-            <hr className='my-4 border-t border-black' />
+            {/* <hr className='my-4 border-t border-black' /> */}
           </div>
         </div>
         <div className='small-1stop-header absolute bottom-0 right-10 pb-2 text-right'>
           {graphValues.length > 0 && graphValues[0].data_date}
+        </div>
+        <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
+          <MoreButton />
         </div>
       </div>
     </Card>

@@ -23,6 +23,7 @@ export default {
         'body-1stop': ['var(--font-body-1stop)', ...defaultTheme.fontFamily.sans],
         'small-1stop': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
         'small-1stop-header': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
+        'xlmetric-1stop': ['var(--font-xlmetric-1stop)', ...defaultTheme.fontFamily.sans],
       },
 
       colors: {

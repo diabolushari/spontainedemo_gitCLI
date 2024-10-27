@@ -22,12 +22,49 @@ const ServideDeliveryIndexPage = () => {
       setLevelCode={setLevelCode}
     >
       <DashboardPadding>
-        <CardHeader
+        {/* <CardHeader
           title='CONNECTION'
-          titleClassName='text-white' 
-        />
-        <div className='ml-3 flex flex-col gap-5'>
-          <div className='flex flex-col gap-5 md:flex-row'>
+          titleClassName='text-white'
+        /> */}
+        <div className='flex flex-col gap-5 pt-24'>
+          <div className='flex flex-row gap-2'>
+            {/* <div className='flex w-full flex-row bg-white'>
+              <div className='flex flex-col p-5'>
+                <div>
+                  <p className='h1-1stop'>100</p>
+                  <p className='body-1stop'>Total Active Connections</p>
+                </div>
+                <div className='flex gap-2'>
+                  <div className='flex flex-col'>
+                    <p className='h3-1stop'>10</p>
+                    <p className='small-1stop'>LT</p>
+                  </div>
+                  <div className='flex flex-col'>
+                    <p className='h3-1stop'>20</p>
+                    <p className='small-1stop'>HT</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='flex w-full flex-row bg-white'>
+              <div className='flex flex-col p-5'>
+                <div>
+                  <p className='h1-1stop'>100</p>
+                  <p className='body-1stop'>Total Active Connections</p>
+                </div>
+                <div className='flex gap-2'>
+                  <div className='flex flex-col'>
+                    <p className='h3-1stop'>10</p>
+                    <p className='small-1stop'>LT</p>
+                  </div>
+                  <div className='flex flex-col'>
+                    <p className='h3-1stop'>20</p>
+                    <p className='small-1stop'>HT</p>
+                  </div>
+                </div>
+              </div>
+            </div> */}
+
             <ActiveConnection
               section_code={sectionCode}
               levelCode={levelCode}
@@ -37,7 +74,7 @@ const ServideDeliveryIndexPage = () => {
               <NewConnections section_code={sectionCode} />
             </Card>
           </div>
-          <div className='flex flex-col gap-5 md:flex-row'>
+          <div className='flex flex-col gap-2 md:flex-row'>
             <Card className='w-full p-10 md:w-2/3'>
               <SlaPerformance section_code={sectionCode} />
             </Card>
@@ -45,7 +82,7 @@ const ServideDeliveryIndexPage = () => {
               <PendancyCard />
             </Card>
           </div>
-          <div className='flex flex-col gap-5 md:flex-row'>
+          {/* <div className='flex flex-col gap-2 md:flex-row'>
             <div className='grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:w-1/3'>
               <Card className=''>
                 <div className='h1-1stop pt-5 text-center'>423</div>
@@ -74,7 +111,7 @@ const ServideDeliveryIndexPage = () => {
             <Card className='w-full md:w-2/3'>
               <div className=''>test</div>
             </Card>
-          </div>
+          </div> */}
         </div>
       </DashboardPadding>
     </DashboardLayout>
