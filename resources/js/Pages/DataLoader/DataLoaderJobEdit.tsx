@@ -30,8 +30,6 @@ export default function DataLoaderJobEdit({ dataLoaderJob }: Readonly<Props>) {
     type: 'jobs',
   })
 
-  console.log(backUrl)
-
   return (
     <FormPage
       url={route('loader-jobs.update', dataLoaderJob.id)}
