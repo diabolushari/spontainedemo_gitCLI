@@ -201,7 +201,7 @@ export default function DashboardLayout({
               SECTION: <b>{levelName}</b>
             </p>
           </div>
-          <div className='flex flex-row gap-5 z-[999]'>
+          <div className='z-[999] flex flex-row gap-5'>
             <DropdownAccordion
               officeStructures={officeStructures}
               level={levelName}
@@ -361,9 +361,7 @@ export default function DashboardLayout({
         transition={{ duration: 0.3 }}
         className='inset-0'
       >
-        <main
-          className={cn(`ml-24 mt-10 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}
-        >
+        <main className={cn(`ml-24 mt-10 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
         </main>
       </motion.div>
