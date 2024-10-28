@@ -6,7 +6,6 @@ interface Properties {
   selectedStatus: JobStatuses | null
 }
 export default function JobDetailModal({ selectedStatus }: Properties) {
-  console.log(selectedStatus)
   return (
     <div className='pt-5'>
       <Card>

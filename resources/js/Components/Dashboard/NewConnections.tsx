@@ -1,45 +1,40 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
-import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Cell, Legend } from 'recharts'
 
 interface Properties {
   section_code?: string
+  levelName: string
+  levelCode: string
 }
 
 export interface NewConnectionGraphValues {
   data_date: string
-  section_code: number
   service_group: string
   received_cnt: number
   completed_cnt: number
-  sla_days: number
+  section_code: number
   within_sla_cnt: number
-  days_taken: number
   beyond_sla_cnt: number
-  avg_within_sla_days: number
-  avg_beyond_sla_days: number
+  avg_beyond_sla_days: Float32Array
+  avg_within_sla_days: Float32Array
 }
 
-const NewConnections = ({ section_code }: Properties) => {
-  const [graphValues] = useFetchList<NewConnectionGraphValues>(
-    `subset/14?section_code=${section_code}`
-  )
+const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
+  const [graphValues] = useFetchList<NewConnectionGraphValues>(`subset/22?office_code=${levelCode}`)
+  console.log(graphValues)
+  const completedWithinSLA = graphValues[0]?.completed_cnt || 0
+  const receivedCount = graphValues[0]?.received_cnt || 0
+  const withinSlaCount = graphValues[0]?.within_sla_cnt || 0
+  const beyondSlaCount = graphValues[0]?.beyond_sla_cnt || 0
+  const avgBeyondSlaDays = graphValues[0]?.avg_beyond_sla_days || 0
+  const avgWithinSlaDays = graphValues[0]?.avg_within_sla_days || 0
 
-  const filteredGraphValues = graphValues.filter((item) => item.service_group === 'New Connection')
-  const totalReceived = filteredGraphValues.reduce((acc, item) => acc + item.received_cnt, 0)
-  const totalCompleted = filteredGraphValues.reduce((acc, item) => acc + item.completed_cnt, 0)
-  const beyondSLA = filteredGraphValues.reduce((acc, item) => acc + item.beyond_sla_cnt, 0)
-  const withinSLA = filteredGraphValues.reduce((acc, item) => acc + item.within_sla_cnt, 0)
-  const avgWithinSLADays =
-    filteredGraphValues.length > 0
-      ? filteredGraphValues.reduce((acc, item) => acc + item.avg_within_sla_days, 0) /
-        filteredGraphValues.length
-      : 0
   const data = [
-    { name: 'Within SLA', value: withinSLA },
-    { name: 'Beyond SLA', value: beyondSLA },
+    { name: 'Within SLA', value: withinSlaCount },
+    { name: 'Beyond SLA', value: beyondSlaCount },
   ]
-  const latestDataDate = filteredGraphValues
+  const latestDataDate = graphValues
     .map((item) => item.data_date)
     .sort()
     .reverse()[0]
@@ -70,22 +65,39 @@ const NewConnections = ({ section_code }: Properties) => {
       </ul>
     )
   }
-  //console.log(graphValues)
-  console.log(filteredGraphValues)
+
   return (
     <div className='flex h-full flex-col justify-between rounded-lg bg-white p-6'>
       <div className='flex items-center justify-between'>
         <div className='w-1/2 text-left'>
-          <h2 className='h1-1stop mt-7 text-4xl font-bold'>
-            {totalCompleted}/{totalReceived}
+          <h2 className='h1-1stop text-4xl font-bold'>
+            {completedWithinSLA}/{receivedCount}
           </h2>
-          <p className='body-1stop text-lg'>New Connections</p>
+          <p className='body-1stop text-lg'>New Svc Connections</p>
           <p className='body-1stop mb-6 text-lg'>Completed Within SLA</p>
 
           <div className='flex space-x-12'>
             <div className='text-center'>
               <div className='flex'>
-                <p className='text-3xl font-semibold'>{avgWithinSLADays.toFixed(2)}</p>
+                <p className='text-3xl font-semibold'>{withinSlaCount}</p>
+              </div>
+              <p className='small-1stop font-extrabold'>Completed</p>
+              <p className='small-1stop font-extrabold'> Within SLA</p>
+            </div>
+
+            <div className='text-center'>
+              <div className='flex'>
+                <p className='text-3xl font-semibold'>{beyondSlaCount}</p>
+              </div>
+              <p className='small-1stop font-extrabold'>Completed </p>
+              <p className='small-1stop font-extrabold'> Beyond SLA</p>
+            </div>
+          </div>
+
+          <div className='mt-5 flex space-x-12'>
+            <div className='text-center'>
+              <div className='flex'>
+                <p className='text-3xl font-semibold'>{avgWithinSlaDays.toFixed(2)}</p>
                 <p className='small-1stop ml-2 mt-3 font-bold'>Days</p>
               </div>
               <p className='small-1stop font-bold'>Avg Pendency</p>
@@ -94,10 +106,10 @@ const NewConnections = ({ section_code }: Properties) => {
 
             <div className='text-center'>
               <div className='flex'>
-                <p className='text-3xl font-semibold'>{beyondSLA}</p>
+                <p className='text-3xl font-semibold'>{avgBeyondSlaDays.toFixed(2)}</p>
                 <p className='small-1stop ml-2 mt-3 font-bold'>Days</p>
               </div>
-              <p className='small-1stop font-bold'>Pendency </p>
+              <p className='small-1stop font-bold'>Avg Pendency </p>
               <p className='small-1stop font-bold'> Beyond SLA</p>
             </div>
           </div>
@@ -128,7 +140,7 @@ const NewConnections = ({ section_code }: Properties) => {
         </div>
       </div>
 
-      <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p>
+      {/* <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p> */}
     </div>
   )
 }

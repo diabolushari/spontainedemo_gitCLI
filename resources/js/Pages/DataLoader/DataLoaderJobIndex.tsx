@@ -80,7 +80,7 @@ export default function DataLoaderJobIndex({
           return value
         }
       })
-      console.log(month)
+
       return (
         'YEARLY, ' +
         month?.name +

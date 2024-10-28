@@ -1,81 +1,78 @@
-import useFetchList from '@/hooks/useFetchList'
-import React, { useMemo } from 'react'
-import {
-  Bar,
-  BarChart,
-  LabelList,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
-import { InactiveGraphValues } from '../ActiveConnection'
+import React from 'react'
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
-interface IBarChartLabel {
-  x: number
-  y: number
-  width: number
-  value: number
+const aggregateData = (data) => {
+  const aggregated = data.reduce((acc, curr) => {
+    const { consumer_category, consumer_count } = curr
+    // If the category already exists, add the count; otherwise, initialize it
+    if (acc[consumer_category]) {
+      acc[consumer_category] += consumer_count
+    } else {
+      acc[consumer_category] = consumer_count
+    }
+    return acc
+  }, {})
+
+  // Convert the object back to an array of objects
+  return Object.keys(aggregated).map((key) => ({
+    consumer_category: key,
+    consumer_count: aggregated[key],
+  }))
 }
 
-interface Properties {
-  section_code?: string
-  graphValues?: InactiveGraphValues[]
-}
+const InactiveGraph = ({ section_code, graphValues = [] }) => {
+  const truncatedGraphValues = aggregateData(graphValues)
 
-const InactiveGraph = ({ section_code, graphValues }: Properties) => {
+  const truncateLabel = (label) => {
+    return label.length > 5 ? `${label.substring(0, 5)}...` : label
+  }
+  const YAxisTick = (props) => {
+    const { x, y, payload } = props
+    return (
+      <text
+        x={x}
+        y={y}
+        dy={0}
+        className='axial-label-1stop'
+        textAnchor='end'
+      >
+        {truncateLabel(payload.value)}
+      </text>
+    )
+  }
+
   return (
     <div className='min-w-96'>
       <ResponsiveContainer
         height={150}
-        width={'100%'}
+        width='100%'
       >
         <BarChart
           layout='vertical'
-          width={600}
-          height={600}
-          data={graphValues}
+          data={truncatedGraphValues}
+          barCategoryGap={15}
         >
           <XAxis
             type='number'
-            axisLine={false}
-            display='none'
-            padding={{ left: 0, right: 0 }}
+            dataKey='consumer_count'
+            hide
           />
           <YAxis
             type='category'
-            axisLine={false}
-            height={10}
+            dataKey='consumer_category'
+            tickFormatter={truncateLabel}
             width={120}
-            dataKey='conn_status_code'
-            // padding={{ bottom: 150 }}
+            axisLine={false}
+            tickLine={false}
+            tick={<YAxisTick />}
           />
-
           <Bar
             dataKey='consumer_count'
-            fill={'#245CC0'}
-            barSize={30}
-          >
-            <LabelList
-              dataKey='name'
-              position='left'
-              fill='#262626'
-              fontSize={10}
-              dx={-10}
-            />
-          </Bar>
-
-          {/* <LabelList
-                dataKey='flr_name'
-                position='left'
-                fill='#262626'
-                fontSize={10}
-                dx={-10}
-              /> */}
+            fill='#245CC0'
+            barSize={20}
+          />
         </BarChart>
       </ResponsiveContainer>
-      {/* <p className='small-1stop my-2 text-center'>Number Of Active Connections</p> */}
     </div>
   )
 }
