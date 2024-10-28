@@ -74,7 +74,6 @@ const SlaPerformance = ({ section_code }: Properties) => {
             />
             <YAxis />
             <Tooltip />
-
             <Bar
               dataKey='within_sla_cnt'
               stackId='a'

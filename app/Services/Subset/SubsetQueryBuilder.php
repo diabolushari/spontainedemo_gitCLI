@@ -69,11 +69,11 @@ readonly class SubsetQueryBuilder
                 return;
             }
             if ($measure->aggregation != null) {
-                if ($measure->weightInfo == null) {
-                    return;
-                }
                 //if weighted avg then use weight aggregation
                 if ($measure->aggregation === 'WEIGHTED_AVG') {
+                    if ($measure->weightInfo == null) {
+                        return;
+                    }
                     $measureColumns[] = 'SUM('.$measure->info->column.' * '.$measure->weightInfo->column.') / SUM('
                         .$measure->weightInfo->column.') as '.$measure->info->column;
 
