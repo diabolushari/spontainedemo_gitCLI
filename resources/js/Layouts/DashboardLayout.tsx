@@ -201,7 +201,7 @@ export default function DashboardLayout({
               SECTION: <b>{levelName}</b>
             </p>
           </div>
-          <div className='flex flex-row gap-5'>
+          <div className='flex flex-row gap-5 z-[999]'>
             <DropdownAccordion
               officeStructures={officeStructures}
               level={levelName}
