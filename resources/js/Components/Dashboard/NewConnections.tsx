@@ -140,7 +140,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
         </div>
       </div>
 
-      <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p>
+      {/* <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p> */}
     </div>
   )
 }
