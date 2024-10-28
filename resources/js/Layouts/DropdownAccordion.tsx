@@ -17,8 +17,8 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
   const [openAccordion, setOpenAccordion] = useState('')
 
   return (
-    <div className='min-w-80 rounded-lg bg-white p-3'>
-      <AccordionItem title='Level Filter'>
+    <div className='min-w-80'>
+      <AccordionItem title='Set Reporting Level'>
         {' '}
         {officeStructures?.map((circle) => {
           return (

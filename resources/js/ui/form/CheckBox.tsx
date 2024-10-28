@@ -12,7 +12,7 @@ export default function CheckBox({
   return (
     <>
       <div className='flex items-center text-sm'>
-        <div className='relative flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-sm border border-gray-400 bg-white'>
+        <div className='relative flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border border-gray-400 bg-white'>
           <input
             type='checkbox'
             checked={value}
@@ -41,7 +41,7 @@ export default function CheckBox({
             </svg>
           </div>
         </div>
-        <p className='body-1stop ml-1 leading-4'>{label}</p>
+        <p className='small-1stop ml-2 leading-4'>{label}</p>
         {/* Code block ends */}
         <style>
           {`.checkbox:checked + .check-icon {

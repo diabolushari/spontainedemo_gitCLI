@@ -142,7 +142,10 @@ export default function AddDataTableFields({ fields, setFields }: Readonly<Props
 
   return (
     <>
-      <CardHeader title='Table Fields' />
+      {/* <CardHeader title='Table Fields' /> */}
+      <div className='pt-10'>
+        <p className='subheader-sm-1stop'>Table Fields</p>
+      </div>
       <div className='flex flex-col space-y-4'>
         <div className='flex flex-col p-5'>
           <CardGridView

@@ -66,7 +66,7 @@ interface Props<
   loading: boolean
   errors?: Record<U, string | undefined>
   buttonText?: string
-  buttonAlignment?: 'start' | 'center' | 'end'
+  buttonAlignment?: 'start' | 'center' | 'end' | 'full'
   children?: React.ReactNode
   hideSubmitButton?: boolean
   showSecondaryButton?: boolean
@@ -106,7 +106,9 @@ export default function FormBuilder<
       ? 'justify-center'
       : buttonAlignment === 'end'
         ? 'justify-end'
-        : 'justify-start'
+        : buttonAlignment === 'full'
+          ? 'flex-col w-full'
+          : 'justify-start'
 
   return (
     <form
