@@ -4,8 +4,8 @@ import colors from 'tailwindcss/colors.js'
 
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: ['class'],
-    content: [
+  darkMode: ['class'],
+  content: [
     './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
     './storage/framework/views/*.php',
     './resources/views/**/*.blade.php',
@@ -24,6 +24,7 @@ export default {
         'small-1stop': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
         'small-1stop-header': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
         'xlmetric-1stop': ['var(--font-xlmetric-1stop)', ...defaultTheme.fontFamily.sans],
+        'axial-label-1stop': ['var(--font-axial-label-1stop)', ...defaultTheme.fontFamily.sans],
       },
 
       colors: {
@@ -117,5 +118,5 @@ export default {
       },
     },
   },
-  plugins: [forms, require("tailwindcss-animate")],
+  plugins: [forms, require('tailwindcss-animate')],
 }

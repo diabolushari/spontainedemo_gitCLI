@@ -74,8 +74,6 @@ export default function FormPage<
 
     const data = customSubmitData ?? formData
 
-    console.log(data)
-
     post({
       ...data,
       _method: isPatchRequest ? 'PATCH' : 'POST',

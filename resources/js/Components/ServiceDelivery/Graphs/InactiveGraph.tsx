@@ -26,6 +26,20 @@ const InactiveGraph = ({ section_code, graphValues = [] }) => {
   const truncateLabel = (label) => {
     return label.length > 5 ? `${label.substring(0, 5)}...` : label
   }
+  const YAxisTick = (props) => {
+    const { x, y, payload } = props
+    return (
+      <text
+        x={x}
+        y={y}
+        dy={0}
+        className='axial-label-1stop'
+        textAnchor='end'
+      >
+        {truncateLabel(payload.value)}
+      </text>
+    )
+  }
 
   return (
     <div className='min-w-96'>
@@ -50,6 +64,7 @@ const InactiveGraph = ({ section_code, graphValues = [] }) => {
             width={120}
             axisLine={false}
             tickLine={false}
+            tick={<YAxisTick />}
           />
           <Bar
             dataKey='consumer_count'
