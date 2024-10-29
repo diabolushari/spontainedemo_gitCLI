@@ -151,10 +151,11 @@ class DataDetailController extends Controller implements HasMiddleware
 
     public function destroy(DataDetail $dataDetail): RedirectResponse
     {
-
         try {
             $dataDetail->delete();
-            Schema::drop($dataDetail->table_name);
+            if (Schema::hasTable($dataDetail->table_name)) {
+                Schema::rename($dataDetail->table_name, 'deleted_'.time().'_'.$dataDetail->table_name);
+            }
         } catch (Exception $exception) {
             return back()->with([
                 'error' => ExceptionMessage::getMessage($exception),
