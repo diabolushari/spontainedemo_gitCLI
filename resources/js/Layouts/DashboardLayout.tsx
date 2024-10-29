@@ -3,18 +3,6 @@ import { Model, User } from '@/interfaces/data_interfaces'
 import React, { ReactNode, useMemo, useRef, useState } from 'react'
 import { cn } from '@/utils'
 import SideBar from './SideBar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu'
 import useFetchList from '@/hooks/useFetchList'
 import * as motion from 'framer-motion/client'
 import DropdownAccordion from './DropdownAccordion'
@@ -51,26 +39,78 @@ interface OfficeInfo extends Model {
 }
 
 export interface OfficeStructure {
-  circle_name: string
-  circle_code: string
-  divisions: {
-    division_code: string
-    division_name: string
-    subdivisions: {
-      subdivision_code: string
-      subdivision_name: string
-      sections: { section_code: string; section_name: string }[]
+  region_code: string
+  region_name: string
+  isOpen: boolean
+  displayAll: boolean
+  circles: {
+    circle_name: string
+    circle_code: string
+    isOpen: boolean
+    displayAll: boolean
+    divisions: {
+      division_code: string
+      division_name: string
+      isOpen: boolean
+      displayAll: boolean
+      subdivisions: {
+        subdivision_code: string
+        subdivision_name: string
+        displayAll: boolean
+        isOpen: boolean
+        sections: { section_code: string; section_name: string }[]
+      }[]
     }[]
   }[]
+}
+
+const findCircles = (regionCode: string, officesInCircle: OfficeInfo[]) => {
+  const circles: {
+    circle_code: string
+    circle_name: string
+    isOpen: boolean
+    displayAll: boolean
+    divisions: {
+      division_code: string
+      division_name: string
+      isOpen: boolean
+      displayAll: boolean
+      subdivisions: {
+        subdivision_code: string
+        subdivision_name: string
+        isOpen: boolean
+        displayAll: boolean
+        sections: { section_code: string; section_name: string }[]
+      }[]
+    }[]
+  }[] = []
+  officesInCircle.forEach((office) => {
+    if (office.region_code != regionCode) return
+    const ifExists = circles.find((circle) => circle.circle_code === office.circle_code)
+    if (ifExists == null) {
+      circles.push({
+        circle_code: office.circle_code ?? '',
+        circle_name: office.circle_name ?? '',
+        isOpen: false,
+        displayAll: true,
+        divisions: findDivisions(office.circle_code ?? '', officesInCircle),
+      })
+    }
+  })
+  return circles
 }
 
 const findDivisions = (circleCode: string, officesInCircle: OfficeInfo[]) => {
   const divisions: {
     division_code: string
     division_name: string
+    isOpen: boolean
+    displayAll: boolean
     subdivisions: {
       subdivision_code: string
       subdivision_name: string
+      isOpen: boolean
+      displayAll: boolean
       sections: { section_code: string; section_name: string }[]
     }[]
   }[] = []
@@ -81,6 +121,8 @@ const findDivisions = (circleCode: string, officesInCircle: OfficeInfo[]) => {
       divisions.push({
         division_code: office.division_code ?? '',
         division_name: office.division_name ?? '',
+        isOpen: false,
+        displayAll: true,
         subdivisions: findSubdivisions(office.division_code ?? '', officesInCircle),
       })
     }
@@ -92,6 +134,8 @@ const findSubdivisions = (divisionCode: string, officesInCircle: OfficeInfo[]) =
   const subdivisions: {
     subdivision_code: string
     subdivision_name: string
+    isOpen: boolean
+    displayAll: boolean
     sections: { section_code: string; section_name: string }[]
   }[] = []
 
@@ -104,6 +148,8 @@ const findSubdivisions = (divisionCode: string, officesInCircle: OfficeInfo[]) =
       subdivisions.push({
         subdivision_code: office.subdivision_code ?? '',
         subdivision_name: office.subdivision_name ?? '',
+        isOpen: false,
+        displayAll: true,
         sections: findSections(office.subdivision_code ?? '', officesInCircle),
       })
     }
@@ -141,28 +187,31 @@ export default function DashboardLayout({
   setLevelCode,
 }: Properties) {
   const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
+
   const [level] = useFetchList('find-level')
 
   const [sectionName, setSectionName] = useState('SELECT SECTION')
   const officeStructures = useMemo(() => {
-    const circles: OfficeStructure[] = []
+    const regions: OfficeStructure[] = []
     if (dropdownValues == null) {
       return
     }
     dropdownValues.forEach((officeInfo) => {
-      const ifExist = circles.find((circle) => circle.circle_code === officeInfo.circle_code)
+      const ifExist = regions.find((region) => region.region_code === officeInfo.region_code)
       if (ifExist == null) {
         const officesInCircle = dropdownValues.filter(
-          (office) => officeInfo.circle_code === office.circle_code
+          (office) => officeInfo.region_code === office.region_code
         )
-        circles.push({
-          circle_name: officeInfo.circle_name ?? '',
-          circle_code: officeInfo.circle_code ?? '',
-          divisions: findDivisions(officeInfo.circle_code ?? '', officesInCircle),
+        regions.push({
+          region_code: officeInfo.region_code ?? '',
+          region_name: officeInfo.region_name ?? '',
+          isOpen: false,
+          displayAll: true,
+          circles: findCircles(officeInfo.region_code ?? '', officesInCircle),
         })
       }
     })
-    return circles
+    return regions
   }, [dropdownValues])
 
   const [isShowSideBar, setIsShowSideBar] = useState(false)
@@ -198,7 +247,7 @@ export default function DashboardLayout({
           <div>
             <p className='subheader-1stop'>{type}</p>
             <p className='small-1stop-header'>
-              SECTION: <b>{levelName}</b>
+              {level.level}: <b>{levelCode}</b>
             </p>
           </div>
           <div className='z-[999] flex flex-row gap-5'>
@@ -208,33 +257,36 @@ export default function DashboardLayout({
               setLevel={setLevelName}
               setLevelCode={setLevelCode}
             />
-            <div
-              className='flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
-              ref={profileRef}
-            >
+            <div className='flex flex-col items-start justify-start'>
               <div
-                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-[#F4B552] text-2xl text-white hover:text-black'
-                onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+                className='inset-0 flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
+                ref={profileRef}
               >
-                {userInitial}
-              </div>
+                <div
+                  className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-[#F4B552] text-2xl text-white hover:text-black'
+                  onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+                >
+                  {userInitial}
+                </div>
 
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className={`h-5 w-5 transform cursor-pointer duration-300 md:h-6 md:w-6 ${isProfileDropdown ? 'rotate-180' : ''}`}
-                onClick={() => setIsProfileDropdown(!isProfileDropdown)}
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M19.5 8.25l-7.5 7.5-7.5-7.5'
-                />
-              </svg>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={1.5}
+                  stroke='currentColor'
+                  className={`h-5 w-5 transform cursor-pointer duration-300 md:h-6 md:w-6 ${isProfileDropdown ? 'rotate-180' : ''}`}
+                  onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M19.5 8.25l-7.5 7.5-7.5-7.5'
+                  />
+                </svg>
+              </div>
             </div>
+
             {isProfileDropdown && (
               <div className='flex justify-center'>
                 <div className='bg:opacity-100 z-50 mt-4 w-48 rounded-xl border border-1stop-highlight bg-1stop-white p-2 shadow sm:absolute sm:right-10'>
@@ -274,84 +326,6 @@ export default function DashboardLayout({
               </div>
             )}
           </div>
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className='flex items-center gap-2 rounded-xl bg-white p-2 text-black'
-                aria-label='Customise options'
-              >
-                <span className='small-1stop'>{sectionName}</span>{' '}
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='1.5'
-                  stroke='currentColor'
-                  className='size-6'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5'
-                  />
-                </svg>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='w-56'>
-              <DropdownMenuGroup>
-                {officeStructures?.map((circle) => {
-                  return (
-                    <DropdownMenuSub key={circle.circle_code}>
-                      <DropdownMenuSubTrigger>{circle.circle_name} </DropdownMenuSubTrigger>
-                      <DropdownMenuPortal>
-                        <DropdownMenuSubContent>
-                          {circle.divisions.map((division) => {
-                            return (
-                              <DropdownMenuSub key={division.division_code}>
-                                <DropdownMenuSubTrigger>
-                                  {division.division_name}
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuSubContent>
-                                  {division.subdivisions.map((subdivision) => {
-                                    return (
-                                      <DropdownMenuSub key={subdivision.subdivision_code}>
-                                        <DropdownMenuSubTrigger>
-                                          {subdivision.subdivision_name}
-                                        </DropdownMenuSubTrigger>
-                                        <DropdownMenuSubContent>
-                                          {subdivision.sections.map((section) => {
-                                            return (
-                                              <DropdownMenuSub key={section.section_code}>
-                                                <DropdownMenuItem
-                                                  onClick={() =>
-                                                    selectSection(
-                                                      section.section_code,
-                                                      section.section_name
-                                                    )
-                                                  }
-                                                >
-                                                  {section.section_name}
-                                                </DropdownMenuItem>
-                                              </DropdownMenuSub>
-                                            )
-                                          })}
-                                        </DropdownMenuSubContent>
-                                      </DropdownMenuSub>
-                                    )
-                                  })}
-                                </DropdownMenuSubContent>
-                              </DropdownMenuSub>
-                            )
-                          })}
-                        </DropdownMenuSubContent>
-                      </DropdownMenuPortal>
-                    </DropdownMenuSub>
-                  )
-                })}
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
       </div>
 

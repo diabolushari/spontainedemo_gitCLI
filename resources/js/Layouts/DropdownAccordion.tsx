@@ -1,7 +1,14 @@
 import AccordionItem from '@/ui/Accordian/AccordianItem'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OfficeStructure } from './DashboardLayout'
 import CheckBox from '@/ui/form/CheckBox'
+import RegionLevel from '@/Components/LayoutAccordions/RegionLevel'
+import { off } from 'process'
+import CircleLevel from '@/Components/LayoutAccordions/CircleLevel'
+import DivisionLevel from '@/Components/LayoutAccordions/DivisionLevel'
+import SectionLevel from '@/Components/LayoutAccordions/SectionLevel'
+import SubdivisionLevel from '@/Components/LayoutAccordions/SubdivisionLevel'
+import useFetchList from '@/hooks/useFetchList'
 
 interface Properties {
   officeStructures: OfficeStructure[] | undefined
@@ -9,57 +16,280 @@ interface Properties {
   level: string
   setLevelCode: React.Dispatch<React.SetStateAction<string>>
 }
+interface LevelType {
+  level: string
+  levelField: string
+}
 const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: Properties) => {
   const setLevelAndCode = (level: string, levelCode: string) => {
     setLevel(level ?? '')
     setLevelCode(levelCode ?? '')
   }
-  const [openAccordion, setOpenAccordion] = useState('')
+  const [levelType] = useFetchList<LevelType>('find-level')
+  const [office, setOffice] = useState(officeStructures)
+  useEffect(() => {
+    setOffice(officeStructures)
+  }, [officeStructures])
+  console.log(levelType)
+  const [accordionOpen, setAccordionOpen] = useState(false)
+  const onAccortdionClick = (
+    regionCode?: string,
+    circleCode?: string | null,
+    divisionCode?: string | null,
+    subDivisionCode?: string | null
+  ) => {
+    setOffice((prevState) => {
+      return prevState?.map((region) => {
+        if (region.region_code === regionCode) {
+          return {
+            ...region,
+            isOpen: true,
+            circles: region.circles.map((circle) => {
+              if (circle.circle_code === circleCode) {
+                return {
+                  ...circle,
+                  isOpen: true,
+                  divisions: circle.divisions.map((division) => {
+                    if (division.division_code === divisionCode) {
+                      return {
+                        ...division,
+                        isOpen: true,
+                        subdivisions: division.subdivisions.map((subdivision) => {
+                          if (subdivision.subdivision_code === subDivisionCode) {
+                            return {
+                              ...subdivision,
+                              isOpen: true,
+                              sections: subdivision.sections.map((section) => {
+                                return {
+                                  ...section,
+                                }
+                              }),
+                            }
+                          }
+                          return { ...subdivision, isOpen: false }
+                        }),
+                      }
+                    }
+                    return { ...division, isOpen: false }
+                  }),
+                }
+              }
+              return {
+                ...circle,
+                isOpen: false,
+              }
+            }),
+          }
+        }
+        return {
+          ...region,
+          isOpen: false,
+        }
+      })
+    })
 
+    setOffice((prevState) => {
+      return prevState?.map((region) => {
+        if (region.region_code === regionCode) {
+          return {
+            ...region,
+
+            circles: region?.circles.map((circle) => {
+              if (circle.circle_code === circleCode) {
+                return {
+                  ...circle,
+
+                  divisions: circle.divisions.map((division) => {
+                    if (division.division_code === divisionCode) {
+                      return {
+                        ...division,
+
+                        subdivisions: division.subdivisions.map((subdivision) => {
+                          if (subdivision.subdivision_code === subDivisionCode) {
+                            return {
+                              ...subdivision,
+
+                              sections: subdivision.sections.map((section) => {
+                                return {
+                                  ...section,
+                                }
+                              }),
+                              displayAll: true,
+                            }
+                          }
+                          return { ...subdivision }
+                        }),
+                        displayAll: division.subdivisions.every(
+                          (subdivision) => !subdivision.isOpen
+                        ),
+                      }
+                    }
+                    return { ...division, isOpen: false }
+                  }),
+                  displayAll: circle.divisions.every((division) => !division.isOpen),
+                }
+              }
+              return {
+                ...circle,
+                isOpen: false,
+              }
+            }),
+            displayAll: region.circles.every((circle) => !circle.isOpen),
+          }
+        }
+        return {
+          ...region,
+          isOpen: false,
+        }
+      })
+    })
+  }
+  console.log(office)
   return (
     <div className='min-w-80'>
-      <AccordionItem title='Set Reporting Level'>
-        {' '}
-        {officeStructures?.map((circle) => {
+      {levelType.level === 'region' && (
+        <RegionLevel
+          office={office}
+          onAccortdionClick={onAccortdionClick}
+          accordionOpen={accordionOpen}
+          setAccordionOpen={setAccordionOpen}
+          setLevelAndCode={setLevelAndCode}
+        />
+      )}
+      {levelType.level === 'circle' && (
+        <CircleLevel
+          office={office}
+          onAccortdionClick={onAccortdionClick}
+          accordionOpen={accordionOpen}
+          setAccordionOpen={setAccordionOpen}
+          setLevelAndCode={setLevelAndCode}
+        />
+      )}
+
+      {levelType.level === 'division' && (
+        <DivisionLevel
+          office={office}
+          onAccortdionClick={onAccortdionClick}
+          accordionOpen={accordionOpen}
+          setAccordionOpen={setAccordionOpen}
+          setLevelAndCode={setLevelAndCode}
+        />
+      )}
+
+      {levelType.level === 'subdivision' && (
+        <SubdivisionLevel
+          office={office}
+          onAccortdionClick={onAccortdionClick}
+          accordionOpen={accordionOpen}
+          setAccordionOpen={setAccordionOpen}
+          setLevelAndCode={setLevelAndCode}
+        />
+      )}
+      {levelType.level === 'section' && (
+        <SectionLevel
+          office={office}
+          onAccortdionClick={onAccortdionClick}
+          accordionOpen={accordionOpen}
+          setAccordionOpen={setAccordionOpen}
+          setLevelAndCode={setLevelAndCode}
+        />
+      )}
+
+      {/* <AccordionItem
+        title='Set Reporting Level'
+        onAccortdionClick={() => setAccordionOpen(!accordionOpen)}
+        isOpen={accordionOpen}
+      >
+        {office?.map((region) => {
           return (
             <AccordionItem
-              key={circle.circle_code}
-              title={circle.circle_name ?? ''}
+              key={region.region_code}
+              title={`${region.region_name} (Region)`}
+              isOpen={region.isOpen}
+              onAccortdionClick={() => onAccortdionClick(region.region_code, null, null, null)}
             >
-              <CheckBox
-                toggleValue={() => setLevelAndCode('circle_code', circle.circle_code)}
-                label='Select all divisions'
-              />
-              {circle.divisions?.map((division) => {
+              {region.displayAll && (
+                <CheckBox
+                  toggleValue={() => setLevelAndCode('office_code', region.region_code)}
+                  label='Select all divisions'
+                />
+              )}
+              {region.circles?.map((circle) => {
                 return (
                   <AccordionItem
-                    key={division.division_code}
-                    title={division.division_name}
+                    key={circle.circle_code}
+                    title={`${circle.circle_name} (Circle)`}
+                    isOpen={circle.isOpen}
+                    onAccortdionClick={() =>
+                      onAccortdionClick(region.region_code, circle.circle_code, null, null)
+                    }
                   >
-                    <CheckBox
-                      toggleValue={() => setLevelAndCode('division_code', division.division_code)}
-                      label='Select all subdivisions'
-                    />
-                    {division.subdivisions?.map((subdivision) => {
+                    {circle.displayAll && (
+                      <CheckBox
+                        toggleValue={() => setLevelAndCode('office_code', circle.circle_code)}
+                        label='Select all divisions'
+                      />
+                    )}
+                    {circle.divisions?.map((division) => {
                       return (
                         <AccordionItem
-                          key={subdivision.subdivision_code}
-                          title={subdivision.subdivision_name}
+                          key={division.division_code}
+                          title={`${division.division_name} (Division)`}
+                          isOpen={division.isOpen}
+                          onAccortdionClick={() =>
+                            onAccortdionClick(
+                              region.region_code,
+                              circle.circle_code,
+                              division.division_code,
+                              null
+                            )
+                          }
                         >
-                          <CheckBox
-                            toggleValue={() =>
-                              setLevelAndCode('subdivision_code', subdivision.subdivision_code)
-                            }
-                            label='Select all sections'
-                          />
-                          {subdivision.sections.map((section) => {
+                          {division.displayAll && (
+                            <CheckBox
+                              toggleValue={() =>
+                                setLevelAndCode('office_code', division.division_code)
+                              }
+                              label='Select all subdivisions'
+                            />
+                          )}
+                          {division.subdivisions?.map((subdivision) => {
                             return (
-                              <button
-                                className='hover:bg-1stop-highlight hover:text-white'
-                                key={section.section_code}
+                              <AccordionItem
+                                key={subdivision.subdivision_code}
+                                title={`${subdivision.subdivision_name} (Subdivision)`}
+                                isOpen={subdivision.isOpen}
+                                onAccortdionClick={() =>
+                                  onAccortdionClick(
+                                    region.region_code,
+                                    circle.circle_code,
+                                    division.division_code,
+                                    subdivision.subdivision_code
+                                  )
+                                }
                               >
-                                {section.section_name}
-                              </button>
+                                {subdivision.displayAll && (
+                                  <CheckBox
+                                    toggleValue={() =>
+                                      setLevelAndCode('office_code', subdivision.subdivision_code)
+                                    }
+                                    label='Select all sections'
+                                  />
+                                )}
+                                {subdivision.sections.map((section) => {
+                                  return (
+                                    <button
+                                      className='small-1stop px-6 text-left text-gray-500 hover:bg-1stop-highlight hover:text-white'
+                                      key={section.section_code}
+                                      onClick={() =>
+                                        setLevelAndCode('section_code', section.section_code)
+                                      }
+                                    >
+                                      {section.section_name}
+                                    </button>
+                                  )
+                                })}
+                              </AccordionItem>
                             )
                           })}
                         </AccordionItem>
@@ -71,53 +301,7 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
             </AccordionItem>
           )
         })}
-      </AccordionItem>
-
-      {/* <ul
-        id='accordion'
-        className='accordion'
-      >
-        <li>
-          <div className='link'>
-            <i className='fa fa-database'></i>Web Design<i className='fa fa-chevron-down'></i>
-          </div>
-          <ul className='submenu'>
-            <li>Photoshop</li>
-            <li>HTML</li>
-            <li>CSS</li>
-          </ul>
-        </li>
-        <li>
-          <div className='link'>
-            <i className='fa fa-code'></i>Coding<i className='fa fa-chevron-down'></i>
-          </div>
-          <ul className='submenu'>
-            <li>Javascript</li>
-            <li>jQuery</li>
-            <li>Ruby</li>
-          </ul>
-        </li>
-        <li>
-          <div className='link'>
-            <i className='fa fa-mobile'></i>Devices<i className='fa fa-chevron-down'></i>
-          </div>
-          <ul className='submenu'>
-            <li>Tablet</li>
-            <li>Mobile</li>
-            <li>Desktop</li>
-          </ul>
-        </li>
-        <li>
-          <div className='link'>
-            <i className='fa fa-globe'></i>Global<i className='fa fa-chevron-down'></i>
-          </div>
-          <ul className='submenu'>
-            <li>Google</li>
-            <li>Bing</li>
-            <li>Yahoo</li>
-          </ul>
-        </li>
-      </ul> */}
+      </AccordionItem> */}
     </div>
   )
 }

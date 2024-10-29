@@ -19,7 +19,7 @@ export interface InactiveGraphValues {
   voltage: string
 }
 const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
-  console.log(`subset/12?office_code=${levelCode}`)
+  console.log(`subset/12?${levelCode}=${levelCode}`)
   const [graphValues] = useFetchList<InactiveGraphValues>(`subset/12?office_code=${levelCode}`)
 
   const activeConnection = useMemo(() => {
