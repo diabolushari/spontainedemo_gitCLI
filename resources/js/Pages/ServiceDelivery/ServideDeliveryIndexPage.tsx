@@ -39,10 +39,18 @@ const ServideDeliveryIndexPage = () => {
           </div>
           <div className='flex flex-col gap-2 md:flex-row'>
             <Card className='w-full p-10 md:w-2/3'>
-              <SlaPerformance section_code={sectionCode} />
+              <SlaPerformance
+                section_code={sectionCode}
+                levelCode={levelCode}
+                levelName={levelName}
+              />
             </Card>
             <Card className='w-full md:w-1/3'>
-              <PendancyCard />
+              <PendancyCard
+                section_code={sectionCode}
+                levelCode={levelCode}
+                levelName={levelName}
+              />
             </Card>
           </div>
         </div>

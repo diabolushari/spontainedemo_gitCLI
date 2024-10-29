@@ -1,6 +1,7 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
-import { Cell, Legend, Pie, PieChart } from 'recharts'
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
+import MoreButton from '../MoreButton'
 
 interface Properties {
   section_code?: string
@@ -16,14 +17,14 @@ export interface NewConnectionGraphValues {
   section_code: number
   within_sla_cnt: number
   beyond_sla_cnt: number
-  avg_beyond_sla_days: number
-  avg_within_sla_days: number
+  avg_beyond_sla_days: Float32Array
+  avg_within_sla_days: Float32Array
 }
 
 const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<NewConnectionGraphValues>(`subset/22?office_code=${levelCode}`)
+  const [graphValues] = useFetchList<NewConnectionGraphValues>(`subset/27?office_code=${levelCode}`)
   console.log(graphValues)
-  const completedWithinSLA = graphValues[0]?.completed_cnt || 0
+  // const completedWithinSLA = graphValues[0]?.completed_cnt || 0
   const receivedCount = graphValues[0]?.received_cnt || 0
   const withinSlaCount = graphValues[0]?.within_sla_cnt || 0
   const beyondSlaCount = graphValues[0]?.beyond_sla_cnt || 0
@@ -31,8 +32,8 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
   const avgWithinSlaDays = graphValues[0]?.avg_within_sla_days || 0
 
   const data = [
-    { name: 'Within SLA', value: withinSlaCount },
-    { name: 'Beyond SLA', value: beyondSlaCount },
+    { name: 'Completed within SLA', value: withinSlaCount },
+    { name: 'Completed beyond SLA', value: beyondSlaCount },
   ]
   const latestDataDate = graphValues
     .map((item) => item.data_date)
@@ -44,7 +45,14 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
   const renderLegend = (props: any) => {
     const { payload } = props
     return (
-      <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
+      <ul
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          listStyle: 'none',
+          padding: 0,
+        }}
+      >
         {payload.map((entry: any, index: number) => (
           <li
             key={`item-${index}`}
@@ -71,7 +79,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
       <div className='flex items-center justify-between'>
         <div className='w-1/2 text-left'>
           <h2 className='h1-1stop text-4xl font-bold'>
-            {completedWithinSLA}/{receivedCount}
+            {withinSlaCount}/{receivedCount}
           </h2>
           <p className='body-1stop text-lg'>New Svc Connections</p>
           <p className='body-1stop mb-6 text-lg'>Completed Within SLA</p>
@@ -120,6 +128,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
             width={300}
             height={200}
           >
+            <Tooltip />
             <Pie
               data={data}
               innerRadius={50}
@@ -138,6 +147,9 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
             <Legend content={renderLegend} />
           </PieChart>
         </div>
+      </div>
+      <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
+        <MoreButton />
       </div>
 
       {/* <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p> */}

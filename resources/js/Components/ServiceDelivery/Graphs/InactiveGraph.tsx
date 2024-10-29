@@ -1,5 +1,5 @@
 import React from 'react'
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { InactiveGraphValues } from '@/Components/ServiceDelivery/ActiveConnection'
 
 const aggregateData = (data) => {
@@ -53,6 +53,7 @@ const InactiveGraph = ({ section_code, graphValues = [] }: Props) => {
         height={150}
         width='100%'
       >
+        <Tooltip />
         <BarChart
           layout='vertical'
           data={truncatedGraphValues}

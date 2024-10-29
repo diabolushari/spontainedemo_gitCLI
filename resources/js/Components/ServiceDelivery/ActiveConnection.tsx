@@ -18,8 +18,8 @@ export interface InactiveGraphValues {
 }
 
 const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<InactiveGraphValues>(`subset/17?office_code=${levelCode}`)
-
+  const [graphValues] = useFetchList<InactiveGraphValues>(`subset/17?${levelName}=${levelCode}`)
+  console.log(levelName)
   const totalConnections = graphValues.reduce((sum, value) => sum + value.consumer_count, 0)
 
   const totalDomesticConnections = graphValues
@@ -30,7 +30,9 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
     .filter((value) => value.consumer_category !== 'DOMESTIC')
     .reduce((sum, value) => sum + value.consumer_count, 0)
 
-  const nonDomestic = graphValues.filter((value) => value.consumer_category !== 'DOMESTIC')
+  const nonDomestic = graphValues.filter(
+    (value) => value.consumer_category !== 'DOMESTIC' && value.consumer_category !== null
+  )
   const formatNumber = (value: number) => {
     if (value >= 1000000) {
       return (value / 1000000).toFixed(2) + ' M'

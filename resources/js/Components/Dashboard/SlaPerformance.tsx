@@ -1,12 +1,15 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import MoreButton from '../MoreButton'
 
 interface Properties {
   section_code?: string
+  levelName: string
+  levelCode: string
 }
 
-export interface NewConnectionGraphValues {
+export interface SlaPerformanceValues {
   data_date: string
   section_code: number
   service_group: string
@@ -20,32 +23,37 @@ export interface NewConnectionGraphValues {
   avg_beyond_sla_days: number
 }
 
-const SlaPerformance = ({ section_code }: Properties) => {
-  const [graphValues] = useFetchList<NewConnectionGraphValues>(
-    `subset/14?section_code=${section_code}`
-  )
+const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
+  const [graphValues] = useFetchList<SlaPerformanceValues>(`subset/23?office_code=${levelCode}`)
+  console.log(graphValues)
 
   // Group and aggregate data by `service_group`
-  const groupedData = graphValues.reduce(
-    (acc, item) => {
-      const { service_group, within_sla_cnt, beyond_sla_cnt } = item
-      const existingEntry = acc.find((entry) => entry.name === service_group)
-
-      if (existingEntry) {
-        existingEntry.within_sla_cnt += within_sla_cnt
-        existingEntry.beyond_sla_cnt += beyond_sla_cnt
-      } else {
-        acc.push({
-          name: service_group,
-          within_sla_cnt,
-          beyond_sla_cnt,
-        })
-      }
-
-      return acc
-    },
-    [] as Array<{ name: string; within_sla_cnt: number; beyond_sla_cnt: number }>
+  const groupedData = Array.from(
+    new Map(
+      graphValues.map(({ service_group, within_sla_cnt, beyond_sla_cnt }) => [
+        service_group,
+        { name: service_group, within_sla_cnt, beyond_sla_cnt },
+      ])
+    ).values()
   )
+  const CustomTick = (props) => {
+    const { x, y, payload } = props
+    const displayName =
+      payload.value.length > 10 ? `${payload.value.slice(0, 9)}...` : payload.value
+
+    return (
+      <text
+        x={x}
+        y={y}
+        dy={16}
+        textAnchor='end'
+        transform={`rotate(-45, ${x}, ${y})`}
+        className='axial-label-1stop'
+      >
+        {displayName}
+      </text>
+    )
+  }
 
   return (
     <div className='rounded-lg bg-white p-4'>
@@ -64,15 +72,11 @@ const SlaPerformance = ({ section_code }: Properties) => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis
               dataKey='name'
-              tick={{
-                // angle: -45,
-                textAnchor: 'end',
-              }}
+              tick={<CustomTick />}
               height={80}
               interval={0}
-              tickFormatter={(name) => (name.length > 10 ? `${name.slice(0, 9)}...` : name)}
             />
-            <YAxis />
+            <YAxis hide />
             <Tooltip />
             <Bar
               dataKey='within_sla_cnt'
@@ -86,6 +90,9 @@ const SlaPerformance = ({ section_code }: Properties) => {
             />
           </BarChart>
         </ResponsiveContainer>
+      </div>
+      <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
+        <MoreButton />
       </div>
     </div>
   )
