@@ -7,7 +7,12 @@ interface Properties {
   office: OfficeStructure[] | undefined
   onAccortdionClick: () => void
   accordionOpen?: boolean
-  setLevelAndCode: (level: string, levelCode: string) => void
+  setLevelAndCode: (
+    level: string,
+    levelCode: string,
+    levelType: string,
+    levelTypeName: string
+  ) => void
   setAccordionOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 const CircleLevel = ({
@@ -38,7 +43,14 @@ const CircleLevel = ({
                 >
                   {circle.displayAll && (
                     <CheckBox
-                      toggleValue={() => setLevelAndCode('office_code', circle.circle_code)}
+                      toggleValue={() =>
+                        setLevelAndCode(
+                          'office_code',
+                          circle.circle_code,
+                          'circle',
+                          circle.circle_name
+                        )
+                      }
                       label='Select all divisions'
                     />
                   )}
@@ -60,7 +72,12 @@ const CircleLevel = ({
                         {division.displayAll && (
                           <CheckBox
                             toggleValue={() =>
-                              setLevelAndCode('office_code', division.division_code)
+                              setLevelAndCode(
+                                'office_code',
+                                division.division_code,
+                                'division',
+                                division.division_name
+                              )
                             }
                             label='Select all subdivisions'
                           />
@@ -83,7 +100,12 @@ const CircleLevel = ({
                               {subdivision.displayAll && (
                                 <CheckBox
                                   toggleValue={() =>
-                                    setLevelAndCode('office_code', subdivision.subdivision_code)
+                                    setLevelAndCode(
+                                      'office_code',
+                                      subdivision.subdivision_code,
+                                      'subdivision',
+                                      subdivision.subdivision_name
+                                    )
                                   }
                                   label='Select all sections'
                                 />
@@ -94,7 +116,12 @@ const CircleLevel = ({
                                     className='small-1stop px-6 text-left text-gray-500 hover:bg-1stop-highlight hover:text-white'
                                     key={section.section_code}
                                     onClick={() =>
-                                      setLevelAndCode('section_code', section.section_code)
+                                      setLevelAndCode(
+                                        'section_code',
+                                        section.section_code,
+                                        'section',
+                                        section.section_name
+                                      )
                                     }
                                   >
                                     {section.section_name}

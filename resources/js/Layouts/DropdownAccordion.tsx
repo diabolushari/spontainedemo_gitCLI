@@ -16,15 +16,31 @@ interface Properties {
   setLevel: React.Dispatch<React.SetStateAction<string>>
   level: string
   setLevelCode: React.Dispatch<React.SetStateAction<string>>
+  setLevelType: React.Dispatch<React.SetStateAction<string>>
+  setLevelTypename: React.Dispatch<React.SetStateAction<string>>
 }
 interface LevelType {
   level: string
-  levelField: string
+  record: string
 }
-const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: Properties) => {
-  const setLevelAndCode = (level: string, levelCode: string) => {
+const DropdownAccordion = ({
+  officeStructures,
+  setLevel,
+  level,
+  setLevelCode,
+  setLevelType,
+  setLevelTypename,
+}: Properties) => {
+  const setLevelAndCode = (
+    level: string,
+    levelCode: string,
+    levelType: string,
+    levelTypeName: string
+  ) => {
     setLevel(level ?? '')
     setLevelCode(levelCode ?? '')
+    setLevelType(levelType ?? '')
+    setLevelTypename(levelTypeName ?? '')
   }
   const [levelType] = useFetchRecord<LevelType>('find-level')
   const [office, setOffice] = useState(officeStructures)
@@ -145,7 +161,7 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
       })
     })
   }
-  console.log(levelType?.level)
+  console.log(levelType)
   return (
     <div className='min-w-80'>
       {levelType?.level === 'region' && (

@@ -7,7 +7,12 @@ interface Properties {
   office: OfficeStructure[] | undefined
   onAccortdionClick: () => void
   accordionOpen?: boolean
-  setLevelAndCode: (level: string, levelCode: string) => void
+  setLevelAndCode: (
+    level: string,
+    levelCode: string,
+    levelType: string,
+    levelTypeName: string
+  ) => void
   setAccordionOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 const SectionLevel = ({
@@ -41,7 +46,12 @@ const SectionLevel = ({
                                     className='small-1stop px-6 text-left text-gray-500 hover:bg-1stop-highlight hover:text-white'
                                     key={section.section_code}
                                     onClick={() =>
-                                      setLevelAndCode('section_code', section.section_code)
+                                      setLevelAndCode(
+                                        'section_code',
+                                        section.section_code,
+                                        'section',
+                                        section.section_name
+                                      )
                                     }
                                   >
                                     {section.section_name}

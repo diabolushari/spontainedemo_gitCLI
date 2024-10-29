@@ -6,6 +6,7 @@ import SideBar from './SideBar'
 import useFetchList from '@/hooks/useFetchList'
 import * as motion from 'framer-motion/client'
 import DropdownAccordion from './DropdownAccordion'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface Properties {
   children?: ReactNode
@@ -187,9 +188,10 @@ export default function DashboardLayout({
   setLevelCode,
 }: Properties) {
   const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
+  const [levelType, setLevelType] = useState('')
+  const [levelTypeName, setLevelTypename] = useState('')
+  const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>('find-level')
 
-  const [level] = useFetchList('find-level')
-console.log(level)
   const [sectionName, setSectionName] = useState('SELECT SECTION')
   const officeStructures = useMemo(() => {
     const regions: OfficeStructure[] = []
@@ -234,6 +236,14 @@ console.log(level)
     setSectionName(section_name)
   }
 
+  const displayName = () => {
+    if (level?.level === 'region') return level.record.region_name
+    if (level?.level === 'circle') return level.record.circle_name
+    if (level?.level === 'division') return level?.record.division_name
+    if (level?.level === 'subdivision') return level?.record.subdivision_name
+    if (level?.level === 'section') return level?.record.section_name
+  }
+
   return (
     <div className='flex flex-col sm:relative'>
       <div className={`flex sm:relative ${isShowSideBar ? 'z-[999]' : ''}`}>
@@ -247,7 +257,8 @@ console.log(level)
           <div>
             <p className='subheader-1stop'>{type}</p>
             <p className='small-1stop-header'>
-              {level.level}: <b>{levelCode}</b>
+              {levelType !== '' ? levelType : level?.level}:{' '}
+              <b>{levelTypeName !== '' ? levelTypeName : displayName()}</b>
             </p>
           </div>
           <div className='z-[999] flex flex-row gap-5'>
@@ -256,6 +267,8 @@ console.log(level)
               level={levelName}
               setLevel={setLevelName}
               setLevelCode={setLevelCode}
+              setLevelType={setLevelType}
+              setLevelTypename={setLevelTypename}
             />
             <div className='flex flex-col items-start justify-start'>
               <div
