@@ -30,7 +30,9 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
     .filter((value) => value.consumer_category !== 'DOMESTIC')
     .reduce((sum, value) => sum + value.consumer_count, 0)
 
-  const nonDomestic = graphValues.filter((value) => value.consumer_category !== 'DOMESTIC')
+  const nonDomestic = graphValues.filter(
+    (value) => value.consumer_category !== 'DOMESTIC' && value.consumer_category !== null
+  )
   const formatNumber = (value: number) => {
     if (value >= 1000000) {
       return (value / 1000000).toFixed(2) + ' M'

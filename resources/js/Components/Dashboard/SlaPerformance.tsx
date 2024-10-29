@@ -36,6 +36,24 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
       ])
     ).values()
   )
+  const CustomTick = (props) => {
+    const { x, y, payload } = props
+    const displayName =
+      payload.value.length > 10 ? `${payload.value.slice(0, 9)}...` : payload.value
+
+    return (
+      <text
+        x={x}
+        y={y}
+        dy={16}
+        textAnchor='end'
+        transform={`rotate(-45, ${x}, ${y})`}
+        className='axial-label-1stop'
+      >
+        {displayName}
+      </text>
+    )
+  }
 
   return (
     <div className='rounded-lg bg-white p-4'>
@@ -54,15 +72,11 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis
               dataKey='name'
-              tick={{
-                angle: -45,
-                textAnchor: 'end',
-              }}
+              tick={<CustomTick />}
               height={80}
               interval={0}
-              tickFormatter={(name) => (name.length > 10 ? `${name.slice(0, 9)}...` : name)}
             />
-            <YAxis />
+            <YAxis hide />
             <Tooltip />
             <Bar
               dataKey='within_sla_cnt'
