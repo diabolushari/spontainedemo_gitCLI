@@ -23,6 +23,19 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
       })
     })
 
+    subset.dimensions
+      ?.filter((dimension) => dimension.filter_only === 0)
+      .forEach((dimension) => {
+        if (dimension.info == null) {
+          return
+        }
+        cols.push({
+          name: dimension.info.field_name ?? '',
+          source: dimension.info.column ?? '',
+          type: 'string',
+        })
+      })
+
     subset.measures?.forEach((measure) => {
       if (measure.info == null) {
         return
