@@ -1,6 +1,6 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
-import { PieChart, Pie, Cell, Legend } from 'recharts'
+import { Cell, Legend, Pie, PieChart } from 'recharts'
 
 interface Properties {
   section_code?: string
@@ -16,8 +16,8 @@ export interface NewConnectionGraphValues {
   section_code: number
   within_sla_cnt: number
   beyond_sla_cnt: number
-  avg_beyond_sla_days: Float32Array
-  avg_within_sla_days: Float32Array
+  avg_beyond_sla_days: number
+  avg_within_sla_days: number
 }
 
 const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {

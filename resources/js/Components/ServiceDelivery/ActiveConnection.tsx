@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import InactiveGraph from './Graphs/InactiveGraph'
 import Card from '@/ui/Card/Card'
 import useFetchList from '@/hooks/useFetchList'
-import { Model } from '@/interfaces/data_interfaces'
 import MoreButton from '../MoreButton'
+
 interface Properties {
   section_code?: string
   levelName: string
@@ -16,6 +16,7 @@ export interface InactiveGraphValues {
   data_date: string
   consumer_category: string
 }
+
 const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<InactiveGraphValues>(`subset/17?office_code=${levelCode}`)
 
@@ -30,13 +31,13 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
     .reduce((sum, value) => sum + value.consumer_count, 0)
 
   const nonDomestic = graphValues.filter((value) => value.consumer_category !== 'DOMESTIC')
-  const formatNumber = (number) => {
-    if (number >= 1000000) {
-      return (number / 1000000).toFixed(2) + ' M'
-    } else if (number >= 1000) {
-      return (number / 1000).toFixed(2) + ' K'
+  const formatNumber = (value: number) => {
+    if (value >= 1000000) {
+      return (value / 1000000).toFixed(2) + ' M'
+    } else if (value >= 1000) {
+      return (value / 1000).toFixed(2) + ' K'
     }
-    return number.toString()
+    return value.toString()
   }
 
   return (

@@ -61,7 +61,7 @@ const availableOperators = (type: string) => {
   }
 }
 
-const generateInitalFields = (
+const generateInitialFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
   measures: SubsetMeasureField[],
@@ -74,183 +74,177 @@ const generateInitalFields = (
       if (date.info == null) {
         return
       }
-      if (date.info.column === key) {
-        if (key === date.info.column) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '=',
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
-        if (key === `${date.info.column}_not`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not',
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
-        if (key === `${date.info.column}_from`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_from',
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
-        if (key === `${date.info.column}_to`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_to',
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
-        if (key === `${date.info.column}_in`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_in',
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
-        if (key === `${date.info.column}_not_in`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not_in',
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
+      if (key === date.info.column) {
+        fields.push({
+          id: 0,
+          field: date.info.column ?? '',
+          operator: '=',
+          value: filters[key] ?? '',
+          type: 'date',
+        })
+      }
+      if (key === `${date.info.column}_not`) {
+        fields.push({
+          id: 0,
+          field: date.info.column ?? '',
+          operator: '_not',
+          value: filters[key] ?? '',
+          type: 'date',
+        })
+      }
+      if (key === `${date.info.column}_from`) {
+        fields.push({
+          id: 0,
+          field: date.info.column ?? '',
+          operator: '_from',
+          value: filters[key] ?? '',
+          type: 'date',
+        })
+      }
+      if (key === `${date.info.column}_to`) {
+        fields.push({
+          id: 0,
+          field: date.info.column ?? '',
+          operator: '_to',
+          value: filters[key] ?? '',
+          type: 'date',
+        })
+      }
+      if (key === `${date.info.column}_in`) {
+        fields.push({
+          id: 0,
+          field: date.info.column ?? '',
+          operator: '_in',
+          value: filters[key] ?? '',
+          type: 'date',
+        })
+      }
+      if (key === `${date.info.column}_not_in`) {
+        fields.push({
+          id: 0,
+          field: date.info.column ?? '',
+          operator: '_not_in',
+          value: filters[key] ?? '',
+          type: 'date',
+        })
       }
     })
     dimensions.forEach((dimension) => {
       if (dimension.info == null) {
         return
       }
-      if (dimension.info.column === key) {
-        if (key === dimension.info.column) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '=',
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
-        if (key === `${dimension.info.column}_not`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not',
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
-        if (key === `${dimension.info.column}_like`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_like',
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
-        if (key === `${dimension.info.column}_not_like`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not_like',
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
-        if (key === `${dimension.info.column}_in`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_in',
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
-        if (key === `${dimension.info.column}_not_in`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not_in',
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
+      if (key === dimension.info.column) {
+        fields.push({
+          id: 0,
+          field: dimension.info.column ?? '',
+          operator: '=',
+          value: filters[key] ?? '',
+          type: 'dimension',
+        })
+      }
+      if (key === `${dimension.info.column}_not`) {
+        fields.push({
+          id: 0,
+          field: dimension.info.column ?? '',
+          operator: '_not',
+          value: filters[key] ?? '',
+          type: 'dimension',
+        })
+      }
+      if (key === `${dimension.info.column}_like`) {
+        fields.push({
+          id: 0,
+          field: dimension.info.column ?? '',
+          operator: '_like',
+          value: filters[key] ?? '',
+          type: 'dimension',
+        })
+      }
+      if (key === `${dimension.info.column}_not_like`) {
+        fields.push({
+          id: 0,
+          field: dimension.info.column ?? '',
+          operator: '_not_like',
+          value: filters[key] ?? '',
+          type: 'dimension',
+        })
+      }
+      if (key === `${dimension.info.column}_in`) {
+        fields.push({
+          id: 0,
+          field: dimension.info.column ?? '',
+          operator: '_in',
+          value: filters[key] ?? '',
+          type: 'dimension',
+        })
+      }
+      if (key === `${dimension.info.column}_not_in`) {
+        fields.push({
+          id: 0,
+          field: dimension.info.column ?? '',
+          operator: '_not_in',
+          value: filters[key] ?? '',
+          type: 'dimension',
+        })
       }
     })
     measures.forEach((measure) => {
       if (measure.info == null) {
         return
       }
-      if (measure.info.column === key) {
-        if (key === measure.info.column) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '=',
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
-        if (key === `${measure.info.column}_not`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not',
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
-        if (key === `${measure.info.column}_greater_than`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_greater_than',
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
-        if (key === `${measure.info.column}_less_than`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_less_than',
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
-        if (key === `${measure.info.column}_in`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_in',
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
-        if (key === `${measure.info.column}_not_in`) {
-          fields.push({
-            id: 0,
-            field: key,
-            operator: '_not_in',
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
+      if (key === measure.info.column) {
+        fields.push({
+          id: 0,
+          field: measure.info.column ?? '',
+          operator: '=',
+          value: filters[key] ?? '',
+          type: 'number',
+        })
+      }
+      if (key === `${measure.info.column}_not`) {
+        fields.push({
+          id: 0,
+          field: measure.info.column ?? '',
+          operator: '_not',
+          value: filters[key] ?? '',
+          type: 'number',
+        })
+      }
+      if (key === `${measure.info.column}_greater_than`) {
+        fields.push({
+          id: 0,
+          field: measure.info.column ?? '',
+          operator: '_greater_than',
+          value: filters[key] ?? '',
+          type: 'number',
+        })
+      }
+      if (key === `${measure.info.column}_less_than`) {
+        fields.push({
+          id: 0,
+          field: measure.info.column ?? '',
+          operator: '_less_than',
+          value: filters[key] ?? '',
+          type: 'number',
+        })
+      }
+      if (key === `${measure.info.column}_in`) {
+        fields.push({
+          id: 0,
+          field: measure.info.column ?? '',
+          operator: '_in',
+          value: filters[key] ?? '',
+          type: 'number',
+        })
+      }
+      if (key === `${measure.info.column}_not_in`) {
+        fields.push({
+          id: 0,
+          field: key,
+          operator: '_not_in',
+          value: filters[key] ?? '',
+          type: 'number',
+        })
       }
     })
   })
@@ -267,7 +261,7 @@ export default function SubsetFilterForm({
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState<FormField[]>(
-    generateInitalFields(filters, dates, measures, dimensions).map((formField) => {
+    generateInitialFields(filters, dates, measures, dimensions).map((formField) => {
       return {
         ...formField,
         id: uuidRef.current++,
@@ -373,18 +367,14 @@ export default function SubsetFilterForm({
 
   const setField = (id: number, value: string) => {
     const field = availableFields.find((field) => field.column === value)
-
-    if (field == null) {
-      return
-    }
-
     setFormFields((prevFormFields) => {
       return prevFormFields.map((formField) => {
         if (formField.id === id) {
           return {
             ...formField,
             field: value,
-            type: field.type,
+            type: field?.type ?? '',
+            operator: '',
           }
         }
         return formField
@@ -461,7 +451,7 @@ export default function SubsetFilterForm({
             <div className='flex flex-col'>
               <SelectList
                 label='Operator'
-                list={availableOperators('date')}
+                list={availableOperators(formField.type ?? '')}
                 dataKey='value'
                 displayKey='operation'
                 setValue={(value) => setOperator(formField.id, value)}

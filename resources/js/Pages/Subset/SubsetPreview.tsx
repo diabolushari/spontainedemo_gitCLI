@@ -25,6 +25,8 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
     setShowDeleteModal(true)
   }, [])
 
+  console.log(filters)
+
   return (
     <ShowResourcePage
       title={subset.name}

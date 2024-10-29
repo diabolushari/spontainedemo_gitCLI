@@ -1,5 +1,6 @@
 import React from 'react'
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { InactiveGraphValues } from '@/Components/ServiceDelivery/ActiveConnection'
 
 const aggregateData = (data) => {
   const aggregated = data.reduce((acc, curr) => {
@@ -20,10 +21,15 @@ const aggregateData = (data) => {
   }))
 }
 
-const InactiveGraph = ({ section_code, graphValues = [] }) => {
+interface Props {
+  section_code?: string
+  graphValues?: InactiveGraphValues[]
+}
+
+const InactiveGraph = ({ section_code, graphValues = [] }: Props) => {
   const truncatedGraphValues = aggregateData(graphValues)
 
-  const truncateLabel = (label) => {
+  const truncateLabel = (label: string) => {
     return label.length > 5 ? `${label.substring(0, 5)}...` : label
   }
   const YAxisTick = (props) => {
