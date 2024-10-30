@@ -161,7 +161,7 @@ const DropdownAccordion = ({
       })
     })
   }
-  console.log(levelType)
+
   return (
     <div className='min-w-80'>
       {levelType?.level === 'region' && (

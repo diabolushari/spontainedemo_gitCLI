@@ -19,6 +19,7 @@ export interface InactiveGraphValues {
 
 const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<InactiveGraphValues>(`subset/17?${levelName}=${levelCode}`)
+
   const totalConnections = graphValues.reduce((sum, value) => sum + value.consumer_count, 0)
 
   const totalDomesticConnections = graphValues
