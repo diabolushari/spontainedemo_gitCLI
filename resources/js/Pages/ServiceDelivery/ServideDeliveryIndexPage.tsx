@@ -1,6 +1,6 @@
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
@@ -12,6 +12,7 @@ const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
+  console.log(levelName, levelCode)
   return (
     <DashboardLayout
       sectionCode={sectionCode}
