@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react'
 import { Model, User } from '@/interfaces/data_interfaces'
-import React, { ReactNode, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/utils'
 import SideBar from './SideBar'
 import useFetchList from '@/hooks/useFetchList'
@@ -191,7 +191,28 @@ export default function DashboardLayout({
   const [levelType, setLevelType] = useState('')
   const [levelTypeName, setLevelTypename] = useState('')
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>('find-level')
-
+  useEffect(() => {
+    if (level?.level === 'region') {
+      setLevelName('office_code')
+      setLevelCode(level.record.region_code ?? '')
+    }
+    if (level?.level === 'circle') {
+      setLevelName('office_code')
+      setLevelCode(level.record.circle_code ?? '')
+    }
+    if (level?.level === 'division') {
+      setLevelName('office_code')
+      setLevelCode(level.record.division_code ?? '')
+    }
+    if (level?.level === 'subdivision') {
+      setLevelName('office_code')
+      setLevelCode(level.record.subdivision_code ?? '')
+    }
+    if (level?.level === 'section') {
+      setLevelName('section_code')
+      setLevelCode(level.record.section_code ?? '')
+    }
+  }, [level, setLevelCode, setLevelName])
   const [sectionName, setSectionName] = useState('SELECT SECTION')
   const officeStructures = useMemo(() => {
     const regions: OfficeStructure[] = []

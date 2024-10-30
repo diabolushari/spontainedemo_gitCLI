@@ -23,7 +23,7 @@ export interface PendencyGraphValues {
 const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
   const [title, setTitle] = useState('Load Change')
   const [graphValues] = useFetchList<PendencyGraphValues>(`subset/28?office_code=${levelCode}`)
-  console.log(graphValues)
+
   const lessThan5Days = graphValues.find((value) => value.service_group === title)?.cnt_lt_5day || 0
   const betweem515Days =
     graphValues.find((value) => value.service_group === title)?.cnt_5_15day || 0
