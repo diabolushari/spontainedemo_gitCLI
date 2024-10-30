@@ -33,6 +33,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
   const nonDomestic = graphValues.filter(
     (value) => value.consumer_category !== 'DOMESTIC' && value.consumer_category !== null
   )
+
   const formatNumber = (value: number) => {
     if (value >= 1000000) {
       return (value / 1000000).toFixed(2) + ' M'
@@ -43,13 +44,13 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
   }
 
   return (
-    <Card className='flex flex-row gap-10 p-4'>
-      <div className='flex flex-col gap-10 p-5'>
+    <Card className='flex flex-col gap-5 overflow-hidden p-4 sm:flex-row sm:overflow-visible'>
+      <div className='flex flex-col gap-5 p-5'>
         <div>
           <p className='xlmetric-1stop'>{formatNumber(totalConnections)}</p>
           <p className='body-1stop'>Total Active Connections</p>
         </div>
-        <div className='flex gap-10'>
+        <div className='flex flex-wrap gap-5'>
           <div className='flex flex-col'>
             <p className='h3-1stop'>{totalDomesticConnections}</p>
             <p className='small-1stop'>DOMESTIC</p>
@@ -60,20 +61,18 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
           </div>
         </div>
       </div>
-      <div className='flex flex-col gap-2 p-4'>
-        <div className='body-1stop flex'>Conn. Categories (non Domestic)</div>
-        <div className='flex-cols-2 flex gap-5'>
-          <div className='flex flex-col'>
-            <InactiveGraph
-              section_code={section_code}
-              graphValues={nonDomestic}
-            />
-          </div>
+      <div className='flex flex-col gap-2 overflow-x-auto p-4 sm:overflow-visible'>
+        <div className='body-1stop'>Conn. Categories (non Domestic)</div>
+        <div className='flex flex-col gap-5'>
+          <InactiveGraph
+            section_code={section_code}
+            graphValues={nonDomestic}
+          />
         </div>
-        <div className='small-1stop-header absolute bottom-0 right-10 pb-2 text-right'>
+        <div className='small-1stop-header mt-2 text-right'>
           {graphValues.length > 0 && graphValues[0].data_date}
         </div>
-        <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
+        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <MoreButton />
         </div>
       </div>
