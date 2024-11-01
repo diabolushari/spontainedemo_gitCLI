@@ -66,7 +66,7 @@ const dashboardSidebarItems = [
     link: '/service-delivery',
   },
   {
-    name: 'financial',
+    name: 'FINANCIAL STATS',
     image: {
       svg: (
         <svg

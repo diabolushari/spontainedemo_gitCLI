@@ -3,6 +3,8 @@ import InactiveGraph from './Graphs/InactiveGraph'
 import Card from '@/ui/Card/Card'
 import useFetchList from '@/hooks/useFetchList'
 import MoreButton from '../MoreButton'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 interface Properties {
   section_code?: string
@@ -48,16 +50,22 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
       <div className='flex w-full flex-col space-x-1 sm:flex-row'>
         <div className='flex w-1/2 flex-col gap-12 pt-3'>
           <div className='flex flex-col'>
-            <p className='xlmetric-1stop'>{formatNumber(totalConnections)}</p>
+            <p className='xlmetric-1stop'>
+              {graphValues.length ? formatNumber(totalConnections) : <Skeleton />}
+            </p>
             <p className='small-1stop-header'>Total Active Connections</p>
           </div>
           <div className='flex flex-row space-x-4'>
             <div className='flex flex-col'>
-              <p className='mdmetric-1stop'>{formatNumber(totalDomesticConnections)}</p>
+              <p className='mdmetric-1stop'>
+                {graphValues.length ? formatNumber(totalDomesticConnections) : <Skeleton />}
+              </p>
               <p className='small-1stop-header'>DOMESTIC</p>
             </div>
             <div className='flex flex-col'>
-              <p className='mdmetric-1stop'>{formatNumber(totalNonDomesticConnections)}</p>
+              <p className='mdmetric-1stop'>
+                {graphValues.length ? formatNumber(totalNonDomesticConnections) : <Skeleton />}
+              </p>
               <p className='small-1stop-header'>OTHERS</p>
             </div>
           </div>
