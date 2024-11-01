@@ -32,6 +32,7 @@ use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetDropdownApiController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
+use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\TabController;
 use Illuminate\Foundation\Application;
@@ -130,6 +131,9 @@ Route::post('subset/{dataDetail}', SubsetStoreController::class)
 
 Route::get('subset/{subsetDetail}', SubsetDataController::class)
     ->name('subset.show');
+
+Route::get('subset-summary/{subsetDetail}', SubsetSummaryController::class)
+    ->name('subset.summary');
 
 Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
     ->name('subset.preview');

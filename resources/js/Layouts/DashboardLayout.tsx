@@ -32,7 +32,7 @@ export default function DashboardLayout({
   setLevelName,
   setLevelCode,
 }: Properties) {
-  const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
+  const [dropdownValues] = useFetchList<OfficeInfo>(route('subset.level'))
   const [levelType, setLevelType] = useState('')
   const [levelTypeName, setLevelTypeName] = useState('')
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>('find-level')

@@ -23,7 +23,7 @@ readonly class SubsetQueryBuilder
         private GetRelativeTime $getRelativeTime
     ) {}
 
-    public function query(SubsetDetail $subsetDetail): Builder
+    public function query(SubsetDetail $subsetDetail, bool $isSummary = false, string $summaryGroupBy = 'region'): Builder
     {
 
         /** @var string[] $groupingColumns */
@@ -33,8 +33,11 @@ readonly class SubsetQueryBuilder
         /** @var string[] $measureColumns */
         $measureColumns = [];
 
-        $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns);
-        $this->addDimensionFields($subsetDetail->dimensions, $groupingColumns, $selectColumns);
+        if (! $isSummary) {
+            $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns);
+            $this->addDimensionFields($subsetDetail->dimensions, $groupingColumns, $selectColumns);
+        }
+
         $this->addMeasureFields($subsetDetail->measures, $measureColumns, $groupingColumns);
 
         $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
@@ -43,13 +46,26 @@ readonly class SubsetQueryBuilder
 
         $query = $this->joinDataTable->join($detail);
 
-        $this->includeOfficeInfo(
-            $query,
-            $subsetDetail,
-            $detail,
-            $groupingColumns,
-            $selectColumns
-        );
+        if (! $isSummary) {
+            $this->includeOfficeInfo(
+                $query,
+                $subsetDetail,
+                $detail,
+                $groupingColumns,
+                $selectColumns
+            );
+        }
+
+        if ($isSummary) {
+            $this->groupByOffice(
+                $query,
+                $subsetDetail,
+                $detail,
+                $groupingColumns,
+                $selectColumns,
+                $summaryGroupBy
+            );
+        }
 
         $selectStatement = implode(',', [
             ...$selectColumns,
@@ -223,6 +239,72 @@ readonly class SubsetQueryBuilder
                 $groupingColumns[] = 'hierarchy.division_name';
                 $groupingColumns[] = 'hierarchy.subdivision_code';
                 $groupingColumns[] = 'hierarchy.subdivision_name';
+            }
+        });
+    }
+
+    /**
+     * @param  string[]  $groupingColumns
+     * @param  string[]  $selectColumns
+     */
+    private function groupByOffice(
+        Builder $query,
+        SubsetDetail $subsetDetail,
+        DataDetail $detail,
+        array &$groupingColumns,
+        array &$selectColumns,
+        string $groupBy = 'region_code'
+    ): void {
+        //if office info is included in the subset then include the hierarchy table
+        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query, $groupBy) {
+            if ($dimension->info == null || $dimension->info->column !== 'section_code') {
+                return;
+            }
+            $hierarchyTable = $this->getDetail();
+            if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
+                return;
+            }
+
+            $joinSelect = 'region_code_record.name as region_code';
+            $selectStatement = 'hierarchy.region_code as office_code';
+            $groupingStatement = 'hierarchy.region_code';
+
+            if ($groupBy == 'circle') {
+                $joinSelect = 'circle_code_record.name as circle_code';
+                $selectStatement = 'hierarchy.circle_code as circle_code';
+                $groupingStatement = 'hierarchy.circle_code';
+            }
+
+            if ($groupBy == 'division') {
+                $joinSelect = 'division_code_record.name as division_code';
+                $selectStatement = 'hierarchy.division_code as division_code';
+                $groupingStatement = 'hierarchy.division_code';
+            }
+
+            if ($groupBy == 'subdivision') {
+                $joinSelect = 'subdivision_code_record.name as subdivision_code';
+                $selectStatement = 'hierarchy.subdivision_code as subdivision_code';
+                $groupingStatement = 'hierarchy.subdivision_code';
+            }
+
+            $hierarchyQuery = $this->joinDataTable->join($hierarchyTable)
+                ->selectRaw(
+                    'section_code as hierarchy_section_code, '
+                    .$joinSelect
+                );
+
+            $query->joinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
+                $join->on(
+                    $detail->table_name.'.section_code',
+                    '=',
+                    'hierarchy.hierarchy_section_code'
+                );
+            });
+
+            $selectColumns[] = $selectStatement;
+
+            if ($subsetDetail->group_data === 1) {
+                $groupingColumns[] = $groupingStatement;
             }
         });
     }

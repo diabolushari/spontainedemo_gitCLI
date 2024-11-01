@@ -2,7 +2,6 @@ import { SubsetDateField, SubsetDetail, SubsetMeasureField } from '@/interfaces/
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import Input from '@/ui/form/Input'
-import { router } from '@inertiajs/react'
 import Button from '@/ui/button/Button'
 
 interface Props {
@@ -11,6 +10,7 @@ interface Props {
   dimensions: SubsetDateField[]
   subset: SubsetDetail
   filters: Record<string, string | undefined | null>
+  onSubmit: (querystring: string | null) => void
 }
 
 interface FormField {
@@ -258,6 +258,7 @@ export default function SubsetFilterForm({
   dimensions,
   subset,
   filters,
+  onSubmit,
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState<FormField[]>(
@@ -422,57 +423,55 @@ export default function SubsetFilterForm({
         formField.value
       )
     })
-    router.get(route('subset.preview', subset.id) + '?' + urlParams.toString())
+    onSubmit(urlParams.toString())
   }
 
   return (
-    <div className='flex w-full flex-col md:w-1/2'>
-      <form
-        className='flex flex-col gap-5 py-5'
-        onSubmit={formSubmit}
-      >
-        {formFields.map((formField) => (
-          <div
-            className='grid grid-cols-3 gap-2'
-            key={formField.id}
-          >
-            <div className='flex flex-col'>
-              <SelectList
-                label='Field'
-                list={availableFields}
-                dataKey='column'
-                displayKey='fieldName'
-                setValue={(value) => setField(formField.id, value)}
-                value={formField.field}
-                showAllOption
-                allOptionText='Select Field'
-              />
-            </div>
-            <div className='flex flex-col'>
-              <SelectList
-                label='Operator'
-                list={availableOperators(formField.type ?? '')}
-                dataKey='value'
-                displayKey='operation'
-                setValue={(value) => setOperator(formField.id, value)}
-                value={formField.operator}
-                showAllOption
-                allOptionText='Select Operator'
-              />
-            </div>
-            <div className='flex flex-col'>
-              <Input
-                label='Value'
-                setValue={(value) => setValue(formField.id, value)}
-                value={formField.value}
-              />
-            </div>
+    <form
+      className='flex flex-col gap-5 py-5'
+      onSubmit={formSubmit}
+    >
+      {formFields.map((formField) => (
+        <div
+          className='grid grid-cols-3 gap-2'
+          key={formField.id}
+        >
+          <div className='flex flex-col'>
+            <SelectList
+              label='Field'
+              list={availableFields}
+              dataKey='column'
+              displayKey='fieldName'
+              setValue={(value) => setField(formField.id, value)}
+              value={formField.field}
+              showAllOption
+              allOptionText='Select Field'
+            />
           </div>
-        ))}
-        <div className='flex'>
-          <Button label='Search' />
+          <div className='flex flex-col'>
+            <SelectList
+              label='Operator'
+              list={availableOperators(formField.type ?? '')}
+              dataKey='value'
+              displayKey='operation'
+              setValue={(value) => setOperator(formField.id, value)}
+              value={formField.operator}
+              showAllOption
+              allOptionText='Select Operator'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <Input
+              label='Value'
+              setValue={(value) => setValue(formField.id, value)}
+              value={formField.value}
+            />
+          </div>
         </div>
-      </form>
-    </div>
+      ))}
+      <div className='flex'>
+        <Button label='Search' />
+      </div>
+    </form>
   )
 }

@@ -11,6 +11,7 @@ import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import SubsetTable from '@/Components/DataExplorer/SubsetTable'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
+import { router } from '@inertiajs/react'
 
 interface Props {
   subset: SubsetDetail
@@ -25,7 +26,13 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
     setShowDeleteModal(true)
   }, [])
 
-  console.log(filters)
+  const handleSubmit = useCallback(
+    (query: string | null) => {
+      console.log(query)
+      router.get(route('subset.preview', subset.id) + '?' + query)
+    },
+    [subset]
+  )
 
   return (
     <ShowResourcePage
@@ -34,13 +41,16 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
       items={[]}
       onDeleteClick={handleDeleteClick}
     >
-      <SubsetFilterForm
-        dates={subset.dates as SubsetDateField[]}
-        measures={subset.measures as SubsetMeasureField[]}
-        dimensions={subset.dimensions as SubsetDateField[]}
-        subset={subset}
-        filters={filters}
-      />
+      <div className='flex w-full flex-col md:w-1/2'>
+        <SubsetFilterForm
+          dates={subset.dates as SubsetDateField[]}
+          measures={subset.measures as SubsetMeasureField[]}
+          dimensions={subset.dimensions as SubsetDateField[]}
+          subset={subset}
+          filters={filters}
+          onSubmit={handleSubmit}
+        />
+      </div>
       <div className='snap-y'>
         <SubsetTable
           subset={subset}
