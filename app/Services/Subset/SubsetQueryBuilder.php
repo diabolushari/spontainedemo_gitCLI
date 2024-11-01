@@ -5,12 +5,19 @@ namespace App\Services\Subset;
 use App\Libs\GetRelativeTime;
 use App\Models\DataDetail\DataDetail;
 use App\Models\Subset\SubsetDetail;
+use App\Models\Subset\SubsetDetailDate;
+use App\Models\Subset\SubsetDetailDimension;
+use App\Models\Subset\SubsetDetailMeasure;
 use App\Services\DataTable\JoinDataTable;
+use App\Services\DistributionHierarchy\GetHierarchyTableDetail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 readonly class SubsetQueryBuilder
 {
+    use GetHierarchyTableDetail;
+
     public function __construct(
         private JoinDataTable $joinDataTable,
         private GetRelativeTime $getRelativeTime
@@ -26,7 +33,51 @@ readonly class SubsetQueryBuilder
         /** @var string[] $measureColumns */
         $measureColumns = [];
 
-        $subsetDetail->dates->each(function ($date) use (&$groupingColumns, &$selectColumns) {
+        $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns);
+        $this->addDimensionFields($subsetDetail->dimensions, $groupingColumns, $selectColumns);
+        $this->addMeasureFields($subsetDetail->measures, $measureColumns, $groupingColumns);
+
+        $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
+            ->where('id', $subsetDetail->data_detail_id)
+            ->first();
+
+        $query = $this->joinDataTable->join($detail);
+
+        $this->includeOfficeInfo(
+            $query,
+            $subsetDetail,
+            $detail,
+            $groupingColumns,
+            $selectColumns
+        );
+
+        $selectStatement = implode(',', [
+            ...$selectColumns,
+            ...$measureColumns,
+        ]);
+
+        if ($subsetDetail->group_data === 1 && count($groupingColumns) > 0) {
+            $groupByStatement = implode(',', $groupingColumns);
+            $query->groupByRaw($groupByStatement);
+        }
+
+        $this->filterData($detail, $subsetDetail, $query);
+
+        return $query->selectRaw($selectStatement);
+
+    }
+
+    /**
+     * @param  Collection<int, SubsetDetailDate>  $dates
+     * @param  string[]  $groupingColumns
+     * @param  string[]  $selectColumns
+     */
+    private function addDateFields(
+        Collection $dates,
+        array &$groupingColumns,
+        array &$selectColumns
+    ): void {
+        $dates->each(function ($date) use (&$groupingColumns, &$selectColumns) {
             if ($date->info == null) {
                 return;
             }
@@ -38,8 +89,19 @@ readonly class SubsetQueryBuilder
                 $selectColumns[] = $date->info->column;
             }
         });
+    }
 
-        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns) {
+    /**
+     * @param  Collection<int, SubsetDetailDimension>  $dimensions
+     * @param  string[]  $groupingColumns
+     * @param  string[]  $selectColumns
+     */
+    private function addDimensionFields(
+        Collection $dimensions,
+        array &$groupingColumns,
+        array &$selectColumns
+    ): void {
+        $dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns) {
             if ($dimension->info == null) {
                 return;
             }
@@ -49,13 +111,26 @@ readonly class SubsetQueryBuilder
             if ($dimension->column_expression != null) {
                 $groupingColumns[] = $dimension->column_expression;
                 $selectColumns[] = $dimension->column_expression.' as '.$dimension->info->column;
-            } else {
-                $groupingColumns[] = $dimension->info->column;
-                $selectColumns[] = $dimension->info->column.'_record.name as '.$dimension->info->column;
-            }
-        });
 
-        $subsetDetail->measures->each(function ($measure) use (&$measureColumns, &$groupingColumns) {
+                return;
+            }
+
+            $groupingColumns[] = $dimension->info->column;
+            $selectColumns[] = $dimension->info->column.'_record.name as '.$dimension->info->column;
+        });
+    }
+
+    /**
+     * @param  Collection<int, SubsetDetailMeasure>  $measures
+     * @param  string[]  $measureColumns
+     * @param  string[]  $groupingColumns
+     */
+    private function addMeasureFields(
+        Collection $measures,
+        array &$measureColumns,
+        array &$groupingColumns
+    ): void {
+        $measures->each(function ($measure) use (&$measureColumns, &$groupingColumns) {
             if ($measure->info == null) {
                 return;
             }
@@ -85,27 +160,71 @@ readonly class SubsetQueryBuilder
             }
 
         });
+    }
 
-        $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
-            ->where('id', $subsetDetail->data_detail_id)
-            ->first();
+    /**
+     * @param  string[]  $groupingColumns
+     * @param  string[]  $selectColumns
+     */
+    private function includeOfficeInfo(
+        Builder $query,
+        SubsetDetail $subsetDetail,
+        DataDetail $detail,
+        array &$groupingColumns,
+        array &$selectColumns,
+    ): void {
+        //if office info is included in the subset then include the hierarchy table
+        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query) {
+            if ($dimension->info == null || $dimension->info->column !== 'section_code') {
+                return;
+            }
+            $hierarchyTable = $this->getDetail();
+            if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
+                return;
+            }
+            $hierarchyQuery = $this->joinDataTable->join($hierarchyTable)
+                ->selectRaw(
+                    'section_name_record.name as section_name, '
+                    .'section_code as hierarchy_section_code, '
+                    .'region_code_record.name as region_code, '
+                    .'region_name_record.name as region_name, '
+                    .'circle_code_record.name as circle_code, '
+                    .'circle_name_record.name as circle_name, '
+                    .'division_code_record.name as division_code, '
+                    .'division_name_record.name as division_name, '
+                    .'subdivision_code_record.name as subdivision_code,'
+                    .'subdivision_name_record.name as subdivision_name'
+                );
 
-        $query = $this->joinDataTable->join($detail);
+            $query->joinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
+                $join->on(
+                    $detail->table_name.'.section_code',
+                    '=',
+                    'hierarchy.hierarchy_section_code'
+                );
+            });
 
-        $selectStatement = implode(',', [
-            ...$selectColumns,
-            ...$measureColumns,
-        ]);
-
-        if ($subsetDetail->group_data === 1 && count($groupingColumns) > 0) {
-            $groupByStatement = implode(',', $groupingColumns);
-            $query->groupByRaw($groupByStatement);
-        }
-
-        $this->filterData($detail, $subsetDetail, $query);
-
-        return $query->selectRaw($selectStatement);
-
+            $selectColumns[] = 'hierarchy.section_name as section_name';
+            $selectColumns[] = 'hierarchy.region_code as region_code';
+            $selectColumns[] = 'hierarchy.region_name as region_name';
+            $selectColumns[] = 'hierarchy.circle_code as circle_code';
+            $selectColumns[] = 'hierarchy.circle_name as circle_name';
+            $selectColumns[] = 'hierarchy.division_code as division_code';
+            $selectColumns[] = 'hierarchy.division_name as division_name';
+            $selectColumns[] = 'hierarchy.subdivision_code as subdivision_code';
+            $selectColumns[] = 'hierarchy.subdivision_name as subdivision_name';
+            if ($subsetDetail->group_data === 1) {
+                $groupingColumns[] = 'hierarchy.section_name';
+                $groupingColumns[] = 'hierarchy.region_code';
+                $groupingColumns[] = 'hierarchy.region_name';
+                $groupingColumns[] = 'hierarchy.circle_code';
+                $groupingColumns[] = 'hierarchy.circle_name';
+                $groupingColumns[] = 'hierarchy.division_code';
+                $groupingColumns[] = 'hierarchy.division_name';
+                $groupingColumns[] = 'hierarchy.subdivision_code';
+                $groupingColumns[] = 'hierarchy.subdivision_name';
+            }
+        });
     }
 
     private function filterData(DataDetail $dataDetail, SubsetDetail $subsetDetail, Builder $builder): void

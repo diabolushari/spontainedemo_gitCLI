@@ -4,19 +4,13 @@ namespace App\Services\DistributionHierarchy;
 
 use App\Models\DataDetail\DataDetail;
 use App\Services\DataTable\QueryDataTable;
-use App\Services\TableNames;
 use Illuminate\Support\Facades\Schema;
 
 class DistributionHierarchy
 {
-    private ?DataDetail $distributionTable;
+    use GetHierarchyTableDetail;
 
-    public function __construct(private readonly QueryDataTable $queryDataTable)
-    {
-        $this->distributionTable = DataDetail::where('name', TableNames::DISTRIBUTION_HIERARCHY)
-            ->with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
-            ->first();
-    }
+    private ?DataDetail $distributionTable;
 
     public array $hierarchyLevelFieldMap = [
         [
@@ -40,6 +34,11 @@ class DistributionHierarchy
             'levelField' => 'region_code_record.name',
         ],
     ];
+
+    public function __construct(private readonly QueryDataTable $queryDataTable)
+    {
+        $this->distributionTable = $this->getDetail();
+    }
 
     /**
      * @return array{level: string, levelField: string}|null
