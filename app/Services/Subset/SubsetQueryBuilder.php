@@ -271,19 +271,19 @@ readonly class SubsetQueryBuilder
 
             if ($groupBy == 'circle') {
                 $joinSelect = 'circle_code_record.name as circle_code';
-                $selectStatement = 'hierarchy.circle_code as circle_code';
+                $selectStatement = 'hierarchy.circle_code as office_code';
                 $groupingStatement = 'hierarchy.circle_code';
             }
 
             if ($groupBy == 'division') {
                 $joinSelect = 'division_code_record.name as division_code';
-                $selectStatement = 'hierarchy.division_code as division_code';
+                $selectStatement = 'hierarchy.division_code as office_code';
                 $groupingStatement = 'hierarchy.division_code';
             }
 
             if ($groupBy == 'subdivision') {
                 $joinSelect = 'subdivision_code_record.name as subdivision_code';
-                $selectStatement = 'hierarchy.subdivision_code as subdivision_code';
+                $selectStatement = 'hierarchy.subdivision_code as office_code';
                 $groupingStatement = 'hierarchy.subdivision_code';
             }
 

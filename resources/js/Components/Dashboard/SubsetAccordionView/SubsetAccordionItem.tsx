@@ -3,14 +3,18 @@ import { ChevronDownIcon } from 'lucide-react'
 import React from 'react'
 import SubsetAccordionTable from '@/Components/Dashboard/SubsetAccordionView/SubsetAccordionTable'
 import { SubsetDetail } from '@/interfaces/data_interfaces'
+import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 
 interface Props {
   office: OfficeHierarchyNode
   subset: SubsetDetail
+  cols: TableColName[]
+  summary: Record<string, string>[]
 }
 
-export default function SubsetAccordionItem({ office, subset }: Readonly<Props>) {
+export default function SubsetAccordionItem({ office, subset, summary, cols }: Readonly<Props>) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const summaryRecord = summary.find((record) => record.office_code === office.office_code)
 
   return (
     <div className={`rounded-2xl bg-white transition duration-200 ease-in-out`}>
@@ -24,7 +28,17 @@ export default function SubsetAccordionItem({ office, subset }: Readonly<Props>)
           <p className='small-1stop capitalize text-black'>
             {office.level} : <b>{office.office_name}</b>
           </p>
-          <p>Summary....</p>
+          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4'>
+            {cols.map((col) => (
+              <div
+                className='flex flex-col'
+                key={col.source}
+              >
+                <p>{col.name}</p>
+                <p>{summaryRecord == null ? '-' : (summaryRecord[col.source] ?? '-')}</p>
+              </div>
+            ))}
+          </div>
         </div>
         <ChevronDownIcon
           className={`${
@@ -43,6 +57,8 @@ export default function SubsetAccordionItem({ office, subset }: Readonly<Props>)
                 key={child.office_code}
                 office={child}
                 subset={subset}
+                summary={summary}
+                cols={cols}
               />
             ))}
           {office.level === 'subdivision' && (
