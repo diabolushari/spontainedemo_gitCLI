@@ -179,6 +179,9 @@ readonly class SubsetQueryBuilder
                 return;
             }
             $hierarchyTable = $this->getDetail();
+            if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
+                return;
+            }
             $hierarchyQuery = $this->joinDataTable->join($hierarchyTable)
                 ->selectRaw(
                     'section_name_record.name as section_name, '

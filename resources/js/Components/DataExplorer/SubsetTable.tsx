@@ -34,14 +34,6 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
           source: dimension.info.column ?? '',
           type: 'string',
         })
-        //if column is section_code then add section_name
-        if (dimension.info.column === 'section_code') {
-          cols.push({
-            name: 'Section Name',
-            source: 'section_name',
-            type: 'string',
-          })
-        }
       })
 
     subset.measures?.forEach((measure) => {
@@ -70,6 +62,16 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
         })
       }
     })
+    //if column  section_code exists and section_name does not exist then add section_name right
+    const sectionNameExists = cols.find((col) => col.source === 'section_name')
+    const sectionCodeIndex = cols.findIndex((col) => col.source === 'section_code')
+    if (sectionCodeIndex > -1 && !sectionNameExists) {
+      cols.splice(sectionCodeIndex + 1, 0, {
+        name: 'Section Name',
+        source: 'section_name',
+        type: 'string',
+      })
+    }
 
     return cols
   }, [subset])
