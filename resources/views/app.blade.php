@@ -20,8 +20,8 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased bg-gradient-to-b from-1stop-accent2 to-1stop-highlight pb-4 snap-mandatory">
-@inertia
+<body class="font-sans antialiased bg-gradient-to-r from-1stop-accent2 to-1stop-highlight pb-4 snap-mandatory">
+    @inertia
 </body>
 
 </html>

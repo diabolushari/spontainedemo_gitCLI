@@ -266,7 +266,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className='flex flex-col sm:relative'>
+    <div className='flex w-full flex-col sm:relative'>
       <div className={`flex sm:relative ${isShowSideBar ? 'z-[999]' : ''}`}>
         <SideBar
           isShowSideBar={isShowSideBar}
@@ -274,15 +274,15 @@ export default function DashboardLayout({
           type={type}
         />
 
-        <div className='absolute right-10 flex gap-28 space-x-96 pt-10'>
-          <div>
+        <div className='absolute flex w-full justify-between gap-2 pl-28 pr-5 pt-10'>
+          <div className=''>
             <p className='subheader-1stop'>{type}</p>
             <p className='small-1stop-header'>
               {levelType !== '' ? levelType : level?.level}:{' '}
               <b>{levelTypeName !== '' ? levelTypeName : displayName()}</b>
             </p>
           </div>
-          <div className='z-[999] flex flex-row gap-5'>
+          <div className='z-[999] hidden gap-5 md:flex md:flex-row'>
             <DropdownAccordion
               officeStructures={officeStructures}
               level={levelName}
@@ -369,7 +369,7 @@ export default function DashboardLayout({
         transition={{ duration: 0.3 }}
         className='inset-0'
       >
-        <main className={cn(`ml-24 mt-10 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
+        <main className={cn(`ml-14 mr-6 mt-10 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
         </main>
       </motion.div>

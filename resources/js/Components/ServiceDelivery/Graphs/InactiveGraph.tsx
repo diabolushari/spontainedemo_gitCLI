@@ -48,39 +48,38 @@ const InactiveGraph = ({ section_code, graphValues = [] }: Props) => {
   }
 
   return (
-    <div className='min-w-96'>
-      <ResponsiveContainer
-        height={150}
-        width='100%'
+    <ResponsiveContainer
+      height={200}
+      width='100%'
+    >
+      <BarChart
+        layout='vertical'
+        data={truncatedGraphValues}
+        barCategoryGap={15}
+        margin={{ top: 0, right: 0, bottom: 0, left: -75 }}
       >
+        <XAxis
+          type='number'
+          dataKey='consumer_count'
+          hide
+        />
+        <YAxis
+          type='category'
+          dataKey='consumer_category'
+          tickFormatter={truncateLabel}
+          width={120}
+          axisLine={false}
+          tickLine={false}
+          tick={<YAxisTick />}
+        />
         <Tooltip />
-        <BarChart
-          layout='vertical'
-          data={truncatedGraphValues}
-          barCategoryGap={15}
-        >
-          <XAxis
-            type='number'
-            dataKey='consumer_count'
-            hide
-          />
-          <YAxis
-            type='category'
-            dataKey='consumer_category'
-            tickFormatter={truncateLabel}
-            width={120}
-            axisLine={false}
-            tickLine={false}
-            tick={<YAxisTick />}
-          />
-          <Bar
-            dataKey='consumer_count'
-            fill='#245CC0'
-            barSize={20}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+        <Bar
+          dataKey='consumer_count'
+          fill='#245CC0'
+          barSize={20}
+        />
+      </BarChart>
+    </ResponsiveContainer>
   )
 }
 

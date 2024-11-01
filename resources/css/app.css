@@ -294,7 +294,7 @@ body {
   .small-1stop-header {
     font-family: 'Poppins-Medium';
     font-size: 10px;
-    line-height: 24px;
+    line-height: 16px;
     text-transform: uppercase;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -306,6 +306,22 @@ body {
     font-size: 34px;
     font-weight: 800;
     line-height: 44px;
+    letter-spacing: -1px;
+  }
+  .mdmetric-1stop {
+    /* font-family: 'Poppins-ExtraBold'; */
+    font-style: normal;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 36px;
+    letter-spacing: -1px;
+  }
+  .smmetric-1stop {
+    /* font-family: 'Poppins-ExtraBold'; */
+    font-style: normal;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 28px;
     letter-spacing: -3px;
   }
   .axial-label-1stop {

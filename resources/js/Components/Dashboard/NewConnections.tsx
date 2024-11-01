@@ -1,6 +1,6 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
+import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts'
 import MoreButton from '../MoreButton'
 
 interface Properties {
@@ -75,57 +75,63 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
   }
 
   return (
-    <div className='flex h-full flex-col justify-between rounded-lg bg-white p-6'>
-      <div className='flex items-center justify-between'>
-        <div className='w-1/2 text-left'>
-          <h2 className='h1-1stop text-4xl font-bold'>
-            {withinSlaCount}/{receivedCount}
-          </h2>
-          <p className='body-1stop text-lg'>New Svc Connections</p>
-          <p className='body-1stop mb-6 text-lg'>Completed Within SLA</p>
+    <div className='flex h-full flex-col rounded-lg bg-white p-6'>
+      <div className='flex flex-row text-left'>
+        <div className='flex flex-col gap-2'>
+          {/* New Service Connections */}
+          <div className='flex flex-col gap-1 py-2'>
+            <p className='xlmetric-1stop'>
+              {withinSlaCount}/{receivedCount}
+            </p>
+            <p className='small-1stop-header'>
+              New Svc Connections <br /> Completed Within SLA
+            </p>
+          </div>
 
-          <div className='flex space-x-12'>
-            <div className='text-center'>
-              <div className='flex'>
-                <p className='text-3xl font-semibold'>{withinSlaCount}</p>
-              </div>
-              <p className='small-1stop font-extrabold'>Completed</p>
-              <p className='small-1stop font-extrabold'> Within SLA</p>
+          {/* SLA Stats */}
+          <div className='flex w-full space-x-2 py-1'>
+            <div className='flex w-1/2 flex-col'>
+              <p className='mdmetric-1stop'>{withinSlaCount}</p>
+              <p className='small-1stop-header'>
+                Completed <br /> Within SLA
+              </p>
             </div>
 
-            <div className='text-center'>
-              <div className='flex'>
-                <p className='text-3xl font-semibold'>{beyondSlaCount}</p>
-              </div>
-              <p className='small-1stop font-extrabold'>Completed </p>
-              <p className='small-1stop font-extrabold'> Beyond SLA</p>
+            <div className='flex w-1/2 flex-col'>
+              <p className='mdmetric-1stop'>{beyondSlaCount}</p>
+              <p className='small-1stop-header'>
+                Completed <br /> Beyond SLA{' '}
+              </p>
             </div>
           </div>
 
-          <div className='mt-5 flex space-x-12'>
-            <div className='text-center'>
-              <div className='flex'>
-                <p className='text-3xl font-semibold'>{avgWithinSlaDays.toFixed(2)}</p>
-                <p className='small-1stop ml-2 mt-3 font-bold'>Days</p>
+          {/* Pendency Stats */}
+          <div className='flex w-full space-x-2 py-1'>
+            <div className='flex w-1/2 flex-col'>
+              <div className='flex items-center space-x-1'>
+                <p className='mdmetric-1stop'>{avgWithinSlaDays.toFixed(2)}</p>
+                <p className='small-1stop'>Days</p>
               </div>
-              <p className='small-1stop font-bold'>Avg Pendency</p>
-              <p className='small-1stop font-bold'> Within SLA</p>
+              <div className='w-full'>
+                <p className='small-1stop-header'>Avg Pendency Within SLA </p>
+              </div>
             </div>
 
-            <div className='text-center'>
-              <div className='flex'>
-                <p className='text-3xl font-semibold'>{avgBeyondSlaDays.toFixed(2)}</p>
-                <p className='small-1stop ml-2 mt-3 font-bold'>Days</p>
+            <div className='flex w-1/2 flex-col'>
+              <div className='flex items-center space-x-1'>
+                <p className='mdmetric-1stop'>{avgBeyondSlaDays.toFixed(2)}</p>
+                <p className='small-1stop'>Days</p>
               </div>
-              <p className='small-1stop font-bold'>Avg Pendency </p>
-              <p className='small-1stop font-bold'> Beyond SLA</p>
+              <div className='w-full'>
+                <p className='small-1stop-header'>Avg Pendency Beyond SLA </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className='small-1stop w-1/2'>
+        <ResponsiveContainer className='small-1stop'>
           <PieChart
-            width={300}
+            width={200}
             height={200}
           >
             <Tooltip />
@@ -146,7 +152,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
             </Pie>
             <Legend content={renderLegend} />
           </PieChart>
-        </div>
+        </ResponsiveContainer>
       </div>
       <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
         <MoreButton />
