@@ -184,9 +184,11 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
         )}
       </div>
 
-      <Link href='/dataset/37'>
-        <MoreButton />
-      </Link>
+      <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
+        <Link href='/dataset/37'>
+          <MoreButton />
+        </Link>
+      </div>
 
       {/* <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p> */}
     </div>

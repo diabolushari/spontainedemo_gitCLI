@@ -15,7 +15,7 @@ const AccordionItem = ({ title, children, isOpen, onAccortdionClick }: Propertie
       <div
         className={`${
           isOpen ? 'border-b-2' : ''
-        } body-1stop flex w-full justify-between border-b px-2 py-2 text-1stop-gray`}
+        } body-1stop flex w-full justify-between px-2 py-2 text-slate-700`}
         onClick={onAccortdionClick}
       >
         <div className='flex flex-col gap-2 px-4 py-1 md:flex-row md:gap-10'>
