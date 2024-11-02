@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
+import MoreButton from '../MoreButton'
 
 interface Properties {
   section_code?: string
@@ -64,6 +66,14 @@ const PowerInterruptionTrend = ({ section_code, levelName, levelCode }: Properti
             </AreaChart>
           </ResponsiveContainer>
         )}
+      </div>
+      <div className='mt-4 flex items-end justify-end hover:cursor-pointer hover:opacity-50'>
+        <Link
+          href='/dataset/40'
+          className='mt-6'
+        >
+          <MoreButton />
+        </Link>
       </div>
     </div>
   )
