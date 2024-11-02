@@ -4,6 +4,7 @@ import useFetchList from '@/hooks/useFetchList'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -54,29 +55,31 @@ const TotalBilled = ({ section_code, levelName, levelCode }: Properties) => {
   return (
     <Card className='flex w-full flex-col space-x-1 p-4'>
       <div className='xlmetric-1stop mb-1'>
-        {isLoading ? <Skeleton /> : formatNumber(totalbilled)}
+        ₹{isLoading ? <Skeleton /> : formatNumber(totalbilled)}
       </div>
       <p className='body-1stop mb-4'>Total Billed</p>
       <div className='grid w-1/2 grid-cols-2 gap-2 text-left'>
         <div>
-          <p className='h3-1stop'>{isLoading ? <Skeleton /> : formatNumber(domesticLT)}</p>
+          <p className='h3-1stop'>₹{isLoading ? <Skeleton /> : formatNumber(domesticLT)}</p>
           <p className='small-1stop'>DOMESTIC - LT</p>
         </div>
         <div>
-          <p className='h3-1stop'>{isLoading ? <Skeleton /> : formatNumber(otherLT)}</p>
+          <p className='h3-1stop'>₹{isLoading ? <Skeleton /> : formatNumber(otherLT)}</p>
           <p className='small-1stop'>OTHERS - LT</p>
         </div>
         <div>
-          <p className='h3-1stop space-x-2'>{isLoading ? <Skeleton /> : formatNumber(ehtAll)}</p>
+          <p className='h3-1stop space-x-2'>₹{isLoading ? <Skeleton /> : formatNumber(ehtAll)}</p>
           <p className='small-1stop'>EHT - ALL</p>
         </div>
         <div>
-          <p className='h3-1stop space-x-4'>{isLoading ? <Skeleton /> : formatNumber(htAll)}</p>
+          <p className='h3-1stop space-x-4'>₹{isLoading ? <Skeleton /> : formatNumber(htAll)}</p>
           <p className='small-1stop'>HT - ALL</p>
         </div>
       </div>
-      <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
-        <MoreButton />
+      <div className='mt-2 flex justify-end hover:cursor-pointer hover:opacity-50'>
+        <Link href='/dataset/41'>
+          <MoreButton />
+        </Link>
       </div>
     </Card>
   )

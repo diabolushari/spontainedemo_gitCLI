@@ -4,6 +4,7 @@ import useFetchList from '@/hooks/useFetchList'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -41,31 +42,33 @@ const TotalCollected = ({ section_code, levelName, levelCode }: Properties) => {
   return (
     <Card className='flex w-full flex-col space-x-1 p-4'>
       <div className='xlmetric-1stop mb-1'>
-        {isLoading ? <Skeleton /> : formatNumber(totalCollected)}
+        ₹{isLoading ? <Skeleton /> : formatNumber(totalCollected)}
       </div>
       <p className='body-1stop mb-4'>Total Collected</p>
 
       {/* Display LT-ALL */}
       <div className='mb-4 grid w-full text-left'>
         <div>
-          <p className='h3-1stop'> {isLoading ? <Skeleton /> : formatNumber(ltAll)}</p>
+          <p className='h3-1stop'>₹ {isLoading ? <Skeleton /> : formatNumber(ltAll)}</p>
           <p className='small-1stop'>LT-ALL</p>
         </div>
       </div>
 
       <div className='grid w-1/2 grid-cols-2 gap-2 text-left'>
         <div>
-          <p className='h3-1stop'> {isLoading ? <Skeleton /> : formatNumber(ehtAll)}</p>
+          <p className='h3-1stop'>₹ {isLoading ? <Skeleton /> : formatNumber(ehtAll)}</p>
           <p className='small-1stop'>EHT - ALL</p>
         </div>
         <div>
-          <p className='h3-1stop'> {isLoading ? <Skeleton /> : formatNumber(htAll)}</p>
+          <p className='h3-1stop'>₹ {isLoading ? <Skeleton /> : formatNumber(htAll)}</p>
           <p className='small-1stop'>HT - ALL</p>
         </div>
       </div>
 
       <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
-        <MoreButton />
+        <Link href='/dataset/42'>
+          <MoreButton />
+        </Link>
       </div>
     </Card>
   )
