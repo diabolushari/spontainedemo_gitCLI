@@ -8,6 +8,7 @@ use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
 use App\Http\Controllers\DataLoader\QueryListController;
+use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
@@ -151,6 +152,9 @@ Route::get('find-level', FindLevelController::class)
 
 Route::get('dataset/{subsetDetail}', SubsetTableController::class)
     ->name('subset.table');
+
+Route::get('office-list', OfficeListController::class)
+    ->name('office-list');
 
 Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
 

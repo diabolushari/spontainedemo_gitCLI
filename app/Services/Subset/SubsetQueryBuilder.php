@@ -10,6 +10,7 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use App\Services\DataTable\JoinDataTable;
 use App\Services\DistributionHierarchy\GetHierarchyTableDetail;
+use App\Services\DistributionHierarchy\OfficeList;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,8 @@ readonly class SubsetQueryBuilder
 
     public function __construct(
         private JoinDataTable $joinDataTable,
-        private GetRelativeTime $getRelativeTime
+        private GetRelativeTime $getRelativeTime,
+        private OfficeList $officeList
     ) {}
 
     public function query(SubsetDetail $subsetDetail, bool $isSummary = false, string $summaryGroupBy = 'region'): Builder
@@ -66,8 +68,6 @@ readonly class SubsetQueryBuilder
                 $summaryGroupBy
             );
         }
-
-        //        dd($groupingColumns);
 
         $selectStatement = implode(',', [
             ...$selectColumns,
@@ -200,13 +200,13 @@ readonly class SubsetQueryBuilder
             if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
                 return;
             }
-            $hierarchyQuery = $this->joinDataTable->join($hierarchyTable)
+            $hierarchyQuery = $this->officeList->get($hierarchyTable)
                 ->selectRaw(
                     'section_name_record.name as section_name, '
                     .'section_code as hierarchy_section_code'
                 );
 
-            $query->joinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
+            $query->leftJoinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
                 $join->on(
                     $detail->table_name.'.section_code',
                     '=',
@@ -266,7 +266,7 @@ readonly class SubsetQueryBuilder
                 $groupingStatement = 'hierarchy.subdivision_code';
             }
 
-            $hierarchyQuery = $this->joinDataTable->join($hierarchyTable)
+            $hierarchyQuery = $this->officeList->get($hierarchyTable)
                 ->selectRaw(
                     'section_code as hierarchy_section_code, '
                     .$joinSelect
