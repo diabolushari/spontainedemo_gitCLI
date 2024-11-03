@@ -4,15 +4,25 @@ import React from 'react'
 import SubsetAccordionTable from '@/Components/Dashboard/SubsetAccordionView/SubsetAccordionTable'
 import { SubsetDetail } from '@/interfaces/data_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 
 interface Props {
   office: OfficeHierarchyNode
   subset: SubsetDetail
   cols: TableColName[]
   summary: Record<string, string>[]
+  searchString: string
+  loadingSummary?: boolean
 }
 
-export default function SubsetAccordionItem({ office, subset, summary, cols }: Readonly<Props>) {
+export default function SubsetAccordionItem({
+  office,
+  subset,
+  summary,
+  cols,
+  searchString,
+  loadingSummary = false,
+}: Readonly<Props>) {
   const [isOpen, setIsOpen] = React.useState(false)
   const summaryRecord = summary.find((record) => record.office_code === office.office_code)
 
@@ -28,23 +38,25 @@ export default function SubsetAccordionItem({ office, subset, summary, cols }: R
           <p className='subheader-sm-1stop uppercase text-black'>
             {office.level} : <b>{office.office_name}</b>
           </p>
-          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
-            {cols.map((col) => (
-              <div
-                className='flex flex-col'
-                key={col.source}
-              >
-                <p className=''>{col.name}</p>
-                <p className='mdmetric-1stop text-black'>
-                  {summaryRecord == null
-                    ? '-'
-                    : /^\d+\.\d+$/.test(summaryRecord[col.source])
-                      ? Number(summaryRecord[col.source]).toFixed(2)
-                      : summaryRecord[col.source]}
-                </p>
-              </div>
-            ))}
-          </div>
+          <FullSpinnerWrapper processing={loadingSummary}>
+            <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
+              {cols.map((col) => (
+                <div
+                  className='flex flex-col'
+                  key={col.source}
+                >
+                  <p className=''>{col.name}</p>
+                  <p className='mdmetric-1stop text-black'>
+                    {summaryRecord == null
+                      ? '-'
+                      : /^\d+\.\d+$/.test(summaryRecord[col.source])
+                        ? Number(summaryRecord[col.source]).toFixed(2)
+                        : summaryRecord[col.source]}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </FullSpinnerWrapper>
         </div>
         <div className='flex justify-center rounded-full bg-1stop-accent2 p-4 hover:cursor-pointer hover:bg-1stop-highlight'>
           <ChevronDownIcon
@@ -67,12 +79,15 @@ export default function SubsetAccordionItem({ office, subset, summary, cols }: R
                 subset={subset}
                 summary={summary}
                 cols={cols}
+                searchString={searchString}
+                loadingSummary={loadingSummary}
               />
             ))}
-          {office.level === 'subdivision' && (
+          {(office.level === 'subdivision' || office.level === 'section') && (
             <SubsetAccordionTable
               subset={subset}
               officeCode={office.office_code}
+              searchString={searchString}
             />
           )}
         </div>

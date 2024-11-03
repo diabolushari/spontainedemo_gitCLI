@@ -6,14 +6,19 @@ import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 interface Props {
   subset: SubsetDetail
   officeCode: string
+  searchString: string
 }
 
-export default function SubsetAccordionTable({ subset, officeCode }: Readonly<Props>) {
+export default function SubsetAccordionTable({
+  subset,
+  officeCode,
+  searchString,
+}: Readonly<Props>) {
   const [data, dataLoading] = useFetchList<DataTableItem>(
     route('subset.show', {
       office_code: officeCode,
       subsetDetail: subset,
-    })
+    }) + `&${searchString}`
   )
 
   return (

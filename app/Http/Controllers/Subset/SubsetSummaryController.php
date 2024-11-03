@@ -32,12 +32,14 @@ class SubsetSummaryController extends Controller implements HasMiddleware
         $circle = $queryBuilder->query($subsetDetail, true, 'circle')->get();
         $division = $queryBuilder->query($subsetDetail, true, 'division')->get();
         $subdivision = $queryBuilder->query($subsetDetail, true, 'subdivision')->get();
+        $section = $queryBuilder->query($subsetDetail, true, 'section')->get();
 
         return response()->json([
             ...$region,
             ...$circle,
             ...$division,
             ...$subdivision,
+            ...$section,
         ]);
 
     }

@@ -84,7 +84,7 @@ const createHierarchy = (offices: OfficeInfo[]): OfficeHierarchyNode[] => {
 }
 
 export default function useOfficeHierarchy() {
-  const [offices, loadingHierarchy] = useFetchList<OfficeInfo>(route('subset.level'))
+  const [offices, loadingHierarchy] = useFetchList<OfficeInfo>(route('office-list'))
 
   const hierarchy = useMemo(() => {
     if (offices == null) {

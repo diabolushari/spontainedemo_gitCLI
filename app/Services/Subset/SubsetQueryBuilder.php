@@ -266,6 +266,12 @@ readonly class SubsetQueryBuilder
                 $groupingStatement = 'hierarchy.subdivision_code';
             }
 
+            if ($groupBy == 'section') {
+                $joinSelect = 'section_code_record.name as section_code';
+                $selectStatement = 'hierarchy.section_code as office_code';
+                $groupingStatement = 'hierarchy.section_code';
+            }
+
             $hierarchyQuery = $this->officeList->get($hierarchyTable)
                 ->selectRaw(
                     'section_code as hierarchy_section_code, '

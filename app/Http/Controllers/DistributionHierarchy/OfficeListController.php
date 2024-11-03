@@ -27,7 +27,17 @@ class OfficeListController extends Controller implements HasMiddleware
 
         $dataDetail = $this->getDetail();
 
+        $query = $officeList->get($dataDetail);
+
+        if ($query != null) {
+            $selectDimensions = '';
+            foreach ($dataDetail->dimensionFields as $dimension) {
+                $selectDimensions .= ', '.$dimension->column.'_record.name as '.$dimension->column;
+            }
+            $query->selectRaw("$dataDetail->table_name.* $selectDimensions");
+        }
+
         return response()
-            ->json($officeList->get($dataDetail)?->get());
+            ->json($query?->get());
     }
 }

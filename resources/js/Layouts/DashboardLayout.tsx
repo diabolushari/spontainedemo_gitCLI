@@ -37,6 +37,8 @@ export default function DashboardLayout({
   const [levelTypeName, setLevelTypeName] = useState('')
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
 
+  console.log(level)
+
   useEffect(() => {
     switch (level?.level) {
       case 'region':
@@ -89,15 +91,10 @@ export default function DashboardLayout({
 
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
-  const userInfo = usePage().props.auth as unknown as { user: User }
-  const User = useMemo(() => {
-    if (userInfo.user) {
-      return userInfo.user
-    }
-    return null
-  }, [userInfo])
-  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : ''
-  const userName = User?.name || ''
+  const { user } = usePage().props.auth as unknown as { user: User }
+
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : ''
+  const userName = user?.name || ''
 
   return (
     <div className='flex w-full flex-col sm:relative'>
@@ -107,7 +104,6 @@ export default function DashboardLayout({
           setIsShowSideBar={setIsShowSideBar}
           type={type}
         />
-
         <div className='absolute flex w-full justify-between gap-2 pl-28 pr-5 pt-10'>
           <div className=''>
             <p className='subheader-1stop'>{type}</p>
@@ -154,7 +150,6 @@ export default function DashboardLayout({
                 </svg>
               </div>
             </div>
-
             {isProfileDropdown && (
               <div className='flex justify-center'>
                 <div className='bg:opacity-100 z-50 mt-4 w-48 rounded-xl border border-1stop-highlight bg-1stop-white p-2 shadow sm:absolute sm:right-10'>
@@ -196,7 +191,6 @@ export default function DashboardLayout({
           </div>
         </div>
       </div>
-
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 100 }}
