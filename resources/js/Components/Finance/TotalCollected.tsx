@@ -20,7 +20,6 @@ export interface TotalCollectedValues {
 
 const TotalCollected = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<TotalCollectedValues>(`subset/35?${levelName}=${levelCode}`)
-  console.log(graphValues)
 
   const totalCollected = graphValues.reduce((sum, item) => sum + item.total_collection, 0)
 

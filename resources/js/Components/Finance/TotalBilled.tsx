@@ -13,33 +13,33 @@ interface Properties {
 }
 
 export interface TotalBilledValues {
-  billed_consumers: number
   consumer_category: string
   data_date: string
   voltage: string
+  total_consumption: number
 }
 
 const TotalBilled = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<TotalBilledValues>(`subset/34?${levelName}=${levelCode}`)
+  const [graphValues] = useFetchList<TotalBilledValues>(`subset/43?${levelName}=${levelCode}`)
   console.log(graphValues)
 
-  const totalbilled = graphValues.reduce((sum, item) => sum + item.billed_consumers, 0)
+  const totalbilled = graphValues.reduce((sum, item) => sum + item.total_consumption, 0)
 
   const domesticLT = graphValues
     .filter((item) => item.consumer_category === 'DOMESTIC' && item.voltage === 'LT')
-    .reduce((sum, item) => sum + item.billed_consumers, 0)
+    .reduce((sum, item) => sum + item.total_consumption, 0)
 
   const otherLT = graphValues
     .filter((item) => item.consumer_category !== 'DOMESTIC' && item.voltage === 'LT')
-    .reduce((sum, item) => sum + item.billed_consumers, 0)
+    .reduce((sum, item) => sum + item.total_consumption, 0)
 
   const ehtAll = graphValues
     .filter((item) => item.voltage === 'EHT')
-    .reduce((sum, item) => sum + item.billed_consumers, 0)
+    .reduce((sum, item) => sum + item.total_consumption, 0)
 
   const htAll = graphValues
     .filter((item) => item.voltage === 'HT')
-    .reduce((sum, item) => sum + item.billed_consumers, 0)
+    .reduce((sum, item) => sum + item.total_consumption, 0)
 
   const formatNumber = (value: number) => {
     if (value >= 1000000) {
@@ -77,7 +77,7 @@ const TotalBilled = ({ section_code, levelName, levelCode }: Properties) => {
         </div>
       </div>
       <div className='mt-2 flex justify-end hover:cursor-pointer hover:opacity-50'>
-        <Link href='/dataset/41'>
+        <Link href='/dataset/44'>
           <MoreButton />
         </Link>
       </div>

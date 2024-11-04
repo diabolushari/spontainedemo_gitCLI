@@ -28,7 +28,6 @@ export interface SlaPerformanceValues {
 
 const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<SlaPerformanceValues>(`subset/23?office_code=${levelCode}`)
-  console.log(graphValues)
 
   // Group and aggregate data by `service_group`
   const groupedData = Array.from(

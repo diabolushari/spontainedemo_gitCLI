@@ -4,10 +4,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import React, { useState } from 'react'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
-
-const ServideDeliveryIndexPage = () => {
+const FinanceIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
@@ -48,4 +45,4 @@ const ServideDeliveryIndexPage = () => {
   )
 }
 
-export default ServideDeliveryIndexPage
+export default FinanceIndexPage
