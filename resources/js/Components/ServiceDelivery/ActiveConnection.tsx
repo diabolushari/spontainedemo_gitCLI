@@ -19,6 +19,14 @@ export interface InactiveGraphValues {
   data_date: string
   consumer_category: string
 }
+export const formatNumber = (value: number) => {
+  if (value >= 1000000) {
+    return (value / 1000000).toFixed(2) + ' M'
+  } else if (value >= 1000) {
+    return (value / 1000).toFixed(2) + ' K'
+  }
+  return value.toString()
+}
 
 const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<InactiveGraphValues>(`subset/17?${levelName}=${levelCode}`)
@@ -36,15 +44,6 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
   const nonDomestic = graphValues.filter(
     (value) => value.consumer_category !== 'DOMESTIC' && value.consumer_category !== null
   )
-
-  const formatNumber = (value: number) => {
-    if (value >= 1000000) {
-      return (value / 1000000).toFixed(2) + ' M'
-    } else if (value >= 1000) {
-      return (value / 1000).toFixed(2) + ' K'
-    }
-    return value.toString()
-  }
 
   return (
     <Card className='flex w-full flex-col space-x-1 p-4'>
