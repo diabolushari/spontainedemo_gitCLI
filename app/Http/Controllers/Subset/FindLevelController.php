@@ -27,6 +27,9 @@ class FindLevelController extends Controller
 
     public function __invoke(Request $request, DistributionHierarchy $findDistributionLevel, QueryDataTable $queryDataTable): JsonResponse
     {
+        // if request has office_code return information about that office_code
+        // instead of returning information about the logged-in user
+
         $levelInfo = $findDistributionLevel->findLevel(Auth::user()->office_code);
 
         if ($levelInfo == null) {

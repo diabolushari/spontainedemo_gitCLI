@@ -2,14 +2,26 @@ import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { SubsetDateField, SubsetDetail, SubsetMeasureField } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import SubsetAccordionView from '@/Components/Dashboard/SubsetAccordionView/SubsetAccordionView'
 import AccordionItem from '@/ui/Accordian/AccordianItem'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
+import SubsetColumnsFilter from '@/Components/Dashboard/SubsetAccordionView/SubsetColumnsFilter'
 
 interface Props {
   subset: SubsetDetail
   filters: Record<string, string | undefined | null>
+}
+
+export interface SubsetFieldItem {
+  id: number
+  name: string
+  checked: boolean
+}
+
+const checkFieldStatus = (fields: SubsetFieldItem[], id: number): boolean => {
+  const field = fields.find((field) => field.id === id)
+  return field?.checked ?? true
 }
 
 const initFilterValues = (filters: Record<string, string | undefined | null>) => {
@@ -32,6 +44,7 @@ export default function SubsetTablePage({ subset, filters }: Readonly<Props>) {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
+  const [fields, setFields] = useState<SubsetFieldItem[]>([])
 
   const [isFilterOpen, setIsFilterOpen] = useState(true)
   const [isColumnsOpen, setIsColumnsOpen] = useState(false)
@@ -44,6 +57,17 @@ export default function SubsetTablePage({ subset, filters }: Readonly<Props>) {
     }
     setSearchText(params)
   }, [])
+
+  const filteredSubset = useMemo(() => {
+    return {
+      ...subset,
+      dates: subset.dates?.filter((date) => checkFieldStatus(fields, date.id ?? 0)) ?? [],
+      dimensions:
+        subset.dimensions?.filter((dimension) => checkFieldStatus(fields, dimension.id ?? 0)) ?? [],
+      measures:
+        subset.measures?.filter((measure) => checkFieldStatus(fields, measure.id ?? 0)) ?? [],
+    }
+  }, [subset, fields])
 
   return (
     <DashboardLayout
@@ -61,7 +85,7 @@ export default function SubsetTablePage({ subset, filters }: Readonly<Props>) {
             <Card>
               {levelCode != null && levelCode != '' && (
                 <SubsetAccordionView
-                  subset={subset}
+                  subset={filteredSubset}
                   officeCode={levelCode}
                   searchString={searchText}
                 />
@@ -93,7 +117,11 @@ export default function SubsetTablePage({ subset, filters }: Readonly<Props>) {
                 onAccortdionClick={() => setIsColumnsOpen((old) => !old)}
                 isOpen={isColumnsOpen}
               >
-                <></>
+                <SubsetColumnsFilter
+                  subset={subset}
+                  fields={fields}
+                  setFields={setFields}
+                />
               </AccordionItem>
             </Card>
           </div>

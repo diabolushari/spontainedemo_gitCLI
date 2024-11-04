@@ -32,12 +32,14 @@ export default function DashboardLayout({
   setLevelName,
   setLevelCode,
 }: Properties) {
+  const filters = usePage().props.filters as unknown as {
+    office_code?: string | null
+  }
+
   const [dropdownValues] = useFetchList<OfficeInfo>(route('subset.level'))
   const [levelType, setLevelType] = useState('')
   const [levelTypeName, setLevelTypeName] = useState('')
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
-
-  console.log(level)
 
   useEffect(() => {
     switch (level?.level) {
