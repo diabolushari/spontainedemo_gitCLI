@@ -1,7 +1,13 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
-import { DataDetail, SubsetMeasureField, TableMeasureField } from '@/interfaces/data_interfaces'
+import {
+  DataDetail,
+  sortOrder,
+  SubsetMeasureField,
+  TableMeasureField,
+} from '@/interfaces/data_interfaces'
 import React, { useMemo } from 'react'
+import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 
 interface Props {
   dataDetail: DataDetail
@@ -9,7 +15,7 @@ interface Props {
   onSubmit: (data: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>) => void
   selectedField: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'> | null
   usingGroup: boolean
-  removeField: (fieldId: number) => void
+  removeField: (subsetColumn: string) => void
 }
 
 const WEIGHTED_AVG = 'WEIGHTED_AVG'
@@ -33,6 +39,8 @@ export default function AddSubsetMeasure({
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     field_id: selectedField?.field_id ?? '',
+    subset_field_name: selectedField?.subset_field_name ?? '',
+    sort_order: selectedField?.sort_order ?? '',
     aggregation: selectedField?.aggregation ?? '',
     expression: selectedField?.expression ?? '',
     weight_field_id: selectedField?.weight_field_id ?? '',
@@ -54,6 +62,21 @@ export default function AddSubsetMeasure({
         list: measureFields,
         dataKey: 'id',
         displayKey: 'field_name',
+      },
+      subset_field_name: {
+        type: 'text' as const,
+        setValue: setFormValue('subset_field_name'),
+        label: 'Name On Subset',
+      },
+      sort_order: {
+        type: 'select' as const,
+        setValue: setFormValue('sort_order'),
+        label: 'Sort Order',
+        list: sortOrder,
+        dataKey: 'value',
+        displayKey: 'name',
+        showAllOption: true,
+        allOptionText: 'Do Not Use For Sorting Subset',
       },
       use_expression: {
         type: 'checkbox' as const,
@@ -96,11 +119,14 @@ export default function AddSubsetMeasure({
 
   const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
-    if (formData.field_id == '') {
+    if (formData.field_id == '' || formData.subset_field_name == '') {
       return
     }
     onSubmit({
       field_id: Number(formData.field_id),
+      subset_field_name: formData.subset_field_name,
+      subset_column: generateSnakeCaseName(formData.subset_field_name),
+      sort_order: formData.sort_order == '' ? null : formData.sort_order,
       aggregation: usingGroup ? formData.aggregation : null,
       expression: formData.use_expression ? formData.expression : null,
       weight_field_id:
@@ -112,7 +138,7 @@ export default function AddSubsetMeasure({
 
   const handleRemoveField = () => {
     if (selectedField) {
-      removeField(selectedField.field_id)
+      removeField(selectedField.subset_column)
     }
   }
 

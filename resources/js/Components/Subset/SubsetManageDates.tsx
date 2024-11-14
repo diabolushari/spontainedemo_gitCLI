@@ -5,6 +5,7 @@ import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
 import CardGridView from '../ListingPage/CardGridView'
 import { ListItemKeys } from '../ListingPage/ListResourcePage'
 import AddSubsetDateForm from './CreateForm/AddSubsetDateForm'
+import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
 
 interface Props {
   dataDetail: DataDetail
@@ -23,7 +24,6 @@ function SubsetManageDates({
 }: Readonly<Props>) {
   const data = useMemo(() => {
     return addedDateFields.map((addedField) => {
-      const dateField = dateFields.find((dateField) => dateField.id === addedField.field_id)
       let value = ''
 
       if (addedField.use_dynamic_date) {
@@ -35,8 +35,11 @@ function SubsetManageDates({
       }
 
       return {
+        subset_column: addedField.subset_column,
         field_id: addedField.field_id,
-        field: `${dateField?.field_name} ${addedField.use_expression ? addedField.date_field_expression : ''}`,
+        field: addedField.subset_field_name,
+        expression: addedField.use_expression ? addedField.date_field_expression : '',
+        sort: addedField.sort_order ?? 'Not Used For Sorting',
         value,
         usingLastFoundData:
           addedField.use_last_found_data === 1
@@ -45,7 +48,7 @@ function SubsetManageDates({
         actions: [],
       }
     })
-  }, [dateFields, addedDateFields])
+  }, [addedDateFields])
 
   const [selectedField, setSelectedField] = useState<Omit<
     SubsetDateField,
@@ -61,10 +64,21 @@ function SubsetManageDates({
         hideLabel: true,
       },
       {
-        key: 'value',
-        label: 'Value',
+        key: 'expression',
+        label: 'Expression',
         isCardHeader: false,
-        hideLabel: true,
+        isShownInCard: true,
+      },
+      {
+        key: 'sort',
+        label: 'Sort Order',
+        isCardHeader: false,
+        isShownInCard: true,
+      },
+      {
+        key: 'value',
+        label: 'Filter Range',
+        isCardHeader: false,
         isShownInCard: true,
       },
       {
@@ -91,26 +105,7 @@ function SubsetManageDates({
   const handleNewField = useCallback(
     (newField: Omit<SubsetDateField, 'id' | 'subset_detail_id'>) => {
       setShowDateForm(false)
-      if (selectedField != null) {
-        setAddedDateFields((oldValues) => {
-          return oldValues.map((field) => {
-            if (field.field_id === selectedField.field_id) {
-              return { ...newField }
-            }
-            return field
-          })
-        })
-        return
-      }
-
-      setAddedDateFields((oldValues) => {
-        //check if field already exists
-        if (oldValues.some((field) => field.field_id === newField.field_id)) {
-          return oldValues
-        }
-
-        return [...oldValues, newField]
-      })
+      upsertSubsetFields(selectedField, newField, setAddedDateFields)
     },
     [setAddedDateFields, selectedField]
   )
@@ -127,10 +122,10 @@ function SubsetManageDates({
   )
 
   const removeField = useCallback(
-    (fieldId: number) => {
+    (subsetColumn: string) => {
       setShowDateForm(false)
       setAddedDateFields((oldValues) => {
-        return oldValues.filter((field) => field.field_id !== fieldId)
+        return oldValues.filter((field) => field.subset_column !== subsetColumn)
       })
     },
     [setAddedDateFields]
@@ -142,7 +137,7 @@ function SubsetManageDates({
       <div className=''>
         <CardGridView
           keys={keys}
-          primaryKey='field_id'
+          primaryKey='subset_column'
           rows={data}
           onAddClick={onAddClick}
           layoutStyles='lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'

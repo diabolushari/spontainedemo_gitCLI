@@ -54,12 +54,12 @@ export default function SubsetAccordionView({ subset, officeCode, searchString }
       }
       const fieldName =
         measure.info.unit_field_name != null && measure.info.unit_column == null
-          ? `${measure.info.field_name} (${measure.info.unit_field_name})`
-          : measure.info.field_name
+          ? `${measure.subset_field_name} (${measure.info.unit_field_name})`
+          : measure.subset_field_name
 
       cols.push({
         name: fieldName ?? '',
-        source: measure.info.column ?? '',
+        source: measure.subset_column ?? '',
         type: 'number',
       })
       if (measure.info.unit_column != null) {
@@ -76,7 +76,6 @@ export default function SubsetAccordionView({ subset, officeCode, searchString }
 
   const filteredHierarchy = useMemo(() => {
     if (officeCode == null || officeCode == '') {
-      console.log(officeCode)
       return hierarchy
     }
     const records: OfficeHierarchyNode[] = []

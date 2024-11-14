@@ -11,6 +11,9 @@ class SubsetMeasureField extends Data
 {
     public function __construct(
         public int $fieldId,
+        public string $subsetFieldName,
+        public string $subsetColumn,
+        public ?string $sortOrder,
         public ?string $aggregation,
         public ?string $expression,
         public ?int $weightFieldId,

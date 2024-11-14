@@ -1,14 +1,20 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
-import { DataDetail, SubsetDateField, TableDateField } from '@/interfaces/data_interfaces'
+import {
+  DataDetail,
+  sortOrder,
+  SubsetDateField,
+  TableDateField,
+} from '@/interfaces/data_interfaces'
 import React, { useMemo } from 'react'
+import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 
 interface Props {
   dataDetail: DataDetail
   selectedField: Omit<SubsetDateField, 'id' | 'subset_detail_id'> | null
   dateFields: TableDateField[]
   onSubmit: (data: Omit<SubsetDateField, 'id' | 'subset_detail_id'>) => void
-  removeField: (id: number) => void
+  removeField: (subsetColumn: string) => void
 }
 
 export const dynamicDateOptions = [
@@ -56,6 +62,7 @@ export default function AddSubsetDateForm({
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     field_id: selectedField?.field_id.toString() ?? '',
+    subset_field_name: selectedField?.subset_field_name ?? '',
     use_expression: selectedField?.use_expression === 1,
     date_field_expression: selectedField?.date_field_expression ?? '',
     use_static_date: selectedField?.use_dynamic_date !== 1,
@@ -68,6 +75,7 @@ export default function AddSubsetDateForm({
     dynamic_end_type: selectedField?.dynamic_end_type ?? 'Today',
     dynamic_end_offset: selectedField?.dynamic_end_offset?.toString() ?? '0',
     dynamic_end_unit: selectedField?.dynamic_end_unit ?? 'days',
+    sort_order: selectedField?.sort_order ?? '',
   })
 
   const formItems = useMemo(<
@@ -86,6 +94,23 @@ export default function AddSubsetDateForm({
         dataKey: 'id',
         displayKey: 'field_name',
         colPositionAdjustment: 'col-span-3',
+      },
+      subset_field_name: {
+        type: 'text' as const,
+        setValue: setFormValue('subset_field_name'),
+        label: 'Name On Subset',
+        colPositionAdjustment: 'col-span-3',
+      },
+      sort_order: {
+        type: 'select' as const,
+        setValue: setFormValue('sort_order'),
+        label: 'Sort Order',
+        list: sortOrder,
+        dataKey: 'value',
+        displayKey: 'name',
+        colPositionAdjustment: 'col-span-3',
+        showAllOption: true,
+        allOptionText: 'Do Not Use For Sorting',
       },
       use_expression: {
         type: 'checkbox' as const,
@@ -182,7 +207,7 @@ export default function AddSubsetDateForm({
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (formData.field_id == '') {
+    if (formData.field_id == '' || formData.subset_field_name == '') {
       return
     }
 
@@ -193,6 +218,8 @@ export default function AddSubsetDateForm({
 
     onSubmit({
       field_id: Number(formData.field_id),
+      subset_field_name: formData.subset_field_name,
+      subset_column: generateSnakeCaseName(formData.subset_field_name),
       use_expression: formData.use_expression ? 1 : 0,
       date_field_expression: formData.use_expression ? formData.date_field_expression : '',
       use_dynamic_date: formData.use_static_date ? 0 : 1,
@@ -207,12 +234,13 @@ export default function AddSubsetDateForm({
       dynamic_end_type: !formData.use_static_date ? formData.dynamic_end_type : null,
       dynamic_end_offset: !formData.use_static_date ? Number(formData.dynamic_end_offset) : null,
       dynamic_end_unit: !formData.use_static_date ? formData.dynamic_end_unit : null,
+      sort_order: formData.sort_order == '' ? null : formData.sort_order,
     })
   }
 
   const remove = () => {
     if (selectedField != null) {
-      removeField(selectedField.field_id)
+      removeField(selectedField.subset_column)
     }
   }
 

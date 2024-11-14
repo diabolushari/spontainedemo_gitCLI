@@ -17,8 +17,8 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
         return
       }
       cols.push({
-        name: date.info?.field_name ?? '',
-        source: date.info?.column ?? '',
+        name: date.subset_field_name ?? '',
+        source: date.subset_column ?? '',
         type: 'date',
       })
     })
@@ -30,8 +30,8 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
           return
         }
         cols.push({
-          name: dimension.info.field_name ?? '',
-          source: dimension.info.column ?? '',
+          name: dimension.subset_field_name ?? '',
+          source: dimension.subset_column ?? '',
           type: 'string',
         })
       })
@@ -40,18 +40,14 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
       if (measure.info == null) {
         return
       }
-      let fieldName =
+      const fieldName =
         measure.info.unit_field_name != null && measure.info.unit_column == null
-          ? `${measure.info.field_name} (${measure.info.unit_field_name})`
-          : measure.info.field_name
-
-        //   if (subset.group_data === 1) {
-        //     fieldName += ` (${measure.aggregation})`
-        //   }
+          ? `${measure.subset_field_name} (${measure.info.unit_field_name})`
+          : measure.subset_field_name
 
       cols.push({
         name: fieldName ?? '',
-        source: measure.info.column ?? '',
+        source: measure.subset_column ?? '',
         type: 'number',
       })
       if (measure.info.unit_column != null) {

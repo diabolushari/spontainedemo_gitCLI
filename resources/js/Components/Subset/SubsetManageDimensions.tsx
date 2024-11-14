@@ -1,10 +1,11 @@
 import { DataDetail, SubsetDimensionField, TableDimensionField } from '@/interfaces/data_interfaces'
 import StrongText from '@/typography/StrongText'
 import Modal from '@/ui/Modal/Modal'
-import { SetStateAction, useCallback, useMemo, useState } from 'react'
+import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
 import CardGridView from '../ListingPage/CardGridView'
 import { ListItemKeys } from '../ListingPage/ListResourcePage'
 import AddSubsetDimensionForm from './CreateForm/AddSubsetDimensionForm'
+import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
 
 interface Props {
   dataDetail: DataDetail
@@ -28,9 +29,6 @@ export default function SubsetManageDimensions({
 
   const data = useMemo(() => {
     return addedDimensionFields.map((addedField) => {
-      const dimensionField = dimensionFields.find(
-        (measureField) => measureField.id === addedField.field_id
-      )
       let appliedFilters = 'No Filters Applied'
       if (addedField.filter_values != null && addedField.filter_values.length > 0) {
         appliedFilters =
@@ -38,13 +36,16 @@ export default function SubsetManageDimensions({
       }
       return {
         field_id: addedField.field_id,
-        field: dimensionField?.field_name ?? '',
+        subset_column: addedField.subset_column,
+        sort: addedField.sort_order ?? 'Not Used For Sorting',
+        field: addedField.subset_field_name,
+        expression: addedField.column_expression ?? '-',
         filters: appliedFilters,
         is_filter: addedField.filter_only === 1 ? 'Is used only for filtering data.' : '',
         actions: [],
       }
     })
-  }, [dimensionFields, addedDimensionFields])
+  }, [addedDimensionFields])
 
   const keys = useMemo(() => {
     return [
@@ -53,6 +54,18 @@ export default function SubsetManageDimensions({
         label: 'Field',
         isCardHeader: true,
         hideLabel: true,
+      },
+      {
+        key: 'expression',
+        label: 'Expression',
+        isCardHeader: false,
+        isShownInCard: true,
+      },
+      {
+        key: 'sort',
+        label: 'Sort Order',
+        isCardHeader: false,
+        isShownInCard: true,
       },
       {
         key: 'is_filter',
@@ -84,35 +97,16 @@ export default function SubsetManageDimensions({
   const handleNewField = useCallback(
     (newField: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>) => {
       setShowDateForm(false)
-
-      if (selectedField != null) {
-        setAddedDimensionFields((oldValues) => {
-          return oldValues.map((field) => {
-            if (field.field_id === selectedField.field_id) {
-              return { ...newField }
-            }
-            return field
-          })
-        })
-        return
-      }
-
-      setAddedDimensionFields((oldValues) => {
-        //check if field already exists
-        if (oldValues.some((field) => field.field_id === newField.field_id)) {
-          return oldValues
-        }
-        return [...oldValues, newField]
-      })
+      upsertSubsetFields(selectedField, newField, setAddedDimensionFields)
     },
     [setAddedDimensionFields, selectedField]
   )
 
   const removeField = useCallback(
-    (id: number) => {
+    (subsetColumn: string) => {
       setShowDateForm(false)
       setAddedDimensionFields((oldValues) => {
-        return oldValues.filter((field) => field.field_id != id)
+        return oldValues.filter((field) => field.subset_column != subsetColumn)
       })
     },
     [setAddedDimensionFields]
@@ -135,7 +129,7 @@ export default function SubsetManageDimensions({
       <div className=''>
         <CardGridView
           keys={keys}
-          primaryKey='field_id'
+          primaryKey='subset_column'
           rows={data}
           onAddClick={onAddClick}
           layoutStyles='lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'

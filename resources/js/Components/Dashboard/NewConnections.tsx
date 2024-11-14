@@ -1,6 +1,6 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts'
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -22,6 +22,49 @@ export interface NewConnectionGraphValues {
   beyond_sla_cnt: number
   avg_beyond_sla_days: number
   avg_within_sla_days: number
+}
+
+interface LegendProps {
+  payload: {
+    color: string
+    type: string
+    value: string
+    payload: { name: string; value: number; color: string }[]
+  }[]
+}
+
+const CustomLegend = ({ payload }: LegendProps) => {
+  return (
+    <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
+      {payload.map(
+        (
+          entry: {
+            value: string
+            color: string
+          },
+          index: number
+        ) => {
+          return (
+            <li
+              key={`item-${index}`}
+              style={{ marginRight: 10, color: 'black' }}
+            >
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: 10,
+                  height: 10,
+                  backgroundColor: entry.color,
+                  marginRight: 5,
+                }}
+              />
+              {entry.value}
+            </li>
+          )
+        }
+      )}
+    </ul>
+  )
 }
 
 const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
@@ -65,31 +108,6 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
   ]
 
   const COLORS = ['#3E80E4', '#FCB216']
-
-  const renderLegend = (props: any) => {
-    const { payload } = props
-    return (
-      <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
-        {payload.map((entry: any, index: number) => (
-          <li
-            key={`item-${index}`}
-            style={{ marginRight: 10, color: 'black' }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                width: 10,
-                height: 10,
-                backgroundColor: entry.color,
-                marginRight: 5,
-              }}
-            />
-            {entry.value}
-          </li>
-        ))}
-      </ul>
-    )
-  }
 
   return (
     <div className='flex h-full flex-col rounded-lg bg-white p-6'>
@@ -178,7 +196,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
                   />
                 ))}
               </Pie>
-              <Legend content={renderLegend} />
+              <Legend content={CustomLegend} />
             </PieChart>
           </ResponsiveContainer>
         )}

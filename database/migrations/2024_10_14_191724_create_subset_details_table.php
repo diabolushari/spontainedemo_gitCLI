@@ -19,6 +19,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('data_details');
             $table->boolean('group_data')->default(0);
+            $table->unsignedInteger('rows_to_fetch')->nullable();
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()
@@ -27,6 +28,10 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('users');
             $table->timestamps();
+        });
+
+        Schema::table('subset_detail_dates', function (Illuminate\Database\Schema\Blueprint $table) {
+            $table->string('sort_order')->nullable();
         });
     }
 

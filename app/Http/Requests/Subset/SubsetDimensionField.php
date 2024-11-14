@@ -15,6 +15,9 @@ class SubsetDimensionField extends Data
     public function __construct(
         public int $fieldId,
         public int $filterOnly,
+        public string $subsetFieldName,
+        public string $subsetColumn,
+        public ?string $sortOrder,
         public ?string $columnExpression,
         public ?array $filters,
     ) {}

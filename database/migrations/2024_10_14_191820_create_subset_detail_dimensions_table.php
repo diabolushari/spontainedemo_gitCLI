@@ -17,6 +17,8 @@ return new class extends Migration
                 ->constrained('subset_details');
             $table->foreignId('field_id')
                 ->constrained('data_table_dimensions');
+            $table->string('subset_field_name');
+            $table->string('subset_column');
             $table->boolean('filter_only')->default(false);
             $table->string('column_expression')->nullable();
             $table->json('filters')->nullable();

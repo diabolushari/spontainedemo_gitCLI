@@ -17,6 +17,8 @@ return new class extends Migration
                 ->constrained('subset_details');
             $table->foreignId('field_id')
                 ->constrained('data_table_dates');
+            $table->string('subset_field_name');
+            $table->string('subset_column');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('use_dynamic_date')->default(false);

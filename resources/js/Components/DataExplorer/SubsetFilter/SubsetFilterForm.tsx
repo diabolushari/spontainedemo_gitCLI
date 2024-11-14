@@ -333,7 +333,7 @@ export default function SubsetFilterForm({
       }
       fields.push({
         fieldId: date.field_id,
-        fieldName: date.info.field_name ?? '',
+        fieldName: date.subset_field_name ?? '',
         column: date.info.column ?? '',
         type: 'date',
       })
@@ -345,7 +345,7 @@ export default function SubsetFilterForm({
       }
       fields.push({
         fieldId: dimension.field_id,
-        fieldName: dimension.info.field_name ?? '',
+        fieldName: dimension.subset_field_name ?? '',
         column: dimension.info.column ?? '',
         type: 'dimension',
       })
@@ -357,7 +357,7 @@ export default function SubsetFilterForm({
       }
       fields.push({
         fieldId: measure.field_id,
-        fieldName: measure.info.field_name ?? '',
+        fieldName: measure.subset_field_name ?? '',
         column: measure.info.column ?? '',
         type: 'number',
       })

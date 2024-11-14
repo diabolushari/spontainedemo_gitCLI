@@ -17,6 +17,9 @@ return new class extends Migration
                 ->constrained('subset_details');
             $table->foreignId('field_id')
                 ->constrained('data_table_measures');
+            $table->string('subset_field_name');
+            $table->string('subset_column');
+            $table->string('sort_order')->nullable();
             $table->string('column')->nullable();
             $table->string('aggregation')->nullable();
             $table->longText('expression')->nullable();

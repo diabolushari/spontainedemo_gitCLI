@@ -14,6 +14,9 @@ class SubsetDetailDate extends Model
     protected $fillable = [
         'subset_detail_id',
         'field_id',
+        'subset_field_name',
+        'subset_column',
+        'sort_order',
         'start_date',
         'end_date',
         'use_dynamic_date',

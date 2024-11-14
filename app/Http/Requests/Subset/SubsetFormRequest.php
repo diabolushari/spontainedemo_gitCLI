@@ -20,6 +20,7 @@ class SubsetFormRequest extends Data
         public string $name,
         #[Max(1000)]
         public ?string $description,
+        public ?int $maxRowsToFetch,
         public bool $groupData,
         public ?array $dates,
         public ?array $dimensions,

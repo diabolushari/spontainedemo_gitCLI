@@ -88,6 +88,8 @@ export interface SubsetDateField extends Model {
   subset_detail_id: number
   field_id: number
   start_date: string | null
+  subset_field_name: string
+  subset_column: string
   end_date: string | null
   use_expression: 0 | 1
   date_field_expression: string | null
@@ -99,14 +101,18 @@ export interface SubsetDateField extends Model {
   dynamic_end_type: string | null
   dynamic_end_offset: number | null
   dynamic_end_unit: string | null
+  sort_order: string | null
   info?: Partial<TableDateField>
 }
 
 export interface SubsetDimensionField extends Model {
   subset_detail_id: number
   field_id: number
+  subset_field_name: string
+  subset_column: string
   filter_only: 0 | 1
   column_expression: string | null
+  sort_order: string | null
   filters: number[] | null
   filter_values?: Partial<MetaData>[] | null
   info?: Partial<TableDimensionField>
@@ -115,9 +121,12 @@ export interface SubsetDimensionField extends Model {
 export interface SubsetMeasureField extends Model {
   subset_detail_id: number
   field_id: number
+  subset_field_name: string
+  subset_column: string
   aggregation: string | null
   expression: string | null
   weight_field_id: number | null
+  sort_order: string | null
   info?: Partial<TableMeasureField>
 }
 
@@ -253,4 +262,7 @@ export interface JobStatuses extends Model {
   total_records: string
 }
 
-
+export const sortOrder = [
+  { name: 'Ascending', value: 'ASC' },
+  { name: 'Descending', value: 'DESC' },
+]

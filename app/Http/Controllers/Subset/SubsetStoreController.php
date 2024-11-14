@@ -14,7 +14,6 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SubsetStoreController extends Controller implements HasMiddleware
 {
@@ -40,6 +39,7 @@ class SubsetStoreController extends Controller implements HasMiddleware
                 'description' => $request->description,
                 'data_detail_id' => $dataDetail->id,
                 'group_data' => $request->groupData,
+                'max_rows_to_fetch' => $request->maxRowsToFetch,
                 'created_by' => $user,
                 'updated_by' => $user,
             ]);
@@ -87,7 +87,6 @@ class SubsetStoreController extends Controller implements HasMiddleware
             }
             SubsetDetailMeasure::insert($measures);
         } catch (Exception $e) {
-            Log::info($e);
             DB::rollBack();
 
             return redirect()

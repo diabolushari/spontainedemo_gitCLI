@@ -34,13 +34,15 @@ readonly class SubsetQueryBuilder
         $selectColumns = [];
         /** @var string[] $measureColumns */
         $measureColumns = [];
+        /** @var SubsetFieldOrderInfo[] $orderColumns */
+        $orderColumns = [];
 
         if (! $isSummary) {
-            $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns);
-            $this->addDimensionFields($subsetDetail->dimensions, $groupingColumns, $selectColumns);
+            $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns, $orderColumns);
+            $this->addDimensionFields($subsetDetail->dimensions, $groupingColumns, $selectColumns, $orderColumns);
         }
 
-        $this->addMeasureFields($subsetDetail->measures, $measureColumns, $groupingColumns);
+        $this->addMeasureFields($subsetDetail->measures, $measureColumns, $groupingColumns, $orderColumns);
 
         $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
             ->where('id', $subsetDetail->data_detail_id)
@@ -74,12 +76,20 @@ readonly class SubsetQueryBuilder
             ...$measureColumns,
         ]);
 
-        if ($subsetDetail->group_data === 1 && count($groupingColumns) > 0) {
+        if ($subsetDetail->group_data == 1 && count($groupingColumns) > 0) {
             $groupByStatement = implode(',', $groupingColumns);
             $query->groupByRaw($groupByStatement);
         }
 
         $this->filterData($detail, $subsetDetail, $query);
+
+        if ($subsetDetail->max_rows_to_fetch != null) {
+            $query->limit($subsetDetail->max_rows_to_fetch);
+        }
+
+        //        foreach ($orderColumns as $order) {
+        //            $query->orderBy($order->column, $order->sortOrder);
+        //        }
 
         return $query->selectRaw($selectStatement);
 
@@ -89,22 +99,27 @@ readonly class SubsetQueryBuilder
      * @param  Collection<int, SubsetDetailDate>  $dates
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
+     * @param  SubsetFieldOrderInfo[]  $orderColumns
      */
     private function addDateFields(
         Collection $dates,
         array &$groupingColumns,
-        array &$selectColumns
+        array &$selectColumns,
+        array &$orderColumns
     ): void {
-        $dates->each(function ($date) use (&$groupingColumns, &$selectColumns) {
+        $dates->each(function (SubsetDetailDate $date) use (&$groupingColumns, &$selectColumns, &$orderColumns) {
             if ($date->info == null) {
                 return;
             }
             if ($date->date_field_expression != null) {
-                $groupingColumns[] = $date->date_field_expression;
-                $selectColumns[] = $date->date_field_expression.' as `'.$date->info->column.'`';
+                $column = $date->date_field_expression;
             } else {
-                $groupingColumns[] = '`'.$date->info->column.'`';
-                $selectColumns[] = '`'.$date->info->column.'`';
+                $column = '`'.$date->info->column.'`';
+            }
+            $groupingColumns[] = $column;
+            $selectColumns[] = $column.' as `'.$date->subset_column.'`';
+            if ($date->sort_order != null) {
+                $orderColumns[] = new SubsetFieldOrderInfo($column, $date->sort_order);
             }
         });
     }
@@ -113,28 +128,40 @@ readonly class SubsetQueryBuilder
      * @param  Collection<int, SubsetDetailDimension>  $dimensions
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
+     * @param  SubsetFieldOrderInfo[]  $orderColumns
      */
     private function addDimensionFields(
         Collection $dimensions,
         array &$groupingColumns,
-        array &$selectColumns
+        array &$selectColumns,
+        array &$orderColumns
     ): void {
-        $dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns) {
+        $dimensions->each(function (SubsetDetailDimension $dimension) use (&$groupingColumns, &$selectColumns, &$orderColumns) {
             if ($dimension->info == null) {
                 return;
             }
-            if ($dimension->filter_only === 1) {
+            if ($dimension->filter_only == 1) {
                 return;
             }
             if ($dimension->column_expression != null) {
                 $groupingColumns[] = $dimension->column_expression;
-                $selectColumns[] = $dimension->column_expression.' as `'.$dimension->info->column.'`';
+                $selectColumns[] = $dimension->column_expression.' as `'.$dimension->subset_column.'`';
+                if ($dimension->sort_order != null) {
+                    $orderColumns[] = new SubsetFieldOrderInfo($dimension->column_expression, $dimension->sort_order);
+                }
 
                 return;
             }
 
             $groupingColumns[] = '`'.$dimension->info->column.'`';
-            $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->info->column.'`';
+            $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->subset_column.'`';
+
+            if ($dimension->sort_order != null) {
+                $orderColumns[] = new SubsetFieldOrderInfo(
+                    '`'.$dimension->info->column.'`',
+                    $dimension->sort_order
+                );
+            }
         });
     }
 
@@ -142,39 +169,41 @@ readonly class SubsetQueryBuilder
      * @param  Collection<int, SubsetDetailMeasure>  $measures
      * @param  string[]  $measureColumns
      * @param  string[]  $groupingColumns
+     * @param  SubsetFieldOrderInfo[]  $orderColumns
      */
     private function addMeasureFields(
         Collection $measures,
         array &$measureColumns,
-        array &$groupingColumns
+        array &$groupingColumns,
+        array &$orderColumns
     ): void {
-        $measures->each(function ($measure) use (&$measureColumns, &$groupingColumns) {
+        $measures->each(function (SubsetDetailMeasure $measure) use (&$measureColumns, &$groupingColumns, &$orderColumns) {
             if ($measure->info == null) {
                 return;
             }
             if ($measure->info->unit_column != null) {
-                $measureColumns[] = '`'.$measure->info->unit_column.'`';
+                $measureColumns[] = '`'.$measure->info->unit_column.'` as `'.$measure->subset_column.'`';
                 $groupingColumns[] = '`'.$measure->info->unit_column.'`';
             }
+            $column = '`'.$measure->info->column.'`';
             if ($measure->expression != null) {
-                $measureColumns[] = $measure->expression.' as `'.$measure->info->column.'`';
-
-                return;
-            }
-            if ($measure->aggregation != null) {
+                $column = $measure->expression;
+            } elseif ($measure->aggregation != null) {
                 //if weighted avg then use weight aggregation
                 if ($measure->aggregation === 'WEIGHTED_AVG') {
                     if ($measure->weightInfo == null) {
                         return;
                     }
-                    $measureColumns[] = 'SUM('.$measure->info->column.' * '.$measure->weightInfo->column.') / SUM('
-                        .$measure->weightInfo->column.') as `'.$measure->info->column.'`';
-
-                    return;
+                    $column = 'SUM('.$measure->info->column.' * '.$measure->weightInfo->column.') / SUM('
+                        .$measure->weightInfo->column.')';
+                } else {
+                    $column = $measure->aggregation.'('.$measure->info->column.')';
                 }
-                $measureColumns[] = $measure->aggregation.'('.$measure->info->column.') as `'.$measure->info->column.'`';
-            } else {
-                $measureColumns[] = '`'.$measure->info->column.'`';
+            }
+
+            $measureColumns[] = $column.' as `'.$measure->subset_column.'`';
+            if ($measure->sort_order != null) {
+                $orderColumns[] = new SubsetFieldOrderInfo($column, $measure->sort_order);
             }
 
         });

@@ -36,6 +36,7 @@ export default function SubsetCreate({
     group_data: false,
     name: '',
     description: '',
+    max_rows_to_fetch: '',
   })
 
   const { post, loading, errors } = useInertiaPost(route('subset.store', dataDetail.id), {
@@ -68,17 +69,25 @@ export default function SubsetCreate({
         setValue: setFormValue('description'),
         placeholder: 'description',
       },
+      max_rows_to_fetch: {
+        type: 'text' as const,
+        setValue: setFormValue('max_rows_to_fetch'),
+        placeholder: 'Max Rows To Show (Leave Empty To Show All)',
+      },
       group_data: {
         label: 'Perform Grouping & Aggregation Operations on Data',
         type: 'checkbox' as const,
         setValue: toggleBoolean('group_data'),
         disabled: measures.length > 0,
+        description:
+          'Grouping & Aggregation Operations can not be toggled if measures are already added',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, toggleBoolean, measures])
 
   const submitForm = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
+
     post({
       ...formData,
       dates,
@@ -106,7 +115,7 @@ export default function SubsetCreate({
           formItems={formItems}
           loading={loading}
           errors={errors}
-          formStyles='md:w-1/2 md:grid-cols-1 gap-5'
+          formStyles='md:w-1/2 md:grid-cols-1 gap-5 mb-5'
           hideSubmitButton
         />
         <SubsetManageDates
@@ -123,7 +132,7 @@ export default function SubsetCreate({
         />
         <SubsetManageMeasures
           addedMeasureFields={measures}
-          setAddedDateFields={setMeasures}
+          setAddedMeasureFields={setMeasures}
           dataDetail={dataDetail}
           measureFields={measureFields}
           usingGroup={formData.group_data}

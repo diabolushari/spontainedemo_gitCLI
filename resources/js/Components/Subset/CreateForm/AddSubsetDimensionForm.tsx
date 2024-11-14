@@ -1,15 +1,21 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
-import { DataDetail, SubsetDimensionField, TableDimensionField } from '@/interfaces/data_interfaces'
+import {
+  DataDetail,
+  sortOrder,
+  SubsetDimensionField,
+  TableDimensionField,
+} from '@/interfaces/data_interfaces'
 import { MetaData } from '@/interfaces/meta_interfaces'
 import { useCallback, useMemo, useState } from 'react'
+import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 
 interface Props {
   dataDetail: DataDetail
   dimensionFields: TableDimensionField[]
   onSubmit: (data: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>) => void
   selectedField: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'> | null
-  removeSelectedField: (id: number) => void
+  removeSelectedField: (subsetColumn: string) => void
 }
 
 export default function AddSubsetDimensionForm({
@@ -20,6 +26,8 @@ export default function AddSubsetDimensionForm({
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     field_id: selectedField?.field_id.toString() ?? '',
+    subset_field_name: selectedField?.subset_field_name ?? '',
+    sort_order: selectedField?.sort_order ?? '',
     use_expression:
       selectedField?.column_expression != null && selectedField.column_expression != '',
     column_expression: selectedField?.column_expression ?? '',
@@ -53,6 +61,21 @@ export default function AddSubsetDimensionForm({
         list: dimensionFields,
         dataKey: 'id',
         displayKey: 'field_name',
+      },
+      subset_field_name: {
+        type: 'text' as const,
+        setValue: setFormValue('subset_field_name'),
+        label: 'Name On Subset',
+      },
+      sort_order: {
+        type: 'select' as const,
+        setValue: setFormValue('sort_order'),
+        list: sortOrder,
+        dataKey: 'value',
+        displayKey: 'name',
+        showAllOption: true,
+        allOptionText: 'Do Not Use For Sorting Subset',
+        label: 'Sort Order',
       },
       use_expression: {
         type: 'checkbox' as const,
@@ -99,11 +122,14 @@ export default function AddSubsetDimensionForm({
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (formData.field_id == '') {
+    if (formData.field_id == '' || formData.subset_field_name == '') {
       return
     }
     onSubmit({
       field_id: Number(formData.field_id),
+      subset_field_name: formData.subset_field_name,
+      subset_column: generateSnakeCaseName(formData.subset_field_name),
+      sort_order: formData.sort_order == '' ? null : formData.sort_order,
       column_expression: formData.use_expression ? formData.column_expression : '',
       filter_only: formData.filter_only ? 1 : 0,
       filters: appliedFilters.map((filter) => filter.id),
@@ -119,7 +145,7 @@ export default function AddSubsetDimensionForm({
 
   const removeField = useCallback(() => {
     if (selectedField != null) {
-      removeSelectedField(selectedField.field_id)
+      removeSelectedField(selectedField.subset_column)
     }
   }, [selectedField, removeSelectedField])
 

@@ -1,16 +1,17 @@
 import { DataDetail, SubsetMeasureField, TableMeasureField } from '@/interfaces/data_interfaces'
 import StrongText from '@/typography/StrongText'
 import Modal from '@/ui/Modal/Modal'
-import { SetStateAction, useCallback, useMemo, useState } from 'react'
+import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
 import CardGridView from '../ListingPage/CardGridView'
 import { ListItemKeys } from '../ListingPage/ListResourcePage'
 import AddSubsetMeasure from './CreateForm/AddSubsetMeasure'
+import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
 
 interface Props {
   dataDetail: DataDetail
   measureFields: TableMeasureField[]
   addedMeasureFields: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]
-  setAddedDateFields: React.Dispatch<
+  setAddedMeasureFields: React.Dispatch<
     SetStateAction<Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]>
   >
   usingGroup: boolean
@@ -20,23 +21,21 @@ export default function SubsetManageMeasures({
   dataDetail,
   measureFields,
   addedMeasureFields,
-  setAddedDateFields,
+  setAddedMeasureFields,
   usingGroup,
 }: Readonly<Props>) {
   const data = useMemo(() => {
     return addedMeasureFields.map((addedField) => {
-      const measureField = measureFields.find(
-        (measureField) => measureField.id === addedField.field_id
-      )
       return {
         field_id: addedField.field_id,
-        field: measureField?.field_name ?? '',
+        subset_column: addedField.subset_column,
+        field: addedField.subset_field_name,
         expression: addedField.expression ?? '',
         aggregate: addedField.aggregation,
         actions: [],
       }
     })
-  }, [measureFields, addedMeasureFields])
+  }, [addedMeasureFields])
 
   const keys = useMemo(() => {
     return [
@@ -81,41 +80,19 @@ export default function SubsetManageMeasures({
   const handleNewField = useCallback(
     (newField: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>) => {
       setShowDateForm(false)
-
-      if (selectedField != null) {
-        setAddedDateFields((oldValues) => {
-          return oldValues.map((field) => {
-            if (field.field_id === selectedField.field_id) {
-              return { ...newField }
-            }
-
-            return field
-          })
-        })
-
-        return
-      }
-
-      setAddedDateFields((oldValues) => {
-        //check if field already exists
-        if (oldValues.some((field) => field.field_id === newField.field_id)) {
-          return oldValues
-        }
-
-        return [...oldValues, newField]
-      })
+      upsertSubsetFields(selectedField, newField, setAddedMeasureFields)
     },
-    [setAddedDateFields, selectedField]
+    [setAddedMeasureFields, selectedField]
   )
 
   const removeField = useCallback(
-    (id: number | string) => {
+    (subsetColumn: string) => {
       setShowDateForm(false)
-      setAddedDateFields((oldValues) => {
-        return oldValues.filter((field) => field.field_id != id)
+      setAddedMeasureFields((oldValues) => {
+        return oldValues.filter((field) => field.subset_column != subsetColumn)
       })
     },
-    [setAddedDateFields]
+    [setAddedMeasureFields]
   )
 
   const handleCardSelection = useCallback(
@@ -135,7 +112,7 @@ export default function SubsetManageMeasures({
       <div className=''>
         <CardGridView
           keys={keys}
-          primaryKey='field_id'
+          primaryKey='subset_column'
           rows={data}
           onAddClick={onAddClick}
           layoutStyles='lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'
