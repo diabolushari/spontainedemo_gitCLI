@@ -61,6 +61,33 @@ const availableOperators = (type: string) => {
   }
 }
 
+const dateOperations = [
+  { operation: 'equals', value: '=' },
+  { operation: 'not equals', value: '_not' },
+  { operation: 'before', value: '_from' },
+  { operation: 'after', value: '_to' },
+  { operation: 'in list', value: '_in' },
+  { operation: 'not in list', value: '_not_in' },
+]
+
+const dimensionOperations = [
+  { operation: 'equals', value: '=' },
+  { operation: 'not equals', value: '_not' },
+  { operation: 'contains', value: '_like' },
+  { operation: 'not containing', value: '_not_like' },
+  { operation: 'in list', value: '_in' },
+  { operation: 'not in list', value: '_not_in' },
+]
+
+const measureOperations = [
+  { operation: 'equals', value: '=' },
+  { operation: 'not equals', value: '_not' },
+  { operation: 'greater than', value: '_greater_than' },
+  { operation: 'less than', value: '_less_than' },
+  { operation: 'in list', value: '_in' },
+  { operation: 'not in list', value: '_not_in' },
+]
+
 const generateInitialFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
@@ -71,181 +98,52 @@ const generateInitialFields = (
 
   Object.keys(filters).forEach((key) => {
     dates.forEach((date) => {
-      if (date.info == null) {
-        return
-      }
-      if (key === date.info.column) {
-        fields.push({
-          id: 0,
-          field: date.info.column ?? '',
-          operator: '=',
-          value: filters[key] ?? '',
-          type: 'date',
-        })
-      }
-      if (key === `${date.info.column}_not`) {
-        fields.push({
-          id: 0,
-          field: date.info.column ?? '',
-          operator: '_not',
-          value: filters[key] ?? '',
-          type: 'date',
-        })
-      }
-      if (key === `${date.info.column}_from`) {
-        fields.push({
-          id: 0,
-          field: date.info.column ?? '',
-          operator: '_from',
-          value: filters[key] ?? '',
-          type: 'date',
-        })
-      }
-      if (key === `${date.info.column}_to`) {
-        fields.push({
-          id: 0,
-          field: date.info.column ?? '',
-          operator: '_to',
-          value: filters[key] ?? '',
-          type: 'date',
-        })
-      }
-      if (key === `${date.info.column}_in`) {
-        fields.push({
-          id: 0,
-          field: date.info.column ?? '',
-          operator: '_in',
-          value: filters[key] ?? '',
-          type: 'date',
-        })
-      }
-      if (key === `${date.info.column}_not_in`) {
-        fields.push({
-          id: 0,
-          field: date.info.column ?? '',
-          operator: '_not_in',
-          value: filters[key] ?? '',
-          type: 'date',
-        })
-      }
+      dateOperations.forEach((dateOperation) => {
+        if (
+          key ===
+          `${date.subset_column}${dateOperation.value == '=' ? '' : '_' + dateOperation.value}`
+        ) {
+          fields.push({
+            id: 0,
+            field: date.subset_column ?? '',
+            operator: dateOperation.value,
+            value: filters[key] ?? '',
+            type: 'date',
+          })
+        }
+      })
     })
     dimensions.forEach((dimension) => {
-      if (dimension.info == null) {
-        return
-      }
-      if (key === dimension.info.column) {
-        fields.push({
-          id: 0,
-          field: dimension.info.column ?? '',
-          operator: '=',
-          value: filters[key] ?? '',
-          type: 'dimension',
-        })
-      }
-      if (key === `${dimension.info.column}_not`) {
-        fields.push({
-          id: 0,
-          field: dimension.info.column ?? '',
-          operator: '_not',
-          value: filters[key] ?? '',
-          type: 'dimension',
-        })
-      }
-      if (key === `${dimension.info.column}_like`) {
-        fields.push({
-          id: 0,
-          field: dimension.info.column ?? '',
-          operator: '_like',
-          value: filters[key] ?? '',
-          type: 'dimension',
-        })
-      }
-      if (key === `${dimension.info.column}_not_like`) {
-        fields.push({
-          id: 0,
-          field: dimension.info.column ?? '',
-          operator: '_not_like',
-          value: filters[key] ?? '',
-          type: 'dimension',
-        })
-      }
-      if (key === `${dimension.info.column}_in`) {
-        fields.push({
-          id: 0,
-          field: dimension.info.column ?? '',
-          operator: '_in',
-          value: filters[key] ?? '',
-          type: 'dimension',
-        })
-      }
-      if (key === `${dimension.info.column}_not_in`) {
-        fields.push({
-          id: 0,
-          field: dimension.info.column ?? '',
-          operator: '_not_in',
-          value: filters[key] ?? '',
-          type: 'dimension',
-        })
-      }
+      dimensionOperations.forEach((dimensionOperation) => {
+        if (
+          key ===
+          `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : '_' + dimensionOperation.value}`
+        ) {
+          fields.push({
+            id: 0,
+            field: dimension.subset_column ?? '',
+            operator: dimensionOperation.value,
+            value: filters[key] ?? '',
+            type: 'dimension',
+          })
+        }
+      })
     })
     measures.forEach((measure) => {
-      if (measure.info == null) {
-        return
-      }
-      if (key === measure.info.column) {
-        fields.push({
-          id: 0,
-          field: measure.info.column ?? '',
-          operator: '=',
-          value: filters[key] ?? '',
-          type: 'number',
-        })
-      }
-      if (key === `${measure.info.column}_not`) {
-        fields.push({
-          id: 0,
-          field: measure.info.column ?? '',
-          operator: '_not',
-          value: filters[key] ?? '',
-          type: 'number',
-        })
-      }
-      if (key === `${measure.info.column}_greater_than`) {
-        fields.push({
-          id: 0,
-          field: measure.info.column ?? '',
-          operator: '_greater_than',
-          value: filters[key] ?? '',
-          type: 'number',
-        })
-      }
-      if (key === `${measure.info.column}_less_than`) {
-        fields.push({
-          id: 0,
-          field: measure.info.column ?? '',
-          operator: '_less_than',
-          value: filters[key] ?? '',
-          type: 'number',
-        })
-      }
-      if (key === `${measure.info.column}_in`) {
-        fields.push({
-          id: 0,
-          field: measure.info.column ?? '',
-          operator: '_in',
-          value: filters[key] ?? '',
-          type: 'number',
-        })
-      }
-      if (key === `${measure.info.column}_not_in`) {
-        fields.push({
-          id: 0,
-          field: key,
-          operator: '_not_in',
-          value: filters[key] ?? '',
-          type: 'number',
-        })
-      }
+      measureOperations.forEach((measureOperation) => {
+        if (
+          key ===
+          `${measure.subset_column}${measureOperation.value == '=' ? '' : '_' + measureOperation.value}`
+        ) {
+          fields.push({
+            id: 0,
+            field: measure.subset_column ?? '',
+            operator: measureOperation.value,
+            value: filters[key] ?? '',
+            type: 'number',
+          })
+        }
+      })
     })
   })
 
@@ -269,7 +167,7 @@ export default function SubsetFilterForm({
       }
     })
   )
-
+  //to add or remove new fields at end
   useEffect(() => {
     if (formFields.length === 0) {
       setFormFields([
@@ -328,37 +226,28 @@ export default function SubsetFilterForm({
     }[] = []
 
     dates.forEach((date) => {
-      if (date.info == null) {
-        return
-      }
       fields.push({
         fieldId: date.field_id,
         fieldName: date.subset_field_name ?? '',
-        column: date.info.column ?? '',
+        column: date.subset_column ?? '',
         type: 'date',
       })
     })
 
     dimensions.forEach((dimension) => {
-      if (dimension.info == null) {
-        return
-      }
       fields.push({
         fieldId: dimension.field_id,
         fieldName: dimension.subset_field_name ?? '',
-        column: dimension.info.column ?? '',
+        column: dimension.subset_column ?? '',
         type: 'dimension',
       })
     })
 
     measures.forEach((measure) => {
-      if (measure.info == null) {
-        return
-      }
       fields.push({
         fieldId: measure.field_id,
         fieldName: measure.subset_field_name ?? '',
-        column: measure.info.column ?? '',
+        column: measure.subset_column ?? '',
         type: 'number',
       })
     })

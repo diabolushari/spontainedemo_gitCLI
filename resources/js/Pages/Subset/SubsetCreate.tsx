@@ -26,6 +26,12 @@ interface Props {
   measureFields: TableMeasureField[]
 }
 
+const subsetTypes = [
+  { name: 'Office Data Only', value: 'office_level' },
+  { name: 'Rollup Data Only', value: 'rollup_subset' },
+  { name: 'Composite Data', value: 'composite_subset' },
+]
+
 export default function SubsetCreate({
   dataDetail,
   dateFields,
@@ -37,6 +43,7 @@ export default function SubsetCreate({
     name: '',
     description: '',
     max_rows_to_fetch: '',
+    type: '',
   })
 
   const { post, loading, errors } = useInertiaPost(route('subset.store', dataDetail.id), {
@@ -73,6 +80,14 @@ export default function SubsetCreate({
         type: 'text' as const,
         setValue: setFormValue('max_rows_to_fetch'),
         placeholder: 'Max Rows To Show (Leave Empty To Show All)',
+      },
+      type: {
+        type: 'radioGroup' as const,
+        setValue: setFormValue('type'),
+        list: subsetTypes,
+        dataKey: 'value',
+        displayKey: 'name',
+        label: 'Select the type of subset to create',
       },
       group_data: {
         label: 'Perform Grouping & Aggregation Operations on Data',

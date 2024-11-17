@@ -23,14 +23,9 @@ const getStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
       return ` w-full appearance-none rounded-lg border border-gray-300 py-3 pl-3 text-sm text-gray-800
       shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
     }
-    case '1stop': {
-      return ` w-full appearance-none rounded-2xl border border-gray-300 py-1 pl-4 small-1stop-header text-gray-800
-        shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
-    }
     case 'bottom-border': {
       return `mt-0 block w-full border-0 border-b-2 border-gray-200 bg-neutral-50 px-0.5 bodybold text-sm focus:border-black focus:ring-0`
     }
-
     case 'dark': {
       return 'w-full appearance-none rounded border border-transparent bg-white py-3 pl-3 text-sm text-gray-800 focus:border-indigo-700  focus:outline-none dark:bg-gray-800 dark:text-gray-100'
     }

@@ -37,10 +37,6 @@ use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\TabController;
 use App\Models\DataLoader\DataLoaderJob;
-use App\Models\Subset\SubsetDetail;
-use App\Models\Subset\SubsetDetailDate;
-use App\Models\Subset\SubsetDetailDimension;
-use App\Models\Subset\SubsetDetailMeasure;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -168,37 +164,8 @@ Route::get('office-list', OfficeListController::class)
 //
 //});
 
-Route::get('test', function () {
-    SubsetDetail::with(
-        'dates.info', 'dimensions.info', 'measures.info'
-    )->each(function (SubsetDetail $detail) {
-
-        $detail->dates->each(function (SubsetDetailDate $date) {
-            if ($date->subset_column == '') {
-                $date->subset_column = $date->info->column;
-                $date->subset_field_name = $date->info->field_name;
-                $date->save();
-            }
-        });
-
-        $detail->dimensions->each(function (SubsetDetailDimension $dimension) {
-            if ($dimension->subset_column == '') {
-                $dimension->subset_column = $dimension->info->column;
-                $dimension->subset_field_name = $dimension->info->field_name;
-                $dimension->save();
-            }
-        });
-
-        $detail->measures->each(function (SubsetDetailMeasure $measure) {
-            if ($measure->subset_column == '') {
-                $measure->subset_column = $measure->info->column;
-                $measure->subset_field_name = $measure->info->field_name;
-                $measure->save();
-            }
-        });
-
-    });
-
+Route::get('phpinfo', function () {
+    phpinfo();
 });
 
 require __DIR__.'/auth.php';

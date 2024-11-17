@@ -20,6 +20,7 @@ return new class extends Migration
                 ->constrained('data_details');
             $table->boolean('group_data')->default(0);
             $table->unsignedInteger('rows_to_fetch')->nullable();
+            $table->string('type')->default('composite_subset');
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()
@@ -30,9 +31,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('subset_detail_dates', function (Illuminate\Database\Schema\Blueprint $table) {
-            $table->string('sort_order')->nullable();
+        Schema::table('subset_details', function (Illuminate\Database\Schema\Blueprint $table) {
+            $table->string('type')->default('composite_subset');
         });
+
     }
 
     /**

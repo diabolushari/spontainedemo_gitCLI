@@ -15,6 +15,7 @@ class SubsetDetail extends Model
         'description',
         'data_detail_id',
         'group_data',
+        'type',
         'max_rows_to_fetch',
         'created_by',
         'updated_by',

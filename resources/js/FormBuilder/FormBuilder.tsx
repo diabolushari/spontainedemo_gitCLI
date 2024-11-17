@@ -12,6 +12,7 @@ import TimePicker from '@/ui/form/TimePicker'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import { cn } from '@/utils'
 import React, { useMemo } from 'react'
+import RadioGroup from '@/ui/form/RadioGroup'
 
 export interface FormItem<
   T,
@@ -28,7 +29,7 @@ export interface FormItem<
     | 'checkbox'
     | 'select'
     | 'dynamicSelect'
-    | 'radio'
+    | 'radioGroup'
     | 'textarea'
     | 'date'
     | 'file'
@@ -273,6 +274,29 @@ export default function FormBuilder<
                 />
               </div>
             )}
+          {formItems[keyValue].type === 'radioGroup' &&
+            !formItems[keyValue].hidden &&
+            formItems[keyValue].list != null &&
+            formItems[keyValue].displayKey != null &&
+            formItems[keyValue].dataKey != null && (
+              <div className={cn('flex flex-col', formItems[keyValue].colPositionAdjustment ?? '')}>
+                {formItems[keyValue].description != null && (
+                  <NormalText>{formItems[keyValue].description}</NormalText>
+                )}
+                <RadioGroup
+                  list={formItems[keyValue].list}
+                  dataKey={formItems[keyValue].dataKey}
+                  displayKey={formItems[keyValue].displayKey}
+                  setValue={formItems[keyValue].setValue as (value: string) => unknown}
+                  value={formData[keyValue] as string | number}
+                  label={formItems[keyValue].label}
+                  showAllOption={formItems[keyValue].showAllOption}
+                  allOptionText={formItems[keyValue].allOptionText}
+                  error={errors != null ? errors[keyValue] : undefined}
+                  disabled={formItems[keyValue].disabled}
+                />
+              </div>
+            )}
           {formItems[keyValue].type === 'dynamicSelect' &&
             !formItems[keyValue].hidden &&
             formItems[keyValue].selectListUrl != null &&
@@ -305,7 +329,6 @@ export default function FormBuilder<
                 {formItems[keyValue].description != null && (
                   <NormalText>{formItems[keyValue].description}</NormalText>
                 )}
-
                 <ComboBox
                   value={formItems[keyValue].autoCompleteSelection as L | null}
                   url={formItems[keyValue].selectListUrl}
