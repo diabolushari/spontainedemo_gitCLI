@@ -30,11 +30,6 @@ return new class extends Migration
                 ->constrained('users');
             $table->timestamps();
         });
-
-        Schema::table('subset_details', function (Illuminate\Database\Schema\Blueprint $table) {
-            $table->string('type')->default('composite_subset');
-        });
-
     }
 
     /**
