@@ -15,7 +15,7 @@ export default function MoreButton(props: SVGAttributes<SVGElement>) {
         cy='18'
         rx='17.9324'
         ry='18'
-        fill='var(--colour-1stop-accent2)'
+        fill='var(--colour-1stop-accent1)'
       />
       <path
         d='M11.5912 20.1428C12.6524 20.1428 13.5126 19.2793 13.5126 18.2142C13.5126 17.1491 12.6524 16.2856 11.5912 16.2856C10.5301 16.2856 9.66992 17.1491 9.66992 18.2142C9.66992 19.2793 10.5301 20.1428 11.5912 20.1428Z'

@@ -230,6 +230,12 @@ body {
     @apply rounded-2xl border px-6 py-2 hover:bg-1stop-highlight;
   }
 
+  .month-picker-calendar .react-datepicker__month {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Poppins-Regular';
+  }
+
   /* 1 Stop */
   .h1-1stop {
     font-family: 'Poppins-ExtraBold';
