@@ -41,21 +41,21 @@ const ServideDeliveryIndexPage = () => {
               />
             </Card>
           </div>
-          <div className='flex flex-col gap-2 lg:flex-row'>
-            <Card className='w-full p-6 sm:p-10 lg:w-2/3'>
+          <div className='flex flex-col items-stretch gap-2 lg:flex-row'>
+            <div className='flex w-full flex-col p-6 sm:p-4 lg:w-2/3'>
               <SlaPerformance
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
               />
-            </Card>
-            <Card className='w-full p-6 sm:p-4 lg:w-1/3'>
+            </div>
+            <div className='flex w-full flex-col p-6 sm:p-4 lg:w-1/3'>
               <PendancyCard
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
               />
-            </Card>
+            </div>
           </div>
           <div className='flex flex-col gap-2 sm:flex-row'>
             <Card className='w-full p-6 sm:p-4 lg:w-1/3'>

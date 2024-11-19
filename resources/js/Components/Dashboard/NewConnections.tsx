@@ -102,6 +102,15 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
       ? totalWithinSlaDays / withinSlaCount
       : 0
 
+  const formatNumber = (value: number) => {
+    if (value >= 10000000) {
+      return (value / 10000000).toFixed(2) + ' Cr'
+    } else if (value >= 100000) {
+      return (value / 100000).toFixed(2) + ' L'
+    }
+    return value.toString()
+  }
+
   //   const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
 
   const data = [
@@ -140,14 +149,6 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>Total </p>
-                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                  <input
-                    defaultChecked
-                    type='radio'
-                    name='radio'
-                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                  />
-                </div>
               </div>
             </div>
 
@@ -155,34 +156,20 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
               {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(totalDomesticConnections) : <Skeleton />}
+                  {graphValues.length ? formatNumber(totalReceivedCnt) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>LT </p>
-                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                    <input
-                      type='radio'
-                      name='radio'
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                    />
-                  </div>
                 </div>
               </div>
 
               {/* HT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(totalNonDomesticConnections) : <Skeleton />}
+                  {graphValues.length ? formatNumber(totalReceivedCnt) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>HT </p>
-                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                    <input
-                      type='radio'
-                      name='radio'
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                    />
-                  </div>
                 </div>
               </div>
             </div>
@@ -190,17 +177,10 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
             {/* EHT */}
             <div className='flex flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues.length ? formatNumber(totalDomesticConnections) : <Skeleton />}
+                {graphValues.length ? formatNumber(totalReceivedCnt) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>EHT </p>
-                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                  <input
-                    type='radio'
-                    name='radio'
-                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -244,7 +224,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop'>Active connections</p>
+        <p className='h3-1stop'>New Svc connections</p>
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
