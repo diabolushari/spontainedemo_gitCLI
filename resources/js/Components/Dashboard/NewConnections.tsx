@@ -1,5 +1,5 @@
 import useFetchList from '@/hooks/useFetchList'
-import React from 'react'
+import React, { useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -15,15 +15,13 @@ interface Properties {
 }
 
 export interface NewConnectionGraphValues {
-  data_date: string
-  service_group: string
-  received_cnt: number
-  completed_cnt: number
-  section_code: number
-  within_sla_cnt: number
-  beyond_sla_cnt: number
-  avg_beyond_sla_days: number
-  avg_within_sla_days: number
+  completed_beyond_sla_: number
+  completed_within_sla_: number
+  month_year: string
+  pending_beyond_sla_: number
+  pending_within_sla_: number
+  sla_perf_: number
+  sla_svc_group: string
 }
 
 interface LegendProps {
@@ -69,56 +67,29 @@ const CustomLegend = ({ payload }: LegendProps) => {
   )
 }
 
-const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<NewConnectionGraphValues>(`subset/27?office_code=${levelCode}`)
+const NewConnections = () => {
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [graphValues] = useFetchList<NewConnectionGraphValues>(
+    `subset/59?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
+  )
 
   const isLoading = !graphValues || graphValues.length === 0
-
-  const totalReceivedCnt = graphValues.reduce((sum, value) => sum + value.received_cnt, 0)
-  const totalSlaCount = graphValues.reduce((sum, value) => sum + value.within_sla_cnt, 0)
-  const totalBeyondSlaCount = graphValues.reduce((sum, value) => sum + value.beyond_sla_cnt, 0)
-
-  const receivedCount = isLoading ? 0 : totalReceivedCnt || 0
-  const withinSlaCount = isLoading ? 0 : totalSlaCount || 0
-  const beyondSlaCount = isLoading ? 0 : totalBeyondSlaCount || 0
-
-  const totalBeyondSlaDays = graphValues.reduce(
-    (sum, value) => sum + value.beyond_sla_cnt * value.avg_beyond_sla_days,
-    0
-  )
-  const avgBeyondSlaDays = isLoading
-    ? 0
-    : beyondSlaCount > 0
-      ? totalBeyondSlaDays / beyondSlaCount
-      : 0
-
-  const totalWithinSlaDays = graphValues.reduce(
-    (sum, value) => sum + value.within_sla_cnt * value.avg_within_sla_days,
-    0
-  )
-  const avgWithinSlaDays = isLoading
-    ? 0
-    : withinSlaCount > 0
-      ? totalWithinSlaDays / withinSlaCount
-      : 0
-
-  const formatNumber = (value: number) => {
-    if (value >= 10000000) {
-      return (value / 10000000).toFixed(2) + ' Cr'
-    } else if (value >= 100000) {
-      return (value / 100000).toFixed(2) + ' L'
-    }
-    return value.toString()
-  }
+  const slaPerf = isLoading ? 0 : graphValues[0]?.sla_perf_ || 0
+  const completedBeyondSla = isLoading ? 0 : graphValues[0]?.completed_beyond_sla_ || 0
+  const completedWithinSla = isLoading ? 0 : graphValues[0]?.completed_within_sla_ || 0
+  const pendingBeyondSla = isLoading ? 0 : graphValues[0]?.pending_beyond_sla_ || 0
+  const pendingWithinSla = isLoading ? 0 : graphValues[0]?.pending_within_sla_ || 0
 
   //   const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
 
   const data = [
-    { name: 'Completed within SLA', value: withinSlaCount },
-    { name: 'Completed beyond SLA', value: beyondSlaCount },
+    { name: 'Completed within ', value: completedWithinSla },
+    { name: 'Completed beyond ', value: completedBeyondSla },
+    { name: 'Pending within ', value: pendingWithinSla },
+    { name: 'pending beyond ', value: pendingBeyondSla },
   ]
 
-  const COLORS = ['#3E80E4', '#FCB216']
+  const COLORS = ['#3E80E4', '#FCB216', '#D467B3', '#e3fe3c']
 
   return (
     <Card className='flex w-full flex-col'>
@@ -142,52 +113,60 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
         </div>
         <div className='flex w-5/6 flex-row gap-4 p-2'>
           <div className='flex w-1/2 flex-col gap-1 pt-4'>
-            {/* Total Connections */}
             <div className='flex flex-col border p-2'>
               <p className='xlmetric-1stop'>
-                {isLoading ? <Skeleton width='50%' /> : `${withinSlaCount}/${receivedCount}`}
+                {isLoading ? <Skeleton width='50%' /> : `${slaPerf.toFixed(2)}%`}
               </p>
+
               <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>Total </p>
+                <p className='small-1stop'>Overall New Svc Connection SLA perf. </p>
               </div>
             </div>
 
             <div className='flex w-full flex-row space-x-1'>
               {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
-                <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(totalReceivedCnt) : <Skeleton />}
+                <p className='h3-1stop'>
+                  {isLoading ? <Skeleton width='25%' /> : `${completedWithinSla.toFixed(2)}%`}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>LT </p>
+                  <p className='small-1stop'>Compl. within SLA </p>
                 </div>
               </div>
 
-              {/* HT */}
               <div className='flex w-1/2 flex-col border p-2'>
-                <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(totalReceivedCnt) : <Skeleton />}
+                <p className='h3-1stop'>
+                  {isLoading ? <Skeleton width='25%' /> : `${pendingWithinSla.toFixed(2)}%`}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>HT </p>
+                  <p className='small-1stop'>Pending within SLA </p>
                 </div>
               </div>
             </div>
 
-            {/* EHT */}
-            <div className='flex flex-col border p-2'>
-              <p className='mdmetric-1stop'>
-                {graphValues.length ? formatNumber(totalReceivedCnt) : <Skeleton />}
-              </p>
-              <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>EHT </p>
+            <div className='flex w-full flex-row space-x-1'>
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='h3-1stop'>
+                  {isLoading ? <Skeleton width='25%' /> : `${completedBeyondSla.toFixed(2)}%`}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop'>Compl. beyond SLA </p>
+                </div>
+              </div>
+
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='h3-1stop'>
+                  {isLoading ? <Skeleton width='25%' /> : `${pendingBeyondSla.toFixed(2)}%`}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop'>Pending beyond SLA </p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Graph */}
           <div className='flex w-1/2 justify-center pt-2'>
-            {graphValues ? (
+            {isLoading ? (
               <Skeleton
                 circle={true}
                 height={200}
@@ -231,10 +210,13 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
               month: 'short',
               year: 'numeric',
             })} */}
-          <MonthPicker />
+          <MonthPicker
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/17'>
+          <Link href='/dataset/59'>
             <MoreButton />
           </Link>
         </div>

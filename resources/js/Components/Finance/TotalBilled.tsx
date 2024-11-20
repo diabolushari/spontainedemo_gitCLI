@@ -21,7 +21,6 @@ export interface TotalBilledValues {
 
 const TotalBilled = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<TotalBilledValues>(`subset/43?${levelName}=${levelCode}`)
-  console.log(graphValues)
 
   const totalbilled = graphValues.reduce((sum, item) => sum + item.total_consumption, 0)
 

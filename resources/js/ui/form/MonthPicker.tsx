@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-const MonthPicker = () => {
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+interface Props {
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+}
 
+const MonthPicker = ({ selectedMonth, setSelectedMonth }: Props) => {
   return (
-    <div className=''>
-      {/* <h3>Select Month</h3> */}
+    <div>
       <DatePicker
         selected={selectedMonth}
         onChange={(date) => setSelectedMonth(date)}
         dateFormat='MMM yyyy'
         showMonthYearPicker
-        showFullMonthYearPicker={false}
         todayButton='This Month'
         className='small-1stop-header border-none bg-transparent text-center focus:ring-0'
         calendarClassName='month-picker-calendar'
