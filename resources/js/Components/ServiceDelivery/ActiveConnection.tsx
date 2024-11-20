@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import InactiveGraph from './Graphs/InactiveGraph'
 import Card from '@/ui/Card/Card'
 import useFetchList from '@/hooks/useFetchList'
@@ -8,11 +8,15 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MonthPicker from '@/ui/form/MonthPicker'
+import { User } from '@/interfaces/data_interfaces'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 
 interface Properties {
   section_code?: string
   levelName: string
   levelCode: string
+  user: User
 }
 
 export interface InactiveGraphValues {
@@ -20,6 +24,7 @@ export interface InactiveGraphValues {
   consumer_count: number
   data_date: string
   consumer_category: string
+  voltage: string
 }
 
 // -----------Remove this section when done----------------
@@ -31,6 +36,15 @@ interface LegendProps {
     payload: { name: string; value: number; color: string }[]
   }[]
 }
+//DOMESTIC
+//LOCAL BODIES
+//PUBLIC INSTITUTIONS
+//STATE GOVERNMENT  DEPARTMENTS
+//STATE PUBLIC SECTOR UNDERTAKINGS
+//CENTRAL GOVERNMENT DEPARTMENTS
+//CENTRAL PUBLIC SECTOR UNDERTAKINGS
+//NON PAYING GROUP
+//KSEBoard
 
 const CustomLegend = ({ payload }: LegendProps) => {
   return (
@@ -76,47 +90,167 @@ export const formatNumber = (value: number) => {
   return value.toString()
 }
 
-const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<InactiveGraphValues>(`subset/17?${levelName}=${levelCode}`)
-
-  const totalConnections = graphValues.reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const totalDomesticConnections = graphValues
-    .filter((value) => value.consumer_category === 'DOMESTIC')
-    .reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const totalNonDomesticConnections = graphValues
-    .filter((value) => value.consumer_category !== 'DOMESTIC')
-    .reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const nonDomestic = graphValues.filter(
-    (value) => value.consumer_category !== 'DOMESTIC' && value.consumer_category !== null
+const ActiveConnection = () => {
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [levelName, setLevelName] = useState('')
+  const [levelCode, setLevelCode] = useState('')
+  const [selectedLevel, setSelectedLevel] = useState('ST')
+  const [voltageType, setVoltageType] = useState('Total')
+  const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
+  const [graphValues] = useFetchList<InactiveGraphValues>(
+    `subset/57?${levelName}=${levelCode}&month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1}`
   )
 
+  graphValues.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
+
+  useEffect(() => {
+    switch (level?.level) {
+      case 'region':
+        setLevelName('office_code')
+        setLevelCode(level.record.region_code ?? '')
+        break
+      case 'circle':
+        setLevelName('office_code')
+        setLevelCode(level.record.circle_code ?? '')
+        break
+      case 'division':
+        setLevelName('office_code')
+        setLevelCode(level.record.division_code ?? '')
+        break
+      case 'subdivision':
+        setLevelName('office_code')
+        setLevelCode(level.record.subdivision_code ?? '')
+        break
+      case 'section':
+        setLevelName('section_code')
+        setLevelCode(level.record.section_code ?? '')
+        break
+    }
+  }, [level])
+
+  const filters = (value: InactiveGraphValues, index: number) => {
+    if (index < 3) {
+      if (voltageType == 'Total') {
+        return value.consumer_category === graphValues[index].consumer_category
+      } else {
+        return (
+          value.consumer_category === graphValues[index].consumer_category &&
+          value.voltage == voltageType
+        )
+      }
+    } else {
+      if (voltageType == 'Total') {
+        return (
+          value.consumer_category !== graphValues[0]?.consumer_category &&
+          value.consumer_category !== graphValues[1]?.consumer_category &&
+          value.consumer_category !== graphValues[2]?.consumer_category
+        )
+      } else {
+        return (
+          value.consumer_category !== graphValues[0]?.consumer_category &&
+          value.consumer_category !== graphValues[1]?.consumer_category &&
+          value.consumer_category !== graphValues[2]?.consumer_category &&
+          value.voltage == voltageType
+        )
+      }
+    }
+  }
+  const totalConnections = graphValues.reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const ltConnections = graphValues
+    .filter((value) => value.voltage === 'LT')
+    .reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const htConnections = graphValues
+    .filter((value) => value.voltage === 'HT')
+    .reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const ehtConnections = graphValues
+    .filter((value) => value.voltage === 'EHT')
+    .reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const graphFilterOne = graphValues
+    .filter((value) => filters(value, 0))
+    .reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const graphFilterTwo = graphValues
+    .filter((value) => filters(value, 1))
+    .reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const graphFilterThree = graphValues
+    .filter((value) => filters(value, 2))
+    .reduce((sum, value) => sum + value.consumer_count, 0)
+
+  const graphFilterFour = graphValues
+    .filter(
+      (value) =>
+        value.consumer_category !== graphValues[0]?.consumer_category &&
+        value.consumer_category !== graphValues[1]?.consumer_category &&
+        value.consumer_category !== graphValues[2]?.consumer_category &&
+        value.voltage == voltageType
+    )
+    .reduce((sum, value) => sum + value.consumer_count, 0)
   const data = [
-    { name: 'Domestic Connections', value: totalDomesticConnections },
-    { name: 'Non Domestic Connections', value: totalNonDomesticConnections },
+    { name: graphValues[0]?.consumer_category, value: graphFilterOne },
+    { name: graphValues[1]?.consumer_category, value: graphFilterTwo },
+    { name: graphValues[2]?.consumer_category, value: graphFilterThree },
+    { name: 'Other', value: graphFilterFour },
   ]
 
-  const COLORS = ['#3E80E4', '#FCB216']
+  const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
 
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
-          <div className='rounded-tl-2xl border bg-1stop-highlight2 p-5'>
+          <div
+            className={`rounded-tl-2xl border p-5 ${selectedLevel === 'ST' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.region_code ?? '')
+              setSelectedLevel('ST')
+            }}
+          >
             <p>ST</p>
           </div>
-          <div className='border bg-button-muted p-5'>
+          <div
+            className={`border p-5 ${selectedLevel === 'RG' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.region_code ?? '')
+              setSelectedLevel('RG')
+            }}
+          >
             <p>RG</p>
           </div>
-          <div className='border bg-button-muted p-5'>
+          <div
+            className={`border p-5 ${selectedLevel === 'CR' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.circle_code ?? '')
+              setSelectedLevel('CR')
+            }}
+          >
             <p>CR</p>
           </div>
-          <div className='border bg-button-muted p-5'>
+          <div
+            className={`border p-5 ${selectedLevel === 'DV' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.division_code ?? '')
+              setSelectedLevel('DV')
+            }}
+          >
             <p>DV</p>
           </div>
-          <div className='border bg-button-muted p-5'>
+          <div
+            className={`border p-5 ${selectedLevel === 'SD' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('section_code')
+              // setLevelCode(level?.record.section_code ?? '')
+              setSelectedLevel('SD')
+            }}
+          >
             <p>SD</p>
           </div>
         </div>
@@ -134,6 +268,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
                     defaultChecked
                     type='radio'
                     name='radio'
+                    onClick={() => setVoltageType('Total')}
                     className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                   />
                 </div>
@@ -144,7 +279,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
               {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(totalDomesticConnections) : <Skeleton />}
+                  {graphValues.length ? formatNumber(ltConnections) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>LT </p>
@@ -152,6 +287,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
                     <input
                       type='radio'
                       name='radio'
+                      onClick={() => setVoltageType('LT')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -161,7 +297,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
               {/* HT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(totalNonDomesticConnections) : <Skeleton />}
+                  {graphValues.length ? formatNumber(htConnections) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>HT </p>
@@ -169,6 +305,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
                     <input
                       type='radio'
                       name='radio'
+                      onClick={() => setVoltageType('HT')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -179,7 +316,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
             {/* EHT */}
             <div className='flex flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues.length ? formatNumber(totalDomesticConnections) : <Skeleton />}
+                {graphValues.length ? formatNumber(ehtConnections) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>EHT </p>
@@ -187,6 +324,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
                   <input
                     type='radio'
                     name='radio'
+                    onClick={() => setVoltageType('EHT')}
                     className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                   />
                 </div>
@@ -196,7 +334,7 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
 
           {/* Graph */}
           <div className='flex w-1/2 justify-center pt-2'>
-            {graphValues ? (
+            {graphValues.length == 0 ? (
               <Skeleton
                 circle={true}
                 height={200}
@@ -240,7 +378,10 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
               month: 'short',
               year: 'numeric',
             })} */}
-          <MonthPicker />
+          <MonthPicker
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link href='/dataset/17'>

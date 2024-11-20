@@ -10,6 +10,9 @@ import NewConnections from '@/Components/Dashboard/NewConnections'
 import IssueCard from '@/Components/ServiceDelivery/IssueCard'
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
 import MoreButton from '@/Components/MoreButton'
+import { User } from '@/interfaces/data_interfaces'
+
+
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -28,11 +31,7 @@ const ServideDeliveryIndexPage = () => {
       <DashboardPadding>
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
           <div className='flex flex-col gap-2 lg:flex-row'>
-            <ActiveConnection
-              section_code={sectionCode}
-              levelCode={levelCode}
-              levelName={levelName}
-            />
+            <ActiveConnection />
             <Card className=''>
               <NewConnections
                 section_code={sectionCode}

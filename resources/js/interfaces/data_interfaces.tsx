@@ -12,6 +12,7 @@ export interface User extends Model {
   name: string
   email: string
   role?: string
+  office_code?: string
 }
 
 export interface ReferenceDataDomain extends Model {

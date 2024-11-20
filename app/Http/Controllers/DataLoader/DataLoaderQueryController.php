@@ -86,6 +86,7 @@ class DataLoaderQueryController extends Controller implements HasMiddleware
         DataLoaderQuery $dataLoaderQuery,
         RunLoaderQuery $runLoaderQuery
     ): Response {
+        $dataLoaderQuery->load('loaderConnection');
         return Inertia::render('DataLoader/DataLoaderQueryShow', [
             'dataLoaderQuery' => $dataLoaderQuery,
             'error' => '',
