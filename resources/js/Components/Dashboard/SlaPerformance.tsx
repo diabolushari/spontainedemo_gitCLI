@@ -1,5 +1,5 @@
 import useFetchList from '@/hooks/useFetchList'
-import React from 'react'
+import React, { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -15,28 +15,26 @@ interface Properties {
 }
 
 export interface SlaPerformanceValues {
-  data_date: string
-  section_code: number
-  service_group: string
-  received_cnt: number
-  completed_cnt: number
-  sla_days: number
-  within_sla_cnt: number
-  days_taken: number
-  beyond_sla_cnt: number
-  avg_within_sla_days: number
-  avg_beyond_sla_days: number
+  compl_beyond_sla__: number
+  compl_within_sla__: number
+  month_year: string
+  request_type: string
 }
-
 const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<SlaPerformanceValues>(`subset/23?office_code=${levelCode}`)
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [graphValues] = useFetchList<SlaPerformanceValues>(
+    `subset/61?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
+  )
+
+  console.log(`month_year= ${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() || 0) + 1}`)
+  console.log(graphValues)
 
   // Group and aggregate data by `service_group`
   const groupedData = Array.from(
     new Map(
-      graphValues.map(({ service_group, within_sla_cnt, beyond_sla_cnt }) => [
-        service_group,
-        { name: service_group, within_sla_cnt, beyond_sla_cnt },
+      graphValues.map(({ request_type, compl_within_sla__, compl_beyond_sla__ }) => [
+        request_type,
+        { name: request_type, compl_within_sla__, compl_beyond_sla__ },
       ])
     ).values()
   )
@@ -86,7 +84,7 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
             <div>
               {isLoading ? (
                 <Skeleton
-                  height={400}
+                  height={300}
                   width='100%'
                 />
               ) : (
@@ -109,12 +107,12 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
                     <YAxis hide />
                     <Tooltip />
                     <Bar
-                      dataKey='within_sla_cnt'
+                      dataKey='compl_within_sla__'
                       stackId='a'
                       fill='#1b50b3'
                     />
                     <Bar
-                      dataKey='beyond_sla_cnt'
+                      dataKey='compl_beyond_sla__'
                       stackId='a'
                       fill='#76a5ff'
                     />
@@ -134,10 +132,13 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
               month: 'short',
               year: 'numeric',
             })} */}
-          <MonthPicker />
+          <MonthPicker
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/38'>
+          <Link href='/dataset/61'>
             <MoreButton />
           </Link>
         </div>
