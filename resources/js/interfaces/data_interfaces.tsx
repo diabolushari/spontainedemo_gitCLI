@@ -83,6 +83,7 @@ export interface SubsetDetail extends Model {
   dates?: Partial<SubsetDateField>[]
   dimensions?: Partial<SubsetDimensionField>[]
   measures?: Partial<SubsetMeasureField>[]
+  data_detail?: Partial<DataDetail> | null
 }
 
 export interface SubsetDateField extends Model {
@@ -267,3 +268,16 @@ export const sortOrder = [
   { name: 'Ascending', value: 'ASC' },
   { name: 'Descending', value: 'DESC' },
 ]
+
+export interface SubsetGroup extends Model {
+  name: string
+  description: string | null
+  items?: Partial<SubsetGroupItem>[]
+}
+
+export interface SubsetGroupItem extends Model {
+  subset_group_id: number
+  subset_detail_id: number
+  item_number: number
+  subset?: Partial<SubsetDetail> | null
+}

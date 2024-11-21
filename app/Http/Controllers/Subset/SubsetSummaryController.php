@@ -22,11 +22,12 @@ class SubsetSummaryController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail,
+    public function __invoke(
+        SubsetDetail $subsetDetail,
         SubsetQueryBuilder $queryBuilder,
         SubsetFilterBuilder $filterBuilder,
-        Request $request): JsonResponse
-    {
+        Request $request
+    ): JsonResponse {
         $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
         $filterParams = $request->all();
@@ -49,7 +50,9 @@ class SubsetSummaryController extends Controller implements HasMiddleware
 
         $levelResult = $query->get();
 
-        return response()->json($levelResult);
+        return response()->json([
+            'data' => $levelResult,
+        ]);
 
     }
 }

@@ -31,10 +31,13 @@ use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetDropdownApiController;
+use App\Http\Controllers\Subset\SubsetListController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
+use App\Http\Controllers\SubsetGroup\SubsetGroupController;
+use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
@@ -144,6 +147,9 @@ Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
 Route::delete('subset/{detail}', SubsetDeleteController::class)
     ->name('subset.destroy');
 
+Route::get('subset-list', SubsetListController::class)
+    ->name('subset.list');
+
 Route::get('subset-level', SubsetDropdownApiController::class)
     ->name('subset.level');
 
@@ -167,5 +173,11 @@ Route::get('office-list', OfficeListController::class)
 Route::get('phpinfo', function () {
     phpinfo();
 });
+
+Route::resource('subset-groups', SubsetGroupController::class)
+    ->parameters(['subset-groups' => 'subsetGroup']);
+
+Route::apiResource('subset-group-items', SubsetGroupItemController::class)
+    ->parameters(['subset-group-items' => 'subsetGroupItem']);
 
 require __DIR__.'/auth.php';

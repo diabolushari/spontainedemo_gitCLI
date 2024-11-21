@@ -2,8 +2,10 @@
 
 namespace App\Models\Subset;
 
+use App\Models\DataDetail\DataDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SubsetDetail extends Model
@@ -20,6 +22,14 @@ class SubsetDetail extends Model
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * @return HasOne<DataDetail>
+     */
+    public function dataDetail(): HasOne
+    {
+        return $this->hasOne(DataDetail::class, 'id', 'data_detail_id');
+    }
 
     /**
      * @return HasMany<SubsetDetailDate>
