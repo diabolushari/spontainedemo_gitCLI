@@ -8,6 +8,7 @@ import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
 import IssueCard from '@/Components/ServiceDelivery/IssueCard'
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
+import SolarCapacityTrend from '@/Components/Dashboard/SolarCapacityTrend'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -54,6 +55,9 @@ const ServideDeliveryIndexPage = () => {
                 levelName={levelName}
               />
             </Card>
+          </div>
+          <div className='w-1/2'>
+            <SolarCapacityTrend />
           </div>
         </div>
       </DashboardPadding>

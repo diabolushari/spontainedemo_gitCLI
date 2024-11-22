@@ -8,6 +8,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
+import DatePicker from '@/ui/form/DatePicker'
 
 export interface PendencyGraphValues {
   category: string
@@ -26,14 +27,18 @@ export interface PendencyGraphValues {
 
 const PendancyCard = () => {
   const [title, setTitle] = useState('Load Change')
-  const [toggleValue, settoggleValue] = useState<boolean>(false)
+  const [toggleValue, settoggleValue] = useState<boolean>(true)
+
+  const [selectedDate, setSelectedDate] = useState<string>('2024-09-30')
+
+  console.log(selectedDate)
+  console.log(setSelectedDate)
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
 
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
-  const [graphValues] = useFetchList<PendencyGraphValues>(`subset/67?`)
+  const [graphValues] = useFetchList<PendencyGraphValues>(`subset/67?data_date=${selectedDate}`)
   console.log(graphValues)
   const lessThan5Days = toggleValue
     ? graphValues.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
@@ -100,7 +105,7 @@ const PendancyCard = () => {
                     className='small-1stop mb-auto cursor-pointer justify-end p-5'
                     onClick={handleToogleNumber}
                   >
-                    {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                    {toggleValue ? <TooglePercentage /> : <ToogleNumber />}
                   </button>
                 </div>
               </div>
@@ -190,9 +195,9 @@ const PendancyCard = () => {
               month: 'short',
               year: 'numeric',
             })} */}
-          <MonthPicker
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
+          <DatePicker
+            value={selectedDate}
+            setValue={setSelectedDate}
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
