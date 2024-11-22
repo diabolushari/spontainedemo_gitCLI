@@ -24,7 +24,7 @@ trait SubsetExpressionStatement
             return $dimension->column_expression;
         }
 
-        return $dimension->info->column.'_record.name';
+        return '`'.$dimension->info->column.'_record`.`name`';
     }
 
     private function measureStatement(SubsetDetailMeasure $measure): string
