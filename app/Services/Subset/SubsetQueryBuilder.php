@@ -81,8 +81,12 @@ readonly class SubsetQueryBuilder
 
         $this->filterData($detail, $subsetDetail, $query);
 
-        if ($subsetDetail->max_rows_to_fetch != null) {
-            $query->limit($subsetDetail->max_rows_to_fetch);
+        //if request has limit parameter the use it instead of max_rows_to_fetch
+        if ($subsetDetail->max_rows_to_fetch != null || request()->filled('limit')) {
+            $limit = request()->input('limit') ?? $subsetDetail->max_rows_to_fetch;
+            if (is_numeric($limit)) {
+                $query->take($limit);
+            }
         }
 
         foreach ($orderColumns as $order) {
@@ -94,7 +98,7 @@ readonly class SubsetQueryBuilder
     }
 
     /**
-     * @param  Collection<int, SubsetDetailDate>  $dates
+     * @param  Collection<int, SubsetDetailDate>  $datesß
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
      * @param  SubsetFieldOrderInfo[]  $orderColumns
@@ -116,8 +120,12 @@ readonly class SubsetQueryBuilder
             }
             $groupingColumns[] = $column;
             $selectColumns[] = $column.' as `'.$date->subset_column.'`';
-            if ($date->sort_order != null) {
-                $orderColumns[] = new SubsetFieldOrderInfo($column, $date->sort_order);
+            if ($date->sort_order != null || request()->input('sort_by') === $date->subset_column) {
+                $sortOrder = request()->filled('sort_order') ? request()->input('sort_order') : $date->sort_order;
+                $orderColumns[] = new SubsetFieldOrderInfo(
+                    $column,
+                    strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
+                );
             }
         });
     }
@@ -154,10 +162,11 @@ readonly class SubsetQueryBuilder
             $groupingColumns[] = '`'.$dimension->info->column.'`';
             $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->subset_column.'`';
 
-            if ($dimension->sort_order != null) {
+            if ($dimension->sort_order != null || request()->input('sort_by') === $dimension->subset_column) {
+                $sortOrder = request()->filled('sort_order') ? request()->input('sort_order') : $dimension->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
                     $dimension->info->column.'_record.name',
-                    $dimension->sort_order
+                    strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
                 );
             }
         });
@@ -200,8 +209,12 @@ readonly class SubsetQueryBuilder
             }
 
             $measureColumns[] = $column.' as `'.$measure->subset_column.'`';
-            if ($measure->sort_order != null) {
-                $orderColumns[] = new SubsetFieldOrderInfo($column, $measure->sort_order);
+            if ($measure->sort_order != null || request()->input('sort_by') === $measure->subset_column) {
+                $sortOrder = request()->filled('sort_order') ? request()->input('sort_order') : $measure->sort_order;
+                $orderColumns[] = new SubsetFieldOrderInfo(
+                    $column,
+                    strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
+                );
             }
 
         });
@@ -271,32 +284,42 @@ readonly class SubsetQueryBuilder
                 return;
             }
 
-            $joinSelect = 'region_code_record.name as region_code';
+            $joinSelect = 'region_code_record.name as region_code, region_name_record.name as region_name';
             $selectStatement = 'hierarchy.region_code as office_code';
+            $nameSelectStatement = 'hierarchy.region_name as office_name';
             $groupingStatement = 'hierarchy.region_code';
+            $nameGroupingStatement = 'hierarchy.region_name';
 
             if ($groupBy == 'circle') {
-                $joinSelect = 'circle_code_record.name as circle_code';
+                $joinSelect = 'circle_code_record.name as circle_code, circle_name_record.name as circle_name';
                 $selectStatement = 'hierarchy.circle_code as office_code';
                 $groupingStatement = 'hierarchy.circle_code';
+                $nameSelectStatement = 'hierarchy.circle_name as office_name';
+                $nameGroupingStatement = 'hierarchy.circle_name';
             }
 
             if ($groupBy == 'division') {
-                $joinSelect = 'division_code_record.name as division_code';
+                $joinSelect = 'division_code_record.name as division_code, division_name_record.name as division_name';
                 $selectStatement = 'hierarchy.division_code as office_code';
                 $groupingStatement = 'hierarchy.division_code';
+                $nameSelectStatement = 'hierarchy.division_name as office_name';
+                $nameGroupingStatement = 'hierarchy.division_name';
             }
 
             if ($groupBy == 'subdivision') {
-                $joinSelect = 'subdivision_code_record.name as subdivision_code';
+                $joinSelect = 'subdivision_code_record.name as subdivision_code, subdivision_name_record.name as subdivision_name';
                 $selectStatement = 'hierarchy.subdivision_code as office_code';
                 $groupingStatement = 'hierarchy.subdivision_code';
+                $nameSelectStatement = 'hierarchy.subdivision_name as office_name';
+                $nameGroupingStatement = 'hierarchy.subdivision_name';
             }
 
             if ($groupBy == 'section') {
-                $joinSelect = 'section_code_record.name as section_code';
+                $joinSelect = 'section_code_record.name as section_code, section_name_record.name as section_name';
                 $selectStatement = 'hierarchy.section_code as office_code';
                 $groupingStatement = 'hierarchy.section_code';
+                $nameSelectStatement = 'hierarchy.section_name as office_name';
+                $nameGroupingStatement = 'hierarchy.section_name';
             }
 
             $hierarchyQuery = $this->officeList->get($hierarchyTable)
@@ -314,9 +337,11 @@ readonly class SubsetQueryBuilder
             });
 
             $selectColumns[] = $selectStatement;
+            $selectColumns[] = $nameSelectStatement;
 
             if ($subsetDetail->group_data === 1) {
                 $groupingColumns[] = $groupingStatement;
+                $groupingColumns[] = $nameGroupingStatement;
             }
         });
     }
