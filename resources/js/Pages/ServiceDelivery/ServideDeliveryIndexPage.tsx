@@ -2,17 +2,12 @@ import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import React, { useEffect, useState } from 'react'
 import Card from '@/ui/Card/Card'
-import CardHeader from '@/ui/Card/CardHeader'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
 import IssueCard from '@/Components/ServiceDelivery/IssueCard'
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
-import MoreButton from '@/Components/MoreButton'
-import { User } from '@/interfaces/data_interfaces'
-
-
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -33,27 +28,15 @@ const ServideDeliveryIndexPage = () => {
           <div className='flex flex-col gap-2 lg:flex-row'>
             <ActiveConnection />
             <Card className=''>
-              <NewConnections
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
+              <NewConnections />
             </Card>
           </div>
           <div className='flex flex-col items-stretch gap-2 lg:flex-row'>
             <div className='flex w-full flex-col p-6 sm:p-4 lg:w-2/3'>
-              <SlaPerformance
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
+              <SlaPerformance />
             </div>
             <div className='flex w-full flex-col p-6 sm:p-4 lg:w-1/3'>
-              <PendancyCard
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
+              <PendancyCard />
             </div>
           </div>
           <div className='flex flex-col gap-2 sm:flex-row'>

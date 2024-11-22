@@ -7,30 +7,25 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
-
-interface Properties {
-  section_code?: string
-  levelName: string
-  levelCode: string
-}
+import ToogleNumber from '../ui/ToogleNumber'
+import TooglePercentage from '../ui/TogglePercentage'
 
 export interface SlaPerformanceValues {
   compl_beyond_sla__: number
   compl_within_sla__: number
   month_year: string
   request_type: string
+  compl_beyond_sla_cnt: number
+  compl_within_sla_cnt: number
 }
-const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
+const SlaPerformance = () => {
+  const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [graphValues] = useFetchList<SlaPerformanceValues>(
-    `subset/61?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
+    `subset/64?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
   )
 
-  console.log(`month_year= ${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() || 0) + 1}`)
-  console.log(graphValues)
-
-  // Group and aggregate data by `service_group`
-  const groupedData = Array.from(
+  const groupedDataPercentage = Array.from(
     new Map(
       graphValues.map(({ request_type, compl_within_sla__, compl_beyond_sla__ }) => [
         request_type,
@@ -38,6 +33,19 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
       ])
     ).values()
   )
+
+  const groupedDataNumber = Array.from(
+    new Map(
+      graphValues.map(({ request_type, compl_within_sla_cnt, compl_beyond_sla_cnt }) => [
+        request_type,
+        { name: request_type, compl_within_sla_cnt, compl_beyond_sla_cnt },
+      ])
+    ).values()
+  )
+  console.log(groupedDataNumber)
+
+  const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
+
   const CustomTick = (props) => {
     const { x, y, payload } = props
     const displayName =
@@ -58,6 +66,10 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
   }
 
   const isLoading = !graphValues || graphValues.length === 0
+
+  const handleToogleNumber = () => {
+    settoggleValue(!toggleValue)
+  }
 
   return (
     <Card className='flex w-full flex-col'>
@@ -88,36 +100,44 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
                   width='100%'
                 />
               ) : (
-                <ResponsiveContainer
-                  width='100%'
-                  height={300}
-                >
-                  <BarChart
-                    data={groupedData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    barSize={40}
+                <div>
+                  <button
+                    className='small-1stop mb-auto cursor-pointer justify-end'
+                    onClick={handleToogleNumber}
                   >
-                    <CartesianGrid strokeDasharray='3 3' />
-                    <XAxis
-                      dataKey='name'
-                      tick={<CustomTick />}
-                      height={80}
-                      interval={0}
-                    />
-                    <YAxis hide />
-                    <Tooltip />
-                    <Bar
-                      dataKey='compl_within_sla__'
-                      stackId='a'
-                      fill='#1b50b3'
-                    />
-                    <Bar
-                      dataKey='compl_beyond_sla__'
-                      stackId='a'
-                      fill='#76a5ff'
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                    {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                  </button>
+                  <ResponsiveContainer
+                    width='100%'
+                    height={300}
+                  >
+                    <BarChart
+                      data={groupedData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      barSize={40}
+                    >
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis
+                        dataKey='name'
+                        tick={<CustomTick />}
+                        height={80}
+                        interval={0}
+                      />
+                      <YAxis hide />
+                      <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                      <Bar
+                        dataKey={toggleValue ? 'compl_within_sla_cnt' : 'compl_within_sla__'}
+                        stackId='a'
+                        fill='#1b50b3'
+                      />
+                      <Bar
+                        dataKey={toggleValue ? 'compl_beyond_sla_cnt' : 'compl_beyond_sla__'}
+                        stackId='a'
+                        fill='#76a5ff'
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               )}
             </div>
           </div>

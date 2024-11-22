@@ -7,20 +7,21 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
-
-interface Properties {
-  section_code?: string
-  levelName: string
-  levelCode: string
-}
+import ToogleNumber from '../ui/ToogleNumber'
+import TooglePercentage from '../ui/TogglePercentage'
 
 export interface NewConnectionGraphValues {
-  completed_beyond_sla_: number
-  completed_within_sla_: number
+  compl_beyond_sla__: number
+  compl_beyond_sla_cnt: number
+  compl_within_sla__: number
+  compl_within_sla_cnt: number
   month_year: string
-  pending_beyond_sla_: number
-  pending_within_sla_: number
-  sla_perf_: number
+  pend_beyond_sla__: number
+  pend_beyond_sla_cnt: number
+  pend_within_sla__: number
+  pend_within_sla_cnt: number
+  sla_perf__: number
+  sla_perf_cnt: number
   sla_svc_group: string
 }
 
@@ -68,29 +69,53 @@ const CustomLegend = ({ payload }: LegendProps) => {
 }
 
 const NewConnections = () => {
+  const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [graphValues] = useFetchList<NewConnectionGraphValues>(
-    `subset/59?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
+    `subset/63?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
   )
 
   const isLoading = !graphValues || graphValues.length === 0
-  const slaPerf = isLoading ? 0 : graphValues[0]?.sla_perf_ || 0
-  const completedBeyondSla = isLoading ? 0 : graphValues[0]?.completed_beyond_sla_ || 0
-  const completedWithinSla = isLoading ? 0 : graphValues[0]?.completed_within_sla_ || 0
-  const pendingBeyondSla = isLoading ? 0 : graphValues[0]?.pending_beyond_sla_ || 0
-  const pendingWithinSla = isLoading ? 0 : graphValues[0]?.pending_within_sla_ || 0
+  const slaPerf = isLoading
+    ? 0
+    : toggleValue
+      ? graphValues[0]?.sla_perf_cnt || 0
+      : graphValues[0]?.sla_perf__ || 0
+  const completedBeyondSla = isLoading
+    ? 0
+    : toggleValue
+      ? graphValues[0]?.compl_beyond_sla_cnt || 0
+      : graphValues[0]?.compl_beyond_sla__ || 0
+  const completedWithinSla = isLoading
+    ? 0
+    : toggleValue
+      ? graphValues[0]?.compl_within_sla_cnt || 0
+      : graphValues[0]?.compl_within_sla__ || 0
+  const pendingBeyondSla = isLoading
+    ? 0
+    : toggleValue
+      ? graphValues[0]?.pend_beyond_sla_cnt || 0
+      : graphValues[0]?.pend_beyond_sla__ || 0
+  const pendingWithinSla = isLoading
+    ? 0
+    : toggleValue
+      ? graphValues[0]?.pend_within_sla_cnt || 0
+      : graphValues[0]?.pend_within_sla__ || 0
 
   //   const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
 
   const data = [
-    { name: 'Completed within ', value: completedWithinSla },
-    { name: 'Completed beyond ', value: completedBeyondSla },
-    { name: 'Pending within ', value: pendingWithinSla },
-    { name: 'pending beyond ', value: pendingBeyondSla },
+    { name: 'Completed within SLA', value: completedWithinSla },
+    { name: 'Completed beyond SLA', value: completedBeyondSla },
+    { name: 'Pending within SLA', value: pendingWithinSla },
+    { name: 'pending beyond SLA', value: pendingBeyondSla },
   ]
 
   const COLORS = ['#3E80E4', '#FCB216', '#D467B3', '#e3fe3c']
 
+  const handleToogleNumber = () => {
+    settoggleValue(!toggleValue)
+  }
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -113,9 +138,19 @@ const NewConnections = () => {
         </div>
         <div className='flex w-5/6 flex-row gap-4 p-2'>
           <div className='flex w-1/2 flex-col gap-1 pt-4'>
+            <button
+              className='small-1stop mb-auto cursor-pointer justify-end'
+              onClick={handleToogleNumber}
+            >
+              {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+            </button>
             <div className='flex flex-col border p-2'>
               <p className='xlmetric-1stop'>
-                {isLoading ? <Skeleton width='50%' /> : `${slaPerf.toFixed(2)}%`}
+                {isLoading ? (
+                  <Skeleton width='50%' />
+                ) : (
+                  `${slaPerf.toFixed(2)}${toggleValue ? '' : '%'}`
+                )}
               </p>
 
               <div className='flex flex-row justify-between'>
@@ -127,7 +162,11 @@ const NewConnections = () => {
               {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='h3-1stop'>
-                  {isLoading ? <Skeleton width='25%' /> : `${completedWithinSla.toFixed(2)}%`}
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : (
+                    `${completedWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                  )}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop'>Compl. within SLA </p>
@@ -136,7 +175,11 @@ const NewConnections = () => {
 
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='h3-1stop'>
-                  {isLoading ? <Skeleton width='25%' /> : `${pendingWithinSla.toFixed(2)}%`}
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : (
+                    `${pendingWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                  )}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop'>Pending within SLA </p>
@@ -147,7 +190,11 @@ const NewConnections = () => {
             <div className='flex w-full flex-row space-x-1'>
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='h3-1stop'>
-                  {isLoading ? <Skeleton width='25%' /> : `${completedBeyondSla.toFixed(2)}%`}
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : (
+                    `${completedBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                  )}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop'>Compl. beyond SLA </p>
@@ -156,7 +203,11 @@ const NewConnections = () => {
 
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='h3-1stop'>
-                  {isLoading ? <Skeleton width='25%' /> : `${pendingBeyondSla.toFixed(2)}%`}
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : (
+                    `${pendingBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                  )}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop'>Pending beyond SLA </p>
@@ -178,7 +229,7 @@ const NewConnections = () => {
                   width={200}
                   height={200}
                 >
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => value.toFixed(2)} />
                   <Pie
                     data={data}
                     innerRadius={50}
@@ -203,7 +254,7 @@ const NewConnections = () => {
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop'>New Svc connections</p>
+        <p className='h3-1stop text-wrap'>Servicing New Connections</p>
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {

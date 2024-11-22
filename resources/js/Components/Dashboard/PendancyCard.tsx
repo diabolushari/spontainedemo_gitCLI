@@ -6,33 +6,51 @@ import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { Link } from '@inertiajs/react'
 import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
-
-interface Properties {
-  section_code?: string
-  levelName: string
-  levelCode: string
-}
+import ToogleNumber from '../ui/ToogleNumber'
+import TooglePercentage from '../ui/TogglePercentage'
 
 export interface PendencyGraphValues {
+  category: string
+  compl_cnt_5_15_days: number
+  compl_cnt_16_30_days: number
+  compl_cnt_gt_30_days: number
+  compl_cnt_lt_5_days: number
+  compl_perc_5_15_days: number
+  compl_perc_16_30_days: number
+  compl_perc_gt_30_days: number
+  compl_perc_lt_5_days: number
+  compl_within_sla_cnt: number
+  compl_within_sla_perc: number
   data_date: string
-  cnt_lt_5day: number
-  cnt_5_15day: number
-  cnt_16_30day: number
-  cnt_gt_30day: number
-  service_group: string
 }
 
-const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
+const PendancyCard = () => {
   const [title, setTitle] = useState('Load Change')
-  const [graphValues] = useFetchList<PendencyGraphValues>(`subset/28?office_code=${levelCode}`)
+  const [toggleValue, settoggleValue] = useState<boolean>(false)
 
-  const lessThan5Days = graphValues.find((value) => value.service_group === title)?.cnt_lt_5day || 0
-  const betweem515Days =
-    graphValues.find((value) => value.service_group === title)?.cnt_5_15day || 0
-  const betweem1630Days =
-    graphValues.find((value) => value.service_group === title)?.cnt_16_30day || 0
-  const greaterThan30Days =
-    graphValues.find((value) => value.service_group === title)?.cnt_gt_30day || 0
+  const handleToogleNumber = () => {
+    settoggleValue(!toggleValue)
+  }
+
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [graphValues] = useFetchList<PendencyGraphValues>(`subset/67?`)
+  console.log(graphValues)
+  const lessThan5Days = toggleValue
+    ? graphValues.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
+    : graphValues.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
+
+  const betweem515Days = toggleValue
+    ? graphValues.find((value) => value.category === title)?.compl_perc_5_15_days || 0
+    : graphValues.find((value) => value.category === title)?.compl_cnt_5_15_days || 0
+  const betweem1630Days = toggleValue
+    ? graphValues.find((value) => value.category === title)?.compl_perc_16_30_days || 0
+    : graphValues.find((value) => value.category === title)?.compl_cnt_16_30_days || 0
+  const greaterThan30Days = toggleValue
+    ? graphValues.find((value) => value.category === title)?.compl_perc_gt_30_days || 0
+    : graphValues.find((value) => value.category === title)?.compl_cnt_gt_30_days || 0
+  const complWithinSLa = toggleValue
+    ? graphValues.find((value) => value.category === title)?.compl_within_sla_perc || 0
+    : graphValues.find((value) => value.category === title)?.compl_within_sla_cnt || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
 
@@ -59,30 +77,48 @@ const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
         <div className='flex w-11/12 flex-row gap-4 p-2'>
           <div className='flex w-full flex-col gap-4 rounded-lg bg-white p-4'>
             <div className='mt-1 flex flex-col items-start justify-start md:flex-row'>
-              <div className='w-full md:w-2/3'>
-                <SelectList
-                  setValue={setTitle}
-                  list={graphValues}
-                  displayKey='service_group'
-                  dataKey='service_group'
-                  showAllOption
-                  value={title}
-                  style='1stop'
-                />
+              <div className='flex'>
+                <div className='flex flex-col p-5 pt-0'>
+                  <span className='h3-1stop'>
+                    {toggleValue ? `${complWithinSLa.toFixed(2)}%` : complWithinSLa}
+                  </span>
+                  <span className='small-1stop text-nowrap'>Compl. within SLA</span>
+                </div>
+                <div className='w-full md:w-2/3'>
+                  <SelectList
+                    setValue={setTitle}
+                    list={graphValues}
+                    displayKey='category'
+                    dataKey='category'
+                    showAllOption
+                    value={title}
+                    style='1stop'
+                  />
+                </div>
+                <div className='items-end'>
+                  <button
+                    className='small-1stop mb-auto cursor-pointer justify-end p-5'
+                    onClick={handleToogleNumber}
+                  >
+                    {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                  </button>
+                </div>
               </div>
             </div>
 
             <div className='mt-4 flex flex-col gap-1'>
-              <p className='subheader-sm-1stop'>Requests Pending beyond SLA</p>
+              <p className='small-1stop'>
+                Request Completion {toggleValue ? '%' : ''} by Days Taken
+              </p>
 
-              <div className='flex justify-center'>
+              <div className='flex justify-center p-5'>
                 <BarChart
                   width={300}
                   height={60}
                   data={data}
                   layout='vertical'
                 >
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => value.toFixed(2)} />
                   <XAxis
                     type='number'
                     hide
@@ -115,21 +151,29 @@ const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
                 </BarChart>
               </div>
             </div>
-            <div className='grid grid-cols-2 justify-center gap-2 md:justify-start md:gap-5'>
+            <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
               <div className='text-center'>
-                <div className='smmetric-1stop'>{lessThan5Days}</div>
+                <div className='smmetric-1stop'>
+                  {toggleValue ? `${lessThan5Days.toFixed(2)}%` : lessThan5Days}
+                </div>
                 <div className='small-1stop'>{'<5 days'}</div>
               </div>
               <div className='text-center'>
-                <div className='smmetric-1stop'>{betweem515Days}</div>
+                <div className='smmetric-1stop'>
+                  {toggleValue ? `${betweem515Days.toFixed(2)}%` : betweem515Days}
+                </div>
                 <div className='small-1stop'>5-15 days</div>
               </div>
               <div className='text-center'>
-                <div className='smmetric-1stop'>{betweem1630Days}</div>
+                <div className='smmetric-1stop'>
+                  {toggleValue ? `${betweem1630Days.toFixed(2)}%` : betweem1630Days}
+                </div>
                 <div className='small-1stop'>16-30 days</div>
               </div>
               <div className='text-center'>
-                <div className='smmetric-1stop'>{greaterThan30Days}</div>
+                <div className='smmetric-1stop'>
+                  {toggleValue ? `${greaterThan30Days.toFixed(2)}%` : greaterThan30Days}
+                </div>
                 <div className='small-1stop'>{'>30 days'}</div>
               </div>
             </div>
@@ -146,7 +190,10 @@ const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
               month: 'short',
               year: 'numeric',
             })} */}
-          <MonthPicker />
+          <MonthPicker
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link href='/dataset/39'>
