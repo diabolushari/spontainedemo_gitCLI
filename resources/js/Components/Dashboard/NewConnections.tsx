@@ -9,6 +9,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -71,36 +72,48 @@ const CustomLegend = ({ payload }: LegendProps) => {
 const NewConnections = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
-  const [graphValues] = useFetchList<NewConnectionGraphValues>(
-    `subset/63?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
-  )
 
-  const isLoading = !graphValues || graphValues.length === 0
+  const [pendancyValues] = useFetchRecord<{
+    data: NewConnectionGraphValues[]
+    date: number
+    month: number
+    year: number
+  }>(`subset/67?latest=date`)
+  console.log(pendancyValues)
+  const [graphValues] = useFetchRecord<{
+    data: NewConnectionGraphValues[]
+    month: number
+    year: number
+  }>(`subset/63?latest=month_year`)
+  console.log(graphValues)
+
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
+
   const slaPerf = isLoading
     ? 0
     : toggleValue
-      ? graphValues[0]?.sla_perf_cnt || 0
-      : graphValues[0]?.sla_perf__ || 0
+      ? graphValues.data[0]?.sla_perf_cnt || 0
+      : graphValues.data[0]?.sla_perf__ || 0
   const completedBeyondSla = isLoading
     ? 0
     : toggleValue
-      ? graphValues[0]?.compl_beyond_sla_cnt || 0
-      : graphValues[0]?.compl_beyond_sla__ || 0
+      ? graphValues.data[0]?.compl_beyond_sla_cnt || 0
+      : graphValues.data[0]?.compl_beyond_sla__ || 0
   const completedWithinSla = isLoading
     ? 0
     : toggleValue
-      ? graphValues[0]?.compl_within_sla_cnt || 0
-      : graphValues[0]?.compl_within_sla__ || 0
+      ? graphValues.data[0]?.compl_within_sla_cnt || 0
+      : graphValues.data[0]?.compl_within_sla__ || 0
   const pendingBeyondSla = isLoading
     ? 0
     : toggleValue
-      ? graphValues[0]?.pend_beyond_sla_cnt || 0
-      : graphValues[0]?.pend_beyond_sla__ || 0
+      ? graphValues.data[0]?.pend_beyond_sla_cnt || 0
+      : graphValues.data[0]?.pend_beyond_sla__ || 0
   const pendingWithinSla = isLoading
     ? 0
     : toggleValue
-      ? graphValues[0]?.pend_within_sla_cnt || 0
-      : graphValues[0]?.pend_within_sla__ || 0
+      ? graphValues.data[0]?.pend_within_sla_cnt || 0
+      : graphValues.data[0]?.pend_within_sla__ || 0
 
   //   const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
 

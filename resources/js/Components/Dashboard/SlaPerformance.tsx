@@ -9,6 +9,7 @@ import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 export interface SlaPerformanceValues {
   compl_beyond_sla__: number
@@ -21,13 +22,15 @@ export interface SlaPerformanceValues {
 const SlaPerformance = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
-  const [graphValues] = useFetchList<SlaPerformanceValues>(
-    `subset/64?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
-  )
+  const [graphValues] = useFetchRecord<{
+    data: SlaPerformanceValues[]
+    month: number
+    year: number
+  }>(`subset/64?latest=month_year`)
 
   const groupedDataPercentage = Array.from(
     new Map(
-      graphValues.map(({ request_type, compl_within_sla__, compl_beyond_sla__ }) => [
+      graphValues?.data.map(({ request_type, compl_within_sla__, compl_beyond_sla__ }) => [
         request_type,
         { name: request_type, compl_within_sla__, compl_beyond_sla__ },
       ])
@@ -36,7 +39,7 @@ const SlaPerformance = () => {
 
   const groupedDataNumber = Array.from(
     new Map(
-      graphValues.map(({ request_type, compl_within_sla_cnt, compl_beyond_sla_cnt }) => [
+      graphValues?.data.map(({ request_type, compl_within_sla_cnt, compl_beyond_sla_cnt }) => [
         request_type,
         { name: request_type, compl_within_sla_cnt, compl_beyond_sla_cnt },
       ])
@@ -65,7 +68,7 @@ const SlaPerformance = () => {
     )
   }
 
-  const isLoading = !graphValues || graphValues.length === 0
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
