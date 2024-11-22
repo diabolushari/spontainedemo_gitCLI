@@ -11,8 +11,7 @@ import IssueCard from '@/Components/ServiceDelivery/IssueCard'
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
 import MoreButton from '@/Components/MoreButton'
 import { User } from '@/interfaces/data_interfaces'
-
-
+import SolarProsumers from '@/Components/ServiceDelivery/SolarProsumers'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -42,35 +41,39 @@ const ServideDeliveryIndexPage = () => {
           </div>
           <div className='flex flex-col items-stretch gap-2 lg:flex-row'>
             <div className='flex w-full flex-col p-6 sm:p-4 lg:w-2/3'>
-              <SlaPerformance
+              {/* <SlaPerformance
+                section_code={sectionCode}
+                levelCode={levelCode}
+                levelName={levelName}
+              /> */}
+            </div>
+            <div className='flex w-full flex-col p-6 sm:p-4 lg:w-1/3'>
+              {/* <PendancyCard
+                section_code={sectionCode}
+                levelCode={levelCode}
+                levelName={levelName}
+              /> */}
+            </div>
+          </div>
+          <div className='flex flex-col gap-2 sm:flex-row'>
+            <div className='w-full p-6 sm:p-4 lg:w-1/3'>
+              <IssueCard
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
               />
             </div>
-            <div className='flex w-full flex-col p-6 sm:p-4 lg:w-1/3'>
-              <PendancyCard
+            <div className='flex w-full p-6 sm:p-4 lg:w-2/3'>
+              <PowerInterruptionTrend
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
               />
             </div>
           </div>
-          <div className='flex flex-col gap-2 sm:flex-row'>
-            <Card className='w-full p-6 sm:p-4 lg:w-1/3'>
-              <IssueCard
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
-            </Card>
-            <Card className='flex w-full p-6 sm:p-4 lg:w-2/3'>
-              <PowerInterruptionTrend
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
-            </Card>
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <SolarProsumers />
+            <Card className=''>test</Card>
           </div>
         </div>
       </DashboardPadding>

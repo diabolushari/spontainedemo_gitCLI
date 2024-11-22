@@ -89,10 +89,6 @@ export default function DataLoaderQueryShow({ dataLoaderQuery }: Readonly<Props>
     }
   }, [dataLoaderQuery])
 
-  console.log(error)
-  console.log(statusMessage)
-  console.log(result)
-
   return (
     <ShowResourcePage
       title={''}

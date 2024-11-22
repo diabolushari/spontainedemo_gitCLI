@@ -25,10 +25,6 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<SlaPerformanceValues>(
     `subset/61?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
   )
-
-  console.log(`month_year= ${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() || 0) + 1}`)
-  console.log(graphValues)
-
   // Group and aggregate data by `service_group`
   const groupedData = Array.from(
     new Map(

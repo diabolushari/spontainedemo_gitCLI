@@ -1,95 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import InactiveGraph from './Graphs/InactiveGraph'
+import { CustomLegend, formatNumber, InactiveGraphValues } from './ActiveConnection'
+import { OfficeInfo } from '@/interfaces/dashboard_accordion'
+import useFetchRecord from '@/hooks/useFetchRecord'
 import Card from '@/ui/Card/Card'
-import useFetchList from '@/hooks/useFetchList'
-import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MonthPicker from '@/ui/form/MonthPicker'
-import { User } from '@/interfaces/data_interfaces'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import { OfficeInfo } from '@/interfaces/dashboard_accordion'
+import { Link } from '@inertiajs/react'
+import MoreButton from '../MoreButton'
 
-interface Properties {
-  section_code?: string
-  levelName: string
-  levelCode: string
-  user: User
-}
-
-export interface InactiveGraphValues {
-  conn_status_code: string
+interface SolarProsumersValue {
   consumer_count: number
-  data_date: string
+  month_year: string
   consumer_category: string
   voltage: string
+  capacity_kw: number
 }
 
-// -----------Remove this section when done----------------
-interface LegendProps {
-  payload: {
-    color: string
-    type: string
-    value: string
-    payload: { name: string; value: number; color: string }[]
-  }[]
-}
-
-export const CustomLegend = ({ payload }: LegendProps) => {
-  return (
-    <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
-      {payload.map(
-        (
-          entry: {
-            value: string
-            color: string
-          },
-          index: number
-        ) => {
-          return (
-            <li
-              key={`item-${index}`}
-              style={{ marginRight: 10, color: 'black' }}
-            >
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: 10,
-                  height: 10,
-                  backgroundColor: entry.color,
-                  marginRight: 5,
-                }}
-              />
-              {entry.value}
-            </li>
-          )
-        }
-      )}
-    </ul>
-  )
-}
-
-export const formatNumber = (value: number) => {
-  if (value >= 10000000) {
-    return (value / 10000000).toFixed(2) + ' Cr'
-  } else if (value >= 100000) {
-    return (value / 100000).toFixed(2) + ' L'
-  }
-  return value.toString()
-}
-
-const ActiveConnection = () => {
+const SolarProsumers = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
   const [selectedLevel, setSelectedLevel] = useState('ST')
   const [voltageType, setVoltageType] = useState('Total')
-
+  const [isMW, setiSMW] = useState(true)
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
-  const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
-    `subset/57?${levelName}=${levelCode}&month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+  const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[] }>(
+    `subset/71?${levelName}=${levelCode}&month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
   )
 
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
@@ -119,7 +56,7 @@ const ActiveConnection = () => {
     }
   }, [level])
 
-  const filters = (value: InactiveGraphValues, index: number) => {
+  const filters = (value: SolarProsumersValue, index: number) => {
     if (index < 3) {
       if (voltageType == 'Total') {
         return value.consumer_category === graphValues?.data[index].consumer_category
@@ -147,20 +84,34 @@ const ActiveConnection = () => {
     }
   }
 
-  const cunsumerCount = (voltage: string) => {
-    if (voltage != 'Total') {
-      return graphValues?.data
-        .filter((value) => value.voltage === voltage)
-        .reduce((sum, value) => sum + value.consumer_count, 0)
+  const MWCount = (voltage: string, isCount: boolean) => {
+    if (!isCount) {
+      if (voltage != 'Total') {
+        return graphValues?.data
+          .filter((value) => value.voltage == voltage)
+          .reduce((sum, value) => sum + value.capacity_kw, 0)
+      } else {
+        return graphValues?.data.reduce((sum, value) => sum + value.capacity_kw, 0)
+      }
     } else {
-      return graphValues?.data.reduce((sum, value) => sum + value.consumer_count, 0)
+      return graphValues?.data
+        .filter((value) => value.voltage == voltage)
+        .reduce((sum, value) => sum + value.consumer_count, 0)
     }
   }
 
   const graphFilter = (index: number) => {
-    return graphValues?.data
-      .filter((value) => filters(value, index))
-      .reduce((sum, value) => sum + value.consumer_count, 0)
+    if (!isMW) {
+      return graphValues?.data
+        .filter((value) => filters(value, index))
+        .reduce((sum, value) => sum + value.consumer_count, 0)
+    } else {
+      const count =
+        graphValues?.data
+          .filter((value) => filters(value, index))
+          .reduce((sum, value) => sum + value.capacity_kw, 0) ?? 0
+      return count / 1000
+    }
   }
 
   const data = [
@@ -182,8 +133,11 @@ const ActiveConnection = () => {
     },
   ]
 
-  const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
+  const convertToMW = (value: string, isCount: boolean) => {
+    return Number(formatNumber(MWCount(value, isCount) ?? 0)) / 1000
+  }
 
+  const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -244,20 +198,19 @@ const ActiveConnection = () => {
             {/* Total Connections */}
             <div className='flex flex-col border p-2'>
               <p className='xlmetric-1stop'>
-                {graphValues?.data.length ? (
-                  formatNumber(cunsumerCount('Total') ?? 0)
-                ) : (
-                  <Skeleton />
-                )}
+                {graphValues?.data.length ? convertToMW('Total', false).toFixed(3) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>Total </p>
+                <p className='small-1stop-header'>Total MW</p>
                 <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                   <input
                     defaultChecked
                     type='radio'
                     name='radio'
-                    onClick={() => setVoltageType('Total')}
+                    onClick={() => {
+                      setVoltageType('Total')
+                      setiSMW(true)
+                    }}
                     className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                   />
                 </div>
@@ -268,15 +221,18 @@ const ActiveConnection = () => {
               {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues?.data.length ? formatNumber(cunsumerCount('LT') ?? 0) : <Skeleton />}
+                  {graphValues?.data.length ? convertToMW('LT', false).toFixed(3) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>LT </p>
+                  <p className='small-1stop-header'>LT MW</p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
                       type='radio'
                       name='radio'
-                      onClick={() => setVoltageType('LT')}
+                      onClick={() => {
+                        setVoltageType('LT')
+                        setiSMW(true)
+                      }}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -286,36 +242,64 @@ const ActiveConnection = () => {
               {/* HT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues?.data.length ? formatNumber(cunsumerCount('HT') ?? 0) : <Skeleton />}
+                  {graphValues?.data.length ? convertToMW('HT', false).toFixed(3) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>HT </p>
+                  <p className='small-1stop-header'>HT MW</p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
                       type='radio'
                       name='radio'
-                      onClick={() => setVoltageType('HT')}
+                      onClick={() => {
+                        setVoltageType('HT')
+                        setiSMW(true)
+                      }}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
               </div>
             </div>
+            <div className='flex w-full flex-row space-x-1'>
+              {/* LT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? formatNumber(MWCount('LT', true) ?? 0) : <Skeleton />}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>LT consumers </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => {
+                        setVoltageType('LT')
+                        setiSMW(false)
+                      }}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
 
-            {/* EHT */}
-            <div className='flex flex-col border p-2'>
-              <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? formatNumber(cunsumerCount('EHT') ?? 0) : <Skeleton />}
-              </p>
-              <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>EHT </p>
-                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                  <input
-                    type='radio'
-                    name='radio'
-                    onClick={() => setVoltageType('EHT')}
-                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                  />
+              {/* HT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? formatNumber(MWCount('HT', true) ?? 0) : <Skeleton />}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>HT consumers </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => {
+                        setVoltageType('HT')
+                        setiSMW(false)
+                      }}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -360,13 +344,13 @@ const ActiveConnection = () => {
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop'>Active connections</p>
+        <p className='h3-1stop'>Solar Prosumers</p>
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric',
-            })} */}
+        new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
+          month: 'short',
+          year: 'numeric',
+        })} */}
           <MonthPicker
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
@@ -381,4 +365,5 @@ const ActiveConnection = () => {
     </Card>
   )
 }
-export default ActiveConnection
+
+export default SolarProsumers
