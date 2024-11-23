@@ -40,7 +40,6 @@ class SubsetFindMaxValue
                 $this->filterData($detail, $subsetDetail, $query);
 
                 $latestValue = $query
-                    ->groupByRaw($expression)
                     ->selectRaw("MAX($expression) as max_value")
                     ->first();
 
@@ -60,7 +59,6 @@ class SubsetFindMaxValue
                 $this->filterData($detail, $subsetDetail, $query);
 
                 $latestValue = $query
-                    ->groupByRaw($expression)
                     ->selectRaw("MAX($expression) as max_value")
                     ->first();
             }

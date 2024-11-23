@@ -10,7 +10,6 @@ use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Support\Collection;
 
 class SubsetDataController extends Controller implements HasMiddleware
 {
@@ -24,9 +23,6 @@ class SubsetDataController extends Controller implements HasMiddleware
         ];
     }
 
-    /**
-     * @return Collection<int, mixed>
-     */
     public function __invoke(
         SubsetDetail $subsetDetail,
         SubsetQueryBuilder $queryBuilder,
