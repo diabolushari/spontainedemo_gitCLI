@@ -11,6 +11,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { OfficeInfo } from '@/interfaces/dashboard_accordion'
+import ActiveConnectionTrend from './ActiveConnection/ActiveConnectionTrend'
 
 interface Properties {
   section_code?: string
@@ -84,7 +85,7 @@ const ActiveConnection = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
-  const [selectedLevel, setSelectedLevel] = useState('ST')
+  const [selectedLevel, setSelectedLevel] = useState(1)
   const [voltageType, setVoltageType] = useState('Total')
 
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
@@ -189,176 +190,315 @@ const ActiveConnection = () => {
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
           <div
-            className={`rounded-tl-2xl border p-5 ${selectedLevel === 'ST' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel('ST')
+              setSelectedLevel(1)
             }}
           >
-            <p>ST</p>
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M2.33398 12.8332L11.3757 9.9165'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M16.334 9.3335L25.6673 7.5835'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M17.5 11.375L25.6667 12.25'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M19.0742 14L25.6659 16.9167'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
           </div>
           <div
-            className={`border p-5 ${selectedLevel === 'RG' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel('RG')
+              setSelectedLevel(2)
             }}
           >
-            <p>RG</p>
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M22.75 3.5H5.25C4.2835 3.5 3.5 4.2835 3.5 5.25V22.75C3.5 23.7165 4.2835 24.5 5.25 24.5H22.75C23.7165 24.5 24.5 23.7165 24.5 22.75V5.25C24.5 4.2835 23.7165 3.5 22.75 3.5Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M7.83984 17.4035L11.1397 14.1037L13.6994 16.6573L19.8333 10.5'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M15.166 10.5H19.8327V15.1667'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
           </div>
           <div
-            className={`border p-5 ${selectedLevel === 'CR' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel('CR')
+              setSelectedLevel(3)
             }}
           >
-            <p>CR</p>
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M13.416 5.25H25.0827'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M2.91602 9.33317L7.58268 4.6665'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M7.58398 4.6665V24.4998'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M13.416 11.0835H22.7493'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M13.416 16.9165H20.416'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M13.416 22.75H18.0827'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
           </div>
           <div
-            className={`border p-5 ${selectedLevel === 'DV' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border p-5 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.division_code ?? '')
-              setSelectedLevel('DV')
             }}
           >
-            <p>DV</p>
+            <p></p>
           </div>
           <div
-            className={`border p-5 ${selectedLevel === 'SD' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border p-5 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('section_code')
               // setLevelCode(level?.record.section_code ?? '')
-              setSelectedLevel('SD')
             }}
           >
-            <p>SD</p>
+            <p></p>
           </div>
         </div>
-        <div className='flex w-5/6 flex-row gap-4 p-2'>
-          <div className='flex w-1/2 flex-col gap-1 pt-4'>
-            {/* Total Connections */}
-            <div className='flex flex-col border p-2'>
-              <p className='xlmetric-1stop'>
-                {graphValues?.data.length ? (
-                  formatNumber(cunsumerCount('Total') ?? 0)
-                ) : (
-                  <Skeleton />
-                )}
-              </p>
-              <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>Total </p>
-                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                  <input
-                    defaultChecked
-                    type='radio'
-                    name='radio'
-                    onClick={() => setVoltageType('Total')}
-                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className='flex w-full flex-row space-x-1'>
-              {/* LT */}
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='mdmetric-1stop'>
-                  {graphValues?.data.length ? formatNumber(cunsumerCount('LT') ?? 0) : <Skeleton />}
+        {/* Data Section */}
+        {selectedLevel === 1 && (
+          <div className='flex w-5/6 flex-row gap-4 p-2'>
+            <div className='flex w-1/2 flex-col gap-1 pt-4'>
+              {/* Total Connections */}
+              <div className='flex flex-col border p-2'>
+                <p className='xlmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    formatNumber(cunsumerCount('Total') ?? 0)
+                  ) : (
+                    <Skeleton />
+                  )}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>LT </p>
+                  <p className='small-1stop-header'>Total </p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
+                      defaultChecked
                       type='radio'
                       name='radio'
-                      onClick={() => setVoltageType('LT')}
+                      onClick={() => setVoltageType('Total')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
               </div>
 
-              {/* HT */}
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='mdmetric-1stop'>
-                  {graphValues?.data.length ? formatNumber(cunsumerCount('HT') ?? 0) : <Skeleton />}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>HT </p>
-                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                    <input
-                      type='radio'
-                      name='radio'
-                      onClick={() => setVoltageType('HT')}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* EHT */}
-            <div className='flex flex-col border p-2'>
-              <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? formatNumber(cunsumerCount('EHT') ?? 0) : <Skeleton />}
-              </p>
-              <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>EHT </p>
-                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                  <input
-                    type='radio'
-                    name='radio'
-                    onClick={() => setVoltageType('EHT')}
-                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Graph */}
-          <div className='flex w-1/2 justify-center pt-2'>
-            {graphValues?.data.length == 0 ? (
-              <Skeleton
-                circle={true}
-                height={200}
-                width={200}
-              />
-            ) : (
-              <ResponsiveContainer className='small-1stop'>
-                <PieChart
-                  width={200}
-                  height={200}
-                >
-                  <Tooltip />
-                  <Pie
-                    data={data}
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey='value'
-                    stroke='none'
-                  >
-                    {data.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
+              <div className='flex w-full flex-row space-x-1'>
+                {/* LT */}
+                <div className='flex w-1/2 flex-col border p-2'>
+                  <p className='mdmetric-1stop'>
+                    {graphValues?.data.length ? (
+                      formatNumber(cunsumerCount('LT') ?? 0)
+                    ) : (
+                      <Skeleton />
+                    )}
+                  </p>
+                  <div className='flex flex-row justify-between'>
+                    <p className='small-1stop-header'>LT </p>
+                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                      <input
+                        type='radio'
+                        name='radio'
+                        onClick={() => setVoltageType('LT')}
+                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
-                    ))}
-                  </Pie>
-                  <Legend content={CustomLegend} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-        </div>
-      </div>
+                    </div>
+                  </div>
+                </div>
 
+                {/* HT */}
+                <div className='flex w-1/2 flex-col border p-2'>
+                  <p className='mdmetric-1stop'>
+                    {graphValues?.data.length ? (
+                      formatNumber(cunsumerCount('HT') ?? 0)
+                    ) : (
+                      <Skeleton />
+                    )}
+                  </p>
+                  <div className='flex flex-row justify-between'>
+                    <p className='small-1stop-header'>HT </p>
+                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                      <input
+                        type='radio'
+                        name='radio'
+                        onClick={() => setVoltageType('HT')}
+                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* EHT */}
+              <div className='flex flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    formatNumber(cunsumerCount('EHT') ?? 0)
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>EHT </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => setVoltageType('EHT')}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Graph */}
+            <div className='flex w-1/2 justify-center pt-2'>
+              {graphValues?.data.length == 0 ? (
+                <Skeleton
+                  circle={true}
+                  height={200}
+                  width={200}
+                />
+              ) : (
+                <ResponsiveContainer className='small-1stop'>
+                  <PieChart
+                    width={200}
+                    height={200}
+                  >
+                    <Tooltip />
+                    <Pie
+                      data={data}
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey='value'
+                      stroke='none'
+                    >
+                      {data.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Legend content={CustomLegend} />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </div>
+        )}
+        {selectedLevel === 2 && <ActiveConnectionTrend selectedMonth={selectedMonth} />}
+      </div>
+      {/* //Footer */}
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
         <p className='h3-1stop'>Active connections</p>
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
