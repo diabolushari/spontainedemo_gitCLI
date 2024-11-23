@@ -17,7 +17,7 @@ class SubsetFilterBuilder
     /**
      * @param  array<array-key, string>  $filters
      */
-    public function filter(Builder $query, SubsetDetail $subsetDetail, array $filters)
+    public function filter(Builder $query, SubsetDetail $subsetDetail, array $filters): void
     {
 
         $subsetDetail->dates->each(function ($date) use ($filters, $query) {
@@ -74,6 +74,18 @@ class SubsetFilterBuilder
             if (isset($filters[$dimension->subset_column.'_not_like'])) {
                 $query->whereRaw($column.' NOT LIKE ? ', ['%'.$filters[$dimension->subset_column.'_not_like'].'%']);
             }
+            if (isset($filters[$dimension->subset_column.'_greater_than'])) {
+                $query->whereRaw($column.' > ? ', [$filters[$dimension->subset_column.'_greater_than']]);
+            }
+            if (isset($filters[$dimension->subset_column.'_less_than'])) {
+                $query->whereRaw($column.' < ? ', [$filters[$dimension->subset_column.'_less_than']]);
+            }
+            if (isset($filters[$dimension->subset_column.'_greater_than_or_equal'])) {
+                $query->whereRaw($column.' >= ? ', [$filters[$dimension->subset_column.'_greater_than_or_equal']]);
+            }
+            if (isset($filters[$dimension->subset_column.'_less_than_or_equal'])) {
+                $query->whereRaw($column.' <= ? ', [$filters[$dimension->subset_column.'_less_than_or_equal']]);
+            }
             if (isset($filters[$dimension->subset_column.'_in'])) {
                 $query->whereRaw($column.' IN ('.$filters[$dimension->subset_column.'_in'].') ');
             }
@@ -86,28 +98,38 @@ class SubsetFilterBuilder
             //check if measure/measure_greater_than/measure_less_than/measure_in/measure_not_in/measure_not are set
 
             $column = $this->measureStatement($measure);
+            $statement = null;
+            $params = [];
 
             if (isset($filters[$measure->subset_column])) {
-                if ($subsetDetail->group_data == 1) {
-                    $query->havingRaw($column.' = ? ', [$filters[$measure->subset_column]]);
-                } else {
-                    $query->whereRaw($column.' = ? ', [$filters[$measure->subset_column]]);
-                }
+                $statement = $column.' = ? ';
+                $params[] = $filters[$measure->subset_column];
             }
             if (isset($filters[$measure->subset_column.'_greater_than'])) {
-                if ($subsetDetail->group_data == 1) {
-                    $query->havingRaw($column.' > ? ', [$filters[$measure->subset_column.'_greater_than']]);
-                } else {
-                    $query->whereRaw($column.' > ? ', [$filters[$measure->subset_column.'_greater_than']]);
-                }
+                $statement = $column.' > ? ';
+                $params[] = $filters[$measure->subset_column.'_greater_than'];
             }
             if (isset($filters[$measure->subset_column.'_less_than'])) {
+                $statement = $column.' < ? ';
+                $params[] = $filters[$measure->subset_column.'_less_than'];
+            }
+            if (isset($filters[$measure->subset_column.'_greater_than_or_equal'])) {
+                $statement = $column.' >= ? ';
+                $params[] = $filters[$measure->subset_column.'_greater_than_or_equal'];
+            }
+            if (isset($filters[$measure->subset_column.'_less_than_or_equal'])) {
+                $statement = $column.' <= ? ';
+                $params[] = $filters[$measure->subset_column.'_less_than_or_equal'];
+            }
+
+            if ($statement != null) {
                 if ($subsetDetail->group_data == 1) {
-                    $query->havingRaw($column.' < ? ', [$filters[$measure->subset_column.'_less_than']]);
+                    $query->havingRaw($statement, $params);
                 } else {
-                    $query->whereRaw($column.' < ? ', [$filters[$measure->subset_column.'_less_than']]);
+                    $query->whereRaw($statement, $params);
                 }
             }
+
             if (isset($filters[$measure->subset_column.'_in'])) {
                 if ($subsetDetail->group_data == 1) {
                     $query->havingRaw($column.' IN ('.$filters[$measure->subset_column.'_in'].') ');

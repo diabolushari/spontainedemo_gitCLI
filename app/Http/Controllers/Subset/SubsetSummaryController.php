@@ -48,11 +48,10 @@ class SubsetSummaryController extends Controller implements HasMiddleware
             $filterParams
         );
 
-        $levelResult = $query->get();
+        $levelResult = $query->paginate(5)->withQueryString();
 
         return response()->json([
             'data' => $levelResult,
         ]);
-
     }
 }

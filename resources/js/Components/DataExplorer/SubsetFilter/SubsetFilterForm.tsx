@@ -100,8 +100,7 @@ const generateInitialFields = (
     dates.forEach((date) => {
       dateOperations.forEach((dateOperation) => {
         if (
-          key ===
-          `${date.subset_column}${dateOperation.value == '=' ? '' : '_' + dateOperation.value}`
+          key === `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
         ) {
           fields.push({
             id: 0,
@@ -117,7 +116,7 @@ const generateInitialFields = (
       dimensionOperations.forEach((dimensionOperation) => {
         if (
           key ===
-          `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : '_' + dimensionOperation.value}`
+          `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
         ) {
           fields.push({
             id: 0,
@@ -133,7 +132,7 @@ const generateInitialFields = (
       measureOperations.forEach((measureOperation) => {
         if (
           key ===
-          `${measure.subset_column}${measureOperation.value == '=' ? '' : '_' + measureOperation.value}`
+          `${measure.subset_column}${measureOperation.value == '=' ? '' : measureOperation.value}`
         ) {
           fields.push({
             id: 0,
@@ -167,6 +166,9 @@ export default function SubsetFilterForm({
       }
     })
   )
+
+  console.log(formFields)
+
   //to add or remove new fields at end
   useEffect(() => {
     if (formFields.length === 0) {

@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
-import Card from '@/ui/Card/Card'
-import MonthPicker from '@/ui/form/MonthPicker'
-import { Link } from '@inertiajs/react'
 import MoreButton from '../../MoreButton'
-import SolarProsumers from './SolarProsumers'
-import SolarCapacityTrend from './SolarCapacityTrend'
+import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
+import MonthPicker from '@/ui/form/MonthPicker'
+import Card from '@/ui/Card/Card'
+import IssueCard from './IssueCard'
+import ComplaintList from './ComplaintList'
 
-const Solar = () => {
+const Complaints = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-
   const [selectedLevel, setSelectedLevel] = useState(1)
 
   return (
-    <Card className='flex w-full flex-col'>
+    <Card className='flex h-full w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
           <div
@@ -90,43 +90,6 @@ const Solar = () => {
               xmlns='http://www.w3.org/2000/svg'
             >
               <path
-                d='M22.75 3.5H5.25C4.2835 3.5 3.5 4.2835 3.5 5.25V22.75C3.5 23.7165 4.2835 24.5 5.25 24.5H22.75C23.7165 24.5 24.5 23.7165 24.5 22.75V5.25C24.5 4.2835 23.7165 3.5 22.75 3.5Z'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M7.83984 17.4035L11.1397 14.1037L13.6994 16.6573L19.8333 10.5'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M15.166 10.5H19.8327V15.1667'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
-          </div>
-          <div
-            className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel(3)
-            }}
-          >
-            <svg
-              width='28'
-              height='28'
-              viewBox='0 0 28 28'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
                 d='M13.416 5.25H25.0827'
                 stroke='#333333'
                 strokeWidth='1.75'
@@ -171,41 +134,56 @@ const Solar = () => {
             </svg>
           </div>
           <div
+            className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.circle_code ?? '')
+              // setSelectedLevel(3)
+            }}
+          ></div>
+          <div
             className={`border p-5 ${selectedLevel === 'DV' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.division_code ?? '')
+              // setSelectedLevel('DV')
             }}
           >
-            <p></p>
+            {/* <p>DV</p> */}
           </div>
           <div
             className={`border p-5 ${selectedLevel === 'SD' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('section_code')
               // setLevelCode(level?.record.section_code ?? '')
+              // setSelectedLevel('SD')
             }}
           >
-            <p></p>
+            {/* <p>SD</p> */}
           </div>
         </div>
         {selectedLevel === 1 && (
-          <SolarProsumers
+          <IssueCard
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
           />
         )}
-        {selectedLevel === 2 && <SolarCapacityTrend selectedMonth={selectedMonth} />}
+        {selectedLevel === 2 && (
+          <ComplaintList
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        )}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop'>Solar Prosumers</p>
+        <p className='h3-1stop'>Customer Complaints</p>
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
-        new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
-          month: 'short',
-          year: 'numeric',
-        })} */}
+          new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
+            month: 'short',
+            year: 'numeric',
+          })} */}
           <MonthPicker
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
@@ -221,4 +199,4 @@ const Solar = () => {
   )
 }
 
-export default Solar
+export default Complaints

@@ -5,10 +5,10 @@ import Card from '@/ui/Card/Card'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
-import IssueCard from '@/Components/ServiceDelivery/Issues/IssueCard'
-import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
 
+import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
 import Solar from '@/Components/ServiceDelivery/Solar/Solar'
+import Complaints from '@/Components/ServiceDelivery/Issues/Complaints'
 import SolarCapacityTrend from '@/Components/ServiceDelivery/Solar/SolarCapacityTrend'
 import SlaPerformance from '@/Components/ServiceDelivery/SLA/SlaPerformance'
 
@@ -42,16 +42,16 @@ const ServideDeliveryIndexPage = () => {
               <PendancyCard />
             </div>
           </div>
-          <div className='flex flex-col gap-2 sm:flex-row'>
+          <div className='flex flex-col gap-2 lg:flex-row'>
             <div className='w-full p-6 sm:p-4 lg:w-1/3'>
-              <IssueCard />
+              <Complaints />
             </div>
             <div className='flex w-full p-6 sm:p-4 lg:w-2/3'>
               <PowerInterruptionTrend />
             </div>
           </div>
           <div className='flex gap-5'>
-            <div className='w-1/2'>
+            <div className='lg:w-1/2 w-full'>
               <Solar />
             </div>
           </div>
