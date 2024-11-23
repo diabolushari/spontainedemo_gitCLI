@@ -36,7 +36,16 @@ const PowerInterruptionTrend = () => {
   const [selectedRange, setSelectedRange] = useState('1')
   const [selectedLevel, setSelectedLevel] = useState(1)
 
-  const [graphValues] = useFetchRecord<{ data: ComplaintValues[] }>(`subset/72?latest=month_year`)
+  const [graphValues] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
+    `subset/72?latest=month_year`
+  )
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   useEffect(() => {
     if (selectedMonth != null) {
       setMonthYear(

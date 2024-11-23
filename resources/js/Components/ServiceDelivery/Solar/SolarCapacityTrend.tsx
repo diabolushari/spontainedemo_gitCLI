@@ -2,7 +2,7 @@ import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
 import { Link } from '@inertiajs/react'
 import MoreButton from '@/Components/MoreButton'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -18,11 +18,12 @@ export interface SolarCapacityTrendValues {
 
 interface Properties {
   selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
-const SolarCapacityTrend = ({ selectedMonth }: Properties) => {
+const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
-
-  const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[] }>(
+  const [monthYear, setMonthYear] = useState('')
+  const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
     `subset/71?latest=month_year`
   )
 
@@ -38,8 +39,18 @@ const SolarCapacityTrend = ({ selectedMonth }: Properties) => {
     '11 MONTHS',
     '12 MONTHS',
   ]
-
-  const monthYear = `${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() + 1).toString().padStart(2, '0')}`
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
+  useEffect(() => {
+    setMonthYear(
+      `${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() ?? 0 + 1).toString().padStart(2, '0')}`
+    )
+  }, [selectedMonth])
 
   const filteredValues = graphValues?.data.filter((value) => value.month_year === monthYear)
 

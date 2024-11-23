@@ -19,21 +19,27 @@ interface SolarProsumersValue {
 
 interface Properties {
   selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
-const SolarProsumers = ({ selectedMonth }: Properties) => {
+const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
-
   const [voltageType, setVoltageType] = useState('Total')
   const [isMW, setiSMW] = useState(true)
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
-  const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[] }>(
+  const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[]; latest_value: string }>(
     `subset/71?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
   )
-
+  console.log(graphValues?.latest_value)
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   useEffect(() => {
     switch (level?.level) {
       case 'region':
