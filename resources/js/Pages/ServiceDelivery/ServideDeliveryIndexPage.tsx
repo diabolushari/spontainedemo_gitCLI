@@ -1,15 +1,14 @@
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Card from '@/ui/Card/Card'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
-import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
-
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
 import Solar from '@/Components/ServiceDelivery/Solar/Solar'
 import Complaints from '@/Components/ServiceDelivery/Issues/Complaints'
+import SlaPerformance from '@/Components/ServiceDelivery/SLA/SlaPerformance'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -50,7 +49,7 @@ const ServideDeliveryIndexPage = () => {
             </div>
           </div>
           <div className='flex gap-5'>
-            <div className='lg:w-1/2 w-full'>
+            <div className='w-full lg:w-1/2'>
               <Solar />
             </div>
           </div>

@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import MoreButton from '../MoreButton'
-import useFetchList from '@/hooks/useFetchList'
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { Link } from '@inertiajs/react'
-import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
@@ -29,6 +27,7 @@ export interface PendencyGraphValues {
 const PendancyCard = () => {
   const [title, setTitle] = useState('Load Change')
   const [toggleValue, settoggleValue] = useState<boolean>(true)
+  const [selectedLevel, setSelectedLevel] = useState(1)
 
   const [selectedDate, setSelectedDate] = useState<string>('2024-09-30')
 
@@ -36,10 +35,11 @@ const PendancyCard = () => {
     settoggleValue(!toggleValue)
   }
 
-  const [graphValues] = useFetchRecord<{ data: PendencyGraphValues[] }>(
-    `subset/67?data_date=${selectedDate}`
-  )
-
+  const [graphValues] = useFetchRecord<{
+    data: PendencyGraphValues[]
+    date: string
+  }>(`/subset/67?latest=data_date`)
+  console.log(graphValues)
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
     : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
@@ -58,131 +58,191 @@ const PendancyCard = () => {
     : graphValues?.data.find((value) => value.category === title)?.compl_within_sla_cnt || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
+  console.log(data)
 
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='small-1stop-header flex h-full w-1/12 flex-col rounded-2xl'>
-          <div className='rounded-tl-2xl border bg-1stop-highlight2 p-5'>
-            <p>ST</p>
+        <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
+          <div
+            className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              setSelectedLevel(1)
+            }}
+          >
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M2.33398 12.8332L11.3757 9.9165'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M16.334 9.3335L25.6673 7.5835'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M17.5 11.375L25.6667 12.25'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M19.0742 14L25.6659 16.9167'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
           </div>
-          <div className='border bg-button-muted p-5'>
-            <p>RG</p>
+          <div
+            className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+          ></div>
+          <div
+            className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+          ></div>
+          <div
+            className={`border p-5 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+          >
+            <p></p>
           </div>
-          <div className='border bg-button-muted p-5'>
-            <p>CR</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>DV</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>SD</p>
+          <div
+            className={`border p-5 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+          >
+            <p></p>
           </div>
         </div>
         <div className='flex w-11/12 flex-row gap-4 p-2'>
-          <div className='flex w-full flex-col gap-4 rounded-lg bg-white p-4'>
-            <div className='mt-1 flex flex-col items-start justify-start md:flex-row'>
-              <div className='flex'>
-                <div className='flex flex-col p-5 pt-0'>
-                  <span className='h3-1stop'>
-                    {toggleValue ? `${complWithinSLa.toFixed(2)}%` : complWithinSLa}
-                  </span>
-                  <span className='small-1stop text-nowrap'>Compl. within SLA</span>
+          {selectedLevel === 1 && (
+            <div className='flex w-full flex-col gap-4 rounded-lg bg-white p-4'>
+              <div className='mt-1 flex flex-col items-start justify-start md:flex-row'>
+                <div className='flex'>
+                  <div className='flex flex-col p-5 pt-0'>
+                    <span className='h3-1stop'>
+                      {toggleValue ? `${complWithinSLa.toFixed(2)}%` : complWithinSLa}
+                    </span>
+                    <span className='small-1stop text-nowrap'>Compl. within SLA</span>
+                  </div>
+                  <div className='w-full md:w-2/3'>
+                    <SelectList
+                      setValue={setTitle}
+                      list={graphValues?.data ?? []}
+                      displayKey='category'
+                      dataKey='category'
+                      showAllOption
+                      value={title}
+                    />
+                  </div>
+                  <div className='items-end'>
+                    <button
+                      className='small-1stop mb-auto cursor-pointer justify-end p-5'
+                      onClick={handleToogleNumber}
+                    >
+                      {toggleValue ? <TooglePercentage /> : <ToogleNumber />}
+                    </button>
+                  </div>
                 </div>
-                <div className='w-full md:w-2/3'>
-                  <SelectList
-                    setValue={setTitle}
-                    list={graphValues?.data ?? []}
-                    displayKey='category'
-                    dataKey='category'
-                    showAllOption
-                    value={title}
-                    style='1stop'
-                  />
-                </div>
-                <div className='items-end'>
-                  <button
-                    className='small-1stop mb-auto cursor-pointer justify-end p-5'
-                    onClick={handleToogleNumber}
+              </div>
+
+              <div className='mt-4 flex flex-col gap-1'>
+                <p className='small-1stop'>
+                  Request Completion {toggleValue ? '%' : ''} by Days Taken
+                </p>
+
+                <div className='flex justify-center p-5'>
+                  <BarChart
+                    width={300}
+                    height={60}
+                    data={data}
+                    layout='vertical'
                   >
-                    {toggleValue ? <TooglePercentage /> : <ToogleNumber />}
-                  </button>
+                    <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                    <XAxis
+                      type='number'
+                      hide
+                    />
+                    <YAxis
+                      type='category'
+                      dataKey='name'
+                      hide
+                    />
+                    <Bar
+                      dataKey='lessThan5Days'
+                      stackId='a'
+                      fill='#A2B899'
+                    />
+                    <Bar
+                      dataKey='betweem515Days'
+                      stackId='a'
+                      fill='#EFF0A6'
+                    />
+                    <Bar
+                      dataKey='betweem1630Days'
+                      stackId='a'
+                      fill='#E9BF7C'
+                    />
+                    <Bar
+                      dataKey='greaterThan30Days'
+                      stackId='a'
+                      fill='#D467B3'
+                    />
+                  </BarChart>
+                </div>
+              </div>
+              <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
+                <div className='text-center'>
+                  <div className='smmetric-1stop'>
+                    {toggleValue ? `${lessThan5Days.toFixed(2)}%` : lessThan5Days}
+                  </div>
+                  <div className='small-1stop'>{'<5 days'}</div>
+                </div>
+                <div className='text-center'>
+                  <div className='smmetric-1stop'>
+                    {toggleValue ? `${betweem515Days.toFixed(2)}%` : betweem515Days}
+                  </div>
+                  <div className='small-1stop'>5-15 days</div>
+                </div>
+                <div className='text-center'>
+                  <div className='smmetric-1stop'>
+                    {toggleValue ? `${betweem1630Days.toFixed(2)}%` : betweem1630Days}
+                  </div>
+                  <div className='small-1stop'>16-30 days</div>
+                </div>
+                <div className='text-center'>
+                  <div className='smmetric-1stop'>
+                    {toggleValue ? `${greaterThan30Days.toFixed(2)}%` : greaterThan30Days}
+                  </div>
+                  <div className='small-1stop'>{'>30 days'}</div>
                 </div>
               </div>
             </div>
-
-            <div className='mt-4 flex flex-col gap-1'>
-              <p className='small-1stop'>
-                Request Completion {toggleValue ? '%' : ''} by Days Taken
-              </p>
-
-              <div className='flex justify-center p-5'>
-                <BarChart
-                  width={300}
-                  height={60}
-                  data={data}
-                  layout='vertical'
-                >
-                  <Tooltip formatter={(value: number) => value.toFixed(2)} />
-                  <XAxis
-                    type='number'
-                    hide
-                  />
-                  <YAxis
-                    type='category'
-                    dataKey='name'
-                    hide
-                  />
-                  <Bar
-                    dataKey='lessThan5Days'
-                    stackId='a'
-                    fill='#A2B899'
-                  />
-                  <Bar
-                    dataKey='betweem515Days'
-                    stackId='a'
-                    fill='#EFF0A6'
-                  />
-                  <Bar
-                    dataKey='betweem1630Days'
-                    stackId='a'
-                    fill='#E9BF7C'
-                  />
-                  <Bar
-                    dataKey='greaterThan30Days'
-                    stackId='a'
-                    fill='#D467B3'
-                  />
-                </BarChart>
-              </div>
-            </div>
-            <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
-              <div className='text-center'>
-                <div className='smmetric-1stop'>
-                  {toggleValue ? `${lessThan5Days.toFixed(2)}%` : lessThan5Days}
-                </div>
-                <div className='small-1stop'>{'<5 days'}</div>
-              </div>
-              <div className='text-center'>
-                <div className='smmetric-1stop'>
-                  {toggleValue ? `${betweem515Days.toFixed(2)}%` : betweem515Days}
-                </div>
-                <div className='small-1stop'>5-15 days</div>
-              </div>
-              <div className='text-center'>
-                <div className='smmetric-1stop'>
-                  {toggleValue ? `${betweem1630Days.toFixed(2)}%` : betweem1630Days}
-                </div>
-                <div className='small-1stop'>16-30 days</div>
-              </div>
-              <div className='text-center'>
-                <div className='smmetric-1stop'>
-                  {toggleValue ? `${greaterThan30Days.toFixed(2)}%` : greaterThan30Days}
-                </div>
-                <div className='small-1stop'>{'>30 days'}</div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 

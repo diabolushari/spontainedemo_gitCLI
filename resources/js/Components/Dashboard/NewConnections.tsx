@@ -10,6 +10,7 @@ import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -73,12 +74,7 @@ const NewConnections = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
 
-  const [pendancyValues] = useFetchRecord<{
-    data: NewConnectionGraphValues[]
-    date: number
-    month: number
-    year: number
-  }>(`subset/67?latest=date`)
+  const [selectedLevel, setSelectedLevel] = useState(1)
 
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
@@ -132,137 +128,298 @@ const NewConnections = () => {
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
-          <div className='rounded-tl-2xl border bg-1stop-highlight2 p-5'>
-            <p>ST</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>RG</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>CR</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>DV</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>SD</p>
-          </div>
-        </div>
-        <div className='flex w-5/6 flex-row gap-4 p-2'>
-          <div className='flex w-1/2 flex-col gap-1 pt-4'>
-            <button
-              className='small-1stop mb-auto cursor-pointer justify-end'
-              onClick={handleToogleNumber}
+          <div
+            className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.region_code ?? '')
+              setSelectedLevel(1)
+            }}
+          >
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
             >
-              {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-            </button>
-            <div className='flex flex-col border p-2'>
-              <p className='xlmetric-1stop'>
-                {isLoading ? (
-                  <Skeleton width='50%' />
-                ) : (
-                  `${slaPerf.toFixed(2)}${toggleValue ? '' : '%'}`
-                )}
-              </p>
-
-              <div className='flex flex-row justify-between'>
-                <p className='small-1stop'>Overall New Svc Connection SLA perf. </p>
-              </div>
-            </div>
-
-            <div className='flex w-full flex-row space-x-1'>
-              {/* LT */}
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='h3-1stop'>
-                  {isLoading ? (
-                    <Skeleton width='25%' />
-                  ) : (
-                    `${completedWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop'>Compl. within SLA </p>
-                </div>
-              </div>
-
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='h3-1stop'>
-                  {isLoading ? (
-                    <Skeleton width='25%' />
-                  ) : (
-                    `${pendingWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop'>Pending within SLA </p>
-                </div>
-              </div>
-            </div>
-
-            <div className='flex w-full flex-row space-x-1'>
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='h3-1stop'>
-                  {isLoading ? (
-                    <Skeleton width='25%' />
-                  ) : (
-                    `${completedBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop'>Compl. beyond SLA </p>
-                </div>
-              </div>
-
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='h3-1stop'>
-                  {isLoading ? (
-                    <Skeleton width='25%' />
-                  ) : (
-                    `${pendingBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop'>Pending beyond SLA </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className='flex w-1/2 justify-center pt-2'>
-            {isLoading ? (
-              <Skeleton
-                circle={true}
-                height={200}
-                width={200}
+              <path
+                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
               />
-            ) : (
-              <ResponsiveContainer className='small-1stop'>
-                <PieChart
-                  width={200}
-                  height={200}
-                >
-                  <Tooltip formatter={(value: number) => value.toFixed(2)} />
-                  <Pie
-                    data={data}
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey='value'
-                    stroke='none'
-                  >
-                    {data.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Legend content={CustomLegend} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
+              <path
+                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M2.33398 12.8332L11.3757 9.9165'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M16.334 9.3335L25.6673 7.5835'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M17.5 11.375L25.6667 12.25'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M19.0742 14L25.6659 16.9167'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
+          </div>
+          <div
+            className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.region_code ?? '')
+              setSelectedLevel(2)
+            }}
+          >
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M22.75 3.5H5.25C4.2835 3.5 3.5 4.2835 3.5 5.25V22.75C3.5 23.7165 4.2835 24.5 5.25 24.5H22.75C23.7165 24.5 24.5 23.7165 24.5 22.75V5.25C24.5 4.2835 23.7165 3.5 22.75 3.5Z'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M7.83984 17.4035L11.1397 14.1037L13.6994 16.6573L19.8333 10.5'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M15.166 10.5H19.8327V15.1667'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
+          </div>
+          <div
+            className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.circle_code ?? '')
+              setSelectedLevel(3)
+            }}
+          >
+            <svg
+              width='28'
+              height='28'
+              viewBox='0 0 28 28'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M13.416 5.25H25.0827'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M2.91602 9.33317L7.58268 4.6665'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M7.58398 4.6665V24.4998'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M13.416 11.0835H22.7493'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M13.416 16.9165H20.416'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M13.416 22.75H18.0827'
+                stroke='#333333'
+                strokeWidth='1.75'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
+          </div>
+          <div
+            className={`border p-5 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('office_code')
+              // setLevelCode(level?.record.division_code ?? '')
+            }}
+          >
+            <p></p>
+          </div>
+          <div
+            className={`border p-5 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            onClick={() => {
+              // setLevelName('section_code')
+              // setLevelCode(level?.record.section_code ?? '')
+            }}
+          >
+            <p></p>
           </div>
         </div>
+        {selectedLevel === 1 && (
+          <div className='flex w-5/6 flex-row gap-4 p-2'>
+            <div className='flex w-1/2 flex-col gap-1 pt-4'>
+              <button
+                className='small-1stop mb-auto cursor-pointer justify-end'
+                onClick={handleToogleNumber}
+              >
+                {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+              </button>
+              <div className='flex flex-col border p-2'>
+                <p className='xlmetric-1stop'>
+                  {isLoading ? (
+                    <Skeleton width='50%' />
+                  ) : (
+                    `${slaPerf.toFixed(2)}${toggleValue ? '' : '%'}`
+                  )}
+                </p>
+
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop'>Overall New Svc Connection SLA perf. </p>
+                </div>
+              </div>
+
+              <div className='flex w-full flex-row space-x-1'>
+                {/* LT */}
+                <div className='flex w-1/2 flex-col border p-2'>
+                  <p className='h3-1stop'>
+                    {isLoading ? (
+                      <Skeleton width='25%' />
+                    ) : (
+                      `${completedWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                    )}
+                  </p>
+                  <div className='flex flex-row justify-between'>
+                    <p className='small-1stop'>Compl. within SLA </p>
+                  </div>
+                </div>
+
+                <div className='flex w-1/2 flex-col border p-2'>
+                  <p className='h3-1stop'>
+                    {isLoading ? (
+                      <Skeleton width='25%' />
+                    ) : (
+                      `${pendingWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                    )}
+                  </p>
+                  <div className='flex flex-row justify-between'>
+                    <p className='small-1stop'>Pending within SLA </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex w-full flex-row space-x-1'>
+                <div className='flex w-1/2 flex-col border p-2'>
+                  <p className='h3-1stop'>
+                    {isLoading ? (
+                      <Skeleton width='25%' />
+                    ) : (
+                      `${completedBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                    )}
+                  </p>
+                  <div className='flex flex-row justify-between'>
+                    <p className='small-1stop'>Compl. beyond SLA </p>
+                  </div>
+                </div>
+
+                <div className='flex w-1/2 flex-col border p-2'>
+                  <p className='h3-1stop'>
+                    {isLoading ? (
+                      <Skeleton width='25%' />
+                    ) : (
+                      `${pendingBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                    )}
+                  </p>
+                  <div className='flex flex-row justify-between'>
+                    <p className='small-1stop'>Pending beyond SLA </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className='flex w-1/2 justify-center pt-2'>
+              {isLoading ? (
+                <Skeleton
+                  circle={true}
+                  height={200}
+                  width={200}
+                />
+              ) : (
+                <ResponsiveContainer className='small-1stop'>
+                  <PieChart
+                    width={200}
+                    height={200}
+                  >
+                    <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                    <Pie
+                      data={data}
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey='value'
+                      stroke='none'
+                    >
+                      {data.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Legend content={CustomLegend} />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </div>
+        )}
+        {selectedLevel === 2 && <NewConnectionTrend selectedMonth={selectedMonth} />}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
