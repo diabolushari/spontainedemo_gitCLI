@@ -76,7 +76,6 @@ const PendancyCard = () => {
               viewBox='0 0 28 28'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
-              clas
             >
               <path
                 d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
