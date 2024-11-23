@@ -12,7 +12,7 @@ const Complaints = () => {
   const [selectedLevel, setSelectedLevel] = useState(1)
 
   return (
-    <Card className='flex w-full flex-col'>
+    <Card className='flex h-full w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
           <div

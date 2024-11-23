@@ -41,7 +41,7 @@ const ServideDeliveryIndexPage = () => {
               <PendancyCard />
             </div>
           </div>
-          <div className='flex flex-col gap-2 sm:flex-row'>
+          <div className='flex flex-col gap-2 lg:flex-row'>
             <div className='w-full p-6 sm:p-4 lg:w-1/3'>
               <Complaints />
             </div>
@@ -50,7 +50,7 @@ const ServideDeliveryIndexPage = () => {
             </div>
           </div>
           <div className='flex gap-5'>
-            <div className='w-1/2'>
+            <div className='lg:w-1/2 w-full'>
               <Solar />
             </div>
           </div>
