@@ -3,7 +3,7 @@ import axios from 'axios'
 import { handleHttpErrors } from '@/ui/alerts'
 import { Paginator } from '@/ui/ui_interfaces'
 
-export default function useFetchRecord<T>(url: string): [Paginator<T> | null, boolean] {
+export default function useFetchPagination<T>(url: string): [Paginator<T> | null, boolean] {
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState<Paginator<T> | null>(null)
 
