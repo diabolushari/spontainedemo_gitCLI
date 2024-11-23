@@ -9,6 +9,7 @@ import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import DatePicker from '@/ui/form/DatePicker'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 export interface PendencyGraphValues {
   category: string
@@ -31,31 +32,30 @@ const PendancyCard = () => {
 
   const [selectedDate, setSelectedDate] = useState<string>('2024-09-30')
 
-  console.log(selectedDate)
-  console.log(setSelectedDate)
-
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
 
-  const [graphValues] = useFetchList<PendencyGraphValues>(`subset/67?data_date=${selectedDate}`)
-  console.log(graphValues)
+  const [graphValues] = useFetchRecord<{ data: PendencyGraphValues[] }>(
+    `subset/67?data_date=${selectedDate}`
+  )
+
   const lessThan5Days = toggleValue
-    ? graphValues.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
-    : graphValues.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
+    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
+    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
 
   const betweem515Days = toggleValue
-    ? graphValues.find((value) => value.category === title)?.compl_perc_5_15_days || 0
-    : graphValues.find((value) => value.category === title)?.compl_cnt_5_15_days || 0
+    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_5_15_days || 0
+    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_5_15_days || 0
   const betweem1630Days = toggleValue
-    ? graphValues.find((value) => value.category === title)?.compl_perc_16_30_days || 0
-    : graphValues.find((value) => value.category === title)?.compl_cnt_16_30_days || 0
+    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_16_30_days || 0
+    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_16_30_days || 0
   const greaterThan30Days = toggleValue
-    ? graphValues.find((value) => value.category === title)?.compl_perc_gt_30_days || 0
-    : graphValues.find((value) => value.category === title)?.compl_cnt_gt_30_days || 0
+    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_gt_30_days || 0
+    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_gt_30_days || 0
   const complWithinSLa = toggleValue
-    ? graphValues.find((value) => value.category === title)?.compl_within_sla_perc || 0
-    : graphValues.find((value) => value.category === title)?.compl_within_sla_cnt || 0
+    ? graphValues?.data.find((value) => value.category === title)?.compl_within_sla_perc || 0
+    : graphValues?.data.find((value) => value.category === title)?.compl_within_sla_cnt || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
 
@@ -92,7 +92,7 @@ const PendancyCard = () => {
                 <div className='w-full md:w-2/3'>
                   <SelectList
                     setValue={setTitle}
-                    list={graphValues}
+                    list={graphValues?.data ?? []}
                     displayKey='category'
                     dataKey='category'
                     showAllOption

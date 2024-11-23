@@ -81,7 +81,7 @@ export const formatNumber = (value: number) => {
 }
 
 const ActiveConnection = () => {
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
   const [selectedLevel, setSelectedLevel] = useState('ST')
@@ -89,7 +89,7 @@ const ActiveConnection = () => {
 
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
-    `subset/57?${levelName}=${levelCode}&month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+    `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
   )
 
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()

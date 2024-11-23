@@ -69,7 +69,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
   const handleEditClick = (metaDataId: number, pageNo: string) => {
     router.visit(route('meta-data.edit', { metaData: metaDataId, page: pageNo }))
   }
-  console.log(pageNo)
+ 
   return (
     <AnalyticsDashboardLayout
       type='definitions'

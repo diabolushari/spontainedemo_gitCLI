@@ -6,11 +6,11 @@ import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
-import IssueCard from '@/Components/ServiceDelivery/IssueCard'
+import IssueCard from '@/Components/ServiceDelivery/Issues/IssueCard'
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
-import SolarCapacityTrend from '@/Components/Dashboard/SolarCapacityTrend'
 
-import SolarProsumers from '@/Components/ServiceDelivery/SolarProsumers'
+import Solar from '@/Components/ServiceDelivery/Solar/Solar'
+import SolarCapacityTrend from '@/Components/ServiceDelivery/Solar/SolarCapacityTrend'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -44,28 +44,16 @@ const ServideDeliveryIndexPage = () => {
           </div>
           <div className='flex flex-col gap-2 sm:flex-row'>
             <div className='w-full p-6 sm:p-4 lg:w-1/3'>
-              <IssueCard
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
+              <IssueCard />
             </div>
             <div className='flex w-full p-6 sm:p-4 lg:w-2/3'>
-              <PowerInterruptionTrend
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
+              <PowerInterruptionTrend />
             </div>
           </div>
-          <div className='flex flex-col gap-2 lg:flex-row'>
-            <SolarProsumers />
-          </div>
-          <div className='w-1/2'>
-            <SolarCapacityTrend />
-          </div>
-          <div className='w-1/2'>
-            <SolarCapacityTrend />
+          <div className='flex gap-5'>
+            <div className='w-1/2'>
+              <Solar />
+            </div>
           </div>
         </div>
       </DashboardPadding>

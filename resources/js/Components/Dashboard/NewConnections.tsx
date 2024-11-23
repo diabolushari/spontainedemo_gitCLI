@@ -79,13 +79,12 @@ const NewConnections = () => {
     month: number
     year: number
   }>(`subset/67?latest=date`)
-  console.log(pendancyValues)
+
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
     month: number
     year: number
   }>(`subset/63?latest=month_year`)
-  console.log(graphValues)
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
