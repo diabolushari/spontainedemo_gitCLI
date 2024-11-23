@@ -1,7 +1,7 @@
 import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
 import { Link } from '@inertiajs/react'
-import MoreButton from '../MoreButton'
+import MoreButton from '@/Components/MoreButton'
 import { useState } from 'react'
 import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
@@ -15,16 +15,17 @@ export interface SolarCapacityTrendValues {
   consumer_count: number
   capacity_kw: number
 }
-const SolarCapacityTrend = () => {
+
+interface Properties {
+  selectedMonth: Date | null
+}
+const SolarCapacityTrend = ({ selectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
-  const [graphValues] = useFetchRecord<{
-    data: SolarCapacityTrendValues[]
-    month: number
-    year: number
-  }>(`/subset/71?latest=month_year`)
-  console.log(graphValues)
-  console.log(graphValues)
+
+  const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[] }>(
+    `subset/71?latest=month_year`
+  )
+
   const dateEarlier = [
     '3 MONTHS',
     '4 MONTHS',
@@ -40,12 +41,9 @@ const SolarCapacityTrend = () => {
 
   const monthYear = `${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() + 1).toString().padStart(2, '0')}`
 
-  console.log('MOnthYear', monthYear)
-
   const filteredValues = graphValues?.data.filter((value) => value.month_year === monthYear)
-  console.log('filteredValues', filteredValues)
+
   const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
-  console.log('totalCapacityKw', totalCapacityKw)
 
   // Calculate months in the selected range
   const monthsInRange = (months: number): string[] => {
@@ -72,28 +70,9 @@ const SolarCapacityTrend = () => {
     return { month, capacity_kw: totalCapacityKw }
   })
 
-  console.log('Chart Data:', chartData)
-
   return (
-    <Card className='flex w-full flex-col'>
+    <div className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='small-1stop-header flex h-full w-1/12 flex-col rounded-2xl'>
-          <div className='rounded-tl-2xl border bg-1stop-highlight2 p-5'>
-            <p>ST</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>RG</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>CR</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>DV</p>
-          </div>
-          <div className='border bg-button-muted p-5'>
-            <p>SD</p>
-          </div>
-        </div>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='flex'>
             <span className='small-1stop ml-10 items-end p-5'>
@@ -137,27 +116,7 @@ const SolarCapacityTrend = () => {
           </div>
         </div>
       </div>
-
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop'>Solar Capacity Trend</p>
-        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
-          {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric',
-            })} */}
-          <MonthPicker
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
-        </div>
-        <div className='p-2 hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/39'>
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+    </div>
   )
 }
 export default SolarCapacityTrend

@@ -73,12 +73,18 @@ const NewConnections = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
 
+  const [pendancyValues] = useFetchRecord<{
+    data: NewConnectionGraphValues[]
+    date: number
+    month: number
+    year: number
+  }>(`subset/67?latest=date`)
+
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
     month: number
     year: number
   }>(`subset/63?latest=month_year`)
-  console.log(graphValues)
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 

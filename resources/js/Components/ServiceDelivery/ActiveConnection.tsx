@@ -36,17 +36,8 @@ interface LegendProps {
     payload: { name: string; value: number; color: string }[]
   }[]
 }
-//DOMESTIC
-//LOCAL BODIES
-//PUBLIC INSTITUTIONS
-//STATE GOVERNMENT  DEPARTMENTS
-//STATE PUBLIC SECTOR UNDERTAKINGS
-//CENTRAL GOVERNMENT DEPARTMENTS
-//CENTRAL PUBLIC SECTOR UNDERTAKINGS
-//NON PAYING GROUP
-//KSEBoard
 
-const CustomLegend = ({ payload }: LegendProps) => {
+export const CustomLegend = ({ payload }: LegendProps) => {
   return (
     <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
       {payload.map(
@@ -79,7 +70,6 @@ const CustomLegend = ({ payload }: LegendProps) => {
     </ul>
   )
 }
-// --------------------------------------------------
 
 export const formatNumber = (value: number) => {
   if (value >= 10000000) {
@@ -91,17 +81,18 @@ export const formatNumber = (value: number) => {
 }
 
 const ActiveConnection = () => {
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
   const [selectedLevel, setSelectedLevel] = useState('ST')
   const [voltageType, setVoltageType] = useState('Total')
+
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
-  const [graphValues] = useFetchList<InactiveGraphValues>(
-    `subset/57?${levelName}=${levelCode}&month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1}`
+  const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
+    `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
   )
 
-  graphValues.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
+  graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
 
   useEffect(() => {
     switch (level?.level) {
@@ -131,70 +122,64 @@ const ActiveConnection = () => {
   const filters = (value: InactiveGraphValues, index: number) => {
     if (index < 3) {
       if (voltageType == 'Total') {
-        return value.consumer_category === graphValues[index].consumer_category
+        return value.consumer_category === graphValues?.data[index].consumer_category
       } else {
         return (
-          value.consumer_category === graphValues[index].consumer_category &&
+          value.consumer_category === graphValues?.data[index].consumer_category &&
           value.voltage == voltageType
         )
       }
     } else {
       if (voltageType == 'Total') {
         return (
-          value.consumer_category !== graphValues[0]?.consumer_category &&
-          value.consumer_category !== graphValues[1]?.consumer_category &&
-          value.consumer_category !== graphValues[2]?.consumer_category
+          value.consumer_category !== graphValues?.data[0]?.consumer_category &&
+          value.consumer_category !== graphValues?.data[1]?.consumer_category &&
+          value.consumer_category !== graphValues?.data[2]?.consumer_category
         )
       } else {
         return (
-          value.consumer_category !== graphValues[0]?.consumer_category &&
-          value.consumer_category !== graphValues[1]?.consumer_category &&
-          value.consumer_category !== graphValues[2]?.consumer_category &&
+          value.consumer_category !== graphValues?.data[0]?.consumer_category &&
+          value.consumer_category !== graphValues?.data[1]?.consumer_category &&
+          value.consumer_category !== graphValues?.data[2]?.consumer_category &&
           value.voltage == voltageType
         )
       }
     }
   }
-  const totalConnections = graphValues.reduce((sum, value) => sum + value.consumer_count, 0)
 
-  const ltConnections = graphValues
-    .filter((value) => value.voltage === 'LT')
-    .reduce((sum, value) => sum + value.consumer_count, 0)
+  const cunsumerCount = (voltage: string) => {
+    if (voltage != 'Total') {
+      return graphValues?.data
+        .filter((value) => value.voltage === voltage)
+        .reduce((sum, value) => sum + value.consumer_count, 0)
+    } else {
+      return graphValues?.data.reduce((sum, value) => sum + value.consumer_count, 0)
+    }
+  }
 
-  const htConnections = graphValues
-    .filter((value) => value.voltage === 'HT')
-    .reduce((sum, value) => sum + value.consumer_count, 0)
+  const graphFilter = (index: number) => {
+    return graphValues?.data
+      .filter((value) => filters(value, index))
+      .reduce((sum, value) => sum + value.consumer_count, 0)
+  }
 
-  const ehtConnections = graphValues
-    .filter((value) => value.voltage === 'EHT')
-    .reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const graphFilterOne = graphValues
-    .filter((value) => filters(value, 0))
-    .reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const graphFilterTwo = graphValues
-    .filter((value) => filters(value, 1))
-    .reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const graphFilterThree = graphValues
-    .filter((value) => filters(value, 2))
-    .reduce((sum, value) => sum + value.consumer_count, 0)
-
-  const graphFilterFour = graphValues
-    .filter(
-      (value) =>
-        value.consumer_category !== graphValues[0]?.consumer_category &&
-        value.consumer_category !== graphValues[1]?.consumer_category &&
-        value.consumer_category !== graphValues[2]?.consumer_category &&
-        value.voltage == voltageType
-    )
-    .reduce((sum, value) => sum + value.consumer_count, 0)
   const data = [
-    { name: graphValues[0]?.consumer_category, value: graphFilterOne },
-    { name: graphValues[1]?.consumer_category, value: graphFilterTwo },
-    { name: graphValues[2]?.consumer_category, value: graphFilterThree },
-    { name: 'Other', value: graphFilterFour },
+    {
+      name: graphValues?.data[0]?.consumer_category,
+      value: graphFilter(0),
+    },
+    {
+      name: graphValues?.data[1]?.consumer_category,
+      value: graphFilter(1),
+    },
+    {
+      name: graphValues?.data[2]?.consumer_category,
+      value: graphFilter(2),
+    },
+    {
+      name: 'Other',
+      value: graphFilter(3),
+    },
   ]
 
   const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
@@ -259,7 +244,11 @@ const ActiveConnection = () => {
             {/* Total Connections */}
             <div className='flex flex-col border p-2'>
               <p className='xlmetric-1stop'>
-                {graphValues.length ? formatNumber(totalConnections) : <Skeleton />}
+                {graphValues?.data.length ? (
+                  formatNumber(cunsumerCount('Total') ?? 0)
+                ) : (
+                  <Skeleton />
+                )}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>Total </p>
@@ -279,7 +268,7 @@ const ActiveConnection = () => {
               {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(ltConnections) : <Skeleton />}
+                  {graphValues?.data.length ? formatNumber(cunsumerCount('LT') ?? 0) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>LT </p>
@@ -297,7 +286,7 @@ const ActiveConnection = () => {
               {/* HT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
-                  {graphValues.length ? formatNumber(htConnections) : <Skeleton />}
+                  {graphValues?.data.length ? formatNumber(cunsumerCount('HT') ?? 0) : <Skeleton />}
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>HT </p>
@@ -316,7 +305,7 @@ const ActiveConnection = () => {
             {/* EHT */}
             <div className='flex flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues.length ? formatNumber(ehtConnections) : <Skeleton />}
+                {graphValues?.data.length ? formatNumber(cunsumerCount('EHT') ?? 0) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>EHT </p>
@@ -334,7 +323,7 @@ const ActiveConnection = () => {
 
           {/* Graph */}
           <div className='flex w-1/2 justify-center pt-2'>
-            {graphValues.length == 0 ? (
+            {graphValues?.data.length == 0 ? (
               <Skeleton
                 circle={true}
                 height={200}

@@ -45,7 +45,6 @@ const SlaPerformance = () => {
       ])
     ).values()
   )
-  console.log(groupedDataNumber)
 
   const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
 

@@ -26,7 +26,7 @@ const Outages = ({ section_code, levelName, levelCode }: Properties) => {
 
   const scheduled = isLoading ? 0 : totalScheduled || 0
   const unscheduled = isLoading ? 0 : totalUnscheduled || 0
-  console.log(graphValues)
+
   return (
     <Card className='flex w-full flex-col space-x-1 p-4'>
       <div className='flex w-full flex-col space-x-1 sm:flex-row'>
