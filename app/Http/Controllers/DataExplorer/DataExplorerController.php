@@ -26,6 +26,8 @@ class DataExplorerController extends Controller implements HasMiddleware
     public function __invoke(string $subsetGroup, Request $request): Response
     {
 
+        return $subsetGroup;
+
         $subsetGroup = SubsetGroup::where('name', $subsetGroup)->firstOrFail();
 
         $subsetDetails = SubsetGroupItem::where('subset_group_id', $subsetGroup->id)
