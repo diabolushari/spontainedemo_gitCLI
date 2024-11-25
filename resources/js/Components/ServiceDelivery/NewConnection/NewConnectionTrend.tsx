@@ -18,36 +18,24 @@ export interface NewConnectionGraphValues {
   sla_svc_group: string
 }
 
+const dateEarlier = [
+  '3 MONTHS',
+  '4 MONTHS',
+  '5 MONTHS',
+  '6 MONTHS',
+  '7 MONTHS',
+  '8 MONTHS',
+  '9 MONTHS',
+  '10 MONTHS',
+  '11 MONTHS',
+  '12 MONTHS',
+]
+
 interface Properties {
   selectedMonth: Date | null
 }
 const NewConnectionTrend = ({ selectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
-
-  const [graphValues] = useFetchRecord<{
-    data: NewConnectionGraphValues[]
-    month: number
-    year: number
-  }>(
-    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
-  )
-
-  const dateEarlier = [
-    '3 MONTHS',
-    '4 MONTHS',
-    '5 MONTHS',
-    '6 MONTHS',
-    '7 MONTHS',
-    '8 MONTHS',
-    '9 MONTHS',
-    '10 MONTHS',
-    '11 MONTHS',
-    '12 MONTHS',
-  ]
-
-  const monthYear = `${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}`
 
   // Calculate months in the selected range
   const monthsInRange = (months: number): string[] => {
@@ -66,18 +54,31 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
 
   // Extract the range of months
   const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
+  console.log(selectedMonths)
+
+  // Convert months to match API format if needed
+  const selectedMonthsParam = selectedMonths.join(',')
+  const selectedMonthsParam2 = selectedMonths.map((month) => `month_year=${month}`).join('&')
+
+  const [graphValues] = useFetchRecord<{
+    data: NewConnectionGraphValues[]
+  }>(
+    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonthsParam2}`}`
+  )
+  console.log(selectedMonthsParam)
+  console.log(graphValues)
 
   // Filter and group data for the selected range
   const chartData = selectedMonths.map((month) => {
-    // Filter for the specific month
     const filteredValue = graphValues?.data.find((value) => value.month_year === month)
-
-    // Get the value of `compl_beyond_sla_cnt`
-    const completedBeyondSla = filteredValue?.compl_beyond_sla_cnt || 0
-
-    return { month, RequestCompletedBeyondSla: completedBeyondSla }
+    return {
+      month,
+      RequestCompletedBeyondSla: filteredValue?.compl_beyond_sla_cnt || 0,
+    }
   })
+
   console.log(chartData)
+
   return (
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -107,9 +108,7 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
               <BarChart data={chartData}>
                 <XAxis
                   dataKey='month'
-                  tickFormatter={
-                    (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
-                  }
+                  tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 />
                 <YAxis />
                 <Tooltip
