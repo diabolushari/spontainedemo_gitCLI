@@ -1,5 +1,5 @@
 import useFetchList from '@/hooks/useFetchList'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -80,10 +80,17 @@ const NewConnections = () => {
     data: NewConnectionGraphValues[]
     month: number
     year: number
+    latest_value: string
   }>(
     `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const slaPerf = isLoading
@@ -413,7 +420,12 @@ const NewConnections = () => {
             </div>
           </div>
         )}
-        {selectedLevel === 2 && <NewConnectionTrend selectedMonth={selectedMonth} />}
+        {selectedLevel === 2 && (
+          <NewConnectionTrend
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        )}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>

@@ -69,13 +69,13 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
         </div>
       </div>
       <table className='mt-5'>
-        <thead className='rounded-2xl'>
+        <thead className='rounded-2xl text-left'>
           <tr className=''>
             {headers.map((header) => {
               return (
                 <th
                   key={header}
-                  className='bg-1stop-white'
+                  className='small-1stop bg-1stop-white'
                 >
                   {header}
                 </th>
@@ -87,7 +87,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
           {graphValues?.data.data.map((value) => {
             return (
               <tr
-                className='text-center'
+                className='small-1stop text-left'
                 key={value.office_name}
               >
                 <td className=''>{value.office_name}</td>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -14,8 +14,9 @@ export interface SlaTrendValues {
 
 interface Properties {
   selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
 }
-const SlaTrend = ({ selectedMonth }: Properties) => {
+const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [toogleValue, setToogleValue] = useState<boolean>(true)
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [title, setTitle] = useState('Ownership change') // Selected `sla_svc_group`
@@ -28,6 +29,7 @@ const SlaTrend = ({ selectedMonth }: Properties) => {
     data: SlaTrendValues[]
     month: number
     year: number
+    latest_value: string
   }>(
     `subset/78?${
       selectedMonth == null
@@ -35,7 +37,13 @@ const SlaTrend = ({ selectedMonth }: Properties) => {
         : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   // Options for the date range dropdown
   const dateEarlier = [
     '3 MONTHS',

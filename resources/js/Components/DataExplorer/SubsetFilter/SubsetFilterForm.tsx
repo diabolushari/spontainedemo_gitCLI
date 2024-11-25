@@ -167,8 +167,6 @@ export default function SubsetFilterForm({
     })
   )
 
-  console.log(formFields)
-
   //to add or remove new fields at end
   useEffect(() => {
     if (formFields.length === 0) {

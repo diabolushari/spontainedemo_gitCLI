@@ -195,7 +195,12 @@ const Solar = () => {
             setSelectedMonth={setSelectedMonth}
           />
         )}
-        {selectedLevel === 2 && <SolarCapacityTrend selectedMonth={selectedMonth} />}
+        {selectedLevel === 2 && (
+          <SolarCapacityTrend
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        )}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>

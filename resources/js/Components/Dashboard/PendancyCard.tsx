@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import MoreButton from '../MoreButton'
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
@@ -29,7 +29,7 @@ const PendancyCard = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(true)
   const [selectedLevel, setSelectedLevel] = useState(1)
 
-  const [selectedDate, setSelectedDate] = useState<string>('2024-09-30')
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
@@ -37,8 +37,14 @@ const PendancyCard = () => {
   const [graphValues] = useFetchRecord<{
     data: PendencyGraphValues[]
     date: string
+    latest_value: string
   }>(`/subset/67?${selectedDate == null ? 'latest=data_date' : `data_date=${selectedDate}`}`)
-
+  useEffect(() => {
+    if (selectedDate == null && graphValues != null) {
+      setSelectedDate(graphValues.latest_value)
+    }
+  }, [setSelectedDate, graphValues, selectedDate])
+  console.log(graphValues)
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
     : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
@@ -254,7 +260,7 @@ const PendancyCard = () => {
               year: 'numeric',
             })} */}
           <DatePicker
-            value={selectedDate}
+            value={selectedDate ?? ''}
             setValue={setSelectedDate}
           />
         </div>

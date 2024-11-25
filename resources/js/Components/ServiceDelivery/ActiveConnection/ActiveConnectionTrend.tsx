@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -14,16 +14,23 @@ export interface InactiveGraphValues {
 
 interface Properties {
   selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
-const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
+const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [selectedVoltage, setSelectedVoltage] = useState('LT')
 
   // Fetch the graph values
-  const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
+  const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
     `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   // Define options for the select lists
   const dateEarlier = [
     '3 MONTHS',
@@ -67,9 +74,6 @@ const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
 
     return { month, consumer_count: totalConsumerCount || 0 }
   })
-
-  console.log('Chart Data:', chartData)
-  console.log(chartData)
 
   return (
     <div className='flex w-full flex-col'>

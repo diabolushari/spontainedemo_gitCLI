@@ -4,7 +4,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
 import { Link } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import SlaTrend from './SlaTrend'
@@ -28,10 +28,17 @@ const SlaPerformance = () => {
     data: SlaPerformanceValues[]
     month: number
     year: number
+    latest_value: string
   }>(
     `subset/82?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   const groupedDataPercentage = Array.from(
     new Map(
       graphValues?.data.map(
@@ -316,7 +323,12 @@ const SlaPerformance = () => {
             </div>
           </div>
         )}
-        {selectedLevel === 2 && <SlaTrend selectedMonth={selectedMonth} />}
+        {selectedLevel === 2 && (
+          <SlaTrend
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        )}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>

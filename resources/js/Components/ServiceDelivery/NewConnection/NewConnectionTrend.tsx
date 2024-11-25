@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -33,8 +33,9 @@ const dateEarlier = [
 
 interface Properties {
   selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
 }
-const NewConnectionTrend = ({ selectedMonth }: Properties) => {
+const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
 
   // Calculate months in the selected range
@@ -59,10 +60,17 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
   const selectedMonthsParam = selectedMonths.join(',')
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
+    latest_value: string
   }>(
     `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonthsParam}`}`
   )
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   // Filter and group data for the selected range
   const chartData = selectedMonths.map((month) => {
     const filteredValue = graphValues?.data.find((value) => value.month_year === month)
@@ -71,8 +79,6 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
       RequestCompletedBeyondSla: filteredValue?.compl_beyond_sla_cnt || 0,
     }
   })
-
-  console.log(chartData)
 
   return (
     <div className='flex w-full flex-col'>
