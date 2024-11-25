@@ -9,6 +9,7 @@ use App\Models\SubsetGroup\SubsetGroupItem;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class DataExplorerController extends Controller implements HasMiddleware
 {
@@ -22,11 +23,8 @@ class DataExplorerController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(string $subsetGroup, Request $request)
+    public function __invoke(string $subsetGroup, Request $request): Response
     {
-
-        return $subsetGroup;
-
         $subsetGroup = SubsetGroup::where('name', $subsetGroup)->firstOrFail();
 
         $subsetDetails = SubsetGroupItem::where('subset_group_id', $subsetGroup->id)
