@@ -28,8 +28,13 @@ const SlaTrend = ({ selectedMonth }: Properties) => {
     data: SlaTrendValues[]
     month: number
     year: number
-  }>(`subset/78?latest=month_year`)
-  console.log(graphValues)
+  }>(
+    `subset/78?${
+      selectedMonth == null
+        ? 'latest=month_year'
+        : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+    }`
+  )
 
   // Options for the date range dropdown
   const dateEarlier = [
@@ -67,17 +72,12 @@ const SlaTrend = ({ selectedMonth }: Properties) => {
     const filteredValues = graphValues?.data.filter(
       (value) => value.sla_svc_group === title && value.month_year === month
     )
-
-    console.log('Filtered Values:', filteredValues)
-
     const slaPerfCount = toogleValue
       ? filteredValues?.[0]?.sla_perf_count || 0
       : filteredValues?.[0]?.sla_perf_perc || 0
 
     return { month, sla_perf_count: slaPerfCount }
   })
-
-  console.log(chartData)
 
   return (
     <div className='flex w-full flex-col'>
@@ -126,9 +126,8 @@ const SlaTrend = ({ selectedMonth }: Properties) => {
                   tickFormatter={
                     (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
                   }
-                  hide
                 />
-                <YAxis hide />
+                <YAxis />
                 <Tooltip
                   formatter={(value: number) => [
                     `${value}`,

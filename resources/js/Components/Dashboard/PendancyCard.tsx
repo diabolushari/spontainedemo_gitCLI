@@ -34,12 +34,11 @@ const PendancyCard = () => {
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
-
   const [graphValues] = useFetchRecord<{
     data: PendencyGraphValues[]
     date: string
-  }>(`/subset/67?latest=data_date`)
-  console.log(graphValues)
+  }>(`/subset/67?${selectedDate == null ? 'latest=data_date' : `data_date=${selectedDate}`}`)
+
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
     : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
@@ -58,13 +57,12 @@ const PendancyCard = () => {
     : graphValues?.data.find((value) => value.category === title)?.compl_within_sla_cnt || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
-  console.log(data)
 
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
-          <div
+          <button
             className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               setSelectedLevel(1)
@@ -120,7 +118,7 @@ const PendancyCard = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
+          </button>
           <div
             className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
           ></div>

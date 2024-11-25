@@ -93,6 +93,8 @@ const ActiveConnection = () => {
     `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
   )
 
+  console.log(graphValues)
+
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
 
   useEffect(() => {

@@ -80,7 +80,9 @@ const NewConnections = () => {
     data: NewConnectionGraphValues[]
     month: number
     year: number
-  }>(`subset/63?latest=month_year`)
+  }>(
+    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+  )
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
@@ -128,7 +130,7 @@ const NewConnections = () => {
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
-          <div
+          <button
             className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -186,8 +188,8 @@ const NewConnections = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
-          <div
+          </button>
+          <button
             className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -223,8 +225,8 @@ const NewConnections = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
-          <div
+          </button>
+          <button
             className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -282,22 +284,14 @@ const NewConnections = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
+          </button>
           <div
             className={`border p-5 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.division_code ?? '')
-            }}
           >
             <p></p>
           </div>
           <div
             className={`border p-5 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-            onClick={() => {
-              // setLevelName('section_code')
-              // setLevelCode(level?.record.section_code ?? '')
-            }}
           >
             <p></p>
           </div>

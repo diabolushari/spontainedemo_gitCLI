@@ -24,7 +24,7 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [monthYear, setMonthYear] = useState('')
   const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
-    `subset/71?latest=month_year`
+    `subset/71?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
   const dateEarlier = [
@@ -112,9 +112,9 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
               <AreaChart data={chartData}>
                 <XAxis
                   dataKey='month'
-                  hide
+                  tickFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
                 />
-                <YAxis hide />
+                <YAxis />
                 <Tooltip formatter={(value: number) => value.toFixed(2)} />
                 <Area
                   type='monotone'

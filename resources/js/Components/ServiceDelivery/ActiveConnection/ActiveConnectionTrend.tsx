@@ -21,7 +21,7 @@ const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
 
   // Fetch the graph values
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
-    `subset/57?latest=month_year`
+    `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
   // Define options for the select lists
@@ -40,15 +40,16 @@ const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
   const voltageType = ['LT', 'HT', 'EHT']
 
   // Generate month-year for filtering
+  // Generate month-year range
   const monthsInRange = (months: number): string[] => {
-    const dates = []
-    const date = new Date(selectedMonth || new Date()) // Use current date if selectedMonth is null
+    const dates: string[] = []
+    const date = new Date(selectedMonth || new Date())
 
     for (let i = 0; i < months; i++) {
       const year = date.getFullYear()
       const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      dates.push(`${year}${month}`) // Format YYYYMM
-      date.setMonth(date.getMonth() - 1) // Move one month backward
+      dates.push(`${year}${month}`)
+      date.setMonth(date.getMonth() - 1)
     }
 
     return dates
@@ -56,24 +57,19 @@ const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
 
   const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
 
-  // Filter and aggregate data for the selected range
+  // Filter and aggregate data
   const chartData = selectedMonths.map((month) => {
     const filteredValues = graphValues?.data.filter(
       (value) => value.voltage === selectedVoltage && value.month_year === month
     )
 
-    console.log('graphValues', graphValues)
-    console.log('Month:', month)
-    console.log('Filtered Values:', filteredValues)
-
     const totalConsumerCount = filteredValues?.reduce((sum, value) => sum + value.consumer_count, 0)
 
-    return { month, consumer_count: totalConsumerCount || 0 } // Default to 0 if no values
+    return { month, consumer_count: totalConsumerCount || 0 }
   })
 
+  console.log('Chart Data:', chartData)
   console.log(chartData)
-
-  // Render loading or error states
 
   return (
     <div className='flex w-full flex-col'>
@@ -121,9 +117,8 @@ const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
                   tickFormatter={
                     (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
                   }
-                  hide
                 />
-                <YAxis hide />
+                <YAxis />
                 <Tooltip
                   formatter={(value: number) => [`${value}`, 'Consumer Count']}
                   labelFormatter={
