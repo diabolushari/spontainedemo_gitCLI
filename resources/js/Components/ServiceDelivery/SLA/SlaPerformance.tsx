@@ -11,12 +11,12 @@ import SlaTrend from './SlaTrend'
 import MoreButton from '@/Components/MoreButton'
 
 export interface SlaPerformanceValues {
-  compl_beyond_sla__: number
-  compl_within_sla__: number
+  requests_beyond_sla____: number
+  requests_within_sla____: number
   month_year: string
   request_type: string
-  compl_beyond_sla_cnt: number
-  compl_within_sla_cnt: number
+  requests_beyond_sla_count_: number
+  requests_within_sla__count_: number
 }
 const SlaPerformance = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
@@ -28,24 +28,30 @@ const SlaPerformance = () => {
     month: number
     year: number
   }>(
-    `subset/64?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/82?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
+
+  console.log(graphValues)
 
   const groupedDataPercentage = Array.from(
     new Map(
-      graphValues?.data.map(({ request_type, compl_within_sla__, compl_beyond_sla__ }) => [
-        request_type,
-        { name: request_type, compl_within_sla__, compl_beyond_sla__ },
-      ])
+      graphValues?.data.map(
+        ({ request_type, requests_within_sla____, requests_beyond_sla____ }) => [
+          request_type,
+          { name: request_type, requests_within_sla____, requests_beyond_sla____ },
+        ]
+      )
     ).values()
   )
 
   const groupedDataNumber = Array.from(
     new Map(
-      graphValues?.data.map(({ request_type, compl_within_sla_cnt, compl_beyond_sla_cnt }) => [
-        request_type,
-        { name: request_type, compl_within_sla_cnt, compl_beyond_sla_cnt },
-      ])
+      graphValues?.data.map(
+        ({ request_type, requests_within_sla__count_, requests_beyond_sla_count_ }) => [
+          request_type,
+          { name: request_type, requests_within_sla__count_, requests_beyond_sla_count_ },
+        ]
+      )
     ).values()
   )
 
@@ -80,7 +86,7 @@ const SlaPerformance = () => {
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
-          <div
+          <button
             className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -138,8 +144,8 @@ const SlaPerformance = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
-          <div
+          </button>
+          <button
             className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -175,8 +181,8 @@ const SlaPerformance = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
-          <div
+          </button>
+          <button
             className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -234,8 +240,8 @@ const SlaPerformance = () => {
                 strokeLinejoin='round'
               />
             </svg>
-          </div>
-          <div
+          </button>
+          <button
             className={`border p-5 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -243,8 +249,8 @@ const SlaPerformance = () => {
             }}
           >
             <p></p>
-          </div>
-          <div
+          </button>
+          <button
             className={`border p-5 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('section_code')
@@ -252,7 +258,7 @@ const SlaPerformance = () => {
             }}
           >
             <p></p>
-          </div>
+          </button>
         </div>
         {selectedLevel === 1 && (
           <div className='flex w-11/12 flex-row gap-4 p-2'>
@@ -290,12 +296,16 @@ const SlaPerformance = () => {
                         <YAxis hide />
                         <Tooltip formatter={(value: number) => value.toFixed(2)} />
                         <Bar
-                          dataKey={toggleValue ? 'compl_within_sla_cnt' : 'compl_within_sla__'}
+                          dataKey={
+                            toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'
+                          }
                           stackId='a'
                           fill='#1b50b3'
                         />
                         <Bar
-                          dataKey={toggleValue ? 'compl_beyond_sla_cnt' : 'compl_beyond_sla__'}
+                          dataKey={
+                            toggleValue ? 'requests_beyond_sla_count_' : 'requests_beyond_sla____'
+                          }
                           stackId='a'
                           fill='#76a5ff'
                         />

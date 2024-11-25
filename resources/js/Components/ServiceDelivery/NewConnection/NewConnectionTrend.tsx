@@ -54,19 +54,14 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
 
   // Extract the range of months
   const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
-  console.log(selectedMonths)
 
   // Convert months to match API format if needed
   const selectedMonthsParam = selectedMonths.join(',')
-  const selectedMonthsParam2 = selectedMonths.map((month) => `month_year=${month}`).join('&')
-
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
   }>(
-    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonthsParam2}`}`
+    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonthsParam}`}`
   )
-  console.log(selectedMonthsParam)
-  console.log(graphValues)
 
   // Filter and group data for the selected range
   const chartData = selectedMonths.map((month) => {
