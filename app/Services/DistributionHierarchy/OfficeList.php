@@ -13,7 +13,7 @@ readonly class OfficeList
         private JoinDataTable $joinDataTable
     ) {}
 
-    public function get(DataDetail $dataDetail): ?Builder
+    public function get(DataDetail $dataDetail, ?string $officeLevel = null): ?Builder
     {
         $dateField = 'data_date';
 
@@ -25,7 +25,14 @@ readonly class OfficeList
         $maxDate = DB::table($dataDetail->table_name)
             ->max($dateField);
 
-        return $this->joinDataTable->join($dataDetail)
+        $officeLevelFields = [];
+        if ($officeLevel != null) {
+            $officeLevelFields[] = $officeLevel.'_code';
+            $officeLevelFields[] = $officeLevel.'_name';
+        }
+
+        //if empty array is passed all fields will be joined
+        return $this->joinDataTable->join($dataDetail, $officeLevelFields)
             ->where($dateField, $maxDate);
 
     }

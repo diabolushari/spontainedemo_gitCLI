@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\DB;
 
 class JoinDataTable
 {
-    public function join(DataDetail $dataDetail): Builder
+    /**
+     * @param  string[]  $onlyJoin
+     */
+    public function join(DataDetail $dataDetail, array $onlyJoin = []): Builder
     {
 
         $tableName = $dataDetail->table_name;
@@ -16,12 +19,14 @@ class JoinDataTable
         $query = DB::table($tableName);
 
         foreach ($dataDetail->dimensionFields as $dimension) {
-            $query->leftJoin(
-                'meta_data as '.$dimension->column.'_record',
-                "$tableName.$dimension->column",
-                '=',
-                $dimension->column.'_record.id'
-            );
+            if (empty($onlyJoin) || in_array($dimension->column, $onlyJoin)) {
+                $query->leftJoin(
+                    'meta_data as '.$dimension->column.'_record',
+                    "$tableName.$dimension->column",
+                    '=',
+                    $dimension->column.'_record.id'
+                );
+            }
         }
 
         return $query;

@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetSummaryController extends Controller implements HasMiddleware
+class SubsetOfficeLevelDataController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]
@@ -39,8 +39,8 @@ class SubsetSummaryController extends Controller implements HasMiddleware
         $query = $queryBuilder->query(
             $subsetDetail,
             true,
-            true,
-            $request->level ?? 'region'
+            false,
+            $request->level ?? 'state'
         );
 
         $filterBuilder->filter(
@@ -49,7 +49,7 @@ class SubsetSummaryController extends Controller implements HasMiddleware
             $filterParams
         );
 
-        $levelResult = $query->paginate(5)->withQueryString();
+        $levelResult = $query->get();
 
         return response()->json([
             'data' => $levelResult,

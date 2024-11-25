@@ -3,6 +3,7 @@
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
+use App\Http\Controllers\DataExplorer\DataExplorerController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetDropdownApiController;
 use App\Http\Controllers\Subset\SubsetListController;
+use App\Http\Controllers\Subset\SubsetOfficeLevelDataController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\Subset\SubsetSummaryController;
@@ -141,6 +143,9 @@ Route::get('subset/{subsetDetail}', SubsetDataController::class)
 Route::get('subset-summary/{subsetDetail}', SubsetSummaryController::class)
     ->name('subset.summary');
 
+Route::get('office-level-summary/{subsetDetail}', SubsetOfficeLevelDataController::class)
+    ->name('office-level-summary');
+
 Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
     ->name('subset.preview');
 
@@ -173,6 +178,8 @@ Route::get('office-list', OfficeListController::class)
 Route::get('phpinfo', function () {
     phpinfo();
 });
+
+Route::get('explorer/{subsetGroup}', DataExplorerController::class);
 
 Route::resource('subset-groups', SubsetGroupController::class)
     ->parameters(['subset-groups' => 'subsetGroup']);

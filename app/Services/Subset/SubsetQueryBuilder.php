@@ -23,7 +23,7 @@ readonly class SubsetQueryBuilder
         private OfficeList $officeList
     ) {}
 
-    public function query(SubsetDetail $subsetDetail, bool $isSummary = false, string $summaryGroupBy = 'region'): Builder
+    public function query(SubsetDetail $subsetDetail, bool $isSummary = false, bool $excludeNonMeasurements = false, string $summaryGroupBy = 'region'): Builder
     {
 
         /** @var string[] $groupingColumns */
@@ -35,9 +35,15 @@ readonly class SubsetQueryBuilder
         /** @var SubsetFieldOrderInfo[] $orderColumns */
         $orderColumns = [];
 
-        if (! $isSummary) {
+        if (! $excludeNonMeasurements) {
             $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns, $orderColumns);
-            $this->addDimensionFields($subsetDetail->dimensions, $groupingColumns, $selectColumns, $orderColumns);
+            $this->addDimensionFields(
+                $subsetDetail->dimensions,
+                $groupingColumns,
+                $selectColumns,
+                $orderColumns,
+                $isSummary
+            );
         }
 
         $this->addMeasureFields($subsetDetail->measures, $measureColumns, $groupingColumns, $orderColumns);
@@ -140,13 +146,18 @@ readonly class SubsetQueryBuilder
         Collection $dimensions,
         array &$groupingColumns,
         array &$selectColumns,
-        array &$orderColumns
+        array &$orderColumns,
+        bool $isSummary
     ): void {
-        $dimensions->each(function (SubsetDetailDimension $dimension) use (&$groupingColumns, &$selectColumns, &$orderColumns) {
+        $dimensions->each(function (SubsetDetailDimension $dimension) use (&$groupingColumns, &$selectColumns, &$orderColumns, $isSummary) {
             if ($dimension->info == null) {
                 return;
             }
             if ($dimension->filter_only == 1) {
+                return;
+            }
+            //if is summary then section info is included in as office_code, office_name
+            if ($isSummary && $dimension->info->column === 'section_code') {
                 return;
             }
             if ($dimension->column_expression != null) {
@@ -233,14 +244,14 @@ readonly class SubsetQueryBuilder
     ): void {
         //if office info is included in the subset then include the hierarchy table
         $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query) {
-            if ($dimension->info == null || $dimension->info->column !== 'section_code' || $dimension->filter_only === 1) {
+            if ($dimension->info == null || $dimension->info->column !== 'section_code' || $dimension->filter_only == 1) {
                 return;
             }
             $hierarchyTable = $this->getDetail();
             if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
                 return;
             }
-            $hierarchyQuery = $this->officeList->get($hierarchyTable)
+            $hierarchyQuery = $this->officeList->get($hierarchyTable, 'section')
                 ->selectRaw(
                     'section_name_record.name as section_name, '
                     .'section_code as hierarchy_section_code'
@@ -256,7 +267,7 @@ readonly class SubsetQueryBuilder
 
             $selectColumns[] = 'hierarchy.section_name as section_name';
 
-            if ($subsetDetail->group_data === 1) {
+            if ($subsetDetail->group_data == 1) {
                 $groupingColumns[] = 'hierarchy.section_name';
             }
         });
@@ -272,7 +283,7 @@ readonly class SubsetQueryBuilder
         DataDetail $detail,
         array &$groupingColumns,
         array &$selectColumns,
-        string $groupBy = 'region_code'
+        string $groupBy = 'region'
     ): void {
         //if office info is included in the subset then include the hierarchy table
         $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query, $groupBy) {
@@ -284,11 +295,17 @@ readonly class SubsetQueryBuilder
                 return;
             }
 
-            $joinSelect = 'region_code_record.name as region_code, region_name_record.name as region_name';
-            $selectStatement = 'hierarchy.region_code as office_code';
-            $nameSelectStatement = 'hierarchy.region_name as office_name';
-            $groupingStatement = 'hierarchy.region_code';
-            $nameGroupingStatement = 'hierarchy.region_name';
+            if ($groupBy === 'state') {
+                return;
+            }
+
+            if ($groupBy === 'region') {
+                $joinSelect = 'region_code_record.name as region_code, region_name_record.name as region_name';
+                $selectStatement = 'hierarchy.region_code as office_code';
+                $nameSelectStatement = 'hierarchy.region_name as office_name';
+                $groupingStatement = 'hierarchy.region_code';
+                $nameGroupingStatement = 'hierarchy.region_name';
+            }
 
             if ($groupBy == 'circle') {
                 $joinSelect = 'circle_code_record.name as circle_code, circle_name_record.name as circle_name';
