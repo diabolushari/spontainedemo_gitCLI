@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { CustomLegend, formatNumber, InactiveGraphValues } from '../ActiveConnection'
+import { CustomLegend, formatNumber } from '../ActiveConnection'
 import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import Card from '@/ui/Card/Card'
 import Skeleton from 'react-loading-skeleton'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import MonthPicker from '@/ui/form/MonthPicker'
-import { Link } from '@inertiajs/react'
-import MoreButton from '../../MoreButton'
 
 interface SolarProsumersValue {
   consumer_count: number
@@ -31,7 +27,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[]; latest_value: string }>(
     `subset/71?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
   )
-  console.log(graphValues?.latest_value)
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {

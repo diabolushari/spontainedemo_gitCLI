@@ -18,6 +18,7 @@ export interface SlaPerformanceValues {
   requests_beyond_sla_count_: number
   requests_within_sla__count_: number
 }
+
 const SlaPerformance = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
 
@@ -30,8 +31,6 @@ const SlaPerformance = () => {
   }>(
     `subset/82?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-
-  console.log(graphValues)
 
   const groupedDataPercentage = Array.from(
     new Map(
