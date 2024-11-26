@@ -230,6 +230,9 @@ body {
     @apply rounded-2xl border px-6 py-2 hover:bg-1stop-highlight;
   }
 
+  .date-picker-input::-webkit-calendar-picker-indicator {
+    display: none;
+  }
   .month-picker-calendar .react-datepicker__month {
     font-size: 10px;
     font-weight: 600;

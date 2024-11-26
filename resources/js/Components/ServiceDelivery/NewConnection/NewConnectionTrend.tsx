@@ -84,9 +84,11 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='flex'>
-            <span className='small-1stop ml-10 items-end p-5'>Requests Completed beyond SLA</span>
-            <div>
+          <div className='ml-2 flex'>
+            <span className='subheader-sm-1stop'>Trend of Requests Completed beyond SLA</span>
+          </div>
+          <div className='mx-4 flex w-full justify-end'>
+            <div className=''>
               <SelectList
                 list={dateEarlier.map((month, index) => ({
                   key: index,
@@ -98,6 +100,7 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 showAllOption
                 value={selectedValue}
                 setValue={setSelectedValue}
+                style='1stop-small'
               />
             </div>
           </div>
@@ -110,8 +113,9 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 <XAxis
                   dataKey='month'
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                  style={{ fontSize: '10' }}
                 />
-                <YAxis />
+                <YAxis style={{ fontSize: '10' }} />
                 <Tooltip
                   formatter={(value: number) => value.toString()}
                   labelFormatter={(month) => month || 'Unknown'}

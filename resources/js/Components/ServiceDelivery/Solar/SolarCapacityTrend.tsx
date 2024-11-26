@@ -82,13 +82,15 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   })
 
   return (
-    <div className='flex w-full flex-col'>
+    <div className='flex w-full flex-col p-4'>
       <div className='flex w-full'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
+        <div className='flex w-full flex-col gap-2'>
           <div className='flex'>
-            <span className='small-1stop ml-10 items-end p-5'>
+            <span className='subheader-sm-1stop items-end'>
               Trend of total capacity of Solar generation
             </span>
+          </div>
+          <div className='flex w-full justify-end pt-2'>
             <div>
               <SelectList
                 list={dateEarlier.map((month, index) => ({
@@ -101,6 +103,7 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 showAllOption
                 value={selectedValue}
                 setValue={setSelectedValue}
+                style='1stop-small'
               />
             </div>
           </div>
@@ -113,8 +116,9 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 <XAxis
                   dataKey='month'
                   tickFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
+                  style={{ fontSize: '10' }}
                 />
-                <YAxis />
+                <YAxis style={{ fontSize: '10' }} />
                 <Tooltip formatter={(value: number) => value.toFixed(2)} />
                 <Area
                   type='monotone'
