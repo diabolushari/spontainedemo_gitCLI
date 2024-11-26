@@ -4,6 +4,7 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
+import { formatNumber } from '../ActiveConnection'
 
 export interface SlaTrendValues {
   month_year: string
@@ -123,10 +124,27 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                   dataKey='month'
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 />
-                <YAxis />
+                <YAxis tickFormatter={(value) => formatNumber(value)} />
                 <Tooltip
-                  formatter={(value) => [`${value}`, toogleValue ? 'SLA Perf Count' : 'SLA Perf %']}
+                  labelFormatter={(month: string) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                  formatter={(value: number | string) => {
+                    // Convert string value to a number for consistent formatting
+                    const numericValue = typeof value === 'string' ? parseFloat(value) : value
+
+                    // Format based on the toggle state
+                    const formattedValue = toogleValue
+                      ? numericValue.toLocaleString() // Use locale formatting for counts
+                      : `${numericValue.toFixed(2)}%` // Format percentages with two decimals and a '%'
+
+                    // Determine the label
+                    const label = toogleValue
+                      ? 'SLA Performance Count'
+                      : 'SLA Performance Percentage'
+
+                    return [formattedValue, label]
+                  }}
                 />
+
                 <Area
                   type='monotone'
                   dataKey='sla_perf_count'

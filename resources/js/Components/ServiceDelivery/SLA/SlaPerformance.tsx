@@ -300,7 +300,11 @@ const SlaPerformance = () => {
                           interval={0}
                         />
                         <YAxis hide />
-                        <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                        <Tooltip
+                          formatter={(value: number) =>
+                            toggleValue ? value.toFixed(2) : `${value.toFixed(2)}%`
+                          }
+                        />
                         <Bar
                           dataKey={
                             toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'
