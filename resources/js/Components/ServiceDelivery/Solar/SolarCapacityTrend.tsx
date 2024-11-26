@@ -7,6 +7,8 @@ import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { formatNumber } from '../ActiveConnection'
+import { BarChart4 } from 'lucide-react'
 
 export interface SolarCapacityTrendValues {
   month_year: string
@@ -23,8 +25,31 @@ interface Properties {
 const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [monthYear, setMonthYear] = useState('')
+  const monthsInRange = (months: number): string[] => {
+    const dates = []
+    const date = new Date(selectedMonth)
+
+    for (let i = 0; i < months; i++) {
+      const year = date.getFullYear()
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      dates.push(`${year}${month}`) // Format YYYYMM
+      date.setMonth(date.getMonth() - 1) // Move one month backward
+    }
+
+    return dates
+  }
+
+  // Extract the range of months
+  const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
+
+  const selectedRange = parseInt(selectedValue.split(' ')[0])
+
   const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
-    `subset/71?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/71?${
+      selectedMonth == null
+        ? 'latest=month_year'
+        : `month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than_or_equal=${Number(monthYear)}`
+    }`
   )
 
   const dateEarlier = [
@@ -51,28 +76,6 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       `${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() ?? 0 + 1).toString().padStart(2, '0')}`
     )
   }, [selectedMonth])
-
-  const filteredValues = graphValues?.data.filter((value) => value.month_year === monthYear)
-
-  const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
-
-  // Calculate months in the selected range
-  const monthsInRange = (months: number): string[] => {
-    const dates = []
-    const date = new Date(selectedMonth)
-
-    for (let i = 0; i < months; i++) {
-      const year = date.getFullYear()
-      const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      dates.push(`${year}${month}`) // Format YYYYMM
-      date.setMonth(date.getMonth() - 1) // Move one month backward
-    }
-
-    return dates
-  }
-
-  // Extract the range of months
-  const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
 
   // Filter and group data for the selected range
   const chartData = selectedMonths.map((month) => {
@@ -114,8 +117,12 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                   dataKey='month'
                   tickFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
                 />
-                <YAxis />
-                <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                <YAxis tickFormatter={(value) => formatNumber(value)} />
+                <Tooltip
+                  labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
+                  formatter={(value: number) => formatNumber(value)}
+                />
+
                 <Area
                   type='monotone'
                   dataKey='capacity_kw'

@@ -1,5 +1,5 @@
 import useFetchList from '@/hooks/useFetchList'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -11,6 +11,7 @@ import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
+import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -80,10 +81,17 @@ const NewConnections = () => {
     data: NewConnectionGraphValues[]
     month: number
     year: number
+    latest_value: string
   }>(
     `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const slaPerf = isLoading
@@ -309,8 +317,10 @@ const NewConnections = () => {
                 <p className='xlmetric-1stop'>
                   {isLoading ? (
                     <Skeleton width='50%' />
+                  ) : toggleValue ? (
+                    formatNumber(slaPerf)
                   ) : (
-                    `${slaPerf.toFixed(2)}${toggleValue ? '' : '%'}`
+                    `${slaPerf.toFixed(2)}%`
                   )}
                 </p>
 
@@ -325,8 +335,10 @@ const NewConnections = () => {
                   <p className='h3-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
+                    ) : toggleValue ? (
+                      formatNumber(completedWithinSla)
                     ) : (
-                      `${completedWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                      `${completedWithinSla.toFixed(2)}%`
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
@@ -338,8 +350,10 @@ const NewConnections = () => {
                   <p className='h3-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
+                    ) : toggleValue ? (
+                      formatNumber(pendingWithinSla)
                     ) : (
-                      `${pendingWithinSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                      `${pendingWithinSla.toFixed(2)}%`
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
@@ -353,8 +367,10 @@ const NewConnections = () => {
                   <p className='h3-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
+                    ) : toggleValue ? (
+                      formatNumber(completedBeyondSla)
                     ) : (
-                      `${completedBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                      `${completedBeyondSla.toFixed(2)}%`
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
@@ -366,8 +382,10 @@ const NewConnections = () => {
                   <p className='h3-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
+                    ) : toggleValue ? (
+                      formatNumber(pendingBeyondSla)
                     ) : (
-                      `${pendingBeyondSla.toFixed(2)}${toggleValue ? '' : '%'}`
+                      `${pendingBeyondSla.toFixed(2)}%`
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
@@ -390,7 +408,14 @@ const NewConnections = () => {
                     width={200}
                     height={200}
                   >
-                    <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                    <Tooltip
+                      formatter={
+                        toggleValue
+                          ? (value: number) => formatNumber(value)
+                          : (value: number) => `${value.toFixed(2)}%`
+                      }
+                    />
+
                     <Pie
                       data={data}
                       innerRadius={50}
@@ -413,7 +438,12 @@ const NewConnections = () => {
             </div>
           </div>
         )}
-        {selectedLevel === 2 && <NewConnectionTrend selectedMonth={selectedMonth} />}
+        {selectedLevel === 2 && (
+          <NewConnectionTrend
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        )}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>

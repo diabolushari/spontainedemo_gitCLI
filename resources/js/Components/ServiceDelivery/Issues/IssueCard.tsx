@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/react'
 import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { formatNumber } from '../ActiveConnection'
 
 interface ComplaintValues {
   complaint_count: number
@@ -47,25 +48,37 @@ const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
         <div className='grid w-full max-w-md grid-cols-2 gap-4 p-6'>
           <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
             <p className='xlmetric-1stop'>
-              {isLoading ? <Skeleton width={60} /> : complaintCount('Total')}
+              {isLoading ? <Skeleton width={60} /> : formatNumber(complaintCount('Total') ?? 0)}
             </p>
             <p className='small-1stop-header text-center'>Total Complaints</p>
           </div>
           <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
             <p className='mdmetric-1stop'>
-              {isLoading ? <Skeleton width={60} /> : complaintCount('NO POWER SUPPLY')}
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                formatNumber(complaintCount('NO POWER SUPPLY') ?? 0)
+              )}
             </p>
             <p className='small-1stop-header text-center'>Power Failures</p>
           </div>
           <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
             <p className='mdmetric-1stop'>
-              {isLoading ? <Skeleton width={60} /> : complaintCount('VOLTAGE RELATED')}
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                formatNumber(complaintCount('VOLTAGE RELATED') ?? 0)
+              )}
             </p>
             <p className='small-1stop-header text-center'>Voltage Related</p>
           </div>
           <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
             <p className='mdmetric-1stop'>
-              {isLoading ? <Skeleton width={60} /> : complaintCount('SERVICE CONNECTION RELATED')}
+              {isLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                formatNumber(complaintCount('SERVICE CONNECTION RELATED') ?? 0)
+              )}
             </p>
             <p className='small-1stop-header text-center'>Service Connection Related</p>
           </div>
