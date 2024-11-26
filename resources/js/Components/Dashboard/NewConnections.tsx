@@ -408,7 +408,14 @@ const NewConnections = () => {
                     width={200}
                     height={200}
                   >
-                    <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                    <Tooltip
+                      formatter={
+                        toggleValue
+                          ? (value: number) => formatNumber(value)
+                          : (value: number) => `${value.toFixed(2)}%`
+                      }
+                    />
+
                     <Pie
                       data={data}
                       innerRadius={50}

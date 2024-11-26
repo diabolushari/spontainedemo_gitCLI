@@ -8,6 +8,8 @@ import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import DatePicker from '@/ui/form/DatePicker'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { format } from 'path'
 
 export interface PendencyGraphValues {
   category: string
@@ -149,7 +151,7 @@ const PendancyCard = () => {
                 <div className='flex'>
                   <div className='flex flex-col p-5 pt-0'>
                     <span className='h3-1stop'>
-                      {toggleValue ? `${complWithinSLa.toFixed(2)}%` : complWithinSLa}
+                      {toggleValue ? `${complWithinSLa.toFixed(2)}%` : formatNumber(complWithinSLa)}
                     </span>
                     <span className='small-1stop text-nowrap'>Compl. within SLA</span>
                   </div>
@@ -186,7 +188,13 @@ const PendancyCard = () => {
                     data={data}
                     layout='vertical'
                   >
-                    <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                    <Tooltip
+                      formatter={
+                        toggleValue
+                          ? (value: number) => `${value.toFixed(2)}%`
+                          : (value: number) => formatNumber(value)
+                      }
+                    />
                     <XAxis
                       type='number'
                       hide
@@ -222,25 +230,27 @@ const PendancyCard = () => {
               <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
                 <div className='text-center'>
                   <div className='smmetric-1stop'>
-                    {toggleValue ? `${lessThan5Days.toFixed(2)}%` : lessThan5Days}
+                    {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
                   </div>
                   <div className='small-1stop'>{'<5 days'}</div>
                 </div>
                 <div className='text-center'>
                   <div className='smmetric-1stop'>
-                    {toggleValue ? `${betweem515Days.toFixed(2)}%` : betweem515Days}
+                    {toggleValue ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
                   </div>
                   <div className='small-1stop'>5-15 days</div>
                 </div>
                 <div className='text-center'>
                   <div className='smmetric-1stop'>
-                    {toggleValue ? `${betweem1630Days.toFixed(2)}%` : betweem1630Days}
+                    {toggleValue ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
                   </div>
                   <div className='small-1stop'>16-30 days</div>
                 </div>
                 <div className='text-center'>
                   <div className='smmetric-1stop'>
-                    {toggleValue ? `${greaterThan30Days.toFixed(2)}%` : greaterThan30Days}
+                    {toggleValue
+                      ? `${greaterThan30Days.toFixed(2)}%`
+                      : formatNumber(greaterThan30Days)}
                   </div>
                   <div className='small-1stop'>{'>30 days'}</div>
                 </div>

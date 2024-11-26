@@ -454,7 +454,8 @@ const ActiveConnection = () => {
                     width={200}
                     height={200}
                   >
-                    <Tooltip />
+                    <Tooltip formatter={(value: number) => `${formatNumber(value)}`} />
+
                     <Pie
                       data={data}
                       innerRadius={50}

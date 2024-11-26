@@ -9,6 +9,7 @@ import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import SlaTrend from './SlaTrend'
 import MoreButton from '@/Components/MoreButton'
+import { formatNumber } from '../ActiveConnection'
 
 export interface SlaPerformanceValues {
   requests_beyond_sla____: number
@@ -32,6 +33,9 @@ const SlaPerformance = () => {
   }>(
     `subset/82?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
+  console.log(selectedMonth)
+
+  console.log(graphValues)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -62,6 +66,7 @@ const SlaPerformance = () => {
   )
 
   const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
+  console.log(groupedData)
 
   const CustomTick = (props) => {
     const { x, y, payload } = props
@@ -302,7 +307,7 @@ const SlaPerformance = () => {
                         <YAxis hide />
                         <Tooltip
                           formatter={(value: number) =>
-                            toggleValue ? value.toFixed(2) : `${value.toFixed(2)}%`
+                            toggleValue ? formatNumber(value) : `${value.toFixed(2)}%`
                           }
                         />
                         <Bar
