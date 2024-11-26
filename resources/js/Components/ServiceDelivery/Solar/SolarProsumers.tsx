@@ -167,7 +167,11 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             {/* HT */}
             <div className='flex w-1/2 flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? convertToMW('HT', false).toFixed(3) : <Skeleton />}
+                {graphValues?.data.length ? (
+                  formatNumber(convertToMW('HT', false).toFixed(3))
+                ) : (
+                  <Skeleton />
+                )}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>HT MW</p>
@@ -244,7 +248,8 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 width={200}
                 height={200}
               >
-                <Tooltip />
+                <Tooltip formatter={(value: number) => `${formatNumber(value.toFixed(0))}`} />
+
                 <Pie
                   data={data}
                   innerRadius={50}

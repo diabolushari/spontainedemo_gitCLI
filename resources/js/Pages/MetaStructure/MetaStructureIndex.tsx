@@ -81,7 +81,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
   const handleCardClick = useCallback((id: number | string) => {
     router.get(route('meta-structure.show', { metaStructure: id, page: structures.current_page }))
   }, [])
-  console.log(structures.current_page)
+
   return (
     <ListResourcePage
       keys={keys}

@@ -4,6 +4,7 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
+import { formatNumber } from '../ActiveConnection'
 
 export interface SlaTrendValues {
   month_year: string
@@ -40,7 +41,6 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           }&month_year_less_than_or_equal=${Number(monthYear)}`
     }`
   )
-  console.log(graphValues)
 
   useEffect(() => {
     if (selectedMonth == null && graphValues?.latest_value) {
@@ -73,8 +73,6 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
         : filteredValues?.[0]?.sla_perf_perc || 0,
     }
   })
-
-  console.log(chartData)
 
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({
     key: i + 3,
@@ -123,10 +121,16 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                   dataKey='month'
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 />
-                <YAxis />
+                <YAxis tickFormatter={(value) => formatNumber(value)} />
                 <Tooltip
-                  formatter={(value) => [`${value}`, toogleValue ? 'SLA Perf Count' : 'SLA Perf %']}
+                  labelFormatter={(month: string) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                  formatter={
+                    toogleValue
+                      ? (value: number) => formatNumber(value)
+                      : (value: number) => `${value.toFixed(2)}%`
+                  }
                 />
+
                 <Area
                   type='monotone'
                   dataKey='sla_perf_count'
