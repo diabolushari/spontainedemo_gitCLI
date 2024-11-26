@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { formatNumber } from '../ActiveConnection'
 
 export interface InactiveGraphValues {
   conn_status_code: string
@@ -121,9 +122,9 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
                   dataKey='month'
                   tickFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
                 />
-                <YAxis />
+                <YAxis tickFormatter={(value) => formatNumber(value)} />
                 <Tooltip
-                  formatter={(value: number) => [`${value}`, 'Consumer Count']}
+                  formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
                   labelFormatter={(month) =>
                     month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
                   }

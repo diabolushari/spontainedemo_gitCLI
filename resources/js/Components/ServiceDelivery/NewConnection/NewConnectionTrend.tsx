@@ -2,81 +2,63 @@ import { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { formatNumber } from '../ActiveConnection'
 
 export interface NewConnectionGraphValues {
-  compl_beyond_sla__: number
-  compl_beyond_sla_cnt: number
-  compl_within_sla__: number
-  compl_within_sla_cnt: number
-  month_year: string
-  pend_beyond_sla__: number
-  pend_beyond_sla_cnt: number
-  pend_within_sla__: number
-  pend_within_sla_cnt: number
-  sla_perf__: number
-  sla_perf_cnt: number
-  sla_svc_group: string
+  month: string
+  request_type: string
+  requests_breaching_sla__count_: number
 }
 
-const dateEarlier = [
-  '3 MONTHS',
-  '4 MONTHS',
-  '5 MONTHS',
-  '6 MONTHS',
-  '7 MONTHS',
-  '8 MONTHS',
-  '9 MONTHS',
-  '10 MONTHS',
-  '11 MONTHS',
-  '12 MONTHS',
-]
+const dateEarlier = Array.from({ length: 10 }, (_, i) => `${i + 3} MONTHS`)
 
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
 }
+
 const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
 
-  // Calculate months in the selected range
   const monthsInRange = (months: number): string[] => {
     const dates = []
-    const date = new Date(selectedMonth)
+    const date = new Date(selectedMonth || new Date())
 
     for (let i = 0; i < months; i++) {
       const year = date.getFullYear()
       const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      dates.push(`${year}${month}`) // Format YYYYMM
-      date.setMonth(date.getMonth() - 1) // Move one month backward
+      dates.push(`${year}${month}`)
+      date.setMonth(date.getMonth() - 1)
     }
 
     return dates
   }
 
-  // Extract the range of months
   const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
 
-  // Convert months to match API format if needed
-  const selectedMonthsParam = selectedMonths.join(',')
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
     latest_value: string
   }>(
-    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonthsParam}`}`
+    selectedMonth
+      ? `subset/90?month_year_greater_than_or_equal=${selectedMonths[0]}&month_year_less_than_or_equal=${selectedMonths[selectedMonths.length - 1]}`
+      : 'subset/90?latest=month_year'
   )
+  console.log(graphValues)
+
   useEffect(() => {
-    if (selectedMonth == null && graphValues != null) {
-      const year = Number(graphValues?.latest_value) / 100
-      const month = Number(graphValues?.latest_value) % 100
-      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    if (!selectedMonth && graphValues?.latest_value) {
+      const year = Math.trunc(Number(graphValues.latest_value) / 100)
+      const month = Number(graphValues.latest_value) % 100
+      setSelectedMonth(new Date(year, month - 1, 1))
     }
-  }, [setSelectedMonth, graphValues, selectedMonth])
-  // Filter and group data for the selected range
+  }, [graphValues, selectedMonth, setSelectedMonth])
+
   const chartData = selectedMonths.map((month) => {
-    const filteredValue = graphValues?.data.find((value) => value.month_year === month)
+    const value = graphValues?.data.find((v) => v.month === month)
     return {
       month,
-      RequestCompletedBeyondSla: filteredValue?.compl_beyond_sla_cnt || 0,
+      RequestsBreachingSla: value?.requests_breaching_sla__count_ ?? 0,
     }
   })
 
@@ -85,7 +67,7 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='flex'>
-            <span className='small-1stop ml-10 items-end p-5'>Requests Completed beyond SLA</span>
+            <span className='small-1stop ml-10 p-5'>Requests breaching SLAs</span>
             <div>
               <SelectList
                 list={dateEarlier.map((month, index) => ({
@@ -95,7 +77,7 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 }))}
                 dataKey='value'
                 displayKey='text'
-                showAllOption
+                showAllOption={false}
                 value={selectedValue}
                 setValue={setSelectedValue}
               />
@@ -111,13 +93,13 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                   dataKey='month'
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 />
-                <YAxis />
+                <YAxis tickFormatter={(value) => formatNumber(value)} />
                 <Tooltip
-                  formatter={(value: number) => value.toString()}
-                  labelFormatter={(month) => month || 'Unknown'}
+                  formatter={(value: number) => [`${value} `, 'Requests breaching SLAs']}
+                  labelFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 />
                 <Bar
-                  dataKey='RequestCompletedBeyondSla'
+                  dataKey='RequestsBreachingSla'
                   fill='#235CC0'
                   barSize={20}
                 />
