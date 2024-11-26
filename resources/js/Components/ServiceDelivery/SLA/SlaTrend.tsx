@@ -41,7 +41,6 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           }&month_year_less_than_or_equal=${Number(monthYear)}`
     }`
   )
-  console.log(graphValues)
 
   useEffect(() => {
     if (selectedMonth == null && graphValues?.latest_value) {
@@ -74,8 +73,6 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
         : filteredValues?.[0]?.sla_perf_perc || 0,
     }
   })
-
-  console.log(chartData)
 
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({
     key: i + 3,

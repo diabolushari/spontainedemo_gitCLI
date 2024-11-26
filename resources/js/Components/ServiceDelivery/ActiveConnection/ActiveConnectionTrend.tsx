@@ -43,8 +43,6 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
     }`
   )
 
-  console.log(graphValues)
-
   useEffect(() => {
     if (!selectedMonth && graphValues?.latest_value) {
       const latestYear = Math.floor(Number(graphValues.latest_value) / 100)

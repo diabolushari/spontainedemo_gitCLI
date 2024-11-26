@@ -44,7 +44,6 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       ? `subset/90?month_year_greater_than_or_equal=${selectedMonths[0]}&month_year_less_than_or_equal=${selectedMonths[selectedMonths.length - 1]}`
       : 'subset/90?latest=month_year'
   )
-  console.log(graphValues)
 
   useEffect(() => {
     if (!selectedMonth && graphValues?.latest_value) {

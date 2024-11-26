@@ -44,7 +44,7 @@ const PendancyCard = () => {
       setSelectedDate(graphValues.latest_value)
     }
   }, [setSelectedDate, graphValues, selectedDate])
-  console.log(graphValues)
+
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
     : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
@@ -251,7 +251,7 @@ const PendancyCard = () => {
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop text-wrap'>Pendancy Pattern</p>
+        <p className='h3-1stop text-wrap'>Pendency Pattern</p>
 
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
