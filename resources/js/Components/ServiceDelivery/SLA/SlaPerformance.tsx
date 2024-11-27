@@ -22,7 +22,6 @@ export interface SlaPerformanceValues {
   requests_within_sla__count_: number
 }
 
-
 const SlaPerformance = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
@@ -368,7 +367,6 @@ const SlaPerformance = () => {
         )}
         {selectedLevel === 3 && (
           <SlaList
-          
             column1='State'
             column2='Requests within SLA count'
             subset_id='82'

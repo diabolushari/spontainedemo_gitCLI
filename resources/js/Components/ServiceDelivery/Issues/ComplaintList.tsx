@@ -90,6 +90,7 @@ const ComplaintList = ({
             displayKey='complaint_type'
             dataKey='complaint_type'
             value={title}
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>

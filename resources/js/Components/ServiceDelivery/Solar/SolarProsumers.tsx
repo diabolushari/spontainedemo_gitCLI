@@ -123,7 +123,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
           {/* Total Connections */}
           <div className='flex flex-col border p-2'>
             <p className='xlmetric-1stop'>
-              {graphValues?.data.length ? convertToMW('LT', false).toFixed(2) : <Skeleton />}
+              {graphValues?.data.length ? convertToMW('Total', false).toFixed(2) : <Skeleton />}
             </p>
             <div className='flex flex-row justify-between'>
               <p className='small-1stop-header'>Total MW</p>

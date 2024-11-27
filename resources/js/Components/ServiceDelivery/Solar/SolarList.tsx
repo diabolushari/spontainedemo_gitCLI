@@ -88,6 +88,7 @@ const SolarList = ({
             displayKey='voltage'
             dataKey='value'
             value={title}
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>
@@ -97,6 +98,7 @@ const SolarList = ({
             setValue={(value) => setSortOrder(value)}
             dataKey='name'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>
@@ -106,6 +108,7 @@ const SolarList = ({
             setValue={setOfficeLevel}
             dataKey='value'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
       </div>

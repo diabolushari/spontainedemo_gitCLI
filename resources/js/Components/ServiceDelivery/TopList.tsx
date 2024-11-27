@@ -91,6 +91,7 @@ const TopList = ({
             setValue={setSortOrder}
             dataKey='name'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>
@@ -100,6 +101,7 @@ const TopList = ({
             setValue={setOfficeLevel}
             dataKey='value'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
       </div>

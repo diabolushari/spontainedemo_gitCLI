@@ -94,6 +94,7 @@ const SlaList = ({
             displayKey='sla_svc_group'
             dataKey='sla_svc_group'
             value={title}
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>
@@ -103,6 +104,7 @@ const SlaList = ({
             setValue={setSortOrder}
             dataKey='name'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>
@@ -112,6 +114,7 @@ const SlaList = ({
             setValue={setOfficeLevel}
             dataKey='value'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
       </div>
