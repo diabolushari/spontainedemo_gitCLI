@@ -278,7 +278,7 @@ const PendancyCard = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/39'>
+          <Link href='/data-explorer/Requests Completion Report'>
             <MoreButton />
           </Link>
         </div>

@@ -196,7 +196,7 @@ const Complaints = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/17'>
+          <Link href='/data-explorer/Customer Complaints Summary'>
             <MoreButton />
           </Link>
         </div>

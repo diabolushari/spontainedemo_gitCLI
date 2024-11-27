@@ -311,7 +311,7 @@ const PowerInterruptionTrend = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/17'>
+          <Link href='/data-explorer/Complaint Volumes Comparison'>
             <MoreButton />
           </Link>
         </div>

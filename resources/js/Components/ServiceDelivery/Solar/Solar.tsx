@@ -225,7 +225,7 @@ const Solar = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/17'>
+          <Link href='/data-explorer/Solar Prosumer Statistics'>
             <MoreButton />
           </Link>
         </div>
