@@ -84,9 +84,26 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='flex'>
-            <span className='small-1stop ml-10 p-5'>Connections</span>
-            <div className='p-5'>
+          <div className='ml-2 flex gap-2'>
+            <span className='subheader-sm-1stop'>Trend of Top Active Connections</span>
+
+            {/* <div className=''>
+              <SelectList
+                list={dateEarlier.map((month, index) => ({
+                  key: index,
+                  value: month,
+                  text: month,
+                }))}
+                dataKey='value'
+                displayKey='text'
+                showAllOption={false}
+                value={selectedValue}
+                setValue={setSelectedValue}
+              />
+            </div> */}
+          </div>
+          <div className='mx-4 flex w-full justify-end gap-2'>
+            <div>
               <SelectList
                 list={voltageType.map((voltage) => ({
                   key: voltage,
@@ -98,15 +115,17 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
                 showAllOption={false}
                 value={selectedVoltage}
                 setValue={setSelectedVoltage}
+                style='1stop-small'
               />
             </div>
-            <div className='p-5'>
+            <div>
               <SelectList
                 list={dateEarlier}
                 dataKey='value'
                 displayKey='name'
                 value={selectedRange}
                 setValue={(value) => setSelectedValue(`${value} MONTHS`)}
+                style='1stop-small'
               />
             </div>
           </div>
@@ -118,7 +137,10 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
               <AreaChart data={chartData}>
                 <XAxis
                   dataKey='month'
-                  tickFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
+                  tickFormatter={
+                    (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
+                  }
+                  style={{ fontSize: 10 }}
                 />
                 <YAxis tickFormatter={(value) => formatNumber(value)} />
                 <Tooltip

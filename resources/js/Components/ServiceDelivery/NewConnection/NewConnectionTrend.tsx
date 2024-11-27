@@ -66,20 +66,25 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='flex'>
-            <span className='small-1stop ml-10 p-5'>Requests breaching SLAs</span>
-            <div>
-              <SelectList
-                list={dateEarlier.map((month, index) => ({
-                  key: index,
-                  value: month,
-                  text: month,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedValue}
-                setValue={setSelectedValue}
-              />
+            <div className='ml-2 flex'>
+              <span className='subheader-sm-1stop'>Trend of Requests Completed beyond SLA</span>
+            </div>
+            <div className='mx-4 flex w-full justify-end'>
+              <div>
+                <SelectList
+                  list={dateEarlier.map((month, index) => ({
+                    key: index,
+                    value: month,
+                    text: month,
+                  }))}
+                  dataKey='value'
+                  displayKey='text'
+                  showAllOption={false}
+                  value={selectedValue}
+                  setValue={setSelectedValue}
+                  style='1stop-small'
+                />
+              </div>
             </div>
           </div>
           <div className='w-full'>
@@ -91,8 +96,12 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 <XAxis
                   dataKey='month'
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                  style={{ fontSize: '10' }}
                 />
-                <YAxis tickFormatter={(value) => formatNumber(value)} />
+                <YAxis
+                  tickFormatter={(value) => formatNumber(value)}
+                  style={{ fontSize: '10' }}
+                />
                 <Tooltip
                   formatter={(value: number) => [`${value} `, 'Requests breaching SLAs']}
                   labelFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}

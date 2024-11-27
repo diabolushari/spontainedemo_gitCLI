@@ -15,13 +15,19 @@ export interface Properties<
   showAllOption?: boolean
   allOptionText?: string
   showLabel?: boolean
+  style?: 'normal' | 'bottom-border' | 'dark' | '1stop-small'
 }
 
-const getStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
+const getStyle = (style: 'normal' | 'bottom-border' | 'dark' | '1stop-small' | undefined) => {
   switch (style) {
     case 'normal': {
       return ` w-full appearance-none rounded-lg border border-gray-300 py-3 pl-3 text-sm text-gray-800
       shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
+    }
+
+    case '1stop-small': {
+      return ` w-full appearance-none rounded-lg border border-gray-300 pl-3 small-1stop text-gray-800
+        shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
     }
     case 'bottom-border': {
       return `mt-0 block w-full border-0 border-b-2 border-gray-200 bg-neutral-50 px-0.5 bodybold text-sm focus:border-black focus:ring-0`

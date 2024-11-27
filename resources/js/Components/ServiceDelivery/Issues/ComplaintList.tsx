@@ -47,7 +47,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
     ])
   }, [officeLevel])
   return (
-    <div className='mt-5 flex w-full flex-col p-2'>
+    <div className='mx-2 mt-5 flex w-full flex-col'>
       <div className='items center flex justify-center gap-5'>
         <div className='flex flex-col'>
           <SelectList
@@ -56,6 +56,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
             setValue={setListType}
             dataKey='value'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
         <div className='flex flex-col'>
@@ -65,6 +66,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
             setValue={setOfficeLevel}
             dataKey='value'
             displayKey='name'
+            style='1stop-small'
           />
         </div>
       </div>
@@ -75,7 +77,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
               return (
                 <th
                   key={header}
-                  className='small-1stop bg-1stop-white'
+                  className='small-1stop-header bg-1stop-white'
                 >
                   {header}
                 </th>
@@ -87,7 +89,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
           {graphValues?.data.data.map((value) => {
             return (
               <tr
-                className='small-1stop text-left'
+                className='small-1stop pt-1 text-left'
                 key={value.office_name}
               >
                 <td className=''>{value.office_name}</td>
@@ -96,6 +98,7 @@ const ComplaintList = ({ selectedMonth, setSelectedMonth }: Properties) => {
             )
           })}
         </tbody>
+
         {graphValues?.data != null && (
           <RestPagination
             pagination={graphValues.data}
