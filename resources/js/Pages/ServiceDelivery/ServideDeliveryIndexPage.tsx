@@ -50,10 +50,13 @@ const ServideDeliveryIndexPage = () => {
             </div>
           </div>
 
-          <div className='flex flex-row gap-2'>
-            <Solar />
-
-            <SolarGeneration />
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <div className='flex w-full lg:w-1/3'>
+              <Solar />
+            </div>
+            <div className='flex w-full lg:w-2/3'>
+              <SolarGeneration />
+            </div>
           </div>
         </div>
       </DashboardPadding>

@@ -5,6 +5,8 @@ import { Link } from '@inertiajs/react'
 import MoreButton from '../../MoreButton'
 import SolarProsumers from './SolarProsumers'
 import SolarCapacityTrend from './SolarCapacityTrend'
+import Solar from './Solar'
+import SolarGenerationTrend from './SolarGenerationTrend'
 
 const SolarGeneration = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
@@ -117,7 +119,7 @@ const SolarGeneration = () => {
             </div>
           </div>
           <button
-            className={`border px-2 py-7 ${selectedLevel === 'DV' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border px-2 py-7 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.division_code ?? '')
@@ -126,7 +128,7 @@ const SolarGeneration = () => {
             <p></p>
           </button>
           <button
-            className={`border px-2 py-7 ${selectedLevel === 'DV' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.division_code ?? '')
@@ -135,7 +137,7 @@ const SolarGeneration = () => {
             <p></p>
           </button>
           <button
-            className={`px-2 py-7 ${selectedLevel === 'SD' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
             onClick={() => {
               // setLevelName('section_code')
               // setLevelCode(level?.record.section_code ?? '')
@@ -144,6 +146,12 @@ const SolarGeneration = () => {
             <p></p>
           </button>
         </div>
+        {selectedLevel === 1 && (
+          <SolarGenerationTrend
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        )}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-button-muted px-4 pl-14'>

@@ -4,13 +4,12 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '../ActiveConnection'
 
-export interface InactiveGraphValues {
-  conn_status_code: string
-  consumer_count: number
-  data_date: string
+export interface SolarGenerationTrendValues {
   consumer_category: string
+  generation__kwh_: number
+  month: string
+  total_consumers__count_: number
   voltage: string
-  month_year: string
 }
 
 interface Properties {
@@ -18,7 +17,7 @@ interface Properties {
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
-const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
+const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [selectedVoltage, setSelectedVoltage] = useState('LT')
 
@@ -35,11 +34,14 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
 
   const selectedRange = parseInt(selectedValue.split(' ')[0])
 
-  const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/57?${
+  const [graphValues] = useFetchRecord<{
+    data: SolarGenerationTrendValues[]
+    latest_value: string
+  }>(
+    `subset/113?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than_or_equal=${Number(monthYear)}`
+        ? 'latest=month'
+        : `month_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_less_than_or_equal=${Number(monthYear)}`
     }`
   )
 
@@ -66,18 +68,18 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
   const chartData = selectedMonths
     .map((month) => {
       const filteredValues = graphValues?.data.filter(
-        (value) => value.voltage === selectedVoltage && value.month_year === month
+        (value) => value.voltage === selectedVoltage && value.month === month
       )
 
       const totalConsumerCount = filteredValues?.reduce(
-        (sum, value) => sum + value.consumer_count,
+        (sum, value) => sum + value.generation__kwh_,
         0
       )
 
-      return { month, consumer_count: totalConsumerCount || 0 }
+      return { month, Generation: totalConsumerCount || 0 }
     })
     .reverse()
-
+  console.log('ChartData', chartData)
   const voltageType = ['LT', 'HT', 'EHT']
 
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({
@@ -90,7 +92,7 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='ml-2 flex gap-2'>
-            <span className='subheader-sm-1stop'>Trend of Top Active Connections</span>
+            <span className='subheader-sm-1stop'>Trend of Solar Generation</span>
 
             {/* <div className=''>
               <SelectList
@@ -152,14 +154,14 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
                   style={{ fontSize: 10 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
+                  formatter={(value: number) => [`${formatNumber(value)}`, 'Generation (kWh)']}
                   labelFormatter={(month) =>
                     month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
                   }
                 />
                 <Area
                   type='monotone'
-                  dataKey='consumer_count'
+                  dataKey='Generation'
                   stroke='#0091ff'
                   fill='#0091ff'
                 />
@@ -172,4 +174,4 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
   )
 }
 
-export default ActiveConnectionTrend
+export default SolarGenerationTrend

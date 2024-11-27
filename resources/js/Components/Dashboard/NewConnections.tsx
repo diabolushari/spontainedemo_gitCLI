@@ -415,15 +415,12 @@ const NewConnections = () => {
                     height={200}
                   >
                     <Tooltip
-                      formatter={(value: number) => value.toFixed(2)}
-                      labelStyle={{ fontSize: '10' }}
-                    />
-                    <Tooltip
                       formatter={
                         toggleValue
                           ? (value: number) => formatNumber(value)
                           : (value: number) => `${value.toFixed(2)}%`
                       }
+                      labelStyle={{ fontSize: '10' }}
                     />
 
                     <Pie

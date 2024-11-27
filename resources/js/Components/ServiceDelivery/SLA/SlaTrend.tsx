@@ -121,9 +121,13 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <AreaChart data={chartData}>
                 <XAxis
                   dataKey='month'
+                  style={{ fontSize: 10 }}
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 />
-                <YAxis tickFormatter={(value) => formatNumber(value)} />
+                <YAxis
+                  tickFormatter={(value) => formatNumber(value)}
+                  style={{ fontSize: 10 }}
+                />
                 <Tooltip
                   labelFormatter={(month: string) => `${month.slice(4)}/${month.slice(0, 4)}`}
                   formatter={
