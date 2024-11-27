@@ -9,6 +9,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import SlaTrend from './SlaTrend'
 import { Link } from '@inertiajs/react'
 import MoreButton from '@/Components/MoreButton'
+import { formatNumber } from '../ActiveConnection'
 
 export interface SlaPerformanceValues {
   requests_beyond_sla____: number
@@ -32,6 +33,9 @@ const SlaPerformance = () => {
   }>(
     `subset/82?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
+  console.log(selectedMonth)
+
+  console.log(graphValues)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -62,6 +66,7 @@ const SlaPerformance = () => {
   )
 
   const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
+  console.log(groupedData)
 
   const CustomTick = (props) => {
     const { x, y, payload } = props
@@ -306,7 +311,11 @@ const SlaPerformance = () => {
                           interval={0}
                         />
                         <YAxis hide />
-                        <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                        <Tooltip
+                          formatter={(value: number) =>
+                            toggleValue ? formatNumber(value) : `${value.toFixed(2)}%`
+                          }
+                        />
                         <Bar
                           dataKey={
                             toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'

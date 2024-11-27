@@ -5,7 +5,6 @@ import { cn } from '@/utils'
 import SideBar from './SideBar'
 import useFetchList from '@/hooks/useFetchList'
 import * as motion from 'framer-motion/client'
-import DropdownAccordion from './DropdownAccordion'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import {
   displayName,
@@ -13,6 +12,7 @@ import {
   OfficeInfo,
   OfficeStructure,
 } from '@/interfaces/dashboard_accordion'
+import { ToastContainer } from 'react-toastify'
 
 interface Properties {
   children?: ReactNode
@@ -100,6 +100,7 @@ export default function DashboardLayout({
 
   return (
     <div className='flex w-full flex-col sm:relative'>
+      <ToastContainer />
       <div className={`flex sm:relative ${isShowSideBar ? 'z-[999]' : ''}`}>
         <SideBar
           isShowSideBar={isShowSideBar}

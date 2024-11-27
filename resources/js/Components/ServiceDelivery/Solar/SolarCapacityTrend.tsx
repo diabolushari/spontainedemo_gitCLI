@@ -1,12 +1,8 @@
-import Card from '@/ui/Card/Card'
-import MonthPicker from '@/ui/form/MonthPicker'
-import { Link } from '@inertiajs/react'
-import MoreButton from '@/Components/MoreButton'
 import { useEffect, useState } from 'react'
-import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
 export interface SolarCapacityTrendValues {
   month_year: string
@@ -20,11 +16,36 @@ interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
+
 const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [monthYear, setMonthYear] = useState('')
+
+  const monthsInRange = (months: number): string[] => {
+    const dates = []
+    const date = new Date(selectedMonth)
+
+    for (let i = 0; i < months; i++) {
+      const year = date.getFullYear()
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      dates.push(`${year}${month}`) // Format YYYYMM
+      date.setMonth(date.getMonth() - 1) // Move one month backward
+    }
+
+    return dates
+  }
+
+  // Extract the range of months
+  const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
+
+  const selectedRange = parseInt(selectedValue.split(' ')[0])
+
   const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
-    `subset/71?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/71?${
+      selectedMonth == null
+        ? 'latest=month_year'
+        : `month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than_or_equal=${Number(monthYear)}`
+    }`
   )
 
   const dateEarlier = [
@@ -57,22 +78,6 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
 
   // Calculate months in the selected range
-  const monthsInRange = (months: number): string[] => {
-    const dates = []
-    const date = new Date(selectedMonth)
-
-    for (let i = 0; i < months; i++) {
-      const year = date.getFullYear()
-      const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      dates.push(`${year}${month}`) // Format YYYYMM
-      date.setMonth(date.getMonth() - 1) // Move one month backward
-    }
-
-    return dates
-  }
-
-  // Extract the range of months
-  const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
 
   // Filter and group data for the selected range
   const chartData = selectedMonths.map((month) => {
@@ -83,28 +88,28 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
 
   return (
     <div className='flex w-full flex-col p-4'>
-      <div className='flex w-full'>
-        <div className='flex w-full flex-col gap-2'>
+      <div className='flex w-full flex-col gap-2'>
+        <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='flex'>
-            <span className='subheader-sm-1stop items-end'>
+            <span className="'subheader-sm-1stop items-end">
               Trend of total capacity of Solar generation
             </span>
-          </div>
-          <div className='flex w-full justify-end pt-2'>
-            <div>
-              <SelectList
-                list={dateEarlier.map((month, index) => ({
-                  key: index,
-                  value: month,
-                  text: month,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption
-                value={selectedValue}
-                setValue={setSelectedValue}
-                style='1stop-small'
-              />
+            <div className='flex w-full justify-end pt-2'>
+              <div>
+                <SelectList
+                  list={dateEarlier.map((month, index) => ({
+                    key: index,
+                    value: month,
+                    text: month,
+                  }))}
+                  dataKey='value'
+                  displayKey='text'
+                  showAllOption
+                  value={selectedValue}
+                  setValue={setSelectedValue}
+                  style='1stop-small'
+                />
+              </div>
             </div>
           </div>
           <div className='w-full'>
@@ -118,8 +123,14 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                   tickFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
                   style={{ fontSize: '10' }}
                 />
-                <YAxis style={{ fontSize: '10' }} />
-                <Tooltip formatter={(value: number) => value.toFixed(2)} />
+                <YAxis
+                  style={{ fontSize: '10' }}
+                  tickFormatter={(value) => formatNumber(value)}
+                />
+                <Tooltip
+                  labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
+                  formatter={(value: number) => formatNumber(value)}
+                />
                 <Area
                   type='monotone'
                   dataKey='capacity_kw'

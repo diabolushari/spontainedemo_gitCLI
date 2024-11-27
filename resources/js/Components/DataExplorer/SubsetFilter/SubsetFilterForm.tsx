@@ -1,13 +1,19 @@
-import { SubsetDateField, SubsetDetail, SubsetMeasureField } from '@/interfaces/data_interfaces'
+import {
+  SubsetDateField,
+  SubsetDetail,
+  SubsetDimensionField,
+  SubsetMeasureField,
+} from '@/interfaces/data_interfaces'
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import Input from '@/ui/form/Input'
 import Button from '@/ui/button/Button'
+import ButtonBorderIcon from '@/ui/button/ButtonBorderIcon'
 
 interface Props {
   dates: SubsetDateField[]
   measures: SubsetMeasureField[]
-  dimensions: SubsetDateField[]
+  dimensions: SubsetDimensionField[]
   subset: SubsetDetail
   filters: Record<string, string | undefined | null>
   onSubmit: (querystring: string | null) => void
@@ -21,7 +27,7 @@ interface FormField {
   type: string
 }
 
-const dateOperators = [
+export const dateOperations = [
   { operation: 'equals', value: '=' },
   { operation: 'not equals', value: '_not' },
   { operation: 'from', value: '_from' },
@@ -30,20 +36,26 @@ const dateOperators = [
   { operation: 'not in list', value: '_not_in' },
 ]
 
-const dimensionOperators = [
+export const dimensionOperations = [
   { operation: 'equals', value: '=' },
   { operation: 'not equals', value: '_not' },
   { operation: 'contains', value: '_like' },
   { operation: 'not containing', value: '_not_like' },
+  { operation: 'greater than', value: '_greater_than' },
+  { operation: 'greater than or equal', value: '_greater_than_or_equal' },
+  { operation: 'less than', value: '_less_than' },
+  { operation: 'less than or equal', value: '_less_than_or_equal' },
   { operation: 'in list', value: '_in' },
   { operation: 'not in list', value: '_not_in' },
 ]
 
-const measureOperators = [
+export const measureOperations = [
   { operation: 'equals', value: '=' },
   { operation: 'not equals', value: '_not' },
   { operation: 'greater than', value: '_greater_than' },
+  { operation: 'greater than or equal', value: '_greater_than_or_equal' },
   { operation: 'less than', value: '_less_than' },
+  { operation: 'less than or equal', value: '_less_than_or_equal' },
   { operation: 'in list', value: '_in' },
   { operation: 'not in list', value: '_not_in' },
 ]
@@ -51,48 +63,21 @@ const measureOperators = [
 const availableOperators = (type: string) => {
   switch (type) {
     case 'date':
-      return dateOperators
+      return dateOperations
     case 'dimension':
-      return dimensionOperators
+      return dimensionOperations
     case 'number':
-      return measureOperators
+      return measureOperations
     default:
       return []
   }
 }
 
-const dateOperations = [
-  { operation: 'equals', value: '=' },
-  { operation: 'not equals', value: '_not' },
-  { operation: 'before', value: '_from' },
-  { operation: 'after', value: '_to' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
-]
-
-const dimensionOperations = [
-  { operation: 'equals', value: '=' },
-  { operation: 'not equals', value: '_not' },
-  { operation: 'contains', value: '_like' },
-  { operation: 'not containing', value: '_not_like' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
-]
-
-const measureOperations = [
-  { operation: 'equals', value: '=' },
-  { operation: 'not equals', value: '_not' },
-  { operation: 'greater than', value: '_greater_than' },
-  { operation: 'less than', value: '_less_than' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
-]
-
 const generateInitialFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
   measures: SubsetMeasureField[],
-  dimensions: SubsetDateField[]
+  dimensions: SubsetDimensionField[]
 ) => {
   const fields: FormField[] = []
 
@@ -153,7 +138,6 @@ export default function SubsetFilterForm({
   dates,
   measures,
   dimensions,
-  subset,
   filters,
   onSubmit,
 }: Readonly<Props>) {
@@ -315,6 +299,12 @@ export default function SubsetFilterForm({
     onSubmit(urlParams.toString())
   }
 
+  const removeField = (id: number) => {
+    setFormFields((prevFormFields) => {
+      return prevFormFields.filter((formField) => formField.id !== id)
+    })
+  }
+
   return (
     <form
       className='flex flex-col gap-5 py-5'
@@ -349,12 +339,17 @@ export default function SubsetFilterForm({
               allOptionText='Select Operator'
             />
           </div>
-          <div className='flex flex-col'>
-            <Input
-              label='Value'
-              setValue={(value) => setValue(formField.id, value)}
-              value={formField.value}
-            />
+          <div className='flex justify-center'>
+            <div className='flex flex-col'>
+              <Input
+                label='Value'
+                setValue={(value) => setValue(formField.id, value)}
+                value={formField.value}
+              />
+            </div>
+            <ButtonBorderIcon onClick={() => removeField(formField.id)}>
+              <i className='la la-trash-alt' />
+            </ButtonBorderIcon>
           </div>
         </div>
       ))}

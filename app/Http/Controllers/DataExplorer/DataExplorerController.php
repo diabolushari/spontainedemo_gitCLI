@@ -28,6 +28,7 @@ class DataExplorerController extends Controller implements HasMiddleware
         $subsetGroup = SubsetGroup::where('name', $subsetGroup)->firstOrFail();
 
         $subsetDetails = SubsetGroupItem::where('subset_group_id', $subsetGroup->id)
+            ->orderBy('item_number')
             ->pluck('subset_detail_id')
             ->toArray();
 
@@ -40,6 +41,7 @@ class DataExplorerController extends Controller implements HasMiddleware
             'subsets' => $subsets,
             'oldTab' => $request->input('tab', 'state'),
             'oldSubsetName' => $request->input('subset', null),
+            'oldFilters' => $request->all(),
         ]);
     }
 }

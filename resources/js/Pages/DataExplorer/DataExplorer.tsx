@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import Tab from '@/ui/Tabs/Tab'
 import { SubsetDetail, SubsetGroup } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
 import OfficeLevelExplorerTable from '@/Components/DataExplorer/OfficeLevelExplorerTable'
 import Card from '@/ui/Card/Card'
+import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
 
 const tabItems = [
   { name: 'State', value: 'state' },
@@ -21,6 +21,12 @@ interface Props {
   subsets: SubsetDetail[]
   oldTab: string
   oldSubsetName: string | null
+  oldFilters: Record<string, string>
+}
+
+export interface OfficeData {
+  office_code: string | number
+  office_name: string | number
 }
 
 const initSelectedSubset = (subsets: SubsetDetail[], oldSubsetName: string | null): string => {
@@ -43,10 +49,13 @@ export default function DataExplorer({
   subsets,
   oldTab,
   oldSubsetName,
+  oldFilters,
 }: Readonly<Props>) {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
+  const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
+  const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsets, oldSubsetName)
@@ -60,6 +69,11 @@ export default function DataExplorer({
     }
     return subsets.find((subset) => subset.id.toString() == selectedSubsetId)
   }, [subsets, selectedSubsetId])
+
+  useEffect(() => {
+    setSelectedDivision(null)
+    setSelectedSubdivision(null)
+  }, [selectedSubset, setSelectedDivision, setSelectedSubdivision])
 
   return (
     <DashboardLayout
@@ -87,16 +101,22 @@ export default function DataExplorer({
             </div>
           </div>
           <Card className='p-2'>
-            <Tab
+            <OfficeLevelTabs
               tabItems={tabItems}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              selectedSubdivision={selectedSubdivision}
+              selectedDivision={selectedDivision}
             />
-
             {selectedSubset != null && (
               <OfficeLevelExplorerTable
                 subset={selectedSubset}
                 officeLevel={activeTab}
+                oldFilters={oldFilters}
+                selectedDivision={selectedDivision}
+                setSelectedDivision={setSelectedDivision}
+                selectedSubdivision={selectedSubdivision}
+                setSelectedSubdivision={setSelectedSubdivision}
               />
             )}
           </Card>
