@@ -78,11 +78,13 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   }, [selectedMonth])
 
   // Filter and group data for the selected range
-  const chartData = selectedMonths.map((month) => {
-    const filteredValues = graphValues?.data.filter((value) => value.month_year === month)
-    const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
-    return { month, capacity_kw: totalCapacityKw }
-  })
+  const chartData = selectedMonths
+    .map((month) => {
+      const filteredValues = graphValues?.data.filter((value) => value.month_year === month)
+      const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
+      return { month, capacity_kw: totalCapacityKw }
+    })
+    .reverse()
 
   return (
     <div className='flex w-full flex-col'>

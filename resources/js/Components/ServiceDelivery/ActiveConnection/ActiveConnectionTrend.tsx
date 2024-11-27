@@ -63,15 +63,20 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
 
   const selectedMonths = generateMonths(selectedRange)
 
-  const chartData = selectedMonths.map((month) => {
-    const filteredValues = graphValues?.data.filter(
-      (value) => value.voltage === selectedVoltage && value.month_year === month
-    )
+  const chartData = selectedMonths
+    .map((month) => {
+      const filteredValues = graphValues?.data.filter(
+        (value) => value.voltage === selectedVoltage && value.month_year === month
+      )
 
-    const totalConsumerCount = filteredValues?.reduce((sum, value) => sum + value.consumer_count, 0)
+      const totalConsumerCount = filteredValues?.reduce(
+        (sum, value) => sum + value.consumer_count,
+        0
+      )
 
-    return { month, consumer_count: totalConsumerCount || 0 }
-  })
+      return { month, consumer_count: totalConsumerCount || 0 }
+    })
+    .reverse()
 
   const voltageType = ['LT', 'HT', 'EHT']
 

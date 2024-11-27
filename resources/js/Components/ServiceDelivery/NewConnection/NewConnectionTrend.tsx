@@ -53,13 +53,15 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
     }
   }, [graphValues, selectedMonth, setSelectedMonth])
 
-  const chartData = selectedMonths.map((month) => {
-    const value = graphValues?.data.find((v) => v.month === month)
-    return {
-      month,
-      RequestsBreachingSla: value?.requests_breaching_sla__count_ ?? 0,
-    }
-  })
+  const chartData = selectedMonths
+    .map((month) => {
+      const value = graphValues?.data.find((v) => v.month === month)
+      return {
+        month,
+        RequestsBreachingSla: value?.requests_breaching_sla__count_ ?? 0,
+      }
+    })
+    .reverse()
 
   return (
     <div className='flex w-full flex-col'>

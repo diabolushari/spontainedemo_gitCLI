@@ -62,17 +62,19 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
 
   const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
 
-  const chartData = selectedMonths.map((month) => {
-    const filteredValues = graphValues?.data?.filter(
-      (value) => value.sla_svc_group === title && value.month_year === month
-    )
-    return {
-      month,
-      sla_perf_count: toogleValue
-        ? filteredValues?.[0]?.sla_perf_count || 0
-        : filteredValues?.[0]?.sla_perf_perc || 0,
-    }
-  })
+  const chartData = selectedMonths
+    .map((month) => {
+      const filteredValues = graphValues?.data?.filter(
+        (value) => value.sla_svc_group === title && value.month_year === month
+      )
+      return {
+        month,
+        sla_perf_count: toogleValue
+          ? filteredValues?.[0]?.sla_perf_count || 0
+          : filteredValues?.[0]?.sla_perf_perc || 0,
+      }
+    })
+    .reverse()
 
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({
     key: i + 3,
