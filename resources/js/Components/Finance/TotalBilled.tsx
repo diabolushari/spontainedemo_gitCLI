@@ -5,6 +5,7 @@ import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface Properties {
   section_code?: string
@@ -20,23 +21,25 @@ export interface TotalBilledValues {
 }
 
 const TotalBilled = ({ section_code, levelName, levelCode }: Properties) => {
-  const [graphValues] = useFetchList<TotalBilledValues>(`subset/43?${levelName}=${levelCode}`)
+  const [graphValues] = useFetchRecord<{ data: TotalBilledValues[] }>(
+    `subset/43?${levelName}=${levelCode}`
+  )
 
-  const totalbilled = graphValues.reduce((sum, item) => sum + item.total_consumption, 0)
+  const totalbilled = graphValues?.data.reduce((sum, item) => sum + item.total_consumption, 0)
 
-  const domesticLT = graphValues
+  const domesticLT = graphValues?.data
     .filter((item) => item.consumer_category === 'DOMESTIC' && item.voltage === 'LT')
     .reduce((sum, item) => sum + item.total_consumption, 0)
 
-  const otherLT = graphValues
+  const otherLT = graphValues?.data
     .filter((item) => item.consumer_category !== 'DOMESTIC' && item.voltage === 'LT')
     .reduce((sum, item) => sum + item.total_consumption, 0)
 
-  const ehtAll = graphValues
+  const ehtAll = graphValues?.data
     .filter((item) => item.voltage === 'EHT')
     .reduce((sum, item) => sum + item.total_consumption, 0)
 
-  const htAll = graphValues
+  const htAll = graphValues?.data
     .filter((item) => item.voltage === 'HT')
     .reduce((sum, item) => sum + item.total_consumption, 0)
 
@@ -49,29 +52,33 @@ const TotalBilled = ({ section_code, levelName, levelCode }: Properties) => {
     return value.toString()
   }
 
-  const isLoading = !graphValues || graphValues.length === 0
+  const isLoading = !graphValues || graphValues?.data.length === 0
 
   return (
     <Card className='flex w-full flex-col space-x-1 p-4'>
       <div className='xlmetric-1stop mb-1'>
-        ₹{isLoading ? <Skeleton /> : formatNumber(totalbilled)}
+        ₹{isLoading ? <Skeleton /> : formatNumber(totalbilled ?? 0)}
       </div>
       <p className='body-1stop mb-4'>Total Billed</p>
       <div className='grid w-1/2 grid-cols-2 gap-2 text-left'>
         <div>
-          <p className='h3-1stop'>₹{isLoading ? <Skeleton /> : formatNumber(domesticLT)}</p>
+          <p className='h3-1stop'>₹{isLoading ? <Skeleton /> : formatNumber(domesticLT ?? 0)}</p>
           <p className='small-1stop'>DOMESTIC - LT</p>
         </div>
         <div>
-          <p className='h3-1stop'>₹{isLoading ? <Skeleton /> : formatNumber(otherLT)}</p>
+          <p className='h3-1stop'>₹{isLoading ? <Skeleton /> : formatNumber(otherLT ?? 0)}</p>
           <p className='small-1stop'>OTHERS - LT</p>
         </div>
         <div>
-          <p className='h3-1stop space-x-2'>₹{isLoading ? <Skeleton /> : formatNumber(ehtAll)}</p>
+          <p className='h3-1stop space-x-2'>
+            ₹{isLoading ? <Skeleton /> : formatNumber(ehtAll ?? 0)}
+          </p>
           <p className='small-1stop'>EHT - ALL</p>
         </div>
         <div>
-          <p className='h3-1stop space-x-4'>₹{isLoading ? <Skeleton /> : formatNumber(htAll)}</p>
+          <p className='h3-1stop space-x-4'>
+            ₹{isLoading ? <Skeleton /> : formatNumber(htAll ?? 0)}
+          </p>
           <p className='small-1stop'>HT - ALL</p>
         </div>
       </div>

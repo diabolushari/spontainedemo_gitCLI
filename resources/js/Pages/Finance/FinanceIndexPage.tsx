@@ -1,5 +1,4 @@
-import TotalBilled from '@/Components/Finance/TotalBilled'
-import TotalCollected from '@/Components/Finance/TotalCollected'
+import TotalBilled from '@/Components/Financial/TotalBilled/TotalBilled'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
@@ -22,19 +21,13 @@ const FinanceIndexPage = () => {
       <DashboardPadding>
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
           <div className='flex flex-col gap-2 lg:flex-row'>
+            <TotalBilled />
             <Card className=''>
-              <TotalBilled
+              {/* <TotalCollected
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
-              />
-            </Card>
-            <Card className=''>
-              <TotalCollected
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
+              /> */}
             </Card>
           </div>
           <div className='flex flex-col gap-2 sm:flex-row'></div>
