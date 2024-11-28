@@ -17,12 +17,26 @@ interface ComplaintValues {
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+  setCategories: React.Dispatch<
+    React.SetStateAction<
+      {
+        complaint_type: string
+      }[]
+    >
+  >
 }
 
-const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
+const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Properties) => {
   const [graphValues] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
     `subset/72?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
+  useEffect(() => {
+    setCategories(
+      Array.from(new Set(graphValues?.data?.map((item) => item.complaint_type) || [])).map(
+        (complaint_type) => ({ complaint_type })
+      )
+    )
+  }, [setCategories, graphValues])
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -44,8 +58,8 @@ const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const isLoading = !graphValues || graphValues.data.length === 0
   return (
     <div className='flex w-full'>
-      <div className='ml-auto mr-auto flex justify-center'>
-        <div className='grid w-full max-w-md grid-cols-2 gap-4 p-6'>
+      <div className='flex justify-center'>
+        <div className='grid w-full max-w-md grid-cols-2 gap-2 p-2'>
           <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
             <p className='xlmetric-1stop'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(complaintCount('Total') ?? 0)}
@@ -73,14 +87,14 @@ const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='small-1stop-header text-center'>Voltage Related</p>
           </div>
           <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
-            <p className='mdmetric-1stop'>
+            <p className='mdmetric-1stop pt-4'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
                 formatNumber(complaintCount('SERVICE CONNECTION RELATED') ?? 0)
               )}
             </p>
-            <p className='small-1stop-header text-center'>Service Connection Related</p>
+            <p className='small-1stop-header text-center'>Service Conn. Related</p>
           </div>
         </div>
       </div>

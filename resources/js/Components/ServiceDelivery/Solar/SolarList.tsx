@@ -9,20 +9,10 @@ interface Properties {
   subset_id: string
   column1: string
   column2: string
-  displayKey?: string
+
   default_level?: string
   sortBy?: string
   sortOrder?: string
-  setCategories: React.Dispatch<
-    React.SetStateAction<
-      {
-        complaint_type: string
-      }[]
-    >
-  >
-  categories: {
-    complaint_type: string
-  }[]
 }
 const listTypes: { name: string }[] = [
   { name: 'Top 3' },
@@ -45,33 +35,41 @@ interface ConsumerList extends Model {
   consumer_count?: number
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
+  capacity_kw: number
 }
-const ComplaintList = ({
+
+const list: {
+  voltage: string
+  value: string
+}[] = [
+  { voltage: 'LT', value: 'LT' },
+  { voltage: 'HT', value: 'HT' },
+  { voltage: 'Total', value: '' },
+]
+const SolarList = ({
   subset_id,
   column1,
   column2,
-  displayKey,
   default_level,
   sortBy,
   sortOrder = 'desc',
-  setCategories,
-  categories,
 }: Properties) => {
   const [page, setPage] = useState(1)
   const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [headers, setHeaders] = useState([column1, column2])
   const [listType, setListType] = useState('Top 10')
-  const [title, setTitle] = useState('GENERIC COMPLAINTS')
+
+  const [title, setTitle] = useState('')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy ?? 'complaint_count'}&sort_order=${topOrBottom}&limit=${listType.split(' ')[1]}&complaint_type=${title}&page=${page}`
-    // 'subset-summary/82?level=section&sort_by=requests_within_sla__count_&sort_order=desc&limit=10'
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy ?? 'complaint_count'}&voltage=${title}&sort_order=${topOrBottom ?? 'desc'}&limit=${listType.split(' ')[1]}&page=${page}`
   )
 
   useEffect(() => {
     setHeaders([levelTypes.find((value) => value.value == officeLevel)?.name ?? column1, column2])
   }, [officeLevel, column1, column2])
   const setSortOrder = (value: string) => {
+    console.log(value)
     if (value.split(' ')[0] != 'Top') {
       setTopOrBottom('asc')
     } else {
@@ -81,14 +79,14 @@ const ComplaintList = ({
   }
 
   return (
-    <div className='mx-2 mt-5 flex w-full flex-col'>
+    <div className='mt-5 flex w-full flex-col p-2'>
       <div className='items center flex justify-center gap-5'>
         <div className='flex flex-col'>
           <SelectList
             setValue={setTitle}
-            list={categories}
-            displayKey='complaint_type'
-            dataKey='complaint_type'
+            list={list}
+            displayKey='voltage'
+            dataKey='value'
             value={title}
             style='1stop-small'
           />
@@ -97,7 +95,7 @@ const ComplaintList = ({
           <SelectList
             list={listTypes}
             value={listType}
-            setValue={setSortOrder}
+            setValue={(value) => setSortOrder(value)}
             dataKey='name'
             displayKey='name'
             style='1stop-small'
@@ -121,7 +119,7 @@ const ComplaintList = ({
               return (
                 <th
                   key={header}
-                  className='small-1stop-header bg-1stop-white'
+                  className='small-1stop bg-1stop-white'
                 >
                   {header}
                 </th>
@@ -133,16 +131,15 @@ const ComplaintList = ({
           {graphValues?.data.data.map((value) => {
             return (
               <tr
-                className='small-1stop pt-1 text-left'
+                className='small-1stop text-left'
                 key={value.office_name}
               >
                 <td className=''>{value.office_name}</td>
-                <td className=''>{value.complaint_count}</td>
+                <td className=''>{(value.capacity_kw / 1000).toFixed(3)}</td>
               </tr>
             )
           })}
         </tbody>
-
         {graphValues?.data != null && (
           <RestPagination
             pagination={graphValues.data}
@@ -154,4 +151,4 @@ const ComplaintList = ({
   )
 }
 
-export default ComplaintList
+export default SolarList

@@ -31,9 +31,9 @@ export default function RestPagination<T>({ pagination, onNewPage }: PaginationP
 
   return (
     <div className='my-2 flex w-full flex-wrap items-center justify-between gap-y-4 py-2'>
-      <p className='mt-auto self-center text-sm text-gray-700'>
-        Showing <span className='font-medium'>{pagination.from}</span> to{' '}
-        <span className='font-medium'>{pagination.to}</span> of {pagination.total}
+      <p className='small-1stop mt-auto self-center text-gray-700'>
+        Showing <span className='small-1stop'>{pagination.from}</span> to{' '}
+        <span className='small-1stop'>{pagination.to}</span> of {pagination.total}
       </p>
 
       <div className='border-t border-gray-200 print:hidden'>
@@ -78,13 +78,13 @@ export default function RestPagination<T>({ pagination, onNewPage }: PaginationP
                         strokeLinejoin='round'
                       />
                     </svg>
-                    <p className='ml-2 mr-4 text-sm font-medium leading-none'>Previous</p>
+                    <p className='small-1stop ml-2 mr-4'>Previous</p>
                   </div>
                 )}
                 {index !== 0 && index !== pagination.links.length - 1 && (
                   <div
                     onClick={() => selectPage(index)}
-                    className={`mr-4 hidden border-t px-2 pt-3 text-sm font-medium leading-none md:flex ${
+                    className={`small-1stop mr-4 hidden border-t px-2 pt-3 md:flex ${
                       link.label === '...'
                         ? 'border-transparent'
                         : 'cursor-pointer hover:border-indigo-400 hover:text-indigo-700'
@@ -102,7 +102,7 @@ export default function RestPagination<T>({ pagination, onNewPage }: PaginationP
                     onClick={onPageNext}
                     className='flex cursor-pointer items-center pt-3 text-gray-600 hover:text-indigo-700'
                   >
-                    <p className='mr-3 text-sm font-medium leading-none'>Next</p>
+                    <p className='small-1stop mr-3'>Next</p>
                     <svg
                       width={14}
                       height={8}

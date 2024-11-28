@@ -114,16 +114,16 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
   }
-
+  console.log(graphValues)
   const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
   return (
     <div className='flex w-full flex-col'>
-      <div className='flex w-5/6 flex-row gap-4 p-2'>
+      <div className='flex flex-row gap-4 p-2'>
         <div className='flex w-1/2 flex-col gap-1 pt-4'>
           {/* Total Connections */}
           <div className='flex flex-col border p-2'>
             <p className='xlmetric-1stop'>
-              {graphValues?.data.length ? convertToMW('Total', false).toFixed(3) : <Skeleton />}
+              {graphValues?.data.length ? convertToMW('Total', false).toFixed(2) : <Skeleton />}
             </p>
             <div className='flex flex-row justify-between'>
               <p className='small-1stop-header'>Total MW</p>
@@ -167,11 +167,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             {/* HT */}
             <div className='flex w-1/2 flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? (
-                  formatNumber(convertToMW('HT', false).toFixed(3))
-                ) : (
-                  <Skeleton />
-                )}
+                {graphValues?.data.length ? convertToMW('HT', false).toFixed(3) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>HT MW</p>
@@ -196,7 +192,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 {graphValues?.data.length ? formatNumber(MWCount('LT', true) ?? 0) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>LT consumers </p>
+                <p className='small-1stop-header'>LT Prosumers </p>
                 <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                   <input
                     type='radio'
@@ -214,10 +210,14 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             {/* HT */}
             <div className='flex w-1/2 flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? formatNumber(MWCount('HT', true) ?? 0) : <Skeleton />}
+                {graphValues?.data.length ? (
+                  formatNumber(convertToMW('HT', false).toFixed(3))
+                ) : (
+                  <Skeleton />
+                )}
               </p>
               <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>HT consumers </p>
+                <p className='small-1stop-header'>HT Prosumers </p>
                 <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                   <input
                     type='radio'
@@ -235,7 +235,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
         </div>
 
         {/* Graph */}
-        <div className='flex w-1/2 justify-center pt-2'>
+        <div className='flex w-1/2 justify-center'>
           {graphValues?.data.length == 0 ? (
             <Skeleton
               circle={true}
@@ -249,7 +249,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 height={200}
               >
                 <Tooltip formatter={(value: number) => `${formatNumber(value.toFixed(0))}`} />
-
                 <Pie
                   data={data}
                   innerRadius={50}

@@ -1,4 +1,3 @@
-import useFetchList from '@/hooks/useFetchList'
 import React, { useEffect, useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
@@ -11,6 +10,8 @@ import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
+import TopList from '../ServiceDelivery/TopList'
+import { div } from 'framer-motion/client'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 
 export interface NewConnectionGraphValues {
@@ -137,169 +138,175 @@ const NewConnections = () => {
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='small-1stop-header flex w-1/12 flex-col rounded-2xl'>
+        <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
           <button
-            className={`rounded-tl-2xl border p-5 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`flex w-full rounded-tl-2xl border px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
               setSelectedLevel(1)
             }}
           >
-            <svg
-              width='28'
-              height='28'
-              viewBox='0 0 28 28'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M2.33398 12.8332L11.3757 9.9165'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M16.334 9.3335L25.6673 7.5835'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M17.5 11.375L25.6667 12.25'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M19.0742 14L25.6659 16.9167'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
+            <div className='flex w-full items-center justify-center'>
+              <svg
+                width='28'
+                height='28'
+                viewBox='0 0 28 28'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M2.33398 12.8332L11.3757 9.9165'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M16.334 9.3335L25.6673 7.5835'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M17.5 11.375L25.6667 12.25'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M19.0742 14L25.6659 16.9167'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </div>
           </button>
           <button
-            className={`border p-5 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`flex w-full border px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
               setSelectedLevel(2)
             }}
           >
-            <svg
-              width='28'
-              height='28'
-              viewBox='0 0 28 28'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='M22.75 3.5H5.25C4.2835 3.5 3.5 4.2835 3.5 5.25V22.75C3.5 23.7165 4.2835 24.5 5.25 24.5H22.75C23.7165 24.5 24.5 23.7165 24.5 22.75V5.25C24.5 4.2835 23.7165 3.5 22.75 3.5Z'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M7.83984 17.4035L11.1397 14.1037L13.6994 16.6573L19.8333 10.5'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M15.166 10.5H19.8327V15.1667'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
+            <div className='flex w-full items-center justify-center'>
+              <svg
+                width='28'
+                height='28'
+                viewBox='0 0 28 28'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M22.75 3.5H5.25C4.2835 3.5 3.5 4.2835 3.5 5.25V22.75C3.5 23.7165 4.2835 24.5 5.25 24.5H22.75C23.7165 24.5 24.5 23.7165 24.5 22.75V5.25C24.5 4.2835 23.7165 3.5 22.75 3.5Z'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M7.83984 17.4035L11.1397 14.1037L13.6994 16.6573L19.8333 10.5'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M15.166 10.5H19.8327V15.1667'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </div>
           </button>
           <button
-            className={`border p-5 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`flex w-full border px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.circle_code ?? '')
               setSelectedLevel(3)
             }}
           >
-            <svg
-              width='28'
-              height='28'
-              viewBox='0 0 28 28'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='M13.416 5.25H25.0827'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M2.91602 9.33317L7.58268 4.6665'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M7.58398 4.6665V24.4998'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M13.416 11.0835H22.7493'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M13.416 16.9165H20.416'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M13.416 22.75H18.0827'
-                stroke='#333333'
-                strokeWidth='1.75'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
+            <div className='flex w-full items-center justify-center'>
+              <svg
+                width='28'
+                height='28'
+                viewBox='0 0 28 28'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M13.416 5.25H25.0827'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M2.91602 9.33317L7.58268 4.6665'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M7.58398 4.6665V24.4998'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M13.416 11.0835H22.7493'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M13.416 16.9165H20.416'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M13.416 22.75H18.0827'
+                  stroke='#333333'
+                  strokeWidth='1.75'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </div>
           </button>
           <div
-            className={`border p-5 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
           >
             <p></p>
           </div>
           <div
-            className={`border p-5 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
           >
             <p></p>
           </div>
@@ -414,6 +421,7 @@ const NewConnections = () => {
                           ? (value: number) => formatNumber(value)
                           : (value: number) => `${value.toFixed(2)}%`
                       }
+                      labelStyle={{ fontSize: '10' }}
                     />
 
                     <Pie
@@ -444,11 +452,23 @@ const NewConnections = () => {
             setSelectedMonth={setSelectedMonth}
           />
         )}
+        {selectedLevel === 3 && (
+          <TopList
+            column1='Section'
+            column2='SLA count'
+            subset_id='63'
+            default_level='section'
+            displayKey='sla'
+            sortBy='sla_perf_cnt'
+          />
+        )}
       </div>
 
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
-        <p className='h3-1stop text-wrap'>Servicing New Connections</p>
-        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
+      <div className='flex h-full items-center justify-between rounded-b-2xl bg-button-muted px-4 pl-14'>
+        <div className='w-1/3'>
+          <p className='h3-1stop'>Servicing New Connections</p>
+        </div>
+        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4 py-4'>
           {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
               month: 'short',
@@ -460,7 +480,7 @@ const NewConnections = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/59'>
+          <Link href='/data-explorer/SLA Performance - New Connection Requests'>
             <MoreButton />
           </Link>
         </div>

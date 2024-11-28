@@ -9,6 +9,7 @@ import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterrupti
 import Solar from '@/Components/ServiceDelivery/Solar/Solar'
 import Complaints from '@/Components/ServiceDelivery/Issues/Complaints'
 import SlaPerformance from '@/Components/ServiceDelivery/SLA/SlaPerformance'
+import SolarGeneration from '@/Components/ServiceDelivery/Solar/SolarGeneration'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -32,25 +33,29 @@ const ServideDeliveryIndexPage = () => {
               <NewConnections />
             </Card>
           </div>
-          <div className='flex flex-col items-stretch gap-2 lg:flex-row'>
-            <div className='flex w-full flex-col p-6 sm:p-4 lg:w-2/3'>
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <div className='flex w-full lg:w-2/3'>
               <SlaPerformance />
             </div>
-            <div className='flex w-full flex-col p-6 sm:p-4 lg:w-1/3'>
+            <div className='flex w-full lg:w-1/3'>
               <PendancyCard />
             </div>
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
-            <div className='w-full p-6 sm:p-4 lg:w-1/3'>
+            <div className='flex w-full lg:w-1/3'>
               <Complaints />
             </div>
-            <div className='flex w-full p-6 sm:p-4 lg:w-2/3'>
+            <div className='flex w-full lg:w-2/3'>
               <PowerInterruptionTrend />
             </div>
           </div>
-          <div className='flex gap-5'>
-            <div className='w-full lg:w-1/2'>
+
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <div className='flex w-full lg:w-1/3'>
               <Solar />
+            </div>
+            <div className='flex w-full lg:w-2/3'>
+              <SolarGeneration />
             </div>
           </div>
         </div>
