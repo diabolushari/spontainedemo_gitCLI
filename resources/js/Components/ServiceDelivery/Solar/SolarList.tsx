@@ -69,7 +69,6 @@ const SolarList = ({
     setHeaders([levelTypes.find((value) => value.value == officeLevel)?.name ?? column1, column2])
   }, [officeLevel, column1, column2])
   const setSortOrder = (value: string) => {
-    console.log(value)
     if (value.split(' ')[0] != 'Top') {
       setTopOrBottom('asc')
     } else {
@@ -135,7 +134,7 @@ const SolarList = ({
                 key={value.office_name}
               >
                 <td className=''>{value.office_name}</td>
-                <td className=''>{(value.capacity_kw / 1000).toFixed(3)}</td>
+                <td className=''>{(value.capacity_kw / 1000).toFixed(2)}</td>
               </tr>
             )
           })}

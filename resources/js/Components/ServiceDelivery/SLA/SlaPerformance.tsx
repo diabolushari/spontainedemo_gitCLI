@@ -83,9 +83,8 @@ const SlaPerformance = () => {
       )
     ).values()
   )
-  console.log('Grouped Data Count', groupedDataNumber)
+
   const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
-  console.log(groupedData)
 
   const CustomTick = (props) => {
     const { x, y, payload } = props

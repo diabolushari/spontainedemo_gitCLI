@@ -80,7 +80,7 @@ const TopList = ({
     }
     setListType(value)
   }
-  console.log(graphValues)
+
   return (
     <div className='mt-5 flex w-full flex-col p-2'>
       <div className='items center flex justify-center gap-5'>

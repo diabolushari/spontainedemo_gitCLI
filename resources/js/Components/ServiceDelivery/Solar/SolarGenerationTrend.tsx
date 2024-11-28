@@ -79,7 +79,7 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
       return { month, Generation: totalConsumerCount || 0 }
     })
     .reverse()
-  console.log('ChartData', chartData)
+
   const voltageType = ['LT', 'HT', 'EHT']
 
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({

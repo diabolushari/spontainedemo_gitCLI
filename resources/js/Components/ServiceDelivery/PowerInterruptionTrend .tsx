@@ -33,11 +33,36 @@ interface ComplaintValues extends Model {
 const PowerInterruptionTrend = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [monthYear, setMonthYear] = useState('')
-  const [selectedRange, setSelectedRange] = useState('1')
   const [selectedLevel, setSelectedLevel] = useState(1)
-
+  const [yearList, setYearList] = useState<{ yearName: string }[]>([])
   const [graphValues] = useFetchRecord<{ latest_value: string }>(`subset/72?latest=month_year`)
-  const [data] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(`subset/72`)
+  const [yearFilter, setYearFilter] = useState('')
+  const [referenceMonthYear, setReferenceMonthYear] = useState('')
+  const [selectedRange, setSelectedRange] = useState('')
+  useEffect(() => {
+    setSelectedRange(`${(Number(graphValues?.latest_value) % 100) - 1}`)
+    setReferenceMonthYear(`${Number(graphValues?.latest_value) - 1}`)
+    setYearFilter(`${Math.trunc(Number(graphValues?.latest_value) / 100)}`)
+  }, [graphValues?.latest_value])
+
+  useEffect(() => {
+    setReferenceMonthYear(
+      Number(selectedRange) < 10 ? yearFilter + '0' + selectedRange : yearFilter + selectedRange
+    )
+  }, [setReferenceMonthYear, selectedRange, yearFilter])
+  useEffect(() => {
+    for (let i = new Date().getFullYear(); i >= 2017; i--) {
+      setYearList((prev) => [
+        ...prev,
+        {
+          yearName: `${i}`,
+        },
+      ])
+    }
+    const i = new Date().getFullYear()
+    setYearFilter(`${i}`)
+  }, [])
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -53,34 +78,14 @@ const PowerInterruptionTrend = () => {
     }
   }, [selectedMonth])
 
-  // const chartData = data?.data.filter((value) => value.month_year == monthYear)
   const [chartData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
     `subset/72?month_year=${monthYear}`
   )
 
-  // const referenceData = data?.data.filter(
-  //   (value) =>
-  //     Number(value.month_year) >= Number(monthYear) - Number(selectedRange) &&
-  //     Number(value.month_year) < Number(monthYear)
-  // )
   const [referenceData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than=${Number(monthYear)}`
+    `subset/72?month_year=${referenceMonthYear}`
   )
 
-  const dateEarlier: { name: string; value: number }[] = [
-    { name: 'PREVIOUS MONTH', value: 1 },
-    { name: '2 MONTHS', value: 2 },
-    { name: '3 MONTHS', value: 3 },
-    { name: '4 MONTHS', value: 4 },
-    { name: '5 MONTHS', value: 5 },
-    { name: '6 MONTHS', value: 6 },
-    { name: '7 MONTHS', value: 7 },
-    { name: '8 MONTHS', value: 8 },
-    { name: '9 MONTHS', value: 9 },
-    { name: '10 MONTHS', value: 10 },
-    { name: '11 MONTHS', value: 11 },
-    { name: '12 MONTHS', value: 12 },
-  ]
   const comparedData = useMemo(() => {
     return [
       {
@@ -88,30 +93,31 @@ const PowerInterruptionTrend = () => {
         current:
           chartData?.data.find((value) => value.complaint_type == 'NO POWER SUPPLY')
             ?.complaint_count ?? 0,
-        previous: referenceData?.data
-          .filter((value) => value.complaint_type == 'NO POWER SUPPLY')
-          ?.reduce((sum, value) => sum + value.complaint_count, 0),
+        previous:
+          referenceData?.data.find((value) => value.complaint_type == 'NO POWER SUPPLY')
+            ?.complaint_count ?? 0,
       },
       {
         name: 'Voltage Related',
         current:
           chartData?.data.find((value) => value.complaint_type == 'VOLTAGE RELATED')
             ?.complaint_count ?? 0,
-        previous: referenceData?.data
-          .filter((value) => value.complaint_type == 'VOLTAGE RELATED')
-          ?.reduce((sum, value) => sum + value.complaint_count, 0),
+        previous:
+          referenceData?.data.find((value) => value.complaint_type == 'VOLTAGE RELATED')
+            ?.complaint_count ?? 0,
       },
       {
         name: 'Service Connection Related',
         current:
           chartData?.data.find((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
             ?.complaint_count ?? 0,
-        previous: referenceData?.data
-          .filter((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
-          ?.reduce((sum, value) => sum + value.complaint_count, 0),
+        previous:
+          referenceData?.data.find((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
+            ?.complaint_count ?? 0,
       },
     ]
   }, [chartData, referenceData])
+
   const isLoading = !chartData || chartData?.data.length === 0
 
   return (
@@ -224,10 +230,20 @@ const PowerInterruptionTrend = () => {
                   </>
                 )}
               </span>
+              <div className=''>
+                <SelectList
+                  setValue={setYearFilter}
+                  list={yearList}
+                  displayKey='yearName'
+                  dataKey='yearName'
+                  value={yearFilter}
+                  style='1stop-small'
+                />
+              </div>
               <div>
                 <SelectList
-                  list={dateEarlier ?? []}
-                  dataKey='value'
+                  list={monthList}
+                  dataKey='id'
                   displayKey='name'
                   value={selectedRange}
                   setValue={setSelectedRange}

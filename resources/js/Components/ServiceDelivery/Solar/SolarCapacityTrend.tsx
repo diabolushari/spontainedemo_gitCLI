@@ -47,6 +47,10 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
         : `month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than_or_equal=${Number(monthYear)}`
     }`
   )
+  // const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
+  //   `subset/71?latest=month_year
+  //     `
+  // )
 
   const dateEarlier = [
     '3 MONTHS',
@@ -69,7 +73,7 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   }, [setSelectedMonth, graphValues, selectedMonth])
   useEffect(() => {
     setMonthYear(
-      `${selectedMonth?.getFullYear()}${(selectedMonth?.getMonth() ?? 0 + 1).toString().padStart(2, '0')}`
+      `${selectedMonth?.getFullYear()}${((selectedMonth?.getMonth() ?? 0) + 1).toString().padStart(2, '0')}`
     )
   }, [selectedMonth])
 

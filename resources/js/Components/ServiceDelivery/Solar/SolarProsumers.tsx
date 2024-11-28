@@ -114,7 +114,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
   }
-  console.log(graphValues)
+
   const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
   return (
     <div className='flex w-full flex-col'>
@@ -146,7 +146,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             {/* LT */}
             <div className='flex w-1/2 flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? convertToMW('LT', false).toFixed(3) : <Skeleton />}
+                {graphValues?.data.length ? convertToMW('LT', false).toFixed(2) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>LT MW</p>
@@ -167,7 +167,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             {/* HT */}
             <div className='flex w-1/2 flex-col border p-2'>
               <p className='mdmetric-1stop'>
-                {graphValues?.data.length ? convertToMW('HT', false).toFixed(3) : <Skeleton />}
+                {graphValues?.data.length ? convertToMW('HT', false).toFixed(2) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
                 <p className='small-1stop-header'>HT MW</p>
@@ -211,7 +211,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <div className='flex w-1/2 flex-col border p-2'>
               <p className='mdmetric-1stop'>
                 {graphValues?.data.length ? (
-                  formatNumber(convertToMW('HT', false).toFixed(3))
+                  formatNumber(MWCount('HT', true).toFixed(2))
                 ) : (
                   <Skeleton />
                 )}
@@ -248,7 +248,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 width={200}
                 height={200}
               >
-                <Tooltip formatter={(value: number) => `${formatNumber(value.toFixed(0))}`} />
+                <Tooltip formatter={(value: number) => `${formatNumber(value.toFixed(2))}`} />
                 <Pie
                   data={data}
                   innerRadius={50}
