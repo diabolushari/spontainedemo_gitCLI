@@ -82,36 +82,38 @@ const ComplaintList = ({
 
   return (
     <div className='mx-2 mt-5 flex w-full flex-col'>
-      <div className='items center flex justify-center gap-5'>
-        <div className='flex flex-col'>
-          <SelectList
-            setValue={setTitle}
-            list={categories}
-            displayKey='complaint_type'
-            dataKey='complaint_type'
-            value={title}
-            style='1stop-small'
-          />
-        </div>
-        <div className='flex flex-col'>
-          <SelectList
-            list={listTypes}
-            value={listType}
-            setValue={setSortOrder}
-            dataKey='name'
-            displayKey='name'
-            style='1stop-small'
-          />
-        </div>
-        <div className='flex flex-col'>
-          <SelectList
-            list={levelTypes}
-            value={officeLevel}
-            setValue={setOfficeLevel}
-            dataKey='value'
-            displayKey='name'
-            style='1stop-small'
-          />
+      <div className='flex justify-center gap-5'>
+        <div className='grid grid-cols-2 gap-3'>
+          <div className='col-span-2 flex flex-col'>
+            <SelectList
+              setValue={setTitle}
+              list={categories}
+              displayKey='complaint_type'
+              dataKey='complaint_type'
+              value={title}
+              style='1stop-small'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <SelectList
+              list={listTypes}
+              value={listType}
+              setValue={setSortOrder}
+              dataKey='name'
+              displayKey='name'
+              style='1stop-small'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <SelectList
+              list={levelTypes}
+              value={officeLevel}
+              setValue={setOfficeLevel}
+              dataKey='value'
+              displayKey='name'
+              style='1stop-small'
+            />
+          </div>
         </div>
       </div>
       <table className='mt-5'>
