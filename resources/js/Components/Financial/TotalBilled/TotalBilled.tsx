@@ -6,11 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MonthPicker from '@/ui/form/MonthPicker'
-import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { OfficeInfo } from '@/interfaces/dashboard_accordion'
-import ActiveConnectionTrend from '@/Components/ServiceDelivery/ActiveConnection/ActiveConnectionTrend'
-import TopList from '@/Components/ServiceDelivery/TopList'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import BillingTrend from './BillingTrend'
 import BillingList from './BillingList'
@@ -527,7 +523,7 @@ const TotalBilled = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Active Connections Summary'>
+          <Link href='/data-explorer/Demand Analysis'>
             <MoreButton />
           </Link>
         </div>
