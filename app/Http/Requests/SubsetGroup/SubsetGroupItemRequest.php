@@ -12,6 +12,7 @@ class SubsetGroupItemRequest extends Data
 {
     public function __construct(
         public int $itemNumber,
+        public string $name,
         #[Exists('subset_details', 'id')]
         public int $subsetDetailId,
         #[Exists('subset_groups', 'id')]

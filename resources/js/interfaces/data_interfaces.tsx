@@ -276,6 +276,7 @@ export interface SubsetGroup extends Model {
 }
 
 export interface SubsetGroupItem extends Model {
+  name: string
   subset_group_id: number
   subset_detail_id: number
   item_number: number

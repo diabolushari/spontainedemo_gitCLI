@@ -18,6 +18,7 @@ export default function SubsetGroupItemForm({
   onDelete,
 }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
+    name: selectedItem?.name ?? '',
     item_number: selectedItem?.item_number ?? '',
     subset_detail:
       selectedItem?.subset == null
@@ -46,6 +47,11 @@ export default function SubsetGroupItemForm({
     L extends Record<K, string | number> & Record<G, string | number | null>,
   >() => {
     return {
+      name: {
+        type: 'text',
+        label: 'Name',
+        setValue: setFormValue('name'),
+      },
       item_number: {
         type: 'text',
         label: 'Item #',
@@ -72,6 +78,7 @@ export default function SubsetGroupItemForm({
     event.preventDefault()
     post({
       _method: selectedItem != null ? 'PUT' : 'POST',
+      name: formData.name,
       item_number: formData.item_number,
       subset_group_id: subsetGroup.id,
       subset_detail_id: formData.subset_detail?.id ?? null,

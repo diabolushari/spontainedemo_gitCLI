@@ -13,6 +13,7 @@ class SubsetGroupItem extends Model
 
     protected $fillable = [
         'item_number',
+        'name',
         'subset_group_id',
         'subset_detail_id',
         'created_by',

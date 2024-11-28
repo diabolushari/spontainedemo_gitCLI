@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('subset_group_items', function (Blueprint $table) {
             $table->id();
 
+            $table->string('name');
+
             $table->foreignId('subset_group_id')
                 ->constrained('subset_groups');
             $table->unsignedInteger('item_number');

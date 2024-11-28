@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import { SubsetDetail, SubsetGroup } from '@/interfaces/data_interfaces'
+import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
 import OfficeLevelExplorerTable from '@/Components/DataExplorer/OfficeLevelExplorerTable'
 import Card from '@/ui/Card/Card'
@@ -18,7 +18,7 @@ const tabItems = [
 
 interface Props {
   subsetGroup: SubsetGroup
-  subsets: SubsetDetail[]
+  subsetItems: SubsetGroupItem[]
   oldTab: string
   oldSubsetName: string | null
   oldFilters: Record<string, string>
@@ -29,24 +29,29 @@ export interface OfficeData {
   office_name: string | number
 }
 
-const initSelectedSubset = (subsets: SubsetDetail[], oldSubsetName: string | null): string => {
-  if (subsets.length === 0) {
+const initSelectedSubset = (
+  subsetGroupItems: SubsetGroupItem[],
+  oldSubsetName: string | null
+): string => {
+  if (subsetGroupItems.length === 0) {
     return ''
   }
   if (oldSubsetName == null) {
-    return subsets[0].id.toString()
+    return subsetGroupItems[0].id.toString()
   }
   //find the one with matching name
-  const subset = subsets.find((subset) => subset.name.toLowerCase() == oldSubsetName.toLowerCase())
+  const subset = subsetGroupItems.find(
+    (subset) => subset.name.toLowerCase() == oldSubsetName.toLowerCase()
+  )
   if (subset != null) {
     return subset.id.toString()
   }
-  return subsets[0].id.toString()
+  return subsetGroupItems[0].id.toString()
 }
 
 export default function DataExplorer({
   subsetGroup,
-  subsets,
+  subsetItems,
   oldTab,
   oldSubsetName,
   oldFilters,
@@ -58,7 +63,7 @@ export default function DataExplorer({
   const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
-    initSelectedSubset(subsets, oldSubsetName)
+    initSelectedSubset(subsetItems, oldSubsetName)
   )
 
   const [activeTab, setActiveTab] = useState(oldTab)
@@ -67,8 +72,9 @@ export default function DataExplorer({
     if (selectedSubsetId === '') {
       return null
     }
-    return subsets.find((subset) => subset.id.toString() == selectedSubsetId)
-  }, [subsets, selectedSubsetId])
+    return subsetItems.find((subsetItem) => subsetItem.id.toString() == selectedSubsetId)
+      ?.subset as SubsetDetail | null | undefined
+  }, [subsetItems, selectedSubsetId])
 
   useEffect(() => {
     setSelectedDivision(null)
@@ -90,7 +96,7 @@ export default function DataExplorer({
           <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
             <div className='flex flex-col'>
               <SelectList
-                list={subsets}
+                list={subsetItems}
                 dataKey='id'
                 displayKey='name'
                 setValue={setSelectedSubsetId}

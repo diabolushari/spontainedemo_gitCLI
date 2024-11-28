@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\DataExplorer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Subset\SubsetDetail;
 use App\Models\SubsetGroup\SubsetGroup;
 use App\Models\SubsetGroup\SubsetGroupItem;
 use Illuminate\Http\Request;
@@ -27,18 +26,21 @@ class DataExplorerController extends Controller implements HasMiddleware
     {
         $subsetGroup = SubsetGroup::where('name', $subsetGroup)->firstOrFail();
 
-        $subsetDetails = SubsetGroupItem::where('subset_group_id', $subsetGroup->id)
+        $groups = SubsetGroupItem::where('subset_group_id', $subsetGroup->id)
+            ->with([
+                'subset' => fn ($query) => $query->with([
+                    'dimensions.info',
+                    'measures.info',
+                    'measures.weightInfo',
+                    'dates.info',
+                ]),
+            ])
             ->orderBy('item_number')
-            ->pluck('subset_detail_id')
-            ->toArray();
-
-        $subsets = SubsetDetail::whereIn('id', $subsetDetails)
-            ->with('dimensions.info', 'measures.info', 'measures.weightInfo', 'dates.info')
             ->get();
 
         return Inertia::render('DataExplorer/DataExplorer', [
             'subsetGroup' => $subsetGroup,
-            'subsets' => $subsets,
+            'subsetItems' => $groups,
             'oldTab' => $request->input('tab', 'state'),
             'oldSubsetName' => $request->input('subset', null),
             'oldFilters' => $request->all(),

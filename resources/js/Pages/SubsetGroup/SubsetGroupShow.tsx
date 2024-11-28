@@ -38,7 +38,8 @@ export default function MetaGroupShow({ subsetGroup }: Readonly<Props>) {
       subsetGroup.items?.map((groupItem) => {
         return {
           id: groupItem.id ?? 0,
-          name: groupItem.item_number + ') ' + groupItem.subset?.name,
+          name: groupItem.item_number + ') ' + groupItem.name,
+          subset: groupItem.subset?.name ?? '',
           dataset: groupItem.subset?.data_detail?.name ?? '',
           actions: [],
         }
@@ -49,6 +50,7 @@ export default function MetaGroupShow({ subsetGroup }: Readonly<Props>) {
   const keys = useMemo(() => {
     return [
       { key: 'name', label: 'Name', isCardHeader: true },
+      { key: 'subset', label: 'Subset', isShownInCard: true, hideLabel: true },
       { key: 'dataset', label: 'Dataset', isShownInCard: true, hideLabel: true },
     ] as ListItemKeys<{
       name: string
