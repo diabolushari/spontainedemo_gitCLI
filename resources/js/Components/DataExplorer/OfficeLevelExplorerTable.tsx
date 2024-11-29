@@ -234,6 +234,15 @@ export default function OfficeLevelExplorerTable({
     })
   }
 
+  const removeDivision = () => {
+    setSelectedDivision(null)
+    setSelectedSubdivision(null)
+  }
+
+  const removeSubdivision = () => {
+    setSelectedSubdivision(null)
+  }
+
   return (
     <FullSpinnerWrapper processing={loading}>
       <div className='my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
@@ -310,6 +319,36 @@ export default function OfficeLevelExplorerTable({
             <span className='text-xs'>You can select subdivision under SubDivisions Tab.</span>
           </div>
         )}
+        {officeLevel === 'division' && selectedDivision != null && (
+          <div className='flex'>
+            <div className='flex items-center justify-between gap-5 border-2 border-blue-500 p-2'>
+              <span>
+                {selectedDivision.office_name} ({selectedDivision.office_code})
+              </span>
+              <button
+                className=''
+                onClick={removeDivision}
+              >
+                <i className='la la-close' />
+              </button>
+            </div>
+          </div>
+        )}
+        {officeLevel === 'subdivision' && selectedSubdivision != null && (
+          <div className='flex'>
+            <div className='flex items-center justify-between gap-5 border-2 border-blue-500 p-2'>
+              <span>
+                {selectedSubdivision.office_name} ({selectedSubdivision.office_code})
+              </span>
+              <button
+                className=''
+                onClick={removeSubdivision}
+              >
+                <i className='la la-close' />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       <Table
         heads={colHeads}
@@ -322,10 +361,16 @@ export default function OfficeLevelExplorerTable({
               <tr
                 key={index}
                 className={`standard-tr ${
-                  officeLevel === 'division' || officeLevel === 'subdivision'
-                    ? 'cursor-pointer hover:bg-gray-100'
+                  selectedDivision != null &&
+                  selectedDivision.office_code === item['office_code' as keyof typeof item]
+                    ? 'bg-green-200'
                     : ''
-                }`}
+                } ${
+                  selectedDivision != null &&
+                  selectedDivision.office_code === item['office_code' as keyof typeof item]
+                    ? 'bg-green-200'
+                    : ''
+                } ${officeLevel.length === 0} ${officeLevel === 'division' || officeLevel === 'subdivision' ? 'cursor-pointer hover:bg-gray-100' : ''} `}
                 onClick={() => selectOffice(item)}
               >
                 {tableCols.map((col, index) => {

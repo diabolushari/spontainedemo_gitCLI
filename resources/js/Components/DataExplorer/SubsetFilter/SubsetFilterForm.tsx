@@ -99,12 +99,13 @@ const generateInitialFields = (
     })
     dimensions.forEach((dimension) => {
       dimensionOperations.forEach((dimensionOperation) => {
-        const column =
-          dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
-        if (key === `${column}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`) {
+        if (
+          key ===
+          `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
+        ) {
           fields.push({
             id: 0,
-            field: column ?? '',
+            field: dimension.subset_column ?? '',
             operator: dimensionOperation.value,
             value: filters[key] ?? '',
             type: 'dimension',
@@ -220,11 +221,8 @@ export default function SubsetFilterForm({
     dimensions.forEach((dimension) => {
       fields.push({
         fieldId: dimension.field_id,
-        fieldName:
-          dimension.subset_field_name == 'Section Code'
-            ? 'Office Code'
-            : dimension.subset_field_name,
-        column: dimension.subset_column == 'section_code' ? 'office_code' : dimension.subset_column,
+        fieldName: dimension.subset_field_name ?? '',
+        column: dimension.subset_column ?? '',
         type: 'dimension',
       })
     })
