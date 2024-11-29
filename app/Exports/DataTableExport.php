@@ -15,7 +15,7 @@ class DataTableExport implements FromCollection
     ) {}
 
     /**
-     * @return Collection<int, array>
+     * @return Collection<int, array<int, string|float|null>>
      */
     public function collection(): Collection
     {

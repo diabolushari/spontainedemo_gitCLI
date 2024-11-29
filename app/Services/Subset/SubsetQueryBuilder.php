@@ -23,8 +23,12 @@ readonly class SubsetQueryBuilder
         private OfficeList $officeList
     ) {}
 
-    public function query(SubsetDetail $subsetDetail, bool $isSummary = false, bool $excludeNonMeasurements = false, string $summaryGroupBy = 'region'): Builder
-    {
+    public function query(
+        SubsetDetail $subsetDetail,
+        bool $isSummary = false,
+        bool $excludeNonMeasurements = false,
+        string $summaryLevel = 'region'
+    ): Builder {
 
         /** @var string[] $groupingColumns */
         $groupingColumns = [];
@@ -71,7 +75,7 @@ readonly class SubsetQueryBuilder
                 $detail,
                 $groupingColumns,
                 $selectColumns,
-                $summaryGroupBy
+                $summaryLevel
             );
         }
 
@@ -283,10 +287,10 @@ readonly class SubsetQueryBuilder
         DataDetail $detail,
         array &$groupingColumns,
         array &$selectColumns,
-        string $groupBy = 'region'
+        string $groupingLevel = 'region'
     ): void {
         //if office info is included in the subset then include the hierarchy table
-        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query, $groupBy) {
+        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query, $groupingLevel) {
             if ($dimension->info == null || $dimension->info->column !== 'section_code') {
                 return;
             }
@@ -295,11 +299,11 @@ readonly class SubsetQueryBuilder
                 return;
             }
 
-            if ($groupBy === 'state') {
+            if ($groupingLevel === 'state') {
                 return;
             }
 
-            if ($groupBy === 'region') {
+            if ($groupingLevel === 'region') {
                 $joinSelect = 'region_code_record.name as region_code, region_name_record.name as region_name';
                 $selectStatement = 'hierarchy.region_code as office_code';
                 $nameSelectStatement = 'hierarchy.region_name as office_name';
@@ -307,7 +311,7 @@ readonly class SubsetQueryBuilder
                 $nameGroupingStatement = 'hierarchy.region_name';
             }
 
-            if ($groupBy == 'circle') {
+            if ($groupingLevel == 'circle') {
                 $joinSelect = 'circle_code_record.name as circle_code, circle_name_record.name as circle_name';
                 $selectStatement = 'hierarchy.circle_code as office_code';
                 $groupingStatement = 'hierarchy.circle_code';
@@ -315,7 +319,7 @@ readonly class SubsetQueryBuilder
                 $nameGroupingStatement = 'hierarchy.circle_name';
             }
 
-            if ($groupBy == 'division') {
+            if ($groupingLevel == 'division') {
                 $joinSelect = 'division_code_record.name as division_code, division_name_record.name as division_name';
                 $selectStatement = 'hierarchy.division_code as office_code';
                 $groupingStatement = 'hierarchy.division_code';
@@ -323,7 +327,7 @@ readonly class SubsetQueryBuilder
                 $nameGroupingStatement = 'hierarchy.division_name';
             }
 
-            if ($groupBy == 'subdivision') {
+            if ($groupingLevel == 'subdivision') {
                 $joinSelect = 'subdivision_code_record.name as subdivision_code, subdivision_name_record.name as subdivision_name';
                 $selectStatement = 'hierarchy.subdivision_code as office_code';
                 $groupingStatement = 'hierarchy.subdivision_code';
@@ -331,7 +335,7 @@ readonly class SubsetQueryBuilder
                 $nameGroupingStatement = 'hierarchy.subdivision_name';
             }
 
-            if ($groupBy == 'section') {
+            if ($groupingLevel == 'section') {
                 $joinSelect = 'section_code_record.name as section_code, section_name_record.name as section_name';
                 $selectStatement = 'hierarchy.section_code as office_code';
                 $groupingStatement = 'hierarchy.section_code';

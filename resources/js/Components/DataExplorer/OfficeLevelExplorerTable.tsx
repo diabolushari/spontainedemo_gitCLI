@@ -221,13 +221,26 @@ export default function OfficeLevelExplorerTable({
 
   return (
     <FullSpinnerWrapper processing={loading}>
-      <div className='flex justify-end pr-2'>
+      <div className='flex justify-end gap-5 pr-2'>
         <button
-          className='hover:bg0-blue-400 rounded bg-blue-500 p-2 text-white'
+          className='rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
           onClick={() => setShowModal(true)}
         >
           <i className='la la-filter'></i>
         </button>
+        <a
+          className='flex items-center justify-center rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
+          href={route('subset-export', {
+            ...searchParams,
+            subsetDetail: subset.id,
+            level: officeLevel,
+            office_code: getOfficeCode(officeLevel, selectedDivision, selectedSubdivision),
+          })}
+          target='_blank'
+          rel='noreferrer'
+        >
+          <i className='la la-file-excel'></i>
+        </a>
       </div>
       <div className='flex flex-col gap-2'>
         {appliedFilters.map((filter) => {

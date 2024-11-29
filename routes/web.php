@@ -32,6 +32,7 @@ use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetDropdownApiController;
+use App\Http\Controllers\Subset\SubsetExportController;
 use App\Http\Controllers\Subset\SubsetListController;
 use App\Http\Controllers\Subset\SubsetOfficeLevelDataController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
@@ -41,8 +42,6 @@ use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use App\Models\DataLoader\DataLoaderJob;
-use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -167,14 +166,6 @@ Route::get('dataset/{subsetDetail}', SubsetTableController::class)
 Route::get('office-list', OfficeListController::class)
     ->name('office-list');
 
-//Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
-//
-//    $dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
-//
-//    return $job->run($dataLoaderJob);
-//
-//});
-
 Route::get('data-explorer/{subsetGroup}', DataExplorerController::class);
 
 Route::resource('subset-groups', SubsetGroupController::class)
@@ -182,5 +173,8 @@ Route::resource('subset-groups', SubsetGroupController::class)
 
 Route::apiResource('subset-group-items', SubsetGroupItemController::class)
     ->parameters(['subset-group-items' => 'subsetGroupItem']);
+
+Route::get('subset-export/{subsetDetail}', SubsetExportController::class)
+    ->name('subset-export');
 
 require __DIR__.'/auth.php';
