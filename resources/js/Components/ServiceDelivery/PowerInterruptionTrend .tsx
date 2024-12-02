@@ -17,13 +17,13 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import MoreButton from '../MoreButton'
 import Card from '@/ui/Card/Card'
-import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import MonthPicker from '@/ui/form/MonthPicker'
 import SelectList from '@/ui/form/SelectList'
 import { Model } from '@/interfaces/data_interfaces'
 import { monthList } from '@/libs/dates'
 import { formatNumber } from './ActiveConnection'
+import DataShowIcon from '../ui/DatashowIcon'
 
 interface ComplaintValues extends Model {
   complaint_count: number
@@ -126,7 +126,7 @@ const PowerInterruptionTrend = () => {
       <div className='flex w-full flex-col'>
         <div className='flex w-full'>
           <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
-            <div
+            <button
               className={`flex w-full rounded-tl-2xl border px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
               onClick={() => {
                 // setLevelName('office_code')
@@ -134,91 +134,40 @@ const PowerInterruptionTrend = () => {
                 setSelectedLevel(1)
               }}
             >
-              <div className='flex w-full items-center justify-center'>
-                <svg
-                  width='28'
-                  height='28'
-                  viewBox='0 0 28 28'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
-                    stroke='#333333'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
-                    stroke='#333333'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M2.33398 12.8332L11.3757 9.9165'
-                    stroke='#333333'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M16.334 9.3335L25.6673 7.5835'
-                    stroke='#333333'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M17.5 11.375L25.6667 12.25'
-                    stroke='#333333'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M19.0742 14L25.6659 16.9167'
-                    stroke='#333333'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                </svg>
-              </div>
-            </div>
-            <div
-              className={`border px-2 py-7 ${selectedLevel === 'RG' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+              <DataShowIcon />
+            </button>
+            <button
+              className={`border px-2 py-7 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
               onClick={() => {
                 // setLevelName('office_code')
                 // setLevelCode(level?.record.region_code ?? '')
                 // setSelectedLevel('RG')
               }}
-            ></div>
-            <div
-              className={`border px-2 py-7 ${selectedLevel === 'CR' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            ></button>
+            <button
+              className={`border px-2 py-7 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
               onClick={() => {
                 // setLevelName('office_code')
                 // setLevelCode(level?.record.circle_code ?? '')
                 // setSelectedLevel('CR')
               }}
-            ></div>
-            <div
-              className={`border px-2 py-7 ${selectedLevel === 'DV' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            ></button>
+            <button
+              className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
               onClick={() => {
                 // setLevelName('office_code')
                 // setLevelCode(level?.record.division_code ?? '')
                 // setSelectedLevel('DV')
               }}
-            ></div>
-            <div
-              className={`px-2 py-7 ${selectedLevel === 'SD' ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            ></button>
+            <button
+              className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
               onClick={() => {
                 // setLevelName('section_code')
                 // setLevelCode(level?.record.section_code ?? '')
                 // setSelectedLevel('SD')
               }}
-            ></div>
+            ></button>
           </div>
           <div className='flex w-11/12 flex-col gap-4 p-2'>
             <div className='flex items-center gap-2'>
@@ -329,7 +278,7 @@ const PowerInterruptionTrend = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Complaint Volumes Comparison?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Complaint Volumes Comparison?latest=month_year?route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>
