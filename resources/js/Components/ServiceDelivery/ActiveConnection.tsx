@@ -10,7 +10,8 @@ import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import ActiveConnectionTrend from './ActiveConnection/ActiveConnectionTrend'
-import TopList from './TopList'
+import TopList from './NewConnectionsList'
+import ActiveConncetionList from './ActiveConncetionList'
 import DataShowIcon from '../ui/DatashowIcon'
 import TrendIcon from '../ui/TrendIcon'
 import Top10Icon from '../ui/Top10Icon'
@@ -94,7 +95,7 @@ const ActiveConnection = () => {
         : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
-
+  console.log(graphValues)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -320,7 +321,7 @@ const ActiveConnection = () => {
             </div>
 
             {/* Graph */}
-            <div className='flex w-1/2 justify-center'>
+            <div className='relative flex w-1/2 justify-center'>
               {graphValues?.data.length == 0 ? (
                 <Skeleton
                   circle={true}
@@ -350,10 +351,12 @@ const ActiveConnection = () => {
                         />
                       ))}
                     </Pie>
+
                     <Legend content={CustomLegend} />
                   </PieChart>
                 </ResponsiveContainer>
               )}
+              {/* <span className='subheader-sm-1stop absolute bottom-11'>CONNECTIONS BY CATEGORY</span> */}
             </div>
           </div>
         )}
@@ -364,12 +367,11 @@ const ActiveConnection = () => {
           />
         )}
         {selectedLevel === 3 && (
-          <TopList
+          <ActiveConncetionList
             column1='State'
             column2='Consumer count'
             subset_id='57'
             default_level='section'
-            displayKey='consumer_count'
             sortBy='consumer_count'
             route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
           />

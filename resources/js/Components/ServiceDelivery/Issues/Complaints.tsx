@@ -6,7 +6,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import IssueCard from './IssueCard'
 import ComplaintList from './ComplaintList'
-import TopList from '../TopList'
+import TopList from '../NewConnectionsList'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
 

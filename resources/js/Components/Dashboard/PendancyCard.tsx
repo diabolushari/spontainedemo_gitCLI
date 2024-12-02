@@ -180,25 +180,25 @@ const PendancyCard = () => {
                 </div>
               </div>
               <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
-                <div className='text-center'>
+                <div className='text-center text-[#A2B899]'>
                   <div className='smmetric-1stop'>
                     {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
                   </div>
                   <div className='small-1stop'>{'<5 days'}</div>
                 </div>
-                <div className='text-center'>
+                <div className='text-center text-[#EFF0A6]'>
                   <div className='smmetric-1stop'>
                     {toggleValue ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
                   </div>
                   <div className='small-1stop'>5-15 days</div>
                 </div>
-                <div className='text-center'>
+                <div className='text-center text-[#E9BF7C]'>
                   <div className='smmetric-1stop'>
                     {toggleValue ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
                   </div>
                   <div className='small-1stop'>16-30 days</div>
                 </div>
-                <div className='text-center'>
+                <div className='text-center text-[#D467B3]'>
                   <div className='smmetric-1stop'>
                     {toggleValue
                       ? `${greaterThan30Days.toFixed(2)}%`

@@ -90,7 +90,7 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='ml-2 flex gap-2'>
-            <span className='subheader-sm-1stop'>Trend of Top Active Connections</span>
+            <span className='subheader-sm-1stop'>Trend of Active Connections</span>
 
             {/* <div className=''>
               <SelectList
@@ -123,6 +123,7 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
                 style='1stop-small'
               />
             </div>
+            <span className='flex items-center subheader-sm-1stop'>CONSUMERS, PREVIOUS</span>
             <div>
               <SelectList
                 list={dateEarlier}

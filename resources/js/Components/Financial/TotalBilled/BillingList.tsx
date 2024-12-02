@@ -131,7 +131,7 @@ const BillingList = ({
           <div className='ml-auto flex w-full justify-end pt-3'>
             <Link
               href={`office-rankings/Demand Analysis?route=${route('finance.index')}`}
-              className='rounded bg-1stop-highlight px-2 py-1 text-white hover:opacity-75 hover:shadow-lg focus:ring-1'
+              className='link small-1stop'
             >
               Details
             </Link>

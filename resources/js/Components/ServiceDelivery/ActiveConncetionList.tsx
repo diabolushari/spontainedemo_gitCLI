@@ -14,7 +14,9 @@ interface Properties {
   default_level?: string
   sortBy?: string
   sortOrder?: string
+  route: string
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Division', value: 'division' },
@@ -23,6 +25,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Region', value: 'region' },
   { name: 'Section', value: 'section' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -30,34 +33,25 @@ interface ConsumerList extends Model {
   consumer_count?: number
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
-  capacity_kw: number
 }
 
-const list: {
-  voltage: string
-  value: string
-}[] = [
-  { voltage: 'LT', value: 'LT' },
-  { voltage: 'HT', value: 'HT' },
-  { voltage: 'Total', value: '' },
-]
-const SolarList = ({
+const ActiveConncetionList = ({
   subset_id,
   column1,
   column2,
+
   default_level,
-  sortBy,
+  sortBy = 'consumer_count',
   sortOrder = 'desc',
+  route,
 }: Properties) => {
   const [page, setPage] = useState(1)
-  const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [headers, setHeaders] = useState([column1, column2])
+  const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [listType, setListType] = useState('10')
-
-  const [title, setTitle] = useState('')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy ?? 'complaint_count'}&voltage=${title}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
   useEffect(() => {
@@ -66,20 +60,12 @@ const SolarList = ({
 
   return (
     <div className='mt-5 flex w-full flex-col p-2'>
-      <div className='subheader-sm-1stop mr-auto flex items-center'>Ranked by Capacity</div>
+      <div className='subheader-sm-1stop mr-auto flex items-center'>
+        Ranked by Connection Counts
+      </div>
       <div className='items center flex justify-center gap-5 pt-2'>
-        <div className='flex flex-col'>
-          <SelectList
-            setValue={setTitle}
-            list={list}
-            displayKey='voltage'
-            dataKey='value'
-            value={title}
-            style='1stop-small'
-          />
-        </div>
         <div className='flex flex-col items-center justify-center'>
-          <div className='flex cursor-pointer rounded-lg bg-1stop-white p-1'>
+          <div className='flex rounded-lg bg-1stop-white p-1'>
             <div
               className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
               onClick={() => {
@@ -228,7 +214,7 @@ const SolarList = ({
                 key={value.office_name}
               >
                 <td className=''>{value.office_name}</td>
-                <td className=''>{(value.capacity_kw / 1000).toFixed(2)}</td>
+                <td className=''>{value.consumer_count}</td>
               </tr>
             )
           })}
@@ -244,8 +230,8 @@ const SolarList = ({
           </div>
           <div className='ml-auto flex w-full justify-end pt-3'>
             <Link
-              href={`office-rankings/Solar Prosumer Statistics?route=${route('service-delivery.index')}`}
-              className='link small-1stop'
+              href={route}
+              className='small-1stop link'
             >
               Details
             </Link>
@@ -256,4 +242,4 @@ const SolarList = ({
   )
 }
 
-export default SolarList
+export default ActiveConncetionList

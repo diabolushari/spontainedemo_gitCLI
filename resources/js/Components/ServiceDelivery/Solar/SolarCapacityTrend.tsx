@@ -93,16 +93,17 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       return { month, capacity_mw: totalCapacityKw }
     })
     .reverse()
- 
+
   return (
     <div className='flex w-full flex-col p-4'>
       <div className='flex w-full flex-col gap-2'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='flex'>
-            <span className="'subheader-sm-1stop items-end">
+            <span className='subheader-sm-1stop items-end'>
               Trend of total capacity of Solar generation
             </span>
             <div className='flex w-full justify-end pt-2'>
+              <span className='subheader-sm-1stop flex items-center pr-2'>PREVIOUS</span>
               <div>
                 <SelectList
                   list={dateEarlier.map((month, index) => ({

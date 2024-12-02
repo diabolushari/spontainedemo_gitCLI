@@ -9,7 +9,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import SlaTrend, { SlaTrendValues } from './SlaTrend'
 import { Link } from '@inertiajs/react'
 import MoreButton from '@/Components/MoreButton'
-import TopList from '../TopList'
+import TopList from '../NewConnectionsList'
 import SlaList from './SlaList'
 import { formatNumber } from '../ActiveConnection'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
@@ -143,6 +143,7 @@ const SlaPerformance = () => {
 
   return (
     <Card className='flex w-full flex-col'>
+      
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
           <button
@@ -292,8 +293,6 @@ const SlaPerformance = () => {
             column2='Requests within SLA count'
             subset_id='82'
             default_level='state'
-            displayKey='sla_count'
-            sortBy='requests_within_sla__count_'
             categories={categories}
           />
         )}

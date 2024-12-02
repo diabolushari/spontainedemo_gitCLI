@@ -5,16 +5,20 @@ import RestPagination from '@/ui/Pagination/RestPagination'
 import { Paginator } from '@/ui/ui_interfaces'
 import { Link } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
+import ToogleNumber from '../ui/ToogleNumber'
+import TooglePercentage from '../ui/TogglePercentage'
 
 interface Properties {
   subset_id: string
   column1: string
   column2: string
-
+  displayKey?: string
   default_level?: string
   sortBy?: string
   sortOrder?: string
+  route: string
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Division', value: 'division' },
@@ -23,6 +27,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Region', value: 'region' },
   { name: 'Section', value: 'section' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -30,53 +35,55 @@ interface ConsumerList extends Model {
   consumer_count?: number
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
-  capacity_kw: number
+  pend_beyond_sla__?: number
 }
 
-const list: {
-  voltage: string
-  value: string
-}[] = [
-  { voltage: 'LT', value: 'LT' },
-  { voltage: 'HT', value: 'HT' },
-  { voltage: 'Total', value: '' },
-]
-const SolarList = ({
+const NewConnectionsList = ({
   subset_id,
   column1,
   column2,
+  displayKey,
   default_level,
-  sortBy,
+  sortBy = 'consumer_count',
   sortOrder = 'desc',
+  route,
 }: Properties) => {
+  const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [page, setPage] = useState(1)
-  const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [headers, setHeaders] = useState([column1, column2])
+  const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [listType, setListType] = useState('10')
-
-  const [title, setTitle] = useState('')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy ?? 'complaint_count'}&voltage=${title}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${
+      toggleValue ? 'sla_perf_cnt' : 'pend_beyond_sla__'
+    }&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
   useEffect(() => {
-    setHeaders([levelTypes.find((value) => value.value == officeLevel)?.name ?? column1, column2])
-  }, [officeLevel, column1, column2])
-
+    setHeaders([
+      levelTypes.find((value) => value.value == officeLevel)?.name ?? column1,
+      toggleValue ? 'Overall SLA Compliant Requests (count)' : 'Overall SLA Compliant Requests (%)',
+    ])
+  }, [officeLevel, column1, column2, toggleValue])
+  const handleToogleNumber = () => {
+    settoggleValue(!toggleValue)
+  }
   return (
     <div className='mt-5 flex w-full flex-col p-2'>
-      <div className='subheader-sm-1stop mr-auto flex items-center'>Ranked by Capacity</div>
+      <div className='subheader-sm-1stop mr-auto items-center'>
+        {toggleValue
+          ? 'Ranked by Overall SLA Compliant Requests (count)'
+          : 'Ranked by Overall SLA Compliant Requests (%)'}
+      </div>
       <div className='items center flex justify-center gap-5 pt-2'>
-        <div className='flex flex-col'>
-          <SelectList
-            setValue={setTitle}
-            list={list}
-            displayKey='voltage'
-            dataKey='value'
-            value={title}
-            style='1stop-small'
-          />
+        <div className='flex flex-col items-center justify-center'>
+          <button
+            className='small-1stop mt-auto cursor-pointer'
+            onClick={handleToogleNumber}
+          >
+            {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+          </button>
         </div>
         <div className='flex flex-col items-center justify-center'>
           <div className='flex cursor-pointer rounded-lg bg-1stop-white p-1'>
@@ -228,7 +235,9 @@ const SolarList = ({
                 key={value.office_name}
               >
                 <td className=''>{value.office_name}</td>
-                <td className=''>{(value.capacity_kw / 1000).toFixed(2)}</td>
+                <td className=''>
+                  {toggleValue ? value.sla_perf_cnt : value.pend_beyond_sla__?.toFixed(2)}
+                </td>
               </tr>
             )
           })}
@@ -244,7 +253,7 @@ const SolarList = ({
           </div>
           <div className='ml-auto flex w-full justify-end pt-3'>
             <Link
-              href={`office-rankings/Solar Prosumer Statistics?route=${route('service-delivery.index')}`}
+              href={route}
               className='link small-1stop'
             >
               Details
@@ -256,4 +265,4 @@ const SolarList = ({
   )
 }
 
-export default SolarList
+export default NewConnectionsList

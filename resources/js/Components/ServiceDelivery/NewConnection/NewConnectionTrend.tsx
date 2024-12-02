@@ -71,7 +71,9 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
             <div className='ml-2 flex'>
               <span className='subheader-sm-1stop'>Trend of Requests Completed beyond SLA</span>
             </div>
+
             <div className='mx-4 flex w-full justify-end'>
+              <span className='subheader-sm-1stop flex items-center pr-2'>PREVIOUS</span>
               <div>
                 <SelectList
                   list={dateEarlier.map((month, index) => ({

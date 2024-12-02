@@ -126,6 +126,7 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
                 style='1stop-small'
               />
             </div>
+            <span className='subheader-sm-1stop flex items-center'>CONSUMERS, PREVIOUS</span>
             <div>
               <SelectList
                 list={dateEarlier}
