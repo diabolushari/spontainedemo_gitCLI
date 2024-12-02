@@ -171,7 +171,7 @@ const SolarGeneration = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Solar Generation Trend?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Solar Generation Trend?latest=month_year?route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

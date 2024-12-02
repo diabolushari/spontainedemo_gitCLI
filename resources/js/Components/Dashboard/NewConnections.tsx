@@ -13,6 +13,9 @@ import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTr
 import TopList from '../ServiceDelivery/TopList'
 import { div } from 'framer-motion/client'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import DataShowIcon from '../ui/DatashowIcon'
+import TrendIcon from '../ui/TrendIcon'
+import Top10Icon from '../ui/Top10Icon'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -38,50 +41,56 @@ interface LegendProps {
   }[]
 }
 
-const CustomLegend = ({ payload }: LegendProps) => {
-  return (
-    <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
-      {payload.map(
-        (
-          entry: {
-            value: string
-            color: string
-          },
-          index: number
-        ) => {
-          return (
-            <li
-              key={`item-${index}`}
-              style={{ marginRight: 10, color: 'black' }}
-            >
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: 10,
-                  height: 10,
-                  backgroundColor: entry.color,
-                  marginRight: 5,
-                }}
-              />
-              {entry.value}
-            </li>
-          )
-        }
-      )}
-    </ul>
-  )
-}
-
 const NewConnections = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   const [selectedLevel, setSelectedLevel] = useState(1)
 
+  const CustomLegend = ({ payload }: LegendProps) => {
+    return (
+      <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
+        {payload.map(
+          (
+            entry: {
+              value: string
+              color: string
+            },
+            index: number
+          ) => {
+            // Add logic to include count when toggleValue is true
+            const correspondingData = data.find((d) => d.name === entry.value)
+            const count =
+              toggleValue && correspondingData
+                ? ` (${correspondingData.value})`
+                : `(${correspondingData.value.toFixed(2)})%`
+
+            return (
+              <li
+                key={`item-${index}`}
+                style={{ marginRight: 10, color: 'black' }}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: 10,
+                    height: 10,
+                    backgroundColor: entry.color,
+                    marginRight: 5,
+                  }}
+                />
+                {entry.value}
+                {count}
+              </li>
+            )
+          }
+        )}
+      </ul>
+    )
+  }
+
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
-    month: number
-    year: number
     latest_value: string
   }>(
     `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
@@ -147,58 +156,7 @@ const NewConnections = () => {
               setSelectedLevel(1)
             }}
           >
-            <div className='flex w-full items-center justify-center'>
-              <svg
-                width='28'
-                height='28'
-                viewBox='0 0 28 28'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M14.0008 5.25L23.5993 21.875H4.40234L14.0008 5.25Z'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M2.33398 12.8332L11.3757 9.9165'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M16.334 9.3335L25.6673 7.5835'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M17.5 11.375L25.6667 12.25'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M19.0742 14L25.6659 16.9167'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </div>
+            <DataShowIcon />
           </button>
           <button
             className={`flex w-full border px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
@@ -208,36 +166,7 @@ const NewConnections = () => {
               setSelectedLevel(2)
             }}
           >
-            <div className='flex w-full items-center justify-center'>
-              <svg
-                width='28'
-                height='28'
-                viewBox='0 0 28 28'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M22.75 3.5H5.25C4.2835 3.5 3.5 4.2835 3.5 5.25V22.75C3.5 23.7165 4.2835 24.5 5.25 24.5H22.75C23.7165 24.5 24.5 23.7165 24.5 22.75V5.25C24.5 4.2835 23.7165 3.5 22.75 3.5Z'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M7.83984 17.4035L11.1397 14.1037L13.6994 16.6573L19.8333 10.5'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M15.166 10.5H19.8327V15.1667'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </div>
+            <TrendIcon />
           </button>
           <button
             className={`flex w-full border px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
@@ -247,58 +176,7 @@ const NewConnections = () => {
               setSelectedLevel(3)
             }}
           >
-            <div className='flex w-full items-center justify-center'>
-              <svg
-                width='28'
-                height='28'
-                viewBox='0 0 28 28'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M13.416 5.25H25.0827'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M2.91602 9.33317L7.58268 4.6665'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M7.58398 4.6665V24.4998'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M13.416 11.0835H22.7493'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M13.416 16.9165H20.416'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M13.416 22.75H18.0827'
-                  stroke='#333333'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </div>
+            <Top10Icon />
           </button>
           <div
             className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
@@ -332,7 +210,7 @@ const NewConnections = () => {
                 </p>
 
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop'>Overall New Svc Connection SLA perf. </p>
+                  <p className='small-1stop'>Overall SLA compliant requests </p>
                 </div>
               </div>
 
@@ -482,7 +360,7 @@ const NewConnections = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/SLA Performance - New Connection Requests?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?latest=month_year?route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>
