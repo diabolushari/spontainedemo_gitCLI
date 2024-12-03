@@ -233,8 +233,48 @@ const PowerInterruptionTrend = () => {
                       dataKey='name'
                       padding={{ top: 50 }}
                     />
-                    <Legend formatter={(value) => <span className='text-black'>{value}</span>} />
-                    <Tooltip formatter={(value: number) => formatNumber(value)} />
+                    <Legend
+                      formatter={(value) => {
+                        if (value === 'current' && selectedMonth) {
+                          const currentMonthName = monthList.find(
+                            (m) => m.id === selectedMonth.getMonth() + 1
+                          )?.name
+                          const currentYear = selectedMonth.getFullYear()
+                          return `${currentMonthName}, ${currentYear}`
+                        }
+
+                        if (value === 'previous') {
+                          const previousMonthName = monthList.find(
+                            (m) => m.id === Number(selectedRange)
+                          )?.name
+                          return `${previousMonthName}, ${yearFilter}`
+                        }
+
+                        return value
+                      }}
+                    />
+
+                    <Tooltip
+                      formatter={(value: number, name: string) => {
+                        if (name === 'current' && selectedMonth) {
+                          const currentMonthName = monthList.find(
+                            (m) => m.id === selectedMonth.getMonth() + 1
+                          )?.name
+                          const currentYear = selectedMonth.getFullYear()
+                          return [`${formatNumber(value)} `, `${currentMonthName}, ${currentYear}`]
+                        }
+
+                        if (name === 'previous') {
+                          const previousMonthName = monthList.find(
+                            (m) => m.id === Number(selectedRange)
+                          )?.name
+                          return [`${formatNumber(value)} `, `${previousMonthName}, ${yearFilter}`]
+                        }
+
+                        return [formatNumber(value), name]
+                      }}
+                    />
+
                     <Bar
                       dataKey='current'
                       fill={'#1b50b3'}
@@ -278,7 +318,7 @@ const PowerInterruptionTrend = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Complaint Volumes Comparison?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Complaint Volumes Comparison?latest=month&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

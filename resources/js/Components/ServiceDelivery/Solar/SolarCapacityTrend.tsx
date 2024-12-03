@@ -133,11 +133,15 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                   style={{ fontSize: '10' }}
                 />
                 <YAxis
-                  style={{ fontSize: '10' }}
-                  tickFormatter={(value) => formatNumber(value)}
+                  style={{ fontSize: 10 }}
+                  tickFormatter={(value: number) =>
+                    value > 1000
+                      ? `${formatNumber(Number(convertToMW(value)))} MW`
+                      : `${Number(convertToMW(value)).toFixed(2)} MW`
+                  }
                 />
                 <Tooltip
-                  labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
+                  labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(0, 4)}`}
                   formatter={(value: number) => [
                     `${
                       value > 1000
@@ -147,6 +151,7 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                     'Capacity (MW)',
                   ]}
                 />
+
                 <Area
                   type='monotone'
                   dataKey='capacity_mw'

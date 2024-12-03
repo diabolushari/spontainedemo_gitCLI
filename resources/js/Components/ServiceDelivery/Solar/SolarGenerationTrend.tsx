@@ -88,6 +88,11 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
     value: i + 3,
   }))
 
+  const formatValue = (value: number): string => {
+    const convertedValue = Number(convertToMW(value))
+    return value > 1000 ? formatNumber(convertedValue) : convertedValue.toFixed(2)
+  }
+
   return (
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -152,18 +157,12 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
                   style={{ fontSize: 10 }}
                 />
                 <YAxis
-                  tickFormatter={(value) => formatNumber(value)}
+                  tickFormatter={(value: number) => `${formatValue(value)} (MWh)`}
                   style={{ fontSize: 10 }}
                 />
+
                 <Tooltip
-                  formatter={(value: number) => [
-                    `${
-                      value > 1000
-                        ? formatNumber(Number(convertToMW(value)))
-                        : Number(convertToMW(value)).toFixed(2)
-                    }`,
-                    'Generation (MWh)',
-                  ]}
+                  formatter={(value: number) => [`${formatValue(value)}`, 'Generation (MWh)']}
                   labelFormatter={(month) =>
                     month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
                   }

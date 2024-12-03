@@ -103,7 +103,7 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='ml-2 flex'>
-            <span className='subheader-sm-1stop'> Trend of Requests Serviced Within SLA</span>
+            <span className='subheader-sm-1stop'> Trend of SLA Performance</span>
           </div>
           <div className='flex'>
             <div className='p-5'>
@@ -120,7 +120,7 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }
                 value={title}
               />
             </div>
-            <span className='flex items-center'>GROUP, PREVIOUS</span>
+            <span className='flex items-center'>Request type, PREVIOUS</span>
             <div className='p-5'>
               <SelectList
                 list={dateEarlier}

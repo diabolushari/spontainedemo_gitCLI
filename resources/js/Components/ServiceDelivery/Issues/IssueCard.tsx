@@ -56,17 +56,27 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
   }
 
   const isLoading = !graphValues || graphValues.data.length === 0
+  const detailRoute = () => {
+    return `/data-explorer/Customer Complaints Summary?latest=month&route=${route('service-delivery.index')}`
+    console.log('route-clicked')
+  }
   return (
     <div className='flex w-full'>
       <div className='flex justify-center'>
         <div className='grid w-full max-w-md grid-cols-2 gap-2 p-2'>
-          <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
+          <button
+            onClick={detailRoute}
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'
+          >
             <p className='xlmetric-1stop'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(complaintCount('Total') ?? 0)}
             </p>
             <p className='small-1stop-header text-center'>Total Complaints</p>
-          </div>
-          <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
+          </button>
+          <button
+            onClick={detailRoute}
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
+          >
             <p className='mdmetric-1stop'>
               {isLoading ? (
                 <Skeleton width={60} />
@@ -75,8 +85,11 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
               )}
             </p>
             <p className='small-1stop-header text-center'>Power Failures</p>
-          </div>
-          <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
+          </button>
+          <button
+            onClick={detailRoute}
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
+          >
             <p className='mdmetric-1stop'>
               {isLoading ? (
                 <Skeleton width={60} />
@@ -85,8 +98,11 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
               )}
             </p>
             <p className='small-1stop-header text-center'>Voltage Related</p>
-          </div>
-          <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
+          </button>
+          <button
+            onClick={detailRoute}
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
+          >
             <p className='mdmetric-1stop pt-4'>
               {isLoading ? (
                 <Skeleton width={60} />
@@ -95,7 +111,7 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
               )}
             </p>
             <p className='small-1stop-header text-center'>Service Conn. Related</p>
-          </div>
+          </button>
         </div>
       </div>
     </div>
