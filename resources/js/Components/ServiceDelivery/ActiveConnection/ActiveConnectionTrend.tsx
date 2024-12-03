@@ -3,6 +3,9 @@ import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '../ActiveConnection'
+import { solidColors } from '@/ui/ui_interfaces'
+import { CustomTooltip } from '@/Components/CustomTooltip'
+import Skeleton from 'react-loading-skeleton'
 
 export interface InactiveGraphValues {
   conn_status_code: string
@@ -85,89 +88,78 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
     value: i + 3,
   }))
 
-  return (
-    <div className='flex w-full flex-col'>
-      <div className='flex w-full'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='ml-2 flex gap-2'>
-            <span className='subheader-sm-1stop'>Trend of Active Connections</span>
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
-            {/* <div className=''>
-              <SelectList
-                list={dateEarlier.map((month, index) => ({
-                  key: index,
-                  value: month,
-                  text: month,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedValue}
-                setValue={setSelectedValue}
-              />
-            </div> */}
-          </div>
-          <div className='mx-4 flex w-full justify-end gap-2'>
-            <div>
-              <SelectList
-                list={voltageType.map((voltage) => ({
-                  key: voltage,
-                  value: voltage,
-                  text: voltage,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedVoltage}
-                setValue={setSelectedVoltage}
-                style='1stop-small'
-              />
-            </div>
-            <span className='flex items-center subheader-sm-1stop'>CONSUMERS, PREVIOUS</span>
-            <div>
-              <SelectList
-                list={dateEarlier}
-                dataKey='value'
-                displayKey='name'
-                value={selectedRange}
-                setValue={(value) => setSelectedValue(`${value} MONTHS`)}
-                style='1stop-small'
-              />
-            </div>
-          </div>
-          <div className='w-full'>
-            <ResponsiveContainer
-              width='100%'
-              height={200}
-            >
-              <AreaChart data={chartData}>
-                <XAxis
-                  dataKey='month'
-                  tickFormatter={
-                    (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
-                  }
-                  style={{ fontSize: 10 }}
-                />
-                <YAxis
-                  tickFormatter={(value) => formatNumber(value)}
-                  style={{ fontSize: 10 }}
-                />
-                <Tooltip
-                  formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
-                  labelFormatter={(month) =>
-                    month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
-                  }
-                />
-                <Area
-                  type='monotone'
-                  dataKey='consumer_count'
-                  stroke='#0091ff'
-                  fill='#0091ff'
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+  return (
+    <div className='flex w-full flex-col pr-4'>
+      <div className='mt-4 flex w-full justify-end gap-2 p-2'>
+        <span className='subheader-sm-1stop'>Trend of Active Connections</span>
+      </div>
+      <div className='flex w-full justify-end gap-2 px-2'>
+        <div>
+          <SelectList
+            list={voltageType.map((voltage) => ({
+              key: voltage,
+              value: voltage,
+              text: voltage,
+            }))}
+            dataKey='value'
+            displayKey='text'
+            showAllOption={false}
+            value={selectedVoltage}
+            setValue={setSelectedVoltage}
+            style='1stop-small'
+          />
         </div>
+        <span className='small-1stop-header flex items-center'>CONSUMERS, PREVIOUS</span>
+        <div>
+          <SelectList
+            list={dateEarlier}
+            dataKey='value'
+            displayKey='name'
+            value={selectedRange}
+            setValue={(value) => setSelectedValue(`${value} MONTHS`)}
+            style='1stop-small'
+          />
+        </div>
+      </div>
+      <div className='w-full'>
+        {isLoading ? (
+          <Skeleton
+            height={150}
+            width='100%'
+          />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={200}
+          >
+            <AreaChart data={chartData}>
+              <XAxis
+                dataKey='month'
+                tickFormatter={
+                  (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
+                }
+                style={{ fontSize: 10 }}
+              />
+              <YAxis
+                tickFormatter={(value) => formatNumber(value)}
+                style={{ fontSize: 10 }}
+              />
+              <Tooltip
+                formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
+                labelFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
+              />
+              <Area
+                type='monotone'
+                dataKey='consumer_count'
+                stroke={solidColors[0]}
+                fill={solidColors[1]}
+                opacity={0.7}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

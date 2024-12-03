@@ -8,13 +8,13 @@ import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recha
 import MonthPicker from '@/ui/form/MonthPicker'
 import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import ActiveConnectionTrend from './ActiveConnection/ActiveConnectionTrend'
-import TopList from './NewConnectionsList'
 import ActiveConncetionList from './ActiveConncetionList'
 import DataShowIcon from '../ui/DatashowIcon'
 import TrendIcon from '../ui/TrendIcon'
 import Top10Icon from '../ui/Top10Icon'
+import { solidColors } from '@/ui/ui_interfaces'
+import { CustomTooltip } from '../CustomTooltip'
 
 interface Properties {
   section_code?: string
@@ -52,7 +52,8 @@ export const CustomLegend = ({ payload }: LegendProps) => {
         return (
           <li
             key={`item-${index}`}
-            style={{ marginRight: 10, color: 'black' }}
+            style={{ marginRight: 10, color: 'black', fontSize: '8px' }}
+            className='uppercase'
           >
             <span
               style={{
@@ -105,6 +106,7 @@ const ActiveConnection = () => {
   }, [setSelectedMonth, graphValues, selectedMonth])
 
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const filters = (value: InactiveGraphValues, index: number) => {
     if (index < 3) {
@@ -169,14 +171,12 @@ const ActiveConnection = () => {
     },
   ]
 
-  const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
-
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
           <button
-            className={`flex w-full rounded-tl-2xl border px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
@@ -186,7 +186,7 @@ const ActiveConnection = () => {
             <DataShowIcon />
           </button>
           <button
-            className={`flex w-full border px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
@@ -196,7 +196,7 @@ const ActiveConnection = () => {
             <TrendIcon />
           </button>
           <button
-            className={`flex w-full border px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.circle_code ?? '')
@@ -206,7 +206,7 @@ const ActiveConnection = () => {
             <Top10Icon />
           </button>
           <button
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.division_code ?? '')
@@ -215,7 +215,7 @@ const ActiveConnection = () => {
             <p></p>
           </button>
           <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('section_code')
               // setLevelCode(level?.record.section_code ?? '')
@@ -226,7 +226,7 @@ const ActiveConnection = () => {
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
-          <div className='flex w-5/6 flex-row gap-4 p-2'>
+          <div className='flex w-full flex-row space-x-1 p-2'>
             <div className='flex w-1/2 flex-col gap-1 pt-4'>
               {/* Total Connections */}
               <div className='flex flex-col border p-2'>
@@ -238,14 +238,14 @@ const ActiveConnection = () => {
                   )}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>Total </p>
+                  <p className='small-1stop-header'>Total Active Connections</p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
-                      defaultChecked
                       type='radio'
                       name='radio'
+                      checked={voltageType === 'Total'}
                       onClick={() => setVoltageType('Total')}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                      className='checkbox bg-1stop-alt-highlight h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
@@ -322,11 +322,11 @@ const ActiveConnection = () => {
 
             {/* Graph */}
             <div className='relative flex w-1/2 justify-center'>
-              {graphValues?.data.length == 0 ? (
+              {isLoading ? (
                 <Skeleton
                   circle={true}
-                  height={100}
-                  width={100}
+                  height={200}
+                  width={200}
                 />
               ) : (
                 <ResponsiveContainer className='small-1stop'>
@@ -334,7 +334,10 @@ const ActiveConnection = () => {
                     width={100}
                     height={100}
                   >
-                    <Tooltip formatter={(value: number) => `${formatNumber(value)}`} />
+                    <Tooltip
+                      formatter={(value: number) => `${formatNumber(value)}`}
+                      content={<CustomTooltip />}
+                    />
 
                     <Pie
                       data={data}
@@ -347,7 +350,7 @@ const ActiveConnection = () => {
                       {data.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
+                          fill={solidColors[index % solidColors.length]}
                         />
                       ))}
                     </Pie>
@@ -378,20 +381,20 @@ const ActiveConnection = () => {
         )}
       </div>
       {/* //Footer */}
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-button-muted px-4 pl-14'>
+      <div className='bg-1stop-alt-gray flex h-full items-center justify-between rounded-b-2xl px-4 pl-12'>
         <div className='py-4'>
-          <p className='h3-1stop'>Active Connections</p>
+          <p className='mdmetric-1stop'>Active Connections</p>
         </div>
-        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
-          {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric',
-            })} */}
-          <MonthPicker
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
+        <div
+          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
+          //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
+        >
+          <div style={{ opacity: 1 }}>
+            <MonthPicker
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+            />
+          </div>
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link

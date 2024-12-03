@@ -112,17 +112,17 @@ export default function DashboardLayout({
         />
         <div className='absolute flex w-full justify-between gap-2 pl-28 pr-5 pt-10'>
           <div className={`${isShowSideBar ? '' : 'z-[99999]'}`}>
-            <p className='subheader-1stop'>{type}</p>
+            {/* <p className='subheader-1stop'>{type}</p>
             <p className='small-1stop-header'>
               {levelType !== '' ? levelType : level?.level}:{' '}
               <b>{levelTypeName !== '' ? levelTypeName : displayName(level)}</b>
-            </p>
+            </p> */}
             <div className=''>
               <BreadCrumbs breadcrumbItems={breadCrumbs} />
             </div>
           </div>
-          <div className='z-[999] hidden gap-5 md:flex md:flex-row'>
-            {/* <DropdownAccordion
+          {/* <div className='z-[999] hidden gap-5 md:flex md:flex-row'> */}
+          {/* <DropdownAccordion
               officeStructures={officeStructures}
               level={levelName}
               setLevel={setLevelName}
@@ -130,7 +130,7 @@ export default function DashboardLayout({
               setLevelType={setLevelType}
               setLevelTypeName={setLevelTypeName}
             /> */}
-            <div className='flex flex-col items-start justify-start'>
+          {/* <div className='flex flex-col items-start justify-start'>
               <div
                 className='inset-0 flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
                 ref={profileRef}
@@ -196,8 +196,8 @@ export default function DashboardLayout({
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            )} */}
+          {/* </div> */}
         </div>
       </div>
       <motion.div
@@ -206,7 +206,7 @@ export default function DashboardLayout({
         transition={{ duration: 0.3 }}
         className='inset-0'
       >
-        <main className={cn(`ml-14 mr-6 mt-10 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
+        <main className={cn(`ml-14 mr-6 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
         </main>
       </motion.div>

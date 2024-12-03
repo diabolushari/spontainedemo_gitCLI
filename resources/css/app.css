@@ -73,9 +73,12 @@ body {
     --colour-1stop-highlight: #235cc0;
     /* --colour-1stop-highlight2: #97c7e4; */
     --colour-1stop-highlight2: #73ade1;
-
+    --colour-1stop-gradient-left: #d9dee8;
+    --colour-1stop-gradient-right: #cbd7ef;
     /* --colour-1stop-gray: #d9dee8; */
-    --colour-1stop-gray: #8e97a7;
+    --colour-1stop-gray: #d9dee8;
+    --colour-1stop-alt-gray: #e5e8dd;
+    --colour-1stop-alt-highlight: #679436;
     --colour-1stop-white: #f5f5fa;
     --colour-chart-1: #a93053;
     --colour-chart-2: #508d81;
@@ -123,6 +126,36 @@ body {
     --color-success: #d2ddca;
     --color-fail: #da999a;
     --radius: 0.5rem;
+  }
+  @font-face {
+    font-family: 'Figtree-Light';
+    src: url('/fonts/onestop/Figtree-Light.woff');
+    font-style: normal;
+    font-weight: 300;
+  }
+  @font-face {
+    font-family: 'Figtree-Regular';
+    src: url('/fonts/onestop/Figtree-Regular.woff');
+    font-style: normal;
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Figtree-Medium';
+    src: url('/fonts/onestop/Figtree-Medium.woff');
+    font-style: normal;
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'Figtree-Bold';
+    src: url('/fonts/onestop/Figtree-Bold.woff');
+    font-style: normal;
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'Figtree-ExtraBold';
+    src: url('/fonts/onestop/Figtree-ExtraBold.woff');
+    font-style: normal;
+    font-weight: 800;
   }
   @font-face {
     font-family: 'Poppins-Regular';
@@ -236,12 +269,12 @@ body {
   .month-picker-calendar .react-datepicker__month {
     font-size: 10px;
     font-weight: 600;
-    font-family: 'Poppins-Regular';
+    font-family: 'Figtree-Regular';
   }
 
   /* 1 Stop */
   .h1-1stop {
-    font-family: 'Poppins-ExtraBold';
+    font-family: 'Figtree-ExtraBold';
     font-style: normal;
     font-size: 42px;
     font-weight: 900;
@@ -250,7 +283,7 @@ body {
   }
 
   .h2-1stop {
-    font-family: 'Poppins-ExtraBold';
+    font-family: 'Figtree-ExtraBold';
     font-style: normal;
     font-size: 32px;
     font-weight: 700;
@@ -259,7 +292,7 @@ body {
   }
 
   .h3-1stop {
-    font-family: 'Poppins-ExtraBold';
+    font-family: 'Figtree-ExtraBold';
     font-style: normal;
     font-size: 22px;
     font-weight: 400;
@@ -268,7 +301,7 @@ body {
   }
 
   .subheader-1stop {
-    font-family: 'Poppins-Medium';
+    font-family: 'Figtree-Medium';
     font-style: normal;
     font-size: 18px;
     font-weight: 800;
@@ -277,7 +310,7 @@ body {
   }
 
   .subheader-sm-1stop {
-    font-family: 'Poppins-Medium';
+    font-family: 'Figtree-Medium';
     font-style: normal;
     font-size: 12px;
     font-weight: 800;
@@ -286,7 +319,7 @@ body {
   }
 
   .body-1stop {
-    font-family: 'Poppins-Regular';
+    font-family: 'Figtree-Regular';
     font-style: normal;
     font-size: 14px;
     font-weight: 300;
@@ -294,14 +327,14 @@ body {
   }
 
   .small-1stop {
-    font-family: 'Poppins-Regular';
+    font-family: 'Figtree-Regular';
     font-style: normal;
     font-size: 10px;
     font-weight: 200;
     line-height: 16px;
   }
   .small-1stop-header {
-    font-family: 'Poppins-Medium';
+    font-family: 'Figtree-Medium';
     font-size: 10px;
     line-height: 16px;
     text-transform: uppercase;
@@ -310,7 +343,7 @@ body {
   }
 
   .xlmetric-1stop {
-    font-family: 'Poppins-ExtraBold';
+    font-family: 'Figtree-ExtraBold';
     font-style: normal;
     font-size: 34px;
     font-weight: 800;
@@ -318,15 +351,16 @@ body {
     letter-spacing: -1px;
   }
   .mdmetric-1stop {
-    /* font-family: 'Poppins-ExtraBold'; */
+    font-family: 'Figtree-Regular';
     font-style: normal;
     font-size: 26px;
     font-weight: 800;
     line-height: 36px;
     letter-spacing: -1px;
   }
+
   .smmetric-1stop {
-    /* font-family: 'Poppins-ExtraBold'; */
+    font-family: 'Figtree-ExtraBold';
     font-style: normal;
     font-size: 20px;
     font-weight: 800;
@@ -334,7 +368,7 @@ body {
     letter-spacing: -1px;
   }
   .axial-label-1stop {
-    font-family: 'Poppins-Regular';
+    font-family: 'Figtree-Regular';
     font-style: normal;
     font-size: 10px;
     font-weight: 200;

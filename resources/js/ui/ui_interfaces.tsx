@@ -87,21 +87,31 @@ export const colors = [
 ]
 
 export const solidColors = [
-  '#A490C9',
-  '#D092CC',
-  '#F39CB5',
-  '#F5B298',
-  '#EAD494',
-  '#D8F4AA',
-  '#B6F7AF',
-  '#A5E9CA',
-  '#97CCE5',
-  '#B6D9E9',
-  '#E0B6DD',
-  '#F7BDCE',
-  '#F9CCBB',
-  '#EFE4C5',
-  '#CDE9F6',
+  '#A5BE00',
+  '#64B5F6',
+  '#427AA1',
+  '#FEC601',
+  '#613DC1',
+  '#FF6392',
+  '#20BF55',
+  '#FFE45E',
 ]
 
+// export const solidColors = [
+//     '#A490C9',
+//     '#D092CC',
+//     '#F39CB5',
+//     '#F5B298',
+//     '#EAD494',
+//     '#D8F4AA',
+//     '#B6F7AF',
+//     '#A5E9CA',
+//     '#97CCE5',
+//     '#B6D9E9',
+//     '#E0B6DD',
+//     '#F7BDCE',
+//     '#F9CCBB',
+//     '#EFE4C5',
+//     '#CDE9F6',
+//   ]
 export type Language = 'en' | 'mal'

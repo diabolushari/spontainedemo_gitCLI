@@ -48,8 +48,6 @@ const NewConnections = () => {
 
   const [selectedLevel, setSelectedLevel] = useState(1)
 
-
-
   const CustomLegend = ({ payload }: LegendProps) => {
     return (
       <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
