@@ -15,6 +15,7 @@ import { formatNumber } from '../ActiveConnection'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import TrendIcon from '@/Components/ui/TrendIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
+import { solidColors } from '@/ui/ui_interfaces'
 
 export interface SlaPerformanceValues {
   month: string
@@ -140,14 +141,45 @@ const SlaPerformance = () => {
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{label}</div>
+          <div>
+            {payload.map((entry, index) => {
+              const dataKey = entry.dataKey
+                .replace(/_/g, ' ')
+                .replace(
+                  /\w\S*/g,
+                  (word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()
+                )
 
+              return (
+                <p
+                  key={`tooltip-${index}`}
+                  style={{ color: entry.color }}
+                  className='small-1stop'
+                >
+                  {`${dataKey}:`}{' '}
+                  <span className='small-1stop font-bold'>
+                    {toggleValue ? entry.value : `${Number(entry.value).toFixed(2)}%`}
+                  </span>
+                </p>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+    return null
+  }
   return (
     <Card className='flex w-full flex-col'>
-      
       <div className='flex w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
+        <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
           <button
-            className={`flex w-full rounded-tl-2xl border px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
@@ -157,7 +189,7 @@ const SlaPerformance = () => {
             <DataShowIcon />
           </button>
           <button
-            className={`flex w-full border px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
@@ -167,7 +199,7 @@ const SlaPerformance = () => {
             <TrendIcon />
           </button>
           <button
-            className={`flex w-full border px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.circle_code ?? '')
@@ -176,17 +208,9 @@ const SlaPerformance = () => {
           >
             <Top10Icon />
           </button>
+
           <button
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.division_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('section_code')
               // setLevelCode(level?.record.section_code ?? '')
@@ -196,16 +220,16 @@ const SlaPerformance = () => {
           </button>
         </div>
         {selectedLevel === 1 && (
-          <div className='flex w-11/12 flex-row gap-4 p-2'>
-            <div className='w-full rounded-lg bg-white p-4'>
+          <div className='flex w-full flex-row space-x-1 p-2 pt-4'>
+            <div className='w-full rounded-lg bg-white'>
               <div>
                 {isLoading ? (
                   <Skeleton
-                    height={100}
+                    height={300}
                     width='100%'
                   />
                 ) : (
-                  <div>
+                  <div className='flex w-full flex-col items-end'>
                     <button
                       className='small-1stop mb-auto cursor-pointer justify-end'
                       onClick={handleToogleNumber}
@@ -214,7 +238,7 @@ const SlaPerformance = () => {
                     </button>
                     <ResponsiveContainer
                       width='100%'
-                      height={200}
+                      height={280}
                     >
                       <BarChart
                         data={groupedData}
@@ -229,11 +253,13 @@ const SlaPerformance = () => {
                           interval={0}
                         />
                         <YAxis hide />
-                        <Tooltip
+                        {/* <Tooltip
                           formatter={(value: number) =>
                             toggleValue ? formatNumber(value) : `${value.toFixed(2)}%`
                           }
-                        />
+                        /> */}
+
+                        <Tooltip content={renderCustomTooltip} />
                         <Bar
                           dataKey={
                             toggleValue
@@ -241,7 +267,7 @@ const SlaPerformance = () => {
                               : 'requests_completed_within_sla____'
                           }
                           stackId='a'
-                          fill='#1b50b3'
+                          fill={solidColors[6]}
                         />
 
                         <Bar
@@ -251,7 +277,7 @@ const SlaPerformance = () => {
                               : 'requests_pending_within_sla____'
                           }
                           stackId='a'
-                          fill='#76a5ff'
+                          fill={solidColors[0]}
                         />
                         <Bar
                           dataKey={
@@ -260,7 +286,7 @@ const SlaPerformance = () => {
                               : 'requests_completed_beyond_sla____'
                           }
                           stackId='a'
-                          fill='#E3FE3C'
+                          fill={solidColors[7]}
                         />
                         <Bar
                           dataKey={
@@ -269,7 +295,7 @@ const SlaPerformance = () => {
                               : 'requests_pending_beyond_sla____'
                           }
                           stackId='a'
-                          fill='#EA5BA5'
+                          fill={solidColors[5]}
                         />
                       </BarChart>
                     </ResponsiveContainer>
@@ -298,11 +324,11 @@ const SlaPerformance = () => {
         )}
       </div>
 
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-button-muted px-4 pl-14'>
-        <div className='w-1/3 py-4'>
-          <p className='h3-1stop'>SLA Performance by Request Type</p>
+      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-14'>
+        <div className='py-1'>
+          <p className='mdmetric-1stop'>SLA Performance by Request Type</p>
         </div>
-        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
+        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
               month: 'short',

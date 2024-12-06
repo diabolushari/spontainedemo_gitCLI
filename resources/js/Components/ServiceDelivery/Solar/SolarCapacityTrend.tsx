@@ -3,6 +3,8 @@ import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import { solidColors } from '@/ui/ui_interfaces'
+import Skeleton from 'react-loading-skeleton'
 
 export interface SolarCapacityTrendValues {
   month_year: string
@@ -93,75 +95,103 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       return { month, capacity_mw: totalCapacityKw }
     })
     .reverse()
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+      const value = payload[0].value
+      const formattedValue =
+        value > 1000
+          ? formatNumber(Number(convertToMW(value)))
+          : Number(convertToMW(value)).toFixed(2)
 
-  return (
-    <div className='flex w-full flex-col p-4'>
-      <div className='flex w-full flex-col gap-2'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='flex'>
-            <span className='subheader-sm-1stop items-end'>
-              Trend of total capacity of Solar generation
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+          <div>
+            <span className='small-1stop'>
+              Capacity (MW): <span className='small-1stop font-bold'>{formattedValue}</span>
             </span>
-            <div className='flex w-full justify-end pt-2'>
-              <span className='subheader-sm-1stop flex items-center pr-2'>PREVIOUS</span>
-              <div>
-                <SelectList
-                  list={dateEarlier.map((month, index) => ({
-                    key: index,
-                    value: month,
-                    text: month,
-                  }))}
-                  dataKey='value'
-                  displayKey='text'
-                  showAllOption
-                  value={selectedValue}
-                  setValue={setSelectedValue}
-                  style='1stop-small'
-                />
-              </div>
-            </div>
-          </div>
-          <div className='w-full'>
-            <ResponsiveContainer
-              width='100%'
-              height={200}
-            >
-              <AreaChart data={chartData}>
-                <XAxis
-                  dataKey='month'
-                  tickFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
-                  style={{ fontSize: '10' }}
-                />
-                <YAxis
-                  style={{ fontSize: 10 }}
-                  tickFormatter={(value: number) =>
-                    value > 1000
-                      ? `${formatNumber(Number(convertToMW(value)))} MW`
-                      : `${Number(convertToMW(value)).toFixed(2)} MW`
-                  }
-                />
-                <Tooltip
-                  labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(0, 4)}`}
-                  formatter={(value: number) => [
-                    `${
-                      value > 1000
-                        ? formatNumber(Number(convertToMW(value)))
-                        : Number(convertToMW(value)).toFixed(2)
-                    }`,
-                    'Capacity (MW)',
-                  ]}
-                />
-
-                <Area
-                  type='monotone'
-                  dataKey='capacity_mw'
-                  stroke='#0091ff'
-                  fill='#0091ff'
-                />
-              </AreaChart>
-            </ResponsiveContainer>
           </div>
         </div>
+      )
+    }
+    return null
+  }
+  return (
+    <div className='flex w-full flex-col pr-4'>
+      <div className='mt-2 flex w-full justify-end gap-2 p-2'>
+        <span className='subheader-sm-1stop items-end'>
+          Trend of total capacity of Solar generation
+        </span>
+      </div>
+      <div className='flex w-full justify-end gap-2 px-2'>
+        <span className='small-1stop-header flex items-center'>PREVIOUS</span>
+
+        <div>
+          <SelectList
+            list={dateEarlier.map((month, index) => ({
+              key: index,
+              value: month,
+              text: month,
+            }))}
+            dataKey='value'
+            displayKey='text'
+            showAllOption
+            value={selectedValue}
+            setValue={setSelectedValue}
+            style='1stop-small'
+          />
+        </div>
+      </div>
+      <div className='w-full pb-9'>
+        {isLoading ? (
+          <Skeleton
+            height={200}
+            width='100%'
+          />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={200}
+          >
+            <AreaChart data={chartData}>
+              <XAxis
+                dataKey='month'
+                tickFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
+                style={{ fontSize: '10' }}
+              />
+              <YAxis
+                style={{ fontSize: 10 }}
+                tickFormatter={(value: number) =>
+                  value > 1000
+                    ? `${formatNumber(Number(convertToMW(value)))} MW`
+                    : `${Number(convertToMW(value)).toFixed(2)} MW`
+                }
+              />
+              {/* <Tooltip
+              labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(0, 4)}`}
+              formatter={(value: number) => [
+                `${
+                  value > 1000
+                    ? formatNumber(Number(convertToMW(value)))
+                    : Number(convertToMW(value)).toFixed(2)
+                }`,
+                'Capacity (MW)',
+              ]}
+            /> */}
+
+              <Tooltip content={renderCustomTooltip} />
+
+              <Area
+                type='monotone'
+                dataKey='capacity_mw'
+                stroke={solidColors[0]}
+                fill={solidColors[1]}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

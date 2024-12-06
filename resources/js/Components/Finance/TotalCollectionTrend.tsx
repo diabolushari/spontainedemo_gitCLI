@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react'
-import SelectList from '@/ui/form/SelectList'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { formatNumber } from '../ActiveConnection'
-import { convertToMW } from './SolarCapacityTrend'
-import Skeleton from 'react-loading-skeleton'
+import SelectList from '@/ui/form/SelectList'
 import { solidColors } from '@/ui/ui_interfaces'
+import { useEffect, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 
-export interface SolarGenerationTrendValues {
-  consumer_category: string
-  generation__kwh_: number
+export interface TotalCollectionTrendValues {
   month: string
-  total_consumers__count_: number
+  payment_channel_group: string
+  total_collection: string
   voltage: string
 }
 
@@ -20,7 +18,7 @@ interface Properties {
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
-const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
+const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [selectedVoltage, setSelectedVoltage] = useState('LT')
 
@@ -38,10 +36,10 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
   const selectedRange = parseInt(selectedValue.split(' ')[0])
 
   const [graphValues] = useFetchRecord<{
-    data: SolarGenerationTrendValues[]
+    data: TotalCollectionTrendValues[]
     latest_value: string
   }>(
-    `subset/113?${
+    `subset/152?${
       selectedMonth == null
         ? 'latest=month'
         : `month_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_less_than_or_equal=${Number(monthYear)}`
@@ -74,12 +72,12 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
         (value) => value.voltage === selectedVoltage && value.month === month
       )
 
-      const totalConsumerCount = filteredValues?.reduce(
-        (sum, value) => sum + value.generation__kwh_,
+      const totalCollection = filteredValues?.reduce(
+        (sum, value) => sum + value.total_collection,
         0
       )
 
-      return { month, Generation: totalConsumerCount || 0 }
+      return { month, TotalCollection: totalCollection || 0 }
     })
     .reverse()
 
@@ -90,39 +88,13 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
     value: i + 3,
   }))
 
-  const formatValue = (value: number): string => {
-    const convertedValue = Number(convertToMW(value))
-    return value > 1000 ? formatNumber(convertedValue) : convertedValue.toFixed(2)
-  }
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
-  const renderCustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
-      const value = payload[0].value
-      const formattedValue =
-        value > 1000
-          ? formatNumber(Number(convertToMW(value)))
-          : Number(convertToMW(value)).toFixed(2)
 
-      return (
-        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
-          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
-          <div>
-            <span className='small-1stop'>
-              Generation (MWh): <span className='small-1stop font-bold'>{formattedValue}</span>
-            </span>
-          </div>
-        </div>
-      )
-    }
-    return null
-  }
   return (
-    <div className='flex w-full flex-col pb-10 pr-4'>
-      <div className='mt-2 flex w-full justify-end gap-2 p-2'>
-        <span className='subheader-sm-1stop'>Trend of Solar Generation</span>
+    <div className='flex w-full flex-col pr-4'>
+      <div className='mt-4 flex w-full justify-end gap-2 p-2'>
+        <span className='subheader-sm-1stop'>Trend of Collections</span>
       </div>
-
       <div className='flex w-full justify-end gap-2 px-2'>
         <div>
           <SelectList
@@ -154,7 +126,7 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
       <div className='w-full'>
         {isLoading ? (
           <Skeleton
-            height={200}
+            height={150}
             width='100%'
           />
         ) : (
@@ -171,20 +143,19 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
                 style={{ fontSize: 10 }}
               />
               <YAxis
-                tickFormatter={(value: number) => `${formatValue(value)} (MWh)`}
+                tickFormatter={(value) => formatNumber(value)}
                 style={{ fontSize: 10 }}
               />
-
-              {/* <Tooltip
-                formatter={(value: number) => [`${formatValue(value)}`, 'Generation (MWh)']}
+              <Tooltip
+                formatter={(value: number) => [`${formatNumber(value)}`, 'Total Collection']}
                 labelFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
-              /> */}
-              <Tooltip content={renderCustomTooltip} />
+              />
               <Area
                 type='monotone'
-                dataKey='Generation'
+                dataKey='TotalCollection'
                 stroke={solidColors[0]}
                 fill={solidColors[1]}
+                opacity={0.7}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -194,4 +165,4 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
   )
 }
 
-export default SolarGenerationTrend
+export default TotalCollectionTrend

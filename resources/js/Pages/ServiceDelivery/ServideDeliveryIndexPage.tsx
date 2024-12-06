@@ -29,9 +29,8 @@ const ServideDeliveryIndexPage = () => {
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-14'>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <ActiveConnection />
-            <Card className=''>
-              <NewConnections />
-            </Card>
+
+            <NewConnections />
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <div className='flex w-full lg:w-2/3'>
@@ -42,12 +41,12 @@ const ServideDeliveryIndexPage = () => {
             </div>
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
-            <div className='flex w-full lg:w-1/3'>
+            <div className='flex w-full'>
               <Complaints />
             </div>
-            <div className='flex w-full lg:w-2/3'>
+            {/* <div className='flex w-full lg:w-2/3'>
               <PowerInterruptionTrend />
-            </div>
+            </div> */}
           </div>
 
           <div className='flex flex-col gap-2 lg:flex-row'>

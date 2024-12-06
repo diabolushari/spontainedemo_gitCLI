@@ -3,6 +3,10 @@ import SelectList from '@/ui/form/SelectList'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '../ActiveConnection'
+import Skeleton from 'react-loading-skeleton'
+import { CustomTooltip } from '@/Components/CustomTooltip'
+import { CustomTooltipTrend } from '@/Components/CustomTooltipTrend'
+import { solidColors } from '@/ui/ui_interfaces'
 
 export interface NewConnectionGraphValues {
   month: string
@@ -62,63 +66,89 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       }
     })
     .reverse()
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+      const value = payload[0].value
 
-  return (
-    <div className='flex w-full flex-col'>
-      <div className='flex w-full'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='flex'>
-            <div className='ml-2 flex'>
-              <span className='subheader-sm-1stop'>Trend of Requests Completed beyond SLA</span>
-            </div>
-
-            <div className='mx-4 flex w-full justify-end'>
-              <span className='subheader-sm-1stop flex items-center pr-2'>PREVIOUS</span>
-              <div>
-                <SelectList
-                  list={dateEarlier.map((month, index) => ({
-                    key: index,
-                    value: month,
-                    text: month,
-                  }))}
-                  dataKey='value'
-                  displayKey='text'
-                  showAllOption={false}
-                  value={selectedValue}
-                  setValue={setSelectedValue}
-                  style='1stop-small'
-                />
-              </div>
-            </div>
-          </div>
-          <div className='w-full'>
-            <ResponsiveContainer
-              width='100%'
-              height={200}
-            >
-              <BarChart data={chartData}>
-                <XAxis
-                  dataKey='month'
-                  tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
-                  style={{ fontSize: '10' }}
-                />
-                <YAxis
-                  tickFormatter={(value) => formatNumber(value)}
-                  style={{ fontSize: '10' }}
-                />
-                <Tooltip
-                  formatter={(value: number) => [`${value} `, 'Requests breaching SLAs']}
-                  labelFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
-                />
-                <Bar
-                  dataKey='RequestsBreachingSla'
-                  fill='#235CC0'
-                  barSize={20}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+          <div>
+            <span className='small-1stop'>
+              Requests breaching SLA:{' '}
+              <span className='small-1stop font-bold'>{formatNumber(value)}</span>
+            </span>
           </div>
         </div>
+      )
+    }
+    return null
+  }
+  return (
+    <div className='flex w-full flex-col pr-4'>
+      <div className='mt-4 flex w-full justify-end gap-2 p-2'>
+        <span className='subheader-sm-1stop'>
+          Trend of Requests Completed <span className='underline'>Beyond</span> SLA
+        </span>
+      </div>
+
+      <div className='flex w-full justify-end gap-2 px-2'>
+        <span className='small-1stop-header flex items-center'>PREVIOUS</span>
+        <div>
+          <SelectList
+            list={dateEarlier.map((month, index) => ({
+              key: index,
+              value: month,
+              text: month,
+            }))}
+            dataKey='value'
+            displayKey='text'
+            showAllOption={false}
+            value={selectedValue}
+            setValue={setSelectedValue}
+            style='1stop-small'
+          />
+        </div>
+      </div>
+
+      <div className='w-full'>
+        {isLoading ? (
+          <Skeleton
+            height={150}
+            width='100%'
+          />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={200}
+          >
+            <BarChart data={chartData}>
+              <XAxis
+                dataKey='month'
+                tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                style={{ fontSize: '10' }}
+              />
+              <YAxis
+                tickFormatter={(value) => formatNumber(value)}
+                style={{ fontSize: '10' }}
+              />
+              {/* <Tooltip
+                formatter={(value: number) => [`${value} `, 'Requests breaching SLAs']}
+                labelFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
+              /> */}
+              <Tooltip content={renderCustomTooltip} />
+
+              <Bar
+                dataKey='RequestsBreachingSla'
+                fill={solidColors[7]}
+                stroke={solidColors[7]}
+                barSize={20}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

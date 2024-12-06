@@ -31,7 +31,7 @@ interface ConsumerList extends Model {
   office_code: string
   office_name: string
   complaint_count?: number
-  consumer_count?: number
+  total_consumers__count_?: number
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
 }
@@ -59,14 +59,14 @@ const ActiveConncetionList = ({
     setHeaders([levelTypes.find((value) => value.value == officeLevel)?.name ?? column1, column2])
   }, [officeLevel, column1, column2])
 
-  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
+  const isLoading = !graphValues || !graphValues.data
 
   return (
     <div className='flex w-full flex-col'>
-      <div className='mt-4 flex w-full justify-end gap-2 p-2 pr-4'>
+      <div className='mt-4 flex w-full justify-end gap-2 pb-2 pr-4 pt-4'>
         <span className='subheader-sm-1stop'>Ranked by Connection Counts</span>
       </div>
-      <div className='items center flex justify-end gap-5 pr-4'>
+      <div className='flex items-center justify-end gap-5 pr-4'>
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <div
             className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
@@ -219,11 +219,11 @@ const ActiveConncetionList = ({
             {graphValues?.data.data.map((value) => {
               return (
                 <tr
-                  className='small-1stop text-left'
+                  className='small-1stop text-start'
                   key={value.office_name}
                 >
                   <td className=''>{value.office_name}</td>
-                  <td className=''>{value.consumer_count}</td>
+                  <td className='pl-2 text-start'>{value.total_consumers__count_}</td>
                 </tr>
               )
             })}

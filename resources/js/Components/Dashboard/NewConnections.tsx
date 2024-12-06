@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -10,13 +10,13 @@ import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
-
-import { div } from 'framer-motion/client'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import DataShowIcon from '../ui/DatashowIcon'
 import TrendIcon from '../ui/TrendIcon'
 import Top10Icon from '../ui/Top10Icon'
 import NewConnectionsList from '../ServiceDelivery/NewConnectionsList'
+import { solidColors } from '@/ui/ui_interfaces'
+import { CustomTooltip } from '../CustomTooltip'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -69,7 +69,7 @@ const NewConnections = () => {
             return (
               <li
                 key={`item-${index}`}
-                style={{ marginRight: 10, color: 'black' }}
+                style={{ marginRight: 10, color: 'black', fontSize: '8px' }}
               >
                 <span
                   style={{
@@ -78,9 +78,12 @@ const NewConnections = () => {
                     height: 10,
                     backgroundColor: entry.color,
                     marginRight: 5,
+                    paddingTop: 1,
                   }}
                 />
+                <br />
                 {entry.value}
+                <br />
                 {count}
               </li>
             )
@@ -138,10 +141,8 @@ const NewConnections = () => {
     { name: 'Completed within SLA', value: completedWithinSla },
     { name: 'Completed beyond SLA', value: completedBeyondSla },
     { name: 'Pending within SLA', value: pendingWithinSla },
-    { name: 'pending beyond SLA', value: pendingBeyondSla },
+    { name: 'Pending beyond SLA', value: pendingBeyondSla },
   ]
-
-  const COLORS = ['#3E80E4', '#FCB216', '#D467B3', '#e3fe3c']
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
@@ -152,7 +153,7 @@ const NewConnections = () => {
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
           <button
-            className={`flex w-full rounded-tl-2xl border px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
@@ -162,7 +163,7 @@ const NewConnections = () => {
             <DataShowIcon />
           </button>
           <button
-            className={`flex w-full border px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.region_code ?? '')
@@ -172,7 +173,7 @@ const NewConnections = () => {
             <TrendIcon />
           </button>
           <button
-            className={`flex w-full border px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
+            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
               // setLevelCode(level?.record.circle_code ?? '')
@@ -182,25 +183,19 @@ const NewConnections = () => {
             <Top10Icon />
           </button>
           <div
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
           >
             <p></p>
           </div>
           <div
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
+            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
           >
             <p></p>
           </div>
         </div>
         {selectedLevel === 1 && (
-          <div className='flex w-5/6 flex-row gap-4 p-2'>
+          <div className='flex w-full flex-row space-x-1 p-2'>
             <div className='flex w-1/2 flex-col gap-1 pt-4'>
-              <button
-                className='small-1stop mb-auto cursor-pointer justify-end'
-                onClick={handleToogleNumber}
-              >
-                {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-              </button>
               <div className='flex flex-col border p-2'>
                 <p className='xlmetric-1stop'>
                   {isLoading ? (
@@ -213,14 +208,14 @@ const NewConnections = () => {
                 </p>
 
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop'>Overall SLA compliant requests </p>
+                  <p className='small-1stop-header'>Overall SLA compliant requests </p>
                 </div>
               </div>
 
               <div className='flex w-full flex-row space-x-1'>
                 {/* LT */}
                 <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='h3-1stop'>
+                  <p className='mdmetric-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
                     ) : toggleValue ? (
@@ -230,12 +225,12 @@ const NewConnections = () => {
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
-                    <p className='small-1stop'>Compl. within SLA </p>
+                    <p className='small-1stop-header'>Compl. within SLA </p>
                   </div>
                 </div>
 
                 <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='h3-1stop'>
+                  <p className='mdmetric-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
                     ) : toggleValue ? (
@@ -245,14 +240,14 @@ const NewConnections = () => {
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
-                    <p className='small-1stop'>Pending within SLA </p>
+                    <p className='small-1stop-header'>Pending within SLA </p>
                   </div>
                 </div>
               </div>
 
               <div className='flex w-full flex-row space-x-1'>
                 <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='h3-1stop'>
+                  <p className='mdmetric-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
                     ) : toggleValue ? (
@@ -262,12 +257,12 @@ const NewConnections = () => {
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
-                    <p className='small-1stop'>Compl. beyond SLA </p>
+                    <p className='small-1stop-header'>Compl. beyond SLA </p>
                   </div>
                 </div>
 
                 <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='h3-1stop'>
+                  <p className='mdmetric-1stop'>
                     {isLoading ? (
                       <Skeleton width='25%' />
                     ) : toggleValue ? (
@@ -277,13 +272,21 @@ const NewConnections = () => {
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
-                    <p className='small-1stop'>Pending beyond SLA </p>
+                    <p className='small-1stop-header'>Pending beyond SLA </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className='relative flex w-1/2 justify-center pt-2'>
+            <div className='relative flex w-1/2 flex-col pt-2'>
+              <div className='flex w-full justify-end'>
+                <button
+                  className='small-1stop mb-auto cursor-pointer justify-end'
+                  onClick={handleToogleNumber}
+                >
+                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                </button>
+              </div>
               {isLoading ? (
                 <Skeleton
                   circle={true}
@@ -293,16 +296,12 @@ const NewConnections = () => {
               ) : (
                 <ResponsiveContainer className='small-1stop'>
                   <PieChart
-                    width={200}
-                    height={200}
+                    width={100}
+                    height={100}
                   >
                     <Tooltip
-                      formatter={
-                        toggleValue
-                          ? (value: number) => formatNumber(value)
-                          : (value: number) => `${value.toFixed(2)}%`
-                      }
-                      labelStyle={{ fontSize: '10' }}
+                      content={<CustomTooltip valueType={toggleValue ? 'count' : 'percentage'} />}
+                      formatter={(value: number) => (toggleValue ? value : `${value.toFixed(2)}%`)}
                     />
 
                     <Pie
@@ -316,7 +315,7 @@ const NewConnections = () => {
                       {data.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
+                          fill={solidColors[index % solidColors.length]}
                         />
                       ))}
                     </Pie>
@@ -349,22 +348,24 @@ const NewConnections = () => {
         )}
       </div>
 
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-button-muted px-4 pl-14'>
-        <div className='w-1/3'>
-          <p className='h3-1stop'>Servicing New Connections</p>
+      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
+        <div className='flex py-2'>
+          <p className='mdmetric-1stop'>Servicing New Connections</p>
         </div>
-        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4 py-4'>
+        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50'>
           {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
               month: 'short',
               year: 'numeric',
             })} */}
-          <MonthPicker
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
+          <div style={{ opacity: 1 }}>
+            <MonthPicker
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+            />
+          </div>
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?latest=month?route=${route('service-delivery.index')}`}
           >

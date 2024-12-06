@@ -16,19 +16,13 @@ import Top10Icon from '../ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '../CustomTooltip'
 
-interface Properties {
-  section_code?: string
-  levelName: string
-  levelCode: string
-  user: User
-}
-
 export interface InactiveGraphValues {
   conn_status_code: string
-  consumer_count: number
+  total_consumers__count_: number
   data_date: string
   consumer_category: string
   voltage: string
+  month: string
 }
 
 // -----------Remove this section when done----------------
@@ -90,13 +84,13 @@ const ActiveConnection = () => {
   const [voltageType, setVoltageType] = useState('Total')
 
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/57?${
+    `subset/198?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+        ? 'latest=month'
+        : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
-  console.log(graphValues)
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -105,7 +99,7 @@ const ActiveConnection = () => {
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
+  graphValues?.data.sort((a, b) => a.total_consumers__count_ - b.total_consumers__count_).reverse()
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const filters = (value: InactiveGraphValues, index: number) => {
@@ -140,16 +134,16 @@ const ActiveConnection = () => {
     if (voltage != 'Total') {
       return graphValues?.data
         .filter((value) => value.voltage === voltage)
-        .reduce((sum, value) => sum + value.consumer_count, 0)
+        .reduce((sum, value) => sum + value.total_consumers__count_, 0)
     } else {
-      return graphValues?.data.reduce((sum, value) => sum + value.consumer_count, 0)
+      return graphValues?.data.reduce((sum, value) => sum + value.total_consumers__count_, 0)
     }
   }
 
   const graphFilter = (index: number) => {
     return graphValues?.data
       .filter((value) => filters(value, index))
-      .reduce((sum, value) => sum + value.consumer_count, 0)
+      .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   }
 
   const data = [
@@ -245,7 +239,7 @@ const ActiveConnection = () => {
                       name='radio'
                       checked={voltageType === 'Total'}
                       onClick={() => setVoltageType('Total')}
-                      className='checkbox bg-1stop-alt-highlight h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 bg-1stop-alt-highlight checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
@@ -373,20 +367,20 @@ const ActiveConnection = () => {
           <ActiveConncetionList
             column1='State'
             column2='Consumer count'
-            subset_id='57'
+            subset_id='198'
             default_level='section'
-            sortBy='consumer_count'
+            sortBy='total_consumer_count'
             route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
           />
         )}
       </div>
       {/* //Footer */}
-      <div className='bg-1stop-alt-gray flex h-full items-center justify-between rounded-b-2xl px-4 pl-12'>
+      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='py-4'>
           <p className='mdmetric-1stop'>Active Connections</p>
         </div>
         <div
-          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
+          className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50'
           //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
         >
           <div style={{ opacity: 1 }}>
@@ -396,7 +390,7 @@ const ActiveConnection = () => {
             />
           </div>
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
           >
