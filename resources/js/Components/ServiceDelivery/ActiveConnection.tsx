@@ -16,19 +16,13 @@ import Top10Icon from '../ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '../CustomTooltip'
 
-interface Properties {
-  section_code?: string
-  levelName: string
-  levelCode: string
-  user: User
-}
-
 export interface InactiveGraphValues {
   conn_status_code: string
-  consumer_count: number
+  total_consumers__count_: number
   data_date: string
   consumer_category: string
   voltage: string
+  month: string
 }
 
 // -----------Remove this section when done----------------
@@ -90,10 +84,10 @@ const ActiveConnection = () => {
   const [voltageType, setVoltageType] = useState('Total')
 
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/57?${
+    `subset/198?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+        ? 'latest=month'
+        : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
 
@@ -105,7 +99,7 @@ const ActiveConnection = () => {
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
+  graphValues?.data.sort((a, b) => a.total_consumers__count_ - b.total_consumers__count_).reverse()
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const filters = (value: InactiveGraphValues, index: number) => {
@@ -140,16 +134,16 @@ const ActiveConnection = () => {
     if (voltage != 'Total') {
       return graphValues?.data
         .filter((value) => value.voltage === voltage)
-        .reduce((sum, value) => sum + value.consumer_count, 0)
+        .reduce((sum, value) => sum + value.total_consumers__count_, 0)
     } else {
-      return graphValues?.data.reduce((sum, value) => sum + value.consumer_count, 0)
+      return graphValues?.data.reduce((sum, value) => sum + value.total_consumers__count_, 0)
     }
   }
 
   const graphFilter = (index: number) => {
     return graphValues?.data
       .filter((value) => filters(value, index))
-      .reduce((sum, value) => sum + value.consumer_count, 0)
+      .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   }
 
   const data = [
@@ -373,9 +367,9 @@ const ActiveConnection = () => {
           <ActiveConncetionList
             column1='State'
             column2='Consumer count'
-            subset_id='57'
+            subset_id='198'
             default_level='section'
-            sortBy='consumer_count'
+            sortBy='total_consumer_count'
             route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
           />
         )}
