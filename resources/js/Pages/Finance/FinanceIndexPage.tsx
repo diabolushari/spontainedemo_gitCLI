@@ -31,10 +31,7 @@ const FinanceIndexPage = () => {
               <TotalCollected />
             </Card>
           </div>
-          <div className='flex flex-col gap-2 lg:flex-row'>
-            <ArriersHT />
-            <ArriersLT />
-          </div>
+
           <div className='flex flex-col gap-2 lg:flex-row'>
             <div className='flex w-full lg:w-2/6'>
               <AllArears />
@@ -42,6 +39,10 @@ const FinanceIndexPage = () => {
             <div className='flex w-full lg:w-4/6'>
               <ArrearsCategory />
             </div>
+          </div>
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <ArriersHT />
+            <ArriersLT />
           </div>
         </div>
       </DashboardPadding>
