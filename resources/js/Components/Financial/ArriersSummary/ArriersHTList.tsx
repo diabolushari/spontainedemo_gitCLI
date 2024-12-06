@@ -13,12 +13,20 @@ interface Properties {
   column2: string
 
   default_level?: string
-  sortBy?: string
+
   sortOrder?: string
   route: string
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
+const rangeList: { name: string; value: string }[] = [
+  { name: 'All', value: 'total_arrears' },
+  { name: '0-3', value: 'arrears__0_3_months_' },
+  { name: '4-6', value: 'arrears__4_6_months_' },
+  { name: '7-12', value: 'arrears__7_12_months_' },
+  { name: '13-24', value: 'arrears__13_24_months_' },
+  { name: '>24', value: 'arrears___24_months_' },
+]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
   { name: 'Region', value: 'region' },
@@ -30,29 +38,36 @@ const levelTypes: { name: string; value: string }[] = [
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
-  complaint_count?: number
-  total_consumers__count_?: number
-  sla_perf_cnt?: number
-  requests_within_sla__count_?: string
+  arrears__0_3_months_?: number
+  arrears__13_24_months_?: number
+  arrears__4_6_months_?: number
+  arrears__7_12_months_?: number
+  arrears___24_months_?: number
+  arrears_percentage__0_3_months_?: number
+  arrears_percentage__13_24_months_?: number
+  arrears_percentage__4_6_months_?: number
+  arrears_percentage__7_12_months_?: number
+  arrears_percentage___24_months_?: number
+  total_arrears: number
 }
 
-const ActiveConncetionList = ({
+const ArriersHTList = ({
   subset_id,
   column1,
   column2,
-
   default_level,
-  sortBy = 'consumer_count',
+
   sortOrder = 'desc',
   route,
 }: Properties) => {
   const [page, setPage] = useState(1)
+  const [selectedRange, setSelectedRange] = useState('total_arrears')
   const [headers, setHeaders] = useState([column1, column2])
   const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [listType, setListType] = useState('10')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${selectedRange}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
   useEffect(() => {
@@ -61,12 +76,39 @@ const ActiveConncetionList = ({
 
   const isLoading = !graphValues || !graphValues.data
 
+  const findValue = (value: ConsumerList) => {
+    switch (selectedRange) {
+      case 'arrears__0_3_months_':
+        return value.arrears__0_3_months_
+      case 'arrears__4_6_months_':
+        return value.arrears__4_6_months_
+      case 'arrears__7_12_months_':
+        return value.arrears__7_12_months_
+      case 'arrears__13_24_months_':
+        return value.arrears__13_24_months_
+      case 'arrears___24_months_':
+        return value.arrears___24_months_
+      default:
+        return value.total_arrears
+    }
+  }
+
   return (
     <div className='flex w-full flex-col'>
       <div className='mt-4 flex w-full justify-end gap-2 p-2 pr-4'>
-        <span className='subheader-sm-1stop'>Ranked by Connection Counts</span>
+        <span className='subheader-sm-1stop'>Ranked by Arrear Counts</span>
       </div>
       <div className='items center flex justify-end gap-5 pr-4'>
+        <div className='flex flex-col'>
+          <SelectList
+            list={rangeList}
+            value={selectedRange}
+            setValue={setSelectedRange}
+            dataKey='value'
+            displayKey='name'
+            style='1stop-small'
+          />
+        </div>
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <div
             className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
@@ -223,7 +265,7 @@ const ActiveConncetionList = ({
                   key={value.office_name}
                 >
                   <td className=''>{value.office_name}</td>
-                  <td className=''>{value.total_consumers__count_}</td>
+                  <td className=''>{findValue(value)}</td>
                 </tr>
               )
             })}
@@ -253,4 +295,4 @@ const ActiveConncetionList = ({
   )
 }
 
-export default ActiveConncetionList
+export default ArriersHTList

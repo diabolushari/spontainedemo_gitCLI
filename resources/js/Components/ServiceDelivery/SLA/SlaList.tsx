@@ -58,9 +58,7 @@ const SlaList = ({
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
     `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
   )
-  console.log(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
-  )
+
   useEffect(() => {
     setHeaders([
       levelTypes.find((value) => value.value == officeLevel)?.name ?? column1,

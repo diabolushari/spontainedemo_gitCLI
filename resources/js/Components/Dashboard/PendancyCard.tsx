@@ -50,7 +50,6 @@ const PendancyCard = () => {
       setSelectedDate(graphValues.latest_value)
     }
   }, [setSelectedDate, graphValues, selectedDate])
-  console.log(graphValues)
 
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.request_type === title)
