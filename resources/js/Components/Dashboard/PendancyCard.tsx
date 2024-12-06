@@ -11,6 +11,8 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import { format } from 'path'
 import DataShowIcon from '../ui/DatashowIcon'
+import Skeleton from 'react-loading-skeleton'
+import { solidColors } from '@/ui/ui_interfaces'
 
 export interface PendencyGraphValues {
   date: string
@@ -53,7 +55,7 @@ const PendancyCard = () => {
 
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.request_type === title)
-        ?.requests_completed__30_days____ || 0
+        ?.requests_completed__5_days____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed__5_days__count_ || 0
 
@@ -79,165 +81,212 @@ const PendancyCard = () => {
         ?.requests_completed_within_sla__count_ || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{label}</div>
+          <div>
+            {payload.map((entry, index) => {
+              const dataKey = entry.dataKey
+                .replace(/_/g, ' ')
+                .replace(
+                  /\w\S*/g,
+                  (word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()
+                )
+
+              return (
+                <p
+                  key={`tooltip-${index}`}
+                  style={{ color: entry.color }}
+                  className='small-1stop'
+                >
+                  {`${dataKey}:`}{' '}
+                  <span className='small-1stop font-bold'>
+                    {toggleValue ? `${Number(entry.value).toFixed(2)}%` : entry.value}
+                  </span>
+                </p>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+    return null
+  }
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='small-1stop-header flex w-1/6 flex-col rounded-2xl'>
-          <button
-            className={`flex w-full rounded-tl-2xl border px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-accent2'}`}
-            onClick={() => {
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <div
-            className={`border px-2 py-7 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-          ></div>
-          <div
-            className={`border px-2 py-7 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-          ></div>
-          <div
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-          >
-            <p></p>
+        <div className='flex w-full flex-col rounded-lg p-2'>
+          <div className='flex w-full justify-end'>
+            <button
+              className='small-1stop mb-auto cursor-pointer justify-end'
+              onClick={handleToogleNumber}
+            >
+              {toggleValue ? <TooglePercentage /> : <ToogleNumber />}
+            </button>
           </div>
-          <div
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-button-muted'}`}
-          >
-            <p></p>
-          </div>
-        </div>
-        <div className='mx-2 flex w-full flex-row pt-6'>
-          {selectedLevel === 1 && (
-            <div className='flex w-full flex-col gap-4 rounded-lg bg-white p-4'>
-              <div className='mt-1 flex flex-col items-start justify-start md:flex-row'>
-                <div className='flex'>
-                  <div className='flex flex-col p-5 pt-0'>
-                    <span className='h3-1stop'>
+          <div className='mt-1 flex flex-col items-start justify-start md:flex-row'>
+            <div className='flex w-full flex-row justify-between gap-2 border p-2'>
+              <div className='flex w-1/2 flex-col justify-center'>
+                <p className='mdmetric-1stop'>
+                  {isLoading ? (
+                    <Skeleton width='100%' />
+                  ) : (
+                    <span className='xlmetric-1stop'>
                       {toggleValue ? `${complWithinSLa.toFixed(2)}%` : formatNumber(complWithinSLa)}
                     </span>
-                    <span className='small-1stop text-nowrap'>Compl. within SLA</span>
-                  </div>
-                  <div className='w-full md:w-2/3'>
-                    <SelectList
-                      setValue={setTitle}
-                      list={graphValues?.data ?? []}
-                      displayKey='request_type'
-                      dataKey='request_type'
-                      showAllOption
-                      value={title}
-                    />
-                  </div>
-                  <div className='items-end'>
-                    <button
-                      className='small-1stop mb-auto cursor-pointer justify-end p-5'
-                      onClick={handleToogleNumber}
-                    >
-                      {toggleValue ? <TooglePercentage /> : <ToogleNumber />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex flex-col pt-10'>
-                <p className='small-1stop'>
-                  Request Completion {toggleValue ? '%' : ''} by Days Taken
+                  )}
                 </p>
-
-                <div className='flex justify-center'>
-                  <BarChart
-                    width={300}
-                    height={60}
-                    data={data}
-                    layout='vertical'
-                  >
-                    <Tooltip
-                      formatter={
-                        toggleValue
-                          ? (value: number) => `${value.toFixed(2)}%`
-                          : (value: number) => formatNumber(value)
-                      }
-                    />
-                    <XAxis
-                      type='number'
-                      hide
-                    />
-                    <YAxis
-                      type='category'
-                      dataKey='name'
-                      hide
-                    />
-                    <Bar
-                      dataKey='lessThan5Days'
-                      stackId='a'
-                      fill='#A2B899'
-                    />
-                    <Bar
-                      dataKey='betweem515Days'
-                      stackId='a'
-                      fill='#EFF0A6'
-                    />
-                    <Bar
-                      dataKey='betweem1630Days'
-                      stackId='a'
-                      fill='#E9BF7C'
-                    />
-                    <Bar
-                      dataKey='greaterThan30Days'
-                      stackId='a'
-                      fill='#D467B3'
-                    />
-                  </BarChart>
-                </div>
+                <p className='small-1stop-header'>Compl. within SLA </p>
               </div>
-              <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
-                <div className='text-center'>
-                  <div className='smmetric-1stop'>
-                    {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
-                  </div>
-                  <div className='small-1stop'>{'<5 days'}</div>
-                </div>
-                <div className='text-center'>
-                  <div className='smmetric-1stop'>
-                    {toggleValue ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
-                  </div>
-                  <div className='small-1stop'>5-15 days</div>
-                </div>
-                <div className='text-center'>
-                  <div className='smmetric-1stop'>
-                    {toggleValue ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
-                  </div>
-                  <div className='small-1stop'>16-30 days</div>
-                </div>
-                <div className='text-center'>
-                  <div className='smmetric-1stop'>
-                    {toggleValue
-                      ? `${greaterThan30Days.toFixed(2)}%`
-                      : formatNumber(greaterThan30Days)}
-                  </div>
-                  <div className='small-1stop'>{'>30 days'}</div>
-                </div>
+              <div className='flex w-1/2 items-center'>
+                <SelectList
+                  setValue={setTitle}
+                  list={graphValues?.data ?? []}
+                  displayKey='request_type'
+                  dataKey='request_type'
+                  showAllOption
+                  value={title}
+                  style='1stop-small'
+                />
               </div>
             </div>
-          )}
+
+            {/* <div className='flex'>
+              <div className='flex flex-col p-5 pt-0'>
+                {isLoading ? (
+                  <Skeleton />
+                ) : (
+                  <span className='xlmetric-1stop'>
+                    {toggleValue ? `${complWithinSLa.toFixed(2)}%` : formatNumber(complWithinSLa)}
+                  </span>
+                )}
+                <span className='small-1stop text-nowrap'>Compl. within SLA</span>
+              </div>
+              <div className='w-full md:w-2/3'>
+                <SelectList
+                  setValue={setTitle}
+                  list={graphValues?.data ?? []}
+                  displayKey='request_type'
+                  dataKey='request_type'
+                  showAllOption
+                  value={title}
+                  style='1stop-small'
+                />
+              </div>
+            </div> */}
+          </div>
+
+          <div className='flex w-full flex-col justify-center px-2 pt-10'>
+            <p className='small-1stop-header text-center'>
+              Request Completion {toggleValue ? '%' : ''} by Days Taken
+            </p>
+
+            <div className='flex w-full justify-center'>
+              {isLoading ? (
+                <Skeleton
+                  width={300}
+                  height={50}
+                />
+              ) : (
+                <BarChart
+                  width={300}
+                  height={60}
+                  data={data}
+                  layout='vertical'
+                >
+                  {/* <Tooltip
+                    formatter={
+                      toggleValue
+                        ? (value: number) => `${value.toFixed(2)}%`
+                        : (value: number) => formatNumber(value)
+                    }
+                  /> */}
+
+                  <Tooltip content={renderCustomTooltip} />
+                  <XAxis
+                    type='number'
+                    hide
+                  />
+                  <YAxis
+                    type='category'
+                    dataKey='name'
+                    hide
+                  />
+                  <Bar
+                    dataKey='lessThan5Days'
+                    stackId='a'
+                    fill={solidColors[6]}
+                  />
+                  <Bar
+                    dataKey='betweem515Days'
+                    stackId='a'
+                    fill={solidColors[0]}
+                  />
+                  <Bar
+                    dataKey='betweem1630Days'
+                    stackId='a'
+                    fill={solidColors[7]}
+                  />
+                  <Bar
+                    dataKey='greaterThan30Days'
+                    stackId='a'
+                    fill={solidColors[5]}
+                  />
+                </BarChart>
+              )}
+            </div>
+          </div>
+          <div className='grid grid-cols-4 justify-center gap-2 pb-10 md:justify-start md:gap-5'>
+            <div className='text-center'>
+              <div
+                className='smmetric-1stop'
+                style={{ color: solidColors[6] }}
+              >
+                {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
+              </div>
+              <div className='small-1stop'>{'<5 days'}</div>
+            </div>
+            <div className='text-center'>
+              <div
+                className='smmetric-1stop'
+                style={{ color: solidColors[0] }}
+              >
+                {toggleValue ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
+              </div>
+              <div className='small-1stop'>5-15 days</div>
+            </div>
+            <div className='text-center'>
+              <div
+                className='smmetric-1stop'
+                style={{ color: solidColors[7] }}
+              >
+                {toggleValue ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
+              </div>
+              <div className='small-1stop'>16-30 days</div>
+            </div>
+            <div className='text-center'>
+              <div
+                className='smmetric-1stop'
+                style={{ color: solidColors[5] }}
+              >
+                {toggleValue ? `${greaterThan30Days.toFixed(2)}%` : formatNumber(greaterThan30Days)}
+              </div>
+              <div className='small-1stop'>{'>30 days'}</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className='flex h-full items-center justify-between gap-1 rounded-b-2xl bg-button-muted px-4 pl-14'>
-        <div className=''>
-          <p className='h3-1stop'>Pendency Pattern</p>
-        </div>
-        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 px-4 py-4'>
-          {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].date).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric',
-            })} */}
+      <div className='flex h-full items-center justify-end gap-1 gap-4 rounded-b-2xl bg-1stop-alt-gray px-4'>
+        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 py-2'>
           <DatePicker
             value={selectedDate ?? ''}
             setValue={setSelectedDate}
+            disabled={false}
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>

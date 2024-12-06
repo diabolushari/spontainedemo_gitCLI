@@ -5,6 +5,8 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
 import { formatNumber } from '../ActiveConnection'
+import { solidColors } from '@/ui/ui_interfaces'
+import Skeleton from 'react-loading-skeleton'
 
 export interface SlaTrendValues {
   month_year: string
@@ -97,74 +99,94 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }
     value: `${i + 3} MONTHS`,
     text: `${i + 3} MONTHS`,
   }))
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+      const value = payload[0].value
 
-  return (
-    <div className='flex w-full flex-col'>
-      <div className='flex w-full'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='ml-2 flex'>
-            <span className='subheader-sm-1stop'> Trend of SLA Performance</span>
-          </div>
-          <div className='flex'>
-            <div className='p-5'>
-              {/* <button onClick={handleToogleChange}>
-                {toogleValue ? <ToogleNumber /> : <TooglePercentage />}
-              </button> */}
-            </div>
-            <div className='p-5'>
-              <SelectList
-                setValue={setTitle}
-                list={categories}
-                displayKey='sla_svc_group'
-                dataKey='sla_svc_group'
-                value={title}
-              />
-            </div>
-            <span className='flex items-center'>Request type, PREVIOUS</span>
-            <div className='p-5'>
-              <SelectList
-                list={dateEarlier}
-                dataKey='value'
-                displayKey='text'
-                value={selectedValue}
-                setValue={setSelectedValue}
-              />
-            </div>
-          </div>
-          <div className='w-full'>
-            <ResponsiveContainer
-              width='100%'
-              height={200}
-            >
-              <AreaChart data={chartData}>
-                <XAxis
-                  dataKey='month'
-                  style={{ fontSize: 10 }}
-                  tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
-                />
-                <YAxis
-                  tickFormatter={(value) => formatNumber(value)}
-                  style={{ fontSize: 10 }}
-                />
-                <Tooltip
-                  labelFormatter={(month: string) => `${month.slice(4)}/${month.slice(0, 4)}`}
-                  formatter={
-                    toogleValue
-                      ? (value: number) => formatNumber(value)
-                      : (value: number) => `${value.toFixed(2)}%`
-                  }
-                />
-
-                <Area
-                  type='monotone'
-                  dataKey='sla_perf_count'
-                  stroke='#0091ff'
-                  fill='#0091ff'
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+          <div>
+            <span className='small-1stop'>
+              SLA Performance: <span className='small-1stop font-bold'>{value.toFixed(2)}%</span>
+            </span>
           </div>
         </div>
+      )
+    }
+    return null
+  }
+  return (
+    <div className='flex w-full flex-col pr-4'>
+      <div className='mt-4 flex w-full justify-end gap-2 p-2'>
+        <span className='subheader-sm-1stop'> Trend of SLA Performance</span>
+      </div>
+      <div className='flex w-full justify-end gap-2 px-2'>
+        <div className=''>
+          <SelectList
+            setValue={setTitle}
+            list={categories}
+            displayKey='sla_svc_group'
+            dataKey='sla_svc_group'
+            value={title}
+            style='1stop-small'
+          />
+        </div>
+        <span className='small-1stop-header flex items-center'>Request type, PREVIOUS</span>
+        <div className=''>
+          <SelectList
+            list={dateEarlier}
+            dataKey='value'
+            displayKey='text'
+            value={selectedValue}
+            setValue={setSelectedValue}
+            style='1stop-small'
+          />
+        </div>
+      </div>
+      <div className='w-full'>
+        {isLoading ? (
+          <Skeleton
+            height={260}
+            width='100%'
+          />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={250}
+          >
+            <AreaChart data={chartData}>
+              <XAxis
+                dataKey='month'
+                style={{ fontSize: 10 }}
+                tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
+              />
+              <YAxis
+                tickFormatter={(value) => formatNumber(value)}
+                style={{ fontSize: 10 }}
+              />
+              {/* <Tooltip
+                labelFormatter={(month: string) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                formatter={
+                  toogleValue
+                    ? (value: number) => formatNumber(value)
+                    : (value: number) => `${value.toFixed(2)}%`
+                }
+              /> */}
+
+              <Tooltip content={renderCustomTooltip} />
+
+              <Area
+                type='monotone'
+                dataKey='sla_perf_count'
+                stroke={solidColors[0]}
+                fill={solidColors[1]}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

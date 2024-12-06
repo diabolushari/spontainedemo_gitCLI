@@ -3,7 +3,7 @@ import MoreButton from '../../MoreButton'
 import useFetchList from '@/hooks/useFetchList'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -57,8 +57,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
 
   const isLoading = !graphValues || graphValues.data.length === 0
   const detailRoute = () => {
-    return `/data-explorer/Customer Complaints Summary?latest=month&route=${route('service-delivery.index')}`
-    console.log('route-clicked')
+    router.get(
+      `/data-explorer/Customer Complaints Summary?latest=month&route=${route('service-delivery.index')}`
+    )
   }
   return (
     <div className='flex w-full'>

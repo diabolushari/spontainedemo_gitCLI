@@ -239,7 +239,7 @@ const ActiveConnection = () => {
                       name='radio'
                       checked={voltageType === 'Total'}
                       onClick={() => setVoltageType('Total')}
-                      className='checkbox bg-1stop-alt-highlight h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 bg-1stop-alt-highlight checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
@@ -375,12 +375,12 @@ const ActiveConnection = () => {
         )}
       </div>
       {/* //Footer */}
-      <div className='bg-1stop-alt-gray flex h-full items-center justify-between rounded-b-2xl px-4 pl-12'>
+      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='py-4'>
           <p className='mdmetric-1stop'>Active Connections</p>
         </div>
         <div
-          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
+          className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50'
           //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
         >
           <div style={{ opacity: 1 }}>
@@ -390,7 +390,7 @@ const ActiveConnection = () => {
             />
           </div>
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
           >

@@ -1,5 +1,8 @@
 import ArriersHT from '@/Components/Financial/ArriersSummary/ArriersHT'
 import ArriersLT from '@/Components/Financial/ArriersSummary/ArriersLT'
+import AllArears from '@/Components/Finance/AllArears'
+import ArrearsCategory from '@/Components/Finance/ArrearsCategory'
+import TotalCollected from '@/Components/Finance/TotalCollected'
 import TotalBilled from '@/Components/Financial/TotalBilled/TotalBilled'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
@@ -24,13 +27,22 @@ const FinanceIndexPage = () => {
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <TotalBilled />
+            <Card className=''>
+              <TotalCollected />
+            </Card>
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <ArriersHT />
             <ArriersLT />
           </div>
-          <div className='flex flex-col gap-2 sm:flex-row'></div>
-          <div className='flex flex-col gap-2 sm:flex-row'></div>
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <div className='flex w-full lg:w-2/6'>
+              <AllArears />
+            </div>
+            <div className='flex w-full lg:w-4/6'>
+              <ArrearsCategory />
+            </div>
+          </div>
         </div>
       </DashboardPadding>
     </DashboardLayout>
