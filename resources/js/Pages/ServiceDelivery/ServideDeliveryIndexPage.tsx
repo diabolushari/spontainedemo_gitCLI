@@ -1,11 +1,9 @@
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import React, { useState } from 'react'
-import Card from '@/ui/Card/Card'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
-import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
 import Solar from '@/Components/ServiceDelivery/Solar/Solar'
 import Complaints from '@/Components/ServiceDelivery/Issues/Complaints'
 import SlaPerformance from '@/Components/ServiceDelivery/SLA/SlaPerformance'
@@ -27,9 +25,8 @@ const ServideDeliveryIndexPage = () => {
     >
       <DashboardPadding>
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-14'>
-          <div className='flex flex-col gap-2 lg:flex-row'>
+          <div className='grid grid-cols-1 gap-2 lg:grid-cols-2'>
             <ActiveConnection />
-
             <NewConnections />
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
