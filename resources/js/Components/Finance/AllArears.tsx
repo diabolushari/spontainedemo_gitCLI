@@ -142,6 +142,7 @@ const AllArears = () => {
             subset_id='170'
             default_level='section'
             sortBy='total_arrears'
+            route={`office-rankings/Total Arrears?route=${route('finance.index')}`}
           />
         )}
       </div>

@@ -488,7 +488,7 @@ const ArriersLT = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Arrear Summary - LT?latest=month?route=${route('finance.index')}`}
           >
             <MoreButton />
           </Link>

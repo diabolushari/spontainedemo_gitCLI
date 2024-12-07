@@ -376,6 +376,7 @@ const TotalBilled = () => {
         )}
         {selectedLevel === 3 && (
           <BillingList
+            route={`office-rankings/Demand Analysis?route=${route('finance.index')}`}
             column1='Section'
             column2='Demand'
             subset_id='120'

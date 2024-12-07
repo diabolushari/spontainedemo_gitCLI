@@ -364,6 +364,7 @@ const TotalCollected = () => {
             subset_id='152'
             default_level='section'
             sortBy='total_collection'
+            route={`office-rankings/Collection Summary?route=${route('finance.index')}`}
           />
         )}
       </div>

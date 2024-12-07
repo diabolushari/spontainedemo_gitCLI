@@ -493,7 +493,7 @@ const ArriersHT = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Arrear Summary - HT?latest=month?route=${route('finance.index')}`}
           >
             <MoreButton />
           </Link>

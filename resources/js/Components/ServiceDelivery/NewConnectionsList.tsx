@@ -37,6 +37,7 @@ interface ConsumerList extends Model {
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
   pend_beyond_sla__?: number
+  sla_perf__?: number
 }
 
 const NewConnectionsList = ({
@@ -57,7 +58,7 @@ const NewConnectionsList = ({
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
     `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${
-      toggleValue ? 'sla_perf_cnt' : 'pend_beyond_sla__'
+      toggleValue ? 'sla_perf_cnt' : 'sla_perf__'
     }&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
