@@ -189,6 +189,7 @@ const SlaPerformance = () => {
     },
     [selectedMonth]
   )
+
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>

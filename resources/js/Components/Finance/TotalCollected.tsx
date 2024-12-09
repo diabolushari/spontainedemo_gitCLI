@@ -49,7 +49,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
   return (
     <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
       {payload.map((entry, index) => {
-        const percentage = ((entry.payload.value / totalValue) * 100).toFixed(2) // Calculate percentage
+        const percentage = ((entry.payload.value / totalValue) * 100).toFixed(2)
         return (
           <li
             key={`item-${index}`}
@@ -65,7 +65,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
                 marginRight: 5,
               }}
             />
-            {`${entry.value} (${percentage}%)`} {/* Append percentage */}
+            {`${entry.value} (${percentage}%)`}
           </li>
         )
       })}
@@ -172,8 +172,6 @@ const TotalCollected = () => {
   const ehtPercent = TotalCollection('EHT')
     ? (TotalCollection('EHT') * 100) / TotalCollection('Total')
     : 0
-
-  console.log(ltPercent, htPercent, ehtPercent)
 
   return (
     <Card className='flex w-full flex-col'>

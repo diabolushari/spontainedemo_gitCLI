@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { CustomLegend, formatNumber } from '../ActiveConnection'
+import React, { useCallback, useEffect, useState } from 'react'
+import { CustomLegend, dateToYearMonth, formatNumber } from '../ActiveConnection'
 import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Skeleton from 'react-loading-skeleton'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '@/Components/CustomTooltip'
+import { router } from '@inertiajs/react'
 
 interface SolarProsumersValue {
   consumer_count: number
@@ -116,6 +117,25 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
   }
+
+  const handleGraphSelection = useCallback(
+    (data: { name: string | null }) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Solar Prosumer Statistics',
+          subset: isMW
+            ? 'Solar Generation Capacity - All Categories'
+            : 'Solar Prosumers - All Categories',
+          consumer_category: data.name,
+          month: dateToYearMonth(selectedMonth),
+          route: route('service-delivery.index'),
+
+          voltage: voltageType === 'Total' ? '' : voltageType,
+        })
+      )
+    },
+    [selectedMonth, isMW, voltageType]
+  )
 
   return (
     <div className='flex flex-row space-x-1 p-2 pb-8'>
@@ -261,6 +281,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 paddingAngle={2}
                 dataKey='value'
                 stroke='none'
+                onClick={handleGraphSelection}
               >
                 {data.map((entry, index) => (
                   <Cell

@@ -175,7 +175,6 @@ const TotalBilled = () => {
     ? (cunsumerCount('EHT', '', false) * 100) / cunsumerCount('Total', '', false)
     : 0
 
-  console.log(domesticLtPercent, otherLtPercent, htPercent, ehtPercent)
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>

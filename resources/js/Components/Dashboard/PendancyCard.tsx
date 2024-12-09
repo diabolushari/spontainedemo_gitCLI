@@ -36,7 +36,6 @@ const PendancyCard = () => {
   const [title, setTitle] = useState('Load Change')
   const [toggleValue, settoggleValue] = useState<boolean>(true)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [dataInterval, setDataInterval] = useState(1)
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
