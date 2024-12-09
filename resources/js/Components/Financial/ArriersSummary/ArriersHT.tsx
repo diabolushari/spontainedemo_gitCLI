@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -59,147 +59,141 @@ const ArriersHT = () => {
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  graphValues?.data.sort((a, b) => a.total_arrears - b.total_arrears).reverse()
+  const graphData = useMemo(() => {
+    if (graphValues?.data == null) {
+      return []
+    }
+    switch (range) {
+      case '0-3':
+        return [...graphValues.data]
+          .sort((a, b) => a.arrears__0_3_months_ - b.arrears__0_3_months_)
+          .reverse()
+      case '4-6':
+        return [...graphValues.data]
+          .sort((a, b) => a.arrears__4_6_months_ - b.arrears__4_6_months_)
+          .reverse()
+
+      case '7-12':
+        return [...graphValues.data]
+          .sort((a, b) => a.arrears__7_12_months_ - b.arrears__7_12_months_)
+          .reverse()
+
+      case '>12':
+        return [...graphValues.data]
+          .sort(
+            (a, b) =>
+              a.arrears__13_24_months_ +
+              a.arrears___24_months_ -
+              (b.arrears__13_24_months_ + b.arrears___24_months_)
+          )
+          .reverse()
+      case 'Total':
+        return [...graphValues.data].sort((a, b) => a.total_arrears - b.total_arrears).reverse()
+      default:
+        return []
+    }
+  }, [graphValues, range])
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const filters = (index: number) => {
     if (index < 3) {
       switch (range) {
         case 'Total':
-          return graphValues?.data[index]?.total_arrears
+          return graphData.length > 0 ? graphData[index].total_arrears : 0
         case '0-3':
-          return toggleValue
-            ? graphValues?.data[index].arrears__0_3_months_
-            : graphValues?.data[index].arrears_percentage__0_3_months_
+          return graphData.length > 0 ? graphData[index].arrears__0_3_months_ : 0
+
         case '4-6':
-          return toggleValue
-            ? graphValues?.data[index].arrears__4_6_months_
-            : graphValues?.data[index].arrears_percentage__4_6_months_
+          return graphData.length > 0 ? graphData[index].arrears__4_6_months_ : 0
+
         case '7-12':
-          return toggleValue
-            ? graphValues?.data[index].arrears__7_12_months_
-            : graphValues?.data[index].arrears_percentage__7_12_months_
+          return graphData.length > 0 ? graphData[index].arrears__7_12_months_ : 0
+
         case '>12':
-          return toggleValue
-            ? graphValues?.data[index]?.arrears__13_24_months_ != null &&
-              graphValues?.data[index]?.arrears___24_months_ != null
-              ? graphValues?.data[index]?.arrears__13_24_months_ +
-                graphValues?.data[index]?.arrears___24_months_
+          return graphData.length > 0
+            ? graphData[index]?.arrears__13_24_months_ != null &&
+              graphData[index]?.arrears___24_months_ != null
+              ? graphData[index]?.arrears__13_24_months_ + graphData[index]?.arrears___24_months_
               : 0
-            : graphValues?.data[index].arrears_percentage__13_24_months_ != null &&
-                graphValues?.data[index].arrears_percentage___24_months_ != null
-              ? graphValues?.data[index].arrears_percentage__13_24_months_ +
-                graphValues?.data[index]?.arrears___24_months_
-              : 0
+            : 0
       }
     } else {
       switch (range) {
         case 'Total':
-          return graphValues?.data
-            .filter(
-              (value) =>
-                value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[2]?.consumer_category
-            )
-            .reduce((sum, value) => sum + value.total_arrears, 0)
+          return graphData.length > 0
+            ? graphData
+                .filter(
+                  (value) =>
+                    value.consumer_category !== graphData[0]?.consumer_category &&
+                    value.consumer_category !== graphData[1]?.consumer_category &&
+                    value.consumer_category !== graphData[2]?.consumer_category
+                )
+                .reduce((sum, value) => sum + value.total_arrears, 0)
+            : 0
         case '0-3':
-          return graphValues?.data
-            .filter(
-              (value) =>
-                value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[2]?.consumer_category
-            )
-            .reduce(
-              (sum, value) =>
-                sum +
-                (toggleValue ? value.arrears__0_3_months_ : value.arrears_percentage__0_3_months_),
-              0
-            )
+          return graphData.length > 0
+            ? graphValues?.data
+                .filter(
+                  (value) =>
+                    value.consumer_category !== graphData[0]?.consumer_category &&
+                    value.consumer_category !== graphData[1]?.consumer_category &&
+                    value.consumer_category !== graphData[2]?.consumer_category
+                )
+                .reduce((sum, value) => sum + value.arrears__0_3_months_, 0)
+            : 0
         case '4-6':
-          return graphValues?.data
-            .filter(
-              (value) =>
-                value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[2]?.consumer_category
-            )
-            .reduce(
-              (sum, value) =>
-                sum +
-                (toggleValue ? value.arrears__4_6_months_ : value.arrears_percentage__4_6_months_),
-              0
-            )
+          return graphData.length > 0
+            ? graphData
+                .filter(
+                  (value) =>
+                    value.consumer_category !== graphData[0]?.consumer_category &&
+                    value.consumer_category !== graphData[1]?.consumer_category &&
+                    value.consumer_category !== graphData[2]?.consumer_category
+                )
+                .reduce((sum, value) => sum + value.arrears__4_6_months_, 0)
+            : 0
         case '7-12':
-          return graphValues?.data
-            .filter(
-              (value) =>
-                value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[2]?.consumer_category
-            )
-            .reduce(
-              (sum, value) =>
-                sum +
-                (toggleValue
-                  ? value.arrears__7_12_months_
-                  : value.arrears_percentage__7_12_months_),
-              0
-            )
+          return graphData.length > 0
+            ? graphData
+                .filter(
+                  (value) =>
+                    value.consumer_category !== graphData[0]?.consumer_category &&
+                    value.consumer_category !== graphData[1]?.consumer_category &&
+                    value.consumer_category !== graphData[2]?.consumer_category
+                )
+                .reduce((sum, value) => sum + value.arrears__7_12_months_, 0)
+            : 0
         case '>12':
-          return graphValues?.data
-            .filter(
-              (value) =>
-                value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-                value.consumer_category !== graphValues?.data[2]?.consumer_category
-            )
-            .reduce(
-              (sum, value) =>
-                sum +
-                (toggleValue
-                  ? value.arrears__13_24_months_ + value.arrears___24_months_
-                  : value.arrears_percentage__13_24_months_ +
-                    value.arrears_percentage___24_months_),
-              0
-            )
+          return graphData.length > 0
+            ? graphData
+                .filter(
+                  (value) =>
+                    value.consumer_category !== graphData[0]?.consumer_category &&
+                    value.consumer_category !== graphData[1]?.consumer_category &&
+                    value.consumer_category !== graphData[2]?.consumer_category
+                )
+                .reduce(
+                  (sum, value) => sum + value.arrears__13_24_months_ + value.arrears___24_months_,
+                  0
+                )
+            : 0
       }
     }
   }
-
+  console.log(graphData, filters(1))
   const arrearCount = (range: string) => {
     switch (range) {
       case 'Total':
         return graphValues?.data.reduce((sum, value) => sum + value.total_arrears, 0)
       case '0-3':
-        return graphValues?.data.reduce(
-          (sum, value) =>
-            sum +
-            (toggleValue ? value.arrears__0_3_months_ : value.arrears_percentage__0_3_months_),
-          0
-        )
+        return graphValues?.data.reduce((sum, value) => sum + value.arrears__0_3_months_, 0)
       case '4-6':
-        return graphValues?.data.reduce(
-          (sum, value) =>
-            sum +
-            (toggleValue ? value.arrears__4_6_months_ : value.arrears_percentage__4_6_months_),
-          0
-        )
+        return graphValues?.data.reduce((sum, value) => sum + value.arrears__4_6_months_, 0)
       case '7-12':
-        return graphValues?.data.reduce(
-          (sum, value) =>
-            sum +
-            (toggleValue ? value.arrears__7_12_months_ : value.arrears_percentage__7_12_months_),
-          0
-        )
+        return graphValues?.data.reduce((sum, value) => sum + value.arrears__7_12_months_, 0)
       case '>12':
         return graphValues?.data.reduce(
-          (sum, value) =>
-            sum +
-            (toggleValue
-              ? value.arrears__13_24_months_ + value.arrears___24_months_
-              : value.arrears_percentage__13_24_months_ + value.arrears_percentage___24_months_),
+          (sum, value) => sum + value.arrears__13_24_months_ + value.arrears___24_months_,
           0
         )
     }
@@ -212,15 +206,15 @@ const ArriersHT = () => {
 
   const data = [
     {
-      name: graphValues?.data[0]?.consumer_category,
+      name: graphData[0]?.consumer_category,
       value: filters(0),
     },
     {
-      name: graphValues?.data[1]?.consumer_category,
+      name: graphData[1]?.consumer_category,
       value: filters(1),
     },
     {
-      name: graphValues?.data[2]?.consumer_category,
+      name: graphData[2]?.consumer_category,
       value: filters(2),
     },
     {
@@ -228,6 +222,39 @@ const ArriersHT = () => {
       value: filters(3),
     },
   ]
+
+  const findPercentage = (value: string) => {
+    const total = graphValues?.data.reduce((sum, value) => sum + value.total_arrears, 0)
+    switch (value) {
+      case '0-3':
+        return total != null && graphValues?.data != null
+          ? (graphValues?.data.reduce((sum, value) => sum + value.arrears__0_3_months_, 0) /
+              total) *
+              100
+          : 0
+      case '4-6':
+        return total != null && graphValues?.data != null
+          ? (graphValues?.data.reduce((sum, value) => sum + value.arrears__4_6_months_, 0) /
+              total) *
+              100
+          : 0
+      case '7-12':
+        return total != null && graphValues?.data != null
+          ? (graphValues?.data.reduce((sum, value) => sum + value.arrears__7_12_months_, 0) /
+              total) *
+              100
+          : 0
+      case '>12':
+        return total != null && graphValues?.data != null
+          ? (graphValues?.data.reduce(
+              (sum, value) => sum + value.arrears__13_24_months_ + value.arrears___24_months_,
+              0
+            ) /
+              total) *
+              100
+          : 0
+    }
+  }
 
   return (
     <Card className='flex w-full flex-col'>
@@ -320,7 +347,7 @@ const ArriersHT = () => {
                       toggleValue ? (
                         formatNumber(arrearCount('0-3') ?? 0)
                       ) : (
-                        `${arrearCount('0-3')?.toFixed(2)}%`
+                        `${findPercentage('0-3')?.toFixed(2)}%`
                       )
                     ) : (
                       <Skeleton />
@@ -346,7 +373,7 @@ const ArriersHT = () => {
                       toggleValue ? (
                         formatNumber(arrearCount('4-6') ?? 0)
                       ) : (
-                        `${arrearCount('4-6')?.toFixed(2)}%`
+                        `${findPercentage('4-6')?.toFixed(2)}%`
                       )
                     ) : (
                       <Skeleton />
@@ -375,7 +402,7 @@ const ArriersHT = () => {
                       toggleValue ? (
                         formatNumber(arrearCount('7-12') ?? 0)
                       ) : (
-                        `${arrearCount('7-12')?.toFixed(2)}%`
+                        `${findPercentage('7-12')?.toFixed(2)}%`
                       )
                     ) : (
                       <Skeleton />
@@ -400,7 +427,7 @@ const ArriersHT = () => {
                       toggleValue ? (
                         formatNumber(arrearCount('>12') ?? 0)
                       ) : (
-                        `${arrearCount('>12')?.toFixed(2)}%`
+                        `${findPercentage('>12')?.toFixed(2)}%`
                       )
                     ) : (
                       <Skeleton />
@@ -435,10 +462,7 @@ const ArriersHT = () => {
                     width={100}
                     height={100}
                   >
-                    <Tooltip
-                      formatter={(value: number) => `${formatNumber(value)}`}
-                      content={<CustomTooltip />}
-                    />
+                    <Tooltip formatter={(value: number) => `${formatNumber(value)}`} />
 
                     <Pie
                       data={data}
