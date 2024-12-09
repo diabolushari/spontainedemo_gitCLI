@@ -15,6 +15,8 @@ import TrendIcon from '@/Components/ui/TrendIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '@/Components/CustomTooltip'
+import ToogleNumber from '@/Components/ui/ToogleNumber'
+import TooglePercentage from '@/Components/ui/TogglePercentage'
 
 export interface BillingValues {
   consumer_category: string
@@ -65,6 +67,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
 
 const TotalBilled = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [toggleValue, settoggleValue] = useState<boolean>(true)
 
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [voltageType, setVoltageType] = useState('Total')
@@ -93,6 +96,10 @@ const TotalBilled = () => {
       setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
+
+  const handleToogleNumber = () => {
+    settoggleValue(!toggleValue)
+  }
 
   const filters = (value: BillingValues, index: number) => {
     if (index < 3) {
@@ -161,7 +168,21 @@ const TotalBilled = () => {
     },
   ]
 
-  const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
+  const domesticLtPercent = cunsumerCount('LT', 'DOMESTIC', true)
+    ? (cunsumerCount('LT', 'DOMESTIC', true) * 100) / cunsumerCount('Total', '', false)
+    : 0
+
+  const otherLtPercent = cunsumerCount('LT', 'DOMESTIC', false)
+    ? (cunsumerCount('LT', 'DOMESTIC', false) * 100) / cunsumerCount('Total', '', false)
+    : 0
+
+  const htPercent = cunsumerCount('HT', '', false)
+    ? (cunsumerCount('HT', '', false) * 100) / cunsumerCount('Total', '', false)
+    : 0
+
+  const ehtPercent = cunsumerCount('EHT', '', false)
+    ? (cunsumerCount('EHT', '', false) * 100) / cunsumerCount('Total', '', false)
+    : 0
 
   return (
     <Card className='flex w-full flex-col'>
@@ -248,7 +269,11 @@ const TotalBilled = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(cunsumerCount('LT', 'DOMESTIC', true) ?? 0)
+                      toggleValue ? (
+                        formatNumber(cunsumerCount('LT', 'DOMESTIC', true) ?? 0)
+                      ) : (
+                        domesticLtPercent.toFixed(2) + '%'
+                      )
                     ) : (
                       <Skeleton />
                     )}
@@ -270,7 +295,11 @@ const TotalBilled = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(cunsumerCount('LT', 'DOMESTIC', false) ?? 0)
+                      toggleValue ? (
+                        formatNumber(cunsumerCount('LT', 'DOMESTIC', false) ?? 0)
+                      ) : (
+                        otherLtPercent.toFixed(2) + '%'
+                      )
                     ) : (
                       <Skeleton />
                     )}
@@ -294,7 +323,11 @@ const TotalBilled = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(cunsumerCount('HT', '', false) ?? 0)
+                      toggleValue ? (
+                        formatNumber(cunsumerCount('HT', '', false) ?? 0)
+                      ) : (
+                        htPercent.toFixed(2) + '%'
+                      )
                     ) : (
                       <Skeleton />
                     )}
@@ -316,13 +349,17 @@ const TotalBilled = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(cunsumerCount('EHT', '', false) ?? 0)
+                      toggleValue ? (
+                        formatNumber(cunsumerCount('EHT', '', false) ?? 0)
+                      ) : (
+                        `${ehtPercent.toFixed(2)}%`
+                      )
                     ) : (
                       <Skeleton />
                     )}
                   </p>
                   <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>EHT </p>
+                    <p className='small-1stop-header'>EHT</p>
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
@@ -337,7 +374,15 @@ const TotalBilled = () => {
             </div>
 
             {/* Graph */}
-            <div className='flex w-1/2 justify-center'>
+            <div className='relative flex w-1/2 flex-col pt-2'>
+              <div className='flex w-full justify-end'>
+                <button
+                  className='small-1stop mb-auto cursor-pointer justify-end'
+                  onClick={handleToogleNumber}
+                >
+                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                </button>
+              </div>
               {graphValues?.data.length ? (
                 <ResponsiveContainer className='small-1stop'>
                   <PieChart

@@ -10,6 +10,7 @@ import SolarList from './SolarList'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import TrendIcon from '@/Components/ui/TrendIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
+import { dateToYearMonth } from '../ActiveConnection'
 
 const Solar = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
@@ -95,7 +96,7 @@ const Solar = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Solar Prosumer Statistics?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Solar Prosumer Statistics?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

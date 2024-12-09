@@ -16,6 +16,8 @@ import { CustomTooltip } from '../CustomTooltip'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import TotalCollectionList from './TotalCollectionList'
 import TotalCollectionTrend from './TotalCollectionTrend'
+import ToogleNumber from '../ui/ToogleNumber'
+import TooglePercentage from '../ui/TogglePercentage'
 
 interface Properties {
   section_code?: string
@@ -47,7 +49,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
   return (
     <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
       {payload.map((entry, index) => {
-        const percentage = ((entry.payload.value / totalValue) * 100).toFixed(2) // Calculate percentage
+        const percentage = ((entry.payload.value / totalValue) * 100).toFixed(2)
         return (
           <li
             key={`item-${index}`}
@@ -63,7 +65,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
                 marginRight: 5,
               }}
             />
-            {`${entry.value} (${percentage}%)`} {/* Append percentage */}
+            {`${entry.value} (${percentage}%)`}
           </li>
         )
       })}
@@ -73,10 +75,12 @@ export const CustomLegend = ({ payload }: LegendProps) => {
 
 const TotalCollected = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-  const [ToogleValue, setToogleValue] = useState(false)
-
+  const [toggleValue, settoggleValue] = useState<boolean>(true)
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [voltageType, setVoltageType] = useState('Total')
+  const handleToogleNumber = () => {
+    settoggleValue(!toggleValue)
+  }
 
   const [graphValues] = useFetchRecord<{ data: CollectionGraphValues[]; latest_value: string }>(
     `subset/152?${
@@ -158,6 +162,16 @@ const TotalCollected = () => {
       value: graphFilter(3),
     },
   ]
+
+  const ltPercent = TotalCollection('LT')
+    ? (TotalCollection('LT') * 100) / TotalCollection('Total')
+    : 0
+  const htPercent = TotalCollection('HT')
+    ? (TotalCollection('HT') * 100) / TotalCollection('Total')
+    : 0
+  const ehtPercent = TotalCollection('EHT')
+    ? (TotalCollection('EHT') * 100) / TotalCollection('Total')
+    : 0
 
   return (
     <Card className='flex w-full flex-col'>
@@ -244,7 +258,11 @@ const TotalCollected = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(TotalCollection('LT') ?? 0)
+                      toggleValue ? (
+                        formatNumber(TotalCollection('LT') ?? 0)
+                      ) : (
+                        ltPercent.toFixed(2) + '%'
+                      )
                     ) : (
                       <Skeleton />
                     )}
@@ -266,7 +284,11 @@ const TotalCollected = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(TotalCollection('HT') ?? 0)
+                      toggleValue ? (
+                        formatNumber(TotalCollection('HT') ?? 0)
+                      ) : (
+                        htPercent.toFixed(2) + '%'
+                      )
                     ) : (
                       <Skeleton />
                     )}
@@ -285,11 +307,14 @@ const TotalCollected = () => {
                 </div>
               </div>
 
-              {/* EHT */}
               <div className='flex flex-col border p-2'>
                 <p className='mdmetric-1stop'>
                   {graphValues?.data.length ? (
-                    formatNumber(TotalCollection('EHT') ?? 0)
+                    toggleValue ? (
+                      formatNumber(TotalCollection('EHT') ?? 0)
+                    ) : (
+                      ehtPercent.toFixed(2) + '%'
+                    )
                   ) : (
                     <Skeleton />
                   )}
@@ -309,7 +334,15 @@ const TotalCollected = () => {
             </div>
 
             {/* Graph */}
-            <div className='relative flex w-1/2 justify-center'>
+            <div className='relative flex w-1/2 flex-col pt-2'>
+              <div className='flex w-full justify-end'>
+                <button
+                  className='small-1stop mb-auto cursor-pointer justify-end'
+                  onClick={handleToogleNumber}
+                >
+                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                </button>
+              </div>
               {isLoading ? (
                 <Skeleton
                   circle={true}

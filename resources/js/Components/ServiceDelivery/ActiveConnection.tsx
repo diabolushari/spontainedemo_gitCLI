@@ -420,7 +420,7 @@ const ActiveConnection = () => {
         </div>
         <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Active Connections Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

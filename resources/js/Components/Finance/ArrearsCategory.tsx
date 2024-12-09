@@ -29,7 +29,6 @@ const ArrearsCategory = () => {
   const [graphValues] = useFetchRecord<{ data: ArrearsCategoryValues[]; latest_value: string }>(
     `subset/181?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-  console.log(graphValues)
 
   const voltageType = ['LT', 'HT']
 
@@ -43,20 +42,12 @@ const ArrearsCategory = () => {
 
   const filteredValues = graphValues?.data.filter((value) => value.voltage === selectedVoltageType)
 
-  console.log(
-    'Available Voltage Values:',
-    graphValues?.data.map((value) => value.voltage)
-  )
-  console.log('Selected Voltage Type:', selectedVoltageType)
-
-  console.log('Filtered Values', filteredValues)
   const chartData = filteredValues?.map((value) => ({
     ConsumerCategory: value.consumer_category,
     TotalArrears: value.total_arrears,
     DisputedArrears: value.disputed_arrears,
     UndisputedArrears: value.undisputed_arrears,
   }))
-  console.log('Chart Data', chartData)
 
   return (
     <Card className='flex w-full flex-col'>

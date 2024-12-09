@@ -3,15 +3,15 @@ import ToogleNumber from '@/Components/ui/ToogleNumber'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import SlaTrend, { SlaTrendValues } from './SlaTrend'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import MoreButton from '@/Components/MoreButton'
 import TopList from '../NewConnectionsList'
 import SlaList from './SlaList'
-import { formatNumber } from '../ActiveConnection'
+import { dateToYearMonth, formatNumber } from '../ActiveConnection'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import TrendIcon from '@/Components/ui/TrendIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
@@ -174,6 +174,22 @@ const SlaPerformance = () => {
     }
     return null
   }
+
+  const handleGraphSelection = useCallback(
+    (data: { name: string | null }) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'SLA Performance Comparison',
+          subset: 'SLA Performance Analysis - All Request Types',
+          request_type: data.name,
+          month: dateToYearMonth(selectedMonth),
+          route: route('service-delivery.index'),
+        })
+      )
+    },
+    [selectedMonth]
+  )
+
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -268,6 +284,7 @@ const SlaPerformance = () => {
                           }
                           stackId='a'
                           fill={solidColors[6]}
+                          onClick={handleGraphSelection}
                         />
 
                         <Bar
@@ -278,6 +295,7 @@ const SlaPerformance = () => {
                           }
                           stackId='a'
                           fill={solidColors[0]}
+                          onClick={handleGraphSelection}
                         />
                         <Bar
                           dataKey={
@@ -287,6 +305,7 @@ const SlaPerformance = () => {
                           }
                           stackId='a'
                           fill={solidColors[7]}
+                          onClick={handleGraphSelection}
                         />
                         <Bar
                           dataKey={
@@ -296,6 +315,7 @@ const SlaPerformance = () => {
                           }
                           stackId='a'
                           fill={solidColors[5]}
+                          onClick={handleGraphSelection}
                         />
                       </BarChart>
                     </ResponsiveContainer>
@@ -341,7 +361,7 @@ const SlaPerformance = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/SLA Performance Comparison?latest=month?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/SLA Performance Comparison?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

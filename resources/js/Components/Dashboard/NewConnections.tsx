@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
-import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 import DataShowIcon from '../ui/DatashowIcon'
 import TrendIcon from '../ui/TrendIcon'
 import Top10Icon from '../ui/Top10Icon'
@@ -138,15 +138,29 @@ const NewConnections = () => {
   //   const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
 
   const data = [
-    { name: 'Completed within SLA', value: completedWithinSla },
-    { name: 'Completed beyond SLA', value: completedBeyondSla },
-    { name: 'Pending within SLA', value: pendingWithinSla },
-    { name: 'Pending beyond SLA', value: pendingBeyondSla },
+    { name: 'Requests Completed Within SLA', value: completedWithinSla },
+    { name: 'Requests Completed Beyond SLA', value: completedBeyondSla },
+    { name: 'Requests Pending Within SLA', value: pendingWithinSla },
+    { name: 'Requests Pending Beyond SLA', value: pendingBeyondSla },
   ]
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
+
+  const handleGraphSelection = useCallback(
+    (data: { name: string | null }) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'SLA Compliance Analysis - New Connection Requests',
+          subset: data.name,
+          month: dateToYearMonth(selectedMonth),
+          route: route('service-delivery.index'),
+        })
+      )
+    },
+    [selectedMonth]
+  )
 
   return (
     <Card className='flex w-full flex-col'>
@@ -311,6 +325,7 @@ const NewConnections = () => {
                       paddingAngle={2}
                       dataKey='value'
                       stroke='none'
+                      onClick={handleGraphSelection}
                     >
                       {data.map((entry, index) => (
                         <Cell
@@ -367,7 +382,7 @@ const NewConnections = () => {
         </div>
         <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?latest=month?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}?route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>
