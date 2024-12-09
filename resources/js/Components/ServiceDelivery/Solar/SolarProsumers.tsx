@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { CustomLegend, dateToYearMonth, formatNumber } from '../ActiveConnection'
 import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import useFetchRecord from '@/hooks/useFetchRecord'
