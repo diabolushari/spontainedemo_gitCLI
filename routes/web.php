@@ -159,7 +159,8 @@ Route::get('dataset/{subsetDetail}', SubsetTableController::class)
 Route::get('office-list', OfficeListController::class)
     ->name('office-list');
 
-Route::get('data-explorer/{subsetGroup}', DataExplorerController::class);
+Route::get('data-explorer/{subsetGroup}', DataExplorerController::class)
+    ->name('data-explorer');
 
 Route::resource('subset-groups', SubsetGroupController::class)
     ->parameters(['subset-groups' => 'subsetGroup']);

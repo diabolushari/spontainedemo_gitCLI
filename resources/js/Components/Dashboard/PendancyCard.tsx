@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import MoreButton from '../MoreButton'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import DatePicker from '@/ui/form/DatePicker'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 import { format } from 'path'
 import DataShowIcon from '../ui/DatashowIcon'
 import Skeleton from 'react-loading-skeleton'
@@ -35,9 +35,8 @@ export interface PendencyGraphValues {
 const PendancyCard = () => {
   const [title, setTitle] = useState('Load Change')
   const [toggleValue, settoggleValue] = useState<boolean>(true)
-  const [selectedLevel, setSelectedLevel] = useState(1)
-
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [dataInterval, setDataInterval] = useState(1)
 
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
@@ -116,6 +115,22 @@ const PendancyCard = () => {
     }
     return null
   }
+
+  const handleGraphSelection = useCallback(
+    (subset: string) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Requests Completion Report',
+          subset: subset,
+          request_type: title,
+          date: selectedDate,
+          route: route('service-delivery.index'),
+        })
+      )
+    },
+    [selectedDate, title]
+  )
+
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -220,21 +235,31 @@ const PendancyCard = () => {
                     dataKey='lessThan5Days'
                     stackId='a'
                     fill={solidColors[6]}
+                    onClick={() => {
+                      handleGraphSelection('Requests Completion - Less Than 5 Days')
+                    }}
                   />
                   <Bar
                     dataKey='betweem515Days'
                     stackId='a'
                     fill={solidColors[0]}
+                    onClick={() => {
+                      handleGraphSelection('Requests Completion - 5 to 15 Days')
+                    }}
                   />
                   <Bar
                     dataKey='betweem1630Days'
                     stackId='a'
                     fill={solidColors[7]}
+                    onClick={() => handleGraphSelection('Requests Completion - 16 to 30 Days')}
                   />
                   <Bar
                     dataKey='greaterThan30Days'
                     stackId='a'
                     fill={solidColors[5]}
+                    onClick={() => {
+                      handleGraphSelection('Requests Completion - More Than 30 Days')
+                    }}
                   />
                 </BarChart>
               )}
@@ -242,39 +267,49 @@ const PendancyCard = () => {
           </div>
           <div className='grid grid-cols-4 justify-center gap-2 pb-10 md:justify-start md:gap-5'>
             <div className='text-center'>
-              <div
+              <button
                 className='smmetric-1stop'
                 style={{ color: solidColors[6] }}
+                onClick={() => {
+                  handleGraphSelection('Requests Completion - Less Than 5 Days')
+                }}
               >
                 {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
-              </div>
+              </button>
               <div className='small-1stop'>{'<5 days'}</div>
             </div>
             <div className='text-center'>
-              <div
+              <button
                 className='smmetric-1stop'
                 style={{ color: solidColors[0] }}
+                onClick={() => {
+                  handleGraphSelection('Requests Completion - 5 to 15 Days')
+                }}
               >
                 {toggleValue ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
-              </div>
+              </button>
               <div className='small-1stop'>5-15 days</div>
             </div>
             <div className='text-center'>
-              <div
+              <button
                 className='smmetric-1stop'
                 style={{ color: solidColors[7] }}
+                onClick={() => handleGraphSelection('Requests Completion - 16 to 30 Days')}
               >
                 {toggleValue ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
-              </div>
+              </button>
               <div className='small-1stop'>16-30 days</div>
             </div>
             <div className='text-center'>
-              <div
+              <button
                 className='smmetric-1stop'
                 style={{ color: solidColors[5] }}
+                onClick={() => {
+                  handleGraphSelection('Requests Completion - More Than 30 Days')
+                }}
               >
                 {toggleValue ? `${greaterThan30Days.toFixed(2)}%` : formatNumber(greaterThan30Days)}
-              </div>
+              </button>
               <div className='small-1stop'>{'>30 days'}</div>
             </div>
           </div>
@@ -289,9 +324,10 @@ const PendancyCard = () => {
             disabled={false}
           />
         </div>
+
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Requests Completion Report?latest=date?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Requests Completion Report?date=${selectedDate}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

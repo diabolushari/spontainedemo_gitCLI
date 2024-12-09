@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MonthPicker from '@/ui/form/MonthPicker'
-import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import ActiveConnectionTrend from './ActiveConnection/ActiveConnectionTrend'
 import ActiveConncetionList from './ActiveConncetionList'
@@ -75,6 +74,13 @@ export const formatNumber = (value: number) => {
     return (value / 1000).toFixed(2) + 'K'
   }
   return value.toString()
+}
+
+export function dateToYearMonth(date?: Date | null) {
+  if (date == null) {
+    return ''
+  }
+  return `${date.getFullYear()}${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}`
 }
 
 const ActiveConnection = () => {
@@ -164,6 +170,21 @@ const ActiveConnection = () => {
       value: graphFilter(3),
     },
   ]
+
+  const handleGraphSelection = useCallback(
+    (data: { name: string | null }) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Active Connections Summary',
+          voltage: voltageType === 'Total' ? '' : voltageType,
+          month: dateToYearMonth(selectedMonth),
+          consumer_category: data.name,
+          route: route('service-delivery.index'),
+        })
+      )
+    },
+    [voltageType, selectedMonth]
+  )
 
   return (
     <Card className='flex w-full flex-col'>
@@ -332,7 +353,6 @@ const ActiveConnection = () => {
                       formatter={(value: number) => `${formatNumber(value)}`}
                       content={<CustomTooltip />}
                     />
-
                     <Pie
                       data={data}
                       innerRadius={50}
@@ -340,6 +360,7 @@ const ActiveConnection = () => {
                       paddingAngle={2}
                       dataKey='value'
                       stroke='none'
+                      onClick={handleGraphSelection}
                     >
                       {data.map((entry, index) => (
                         <Cell
@@ -392,7 +413,7 @@ const ActiveConnection = () => {
         </div>
         <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Active Connections Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>
