@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -105,31 +105,38 @@ const ActiveConnection = () => {
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  graphValues?.data.sort((a, b) => a.total_consumers__count_ - b.total_consumers__count_).reverse()
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
-
+  const graphData = useMemo(() => {
+    if (graphValues?.data == null) {
+      return []
+    }
+    return [...graphValues.data]
+      .sort((a, b) => a.total_consumers__count_ - b.total_consumers__count_)
+      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
+      .reverse()
+  }, [graphValues, voltageType])
   const filters = (value: InactiveGraphValues, index: number) => {
     if (index < 3) {
       if (voltageType == 'Total') {
-        return value.consumer_category === graphValues?.data[index].consumer_category
+        return value.consumer_category === graphData[index].consumer_category
       } else {
         return (
-          value.consumer_category === graphValues?.data[index].consumer_category &&
+          value.consumer_category === graphData[index].consumer_category &&
           value.voltage == voltageType
         )
       }
     } else {
       if (voltageType == 'Total') {
         return (
-          value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[2]?.consumer_category
+          value.consumer_category !== graphData[0]?.consumer_category &&
+          value.consumer_category !== graphData[1]?.consumer_category &&
+          value.consumer_category !== graphData[2]?.consumer_category
         )
       } else {
         return (
-          value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[2]?.consumer_category &&
+          value.consumer_category !== graphData[0]?.consumer_category &&
+          value.consumer_category !== graphData[1]?.consumer_category &&
+          value.consumer_category !== graphData[2]?.consumer_category &&
           value.voltage == voltageType
         )
       }
@@ -147,22 +154,22 @@ const ActiveConnection = () => {
   }
 
   const graphFilter = (index: number) => {
-    return graphValues?.data
+    return graphData
       .filter((value) => filters(value, index))
       .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   }
 
   const data = [
     {
-      name: graphValues?.data[0]?.consumer_category,
+      name: graphData[0]?.consumer_category,
       value: graphFilter(0),
     },
     {
-      name: graphValues?.data[1]?.consumer_category,
+      name: graphData[1]?.consumer_category,
       value: graphFilter(1),
     },
     {
-      name: graphValues?.data[2]?.consumer_category,
+      name: graphData[2]?.consumer_category,
       value: graphFilter(2),
     },
     {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import MoreButton from '@/Components/MoreButton'
 import Skeleton from 'react-loading-skeleton'
@@ -79,7 +79,16 @@ const TotalBilled = () => {
         : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
-  graphValues?.data.sort((a, b) => a.total_demand - b.total_demand).reverse()
+  // graphValues?.data.sort((a, b) => a.total_demand - b.total_demand).reverse()
+  const graphData = useMemo(() => {
+    if (graphValues?.data == null) {
+      return []
+    }
+    return [...graphValues.data]
+      .sort((a, b) => a.total_demand - b.total_demand)
+      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
+      .reverse()
+  }, [graphValues, voltageType])
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -95,25 +104,25 @@ const TotalBilled = () => {
   const filters = (value: BillingValues, index: number) => {
     if (index < 3) {
       if (voltageType == 'Total') {
-        return value.consumer_category === graphValues?.data[index].consumer_category
+        return value.consumer_category === graphData[index].consumer_category
       } else {
         return (
-          value.consumer_category === graphValues?.data[index].consumer_category &&
+          value.consumer_category === graphData[index].consumer_category &&
           value.voltage == voltageType
         )
       }
     } else {
       if (voltageType == 'Total') {
         return (
-          value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[2]?.consumer_category
+          value.consumer_category !== graphData[0]?.consumer_category &&
+          value.consumer_category !== graphData[1]?.consumer_category &&
+          value.consumer_category !== graphData[2]?.consumer_category
         )
       } else {
         return (
-          value.consumer_category !== graphValues?.data[0]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[1]?.consumer_category &&
-          value.consumer_category !== graphValues?.data[2]?.consumer_category &&
+          value.consumer_category !== graphData[0]?.consumer_category &&
+          value.consumer_category !== graphData[1]?.consumer_category &&
+          value.consumer_category !== graphData[2]?.consumer_category &&
           value.voltage == voltageType
         )
       }
@@ -135,22 +144,22 @@ const TotalBilled = () => {
   }
 
   const graphFilter = (index: number) => {
-    return graphValues?.data
+    return graphData
       .filter((value) => filters(value, index))
       .reduce((sum, value) => sum + value.total_demand, 0)
   }
 
   const data = [
     {
-      name: graphValues?.data[0]?.consumer_category,
+      name: graphData[0]?.consumer_category,
       value: graphFilter(0),
     },
     {
-      name: graphValues?.data[1]?.consumer_category,
+      name: graphData[1]?.consumer_category,
       value: graphFilter(1),
     },
     {
-      name: graphValues?.data[2]?.consumer_category,
+      name: graphData[2]?.consumer_category,
       value: graphFilter(2),
     },
     {
