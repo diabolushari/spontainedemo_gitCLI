@@ -18,11 +18,11 @@ interface Properties {
 }
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
-  { name: 'Division', value: 'division' },
+  { name: 'Section', value: 'section' },
   { name: 'Subdivision', value: 'subdivision' },
+  { name: 'Division', value: 'division' },
   { name: 'Circle', value: 'circle' },
   { name: 'Region', value: 'region' },
-  { name: 'Section', value: 'section' },
 ]
 interface ConsumerList extends Model {
   office_code: string

@@ -123,19 +123,46 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }
       <div className='mt-4 flex w-full justify-end gap-2 p-2'>
         <span className='subheader-sm-1stop'> Trend of SLA Performance</span>
       </div>
-      <div className='flex w-full justify-end gap-2 px-2'>
-        <div className=''>
-          <SelectList
-            setValue={setTitle}
-            list={categories}
-            displayKey='sla_svc_group'
-            dataKey='sla_svc_group'
-            value={title}
-            style='1stop-small'
-          />
+      <div className='flex'>
+        <div className='justif-center flex gap-4'>
+          <button
+            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '3 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('3 MONTHS')}
+          >
+            3 M
+          </button>
+          <button
+            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '6 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('6 MONTHS')}
+          >
+            6 M
+          </button>
+          <button
+            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '12 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('12 MONTHS')}
+          >
+            1 Y
+          </button>
         </div>
-        <span className='small-1stop-header flex items-center'>Request type, PREVIOUS</span>
-        <div className=''>
+        <div className='flex w-full justify-end gap-2 px-2'>
+          <div className=''>
+            <SelectList
+              setValue={setTitle}
+              list={categories}
+              displayKey='sla_svc_group'
+              dataKey='sla_svc_group'
+              value={title}
+              style='1stop-small'
+            />
+          </div>
+          <span className='small-1stop-header flex items-center'>Request type</span>
+          {/* <div className=''>
           <SelectList
             list={dateEarlier}
             dataKey='value'
@@ -144,6 +171,7 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }
             setValue={setSelectedValue}
             style='1stop-small'
           />
+        </div> */}
         </div>
       </div>
       <div className='w-full'>
