@@ -59,9 +59,14 @@ class OfficeSearchController extends Controller implements HasMiddleware
 
         $filtered = [];
 
+        $matchedRecords = 0;
         foreach ($records as $record) {
+            if ($matchedRecords >= 10) {
+                break;
+            }
             if (str_contains(strtolower($record->office_name), strtolower($request->search))) {
                 $filtered[] = $record;
+                $matchedRecords++;
             }
         }
 

@@ -306,7 +306,7 @@ export default function SubsetFilterForm({
                   dataKey='value'
                   displayKey='value'
                   setValue={(value) => setDimensionFieldValue(formField.id, value)}
-                  url={route('office-search', {
+                  url={route('subset.column.search', {
                     subsetDetail: subset.id,
                     column: formField.field,
                     search: '',
