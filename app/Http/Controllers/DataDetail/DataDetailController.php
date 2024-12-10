@@ -14,6 +14,7 @@ use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
 use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -151,7 +152,37 @@ class DataDetailController extends Controller implements HasMiddleware
 
     public function destroy(DataDetail $dataDetail): RedirectResponse
     {
+        $dataDetail->load('dateFields', 'dimensionFields');
         try {
+            //drop indexes on dateFields and foreignIds on dimensionFields
+            Schema::table($dataDetail->table_name, function (Blueprint $table) use ($dataDetail) {
+
+                foreach ($dataDetail->dateFields as $dateField) {
+                    $table->dropIndex(
+                        $dataDetail->table_name
+                        .'_'
+                        .$dateField->column
+                        .'_index'
+                    );
+                }
+
+                foreach ($dataDetail->dimensionFields as $dimensionField) {
+                    $table->dropForeign(
+                        $dataDetail->table_name
+                        .'_'
+                        .$dimensionField->column
+                        .'_foreign'
+                    );
+                    $table->dropIndex(
+                        $dataDetail->table_name
+                        .'_'
+                        .$dimensionField->column
+                        .'_foreign'
+                    );
+                }
+
+            });
+
             $dataDetail->delete();
             if (Schema::hasTable($dataDetail->table_name)) {
                 Schema::rename($dataDetail->table_name, 'deleted_'.time().'_'.$dataDetail->table_name);
