@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import MoreButton from '../../MoreButton'
 import useFetchList from '@/hooks/useFetchList'
 import Skeleton from 'react-loading-skeleton'
@@ -7,7 +7,7 @@ import { Link, router } from '@inertiajs/react'
 import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { formatNumber } from '../ActiveConnection'
+import { dateToYearMonth, formatNumber } from '../ActiveConnection'
 
 interface ComplaintValues {
   complaint_count: number
@@ -61,12 +61,28 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
       `/data-explorer/Customer Complaints Summary?latest=month&route=${route('service-delivery.index')}`
     )
   }
+
+  const handleGraphSelection = useCallback(
+    (subset: string, complaint_type: string | null) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Customer Complaints Summary',
+          subset: subset,
+          complaint_type: complaint_type,
+          month: dateToYearMonth(selectedMonth),
+          route: route('service-delivery.index'),
+        })
+      )
+    },
+    [selectedMonth]
+  )
+
   return (
     <div className='flex w-full'>
       <div className='flex justify-center'>
         <div className='grid w-full max-w-md grid-cols-2 gap-2 p-2'>
           <button
-            onClick={detailRoute}
+            onClick={() => handleGraphSelection('Customer Complaints - Aggregate', null)}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'
           >
             <p className='xlmetric-1stop'>
@@ -75,7 +91,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             <p className='small-1stop-header text-center'>Total Complaints</p>
           </button>
           <button
-            onClick={detailRoute}
+            onClick={() =>
+              handleGraphSelection('Customer Complaints - All Types', 'NO POWER SUPPLY')
+            }
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
           >
             <p className='mdmetric-1stop'>
@@ -88,7 +106,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             <p className='small-1stop-header text-center'>Power Failures</p>
           </button>
           <button
-            onClick={detailRoute}
+            onClick={() =>
+              handleGraphSelection('Customer Complaints - All Types', 'VOLTAGE RELATED')
+            }
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
           >
             <p className='mdmetric-1stop'>
@@ -101,7 +121,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             <p className='small-1stop-header text-center'>Voltage Related</p>
           </button>
           <button
-            onClick={detailRoute}
+            onClick={() =>
+              handleGraphSelection('Customer Complaints - All Types', 'SERVICE CONNECTION RELATED')
+            }
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
           >
             <p className='mdmetric-1stop pt-4'>

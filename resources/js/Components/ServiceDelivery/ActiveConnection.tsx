@@ -185,7 +185,7 @@ const ActiveConnection = () => {
           subsetGroup: 'Active Connections Summary',
           voltage: voltageType === 'Total' ? '' : voltageType,
           month: dateToYearMonth(selectedMonth),
-          consumer_category: data.name,
+          consumer_category: data.name === 'Other' ? '' : data.name,
           route: route('service-delivery.index'),
         })
       )

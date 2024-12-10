@@ -382,7 +382,7 @@ const NewConnections = () => {
         </div>
         <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

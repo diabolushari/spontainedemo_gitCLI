@@ -23,10 +23,10 @@ interface Properties {
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
-  { name: 'Region', value: 'region' },
-  { name: 'Circle', value: 'circle' },
   { name: 'Subdivision', value: 'subdivision' },
   { name: 'Division', value: 'division' },
+  { name: 'Circle', value: 'circle' },
+  { name: 'Region', value: 'region' },
 ]
 
 interface ConsumerList extends Model {
@@ -61,6 +61,7 @@ const NewConnectionsList = ({
       toggleValue ? 'sla_perf_cnt' : 'sla_perf__'
     }&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
+  console.log(graphValues)
 
   useEffect(() => {
     setHeaders([
@@ -248,7 +249,7 @@ const NewConnectionsList = ({
                 >
                   <td className=''>{value.office_name}</td>
                   <td className='pl-2 text-start'>
-                    {toggleValue ? value.sla_perf_cnt : value.pend_beyond_sla__?.toFixed(2)}
+                    {toggleValue ? value.sla_perf_cnt : value.sla_perf__?.toFixed(2)}
                   </td>
                 </tr>
               )

@@ -94,8 +94,34 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
         </span>
       </div>
 
-      <div className='flex w-full justify-end gap-2 px-2'>
-        <span className='small-1stop-header flex items-center'>PREVIOUS</span>
+      <div className='flex w-full justify-center gap-2 px-2'>
+        <div className='flex items-center gap-4'>
+          <button
+            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '3 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('3 MONTHS')}
+          >
+            3 M
+          </button>
+          <button
+            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '6 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('6 MONTHS')}
+          >
+            6 M
+          </button>
+          <button
+            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '12 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('12 MONTHS')}
+          >
+            1 Y
+          </button>
+        </div>
+        {/* <span className='small-1stop-header flex items-center'>PREVIOUS</span>
         <div>
           <SelectList
             list={dateEarlier.map((month, index) => ({
@@ -110,7 +136,7 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
             setValue={setSelectedValue}
             style='1stop-small'
           />
-        </div>
+        </div> */}
       </div>
 
       <div className='w-full'>

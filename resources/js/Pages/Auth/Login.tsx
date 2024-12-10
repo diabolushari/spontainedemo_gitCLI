@@ -47,35 +47,42 @@ export default function Login({ status }: { status?: string; canResetPassword: b
   }
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center bg-blue-100'>
-      <div className='w-full max-w-sm rounded-lg bg-blue-100 p-8'>
-        <div className='mb-4 flex justify-center'>
-          <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
+    <div className='from-1stop-login-gradient-fr via-1stop-login-gradient-vi to-1stop-login-gradient-to flex min-h-screen flex-col items-center justify-center bg-gradient-to-tr'>
+      <div className='flex flex-row rounded-lg p-5'>
+        <div className='hidden w-1/2 overflow-hidden md:block'>
+          <img
+            src='/bg-signin-kseb.png'
+            alt=''
+            className='h-full object-cover object-center'
+          />
         </div>
-        <h1 className='text-black-700 subheader-1stop text-center tracking-widest'>
-          ONE STOP ANALYTICS
-        </h1>
-        <p className='text-md text-black-600 body-1stop mb-8 mt-4 text-center'>sign in</p>
-        <FormBuilder
-          formItems={formItems}
-          formData={formData}
-          formStyles='md:grid-cols-1 gap-5'
-          onFormSubmit={handleSubmit}
-          loading={loading}
-          buttonText='sign in'
-          buttonAlignment='center'
-        />
-        <div className='text-black-500 small-1stop mt-6 text-center'>
-          <p>
-            forgot password or trouble signing in ? <br />
-            contact{' '}
-            <Link
-              href={''}
-              className='text-blue-500 underline'
-            >
-              support
-            </Link>
-          </p>
+        <div className='w-1/2 bg-blue-100 p-8'>
+          <div className='mb-4 flex justify-center'>
+            <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
+          </div>
+          <p className='subheader-1stop text-center tracking-widest'>WELCOME BACK!</p>
+          <p className='body-1stop mb-8 mt-4 text-center'>Please Sign In</p>
+          <FormBuilder
+            formItems={formItems}
+            formData={formData}
+            formStyles='md:grid-cols-1 gap-5'
+            onFormSubmit={handleSubmit}
+            loading={loading}
+            buttonText='sign in'
+            buttonAlignment='center'
+          />
+          <div className='text-black-500 small-1stop mt-6 text-center'>
+            <p>
+              Forgot password or trouble signing in ? <br />
+              contact{' '}
+              <Link
+                href={''}
+                className='text-blue-500 underline'
+              >
+                support
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

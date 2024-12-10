@@ -78,8 +78,12 @@ body {
     /* --colour-1stop-gray: #d9dee8; */
     --colour-1stop-gray: #d9dee8;
     --colour-1stop-alt-gray: #e5e8dd;
+    --colour-1stop-dark-gray: #6c7d88;
     --colour-1stop-alt-highlight: #679436;
     --colour-1stop-white: #f5f5fa;
+    --colour-1stop-login-gradient-fr: #9edcdb;
+    --colour-1stop-login-gradient-vi: #d9dee8;
+    --colour-1stop-login-gradient-to: #97c7e4;
     --colour-chart-1: #a93053;
     --colour-chart-2: #508d81;
     --colour-chart-3: #74aed4;

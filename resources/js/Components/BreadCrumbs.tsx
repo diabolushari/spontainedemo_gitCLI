@@ -16,7 +16,7 @@ const BreadCrumbs = ({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItemLink
         >
           <Link
             href={breadcrumb.link}
-            className={`small-1stop ${breadcrumb.link == '' ? 'cursor-text font-semibold' : 'hover:underline'}`}
+            className={`small-1stop ${breadcrumb.link == '' ? 'cursor-text font-semibold underline' : 'hover:underline'}`}
           >
             {breadcrumb.item}
           </Link>
