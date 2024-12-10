@@ -15,7 +15,7 @@ export interface Properties<
   showAllOption?: boolean
   allOptionText?: string
   showLabel?: boolean
-  style?: 'normal' | 'bottom-border' | 'dark' | '1stop-small'
+  style?: 'normal' | 'bottom-border' | 'dark' | '1stop-small' | '1stop-background' | '1stop-large'
 }
 
 const getStyle = (style: 'normal' | 'bottom-border' | 'dark' | '1stop-small' | undefined) => {
@@ -29,6 +29,16 @@ const getStyle = (style: 'normal' | 'bottom-border' | 'dark' | '1stop-small' | u
       return ` w-full appearance-none rounded-lg border border-gray-300 pl-3 small-1stop text-gray-800
         shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
     }
+    case '1stop-background': {
+      return ` w-full appearance-none rounded-lg bg-1stop-alt-gray border border-gray-300 pl-3 small-1stop text-gray-800
+          shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100`
+    }
+
+    case '1stop-large': {
+      return ` w-full appearance-none border-transparent rounded-lg pl-3 small-1stop xlmetric-1stop bg-transparent
+            shadow-sm focus:border-transparent focus:outline-none disabled:bg-gray-100`
+    }
+
     case 'bottom-border': {
       return `mt-0 block w-full border-0 border-b-2 border-gray-200 bg-neutral-50 px-0.5 bodybold text-sm focus:border-black focus:ring-0`
     }

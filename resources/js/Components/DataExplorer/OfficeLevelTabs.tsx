@@ -11,24 +11,22 @@ const tabItems = [
   { name: 'Regions', value: 'region' },
   { name: 'Circles', value: 'circle' },
   { name: 'Divisions', value: 'division' },
-  { name: 'Sub Divisions *', value: 'subdivision' },
-  { name: 'Sections *', value: 'section' },
+  { name: 'Sub Divisions*', value: 'subdivision' },
+  { name: 'Sections*', value: 'section' },
 ]
 
 export default function OfficeLevelTabs({ activeTab, setActiveTab }: Props) {
   return (
     <div
-      className='w-full items-center border-gray-200 sm:flex'
+      className='mr-4 w-full items-center rounded-lg sm:flex'
       role='tablist'
     >
-      <div className='hidden w-full items-center border-b border-gray-200 sm:flex'>
+      <div className='hidden w-full items-center rounded-lg sm:flex'>
         {tabItems.map((tab) => (
           <div
             key={tab.value}
-            className={`group mr-16 flex cursor-pointer items-center border-b-5 pb-2 pt-2 md:pb-5 md:pt-0 ${
-              activeTab === tab.value
-                ? 'border-1stop-highlight'
-                : 'border-transparent hover:border-1stop-highlight'
+            className={`group mr-16 flex cursor-pointer items-center rounded-t-lg p-2 pt-2 md:pt-2 ${
+              activeTab === tab.value ? 'bg-1stop-white' : ''
             }`}
             onClick={() => setActiveTab(tab.value)}
             tabIndex={0}
@@ -38,8 +36,8 @@ export default function OfficeLevelTabs({ activeTab, setActiveTab }: Props) {
             <p
               className={`subheader-sm-1stop leading-none ${
                 activeTab === tab.value
-                  ? 'text-1stop-highlight'
-                  : 'text-1stop-gray group-hover:text-1stop-highlight'
+                  ? 'text-1stop-alt-highlight'
+                  : 'text-1stop-dark-gray group-hover:text-1stop-alt-highlight'
               }`}
             >
               {tab.name}

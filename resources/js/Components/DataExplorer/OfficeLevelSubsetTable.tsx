@@ -130,9 +130,12 @@ export default function OfficeLevelSubsetTable({
       </div>
       {selectedOffice != null && (
         <div className='flex'>
-          <div className='flex items-center justify-between gap-5 border-2 border-blue-500 p-2'>
-            <span>
-              {selectedOffice?.office_name} ({selectedOffice?.office_code})
+          <div className='flex items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'>
+            <span className='axial-label-1stop capitalize'>
+              {currentLevelName} <i>equals</i>{' '}
+              <b>
+                {selectedOffice?.office_name} ({selectedOffice?.office_code})
+              </b>
             </span>
             <button
               className=''
@@ -143,6 +146,13 @@ export default function OfficeLevelSubsetTable({
           </div>
         </div>
       )}
+
+      <div className='w-full pb-4 text-end font-bold text-1stop-highlight'>
+        <b>
+          <i className='las la-download text-xl'></i>
+        </b>
+        <span className='axial-label-1stop uppercase'>Download this data</span>
+      </div>
       <Table
         heads={colHeads}
         className='h-[70vh]'
@@ -153,10 +163,10 @@ export default function OfficeLevelSubsetTable({
             return (
               <tr
                 key={index}
-                className={`standard-tr ${
+                className={`border border-1stop-gray ${
                   selectedOffice != null &&
                   selectedOffice.office_code === item['office_code' as keyof typeof item]
-                    ? 'bg-green-200'
+                    ? 'bg-1stop-alt-gray'
                     : ''
                 } ${officeLevel != 'state' ? 'cursor-pointer hover:bg-gray-100' : ''} `}
                 onClick={() => selectOffice(item)}
@@ -167,9 +177,19 @@ export default function OfficeLevelSubsetTable({
                       key={index}
                       className='standard-td'
                     >
-                      {col.type === 'number'
-                        ? (item[col.source as keyof DataTableItem] as number | null)?.toFixed(2)
-                        : item[col.source as keyof DataTableItem]}
+                      {col.name === 'Office Name' ? (
+                        <>
+                          <p className='small-1stop'>{item[col.source as keyof DataTableItem]}</p>
+
+                          <p className='axial-label-1stop text-1stop-dark-gray pt-2'>
+                            {item['office_code' as keyof DataTableItem]}
+                          </p>
+                        </>
+                      ) : col.type === 'number' ? (
+                        (item[col.source as keyof DataTableItem] as number | null)?.toFixed(2)
+                      ) : (
+                        item[col.source as keyof DataTableItem]
+                      )}
                     </td>
                   )
                 })}

@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import SelectList from '@/ui/form/SelectList'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { Paginator } from '@/ui/ui_interfaces'
+import { Paginator, solidColors } from '@/ui/ui_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -11,6 +11,7 @@ import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
+import { CustomTooltip } from '../CustomTooltip'
 
 interface Props {
   subset: SubsetDetail
@@ -79,11 +80,11 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
     const cols: TableColName[] = []
 
     if (officeLevel != 'state') {
-      cols.push({
-        name: 'Office Code',
-        source: 'office_code',
-        type: 'string',
-      })
+      //   cols.push({
+      //     name: 'Office Code',
+      //     source: 'office_code',
+      //     type: 'string',
+      //   })
 
       cols.push({
         name: 'Office Name',
@@ -162,35 +163,44 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
 
   return (
     <FullSpinnerWrapper processing={loading}>
-      <div>
-        <ResponsiveContainer
-          width='100%'
-          height={400}
-        >
-          <BarChart
-            data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+      <div className='space-y-2 bg-1stop-white p-4'>
+        <div className='rounded-lg bg-white'>
+          <ResponsiveContainer
+            width='100%'
+            height={200}
           >
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis
-              dataKey='office_name'
-              style={{ fontSize: '10' }}
-            />
-            <YAxis
-              tickFormatter={(value) => formatNumber(value)}
-              style={{ fontSize: '10' }}
-            />
-            <Tooltip formatter={(value: number) => `${formatNumber(value)}`} />
-            <Bar
-              dataKey='count'
-              fill='#235CC0'
-              barSize={70}
-              onClick={handleTooltipClick}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className='mt-10 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
+              {/* <CartesianGrid strokeDasharray='3 3' /> */}
+              <XAxis
+                dataKey='office_name'
+                style={{ fontSize: '10' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              {/* <YAxis
+                tickFormatter={(value) => formatNumber(value)}
+                style={{ fontSize: '10' }}
+              /> */}
+              <Tooltip
+                formatter={(value: number) => `${formatNumber(value)}`}
+                content={<CustomTooltip valueType='percentage' />}
+                cursor={{ fill: 'var(--colour-1stop-accent2)' }}
+              />
+
+              <Bar
+                dataKey='count'
+                fill={solidColors[0]}
+                barSize={30}
+                onClick={handleTooltipClick}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* <div className='mt-10 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
         <div className='flex flex-col'>
           <SelectList
             list={listTypes}
@@ -209,21 +219,24 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
             value={selectedSortField}
           />
         </div>
-      </div>
-      <OfficeLevelSubsetTable
-        officeLevel={officeLevel}
-        tableCols={tableCols}
-        tableData={graphValues?.data.data}
-        selectedOffice={selectedOffice}
-        prevLevel={prevLevelOffice}
-      />
-      <div className='flex w-full flex-col'>
-        {graphValues?.data != null && (
-          <RestPagination
-            pagination={graphValues.data}
-            onNewPage={setPage}
+      </div> */}
+        <div className='rounded-lg bg-white p-4'>
+          <OfficeLevelSubsetTable
+            officeLevel={officeLevel}
+            tableCols={tableCols}
+            tableData={graphValues?.data.data}
+            selectedOffice={selectedOffice}
+            prevLevel={prevLevelOffice}
           />
-        )}
+          <div className='flex w-full flex-col'>
+            {graphValues?.data != null && (
+              <RestPagination
+                pagination={graphValues.data}
+                onNewPage={setPage}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </FullSpinnerWrapper>
   )
