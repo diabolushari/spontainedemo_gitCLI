@@ -113,7 +113,7 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
         <span className='subheader-sm-1stop'>Trend of Active Connections</span>
       </div>
       <div className='mt-4 flex w-full items-center justify-between gap-2'>
-        <div className='flex items-center gap-4'>
+        <div className='flex justify-center gap-4'>
           <button
             className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
               selectedValue === '3 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
