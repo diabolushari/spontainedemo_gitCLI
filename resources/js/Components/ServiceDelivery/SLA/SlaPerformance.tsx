@@ -163,7 +163,7 @@ const SlaPerformance = () => {
                 >
                   {`${dataKey}:`}{' '}
                   <span className='small-1stop font-bold'>
-                    {toggleValue ? entry.value : `${Number(entry.value).toFixed(2)}%`}
+                    {toggleValue ? formatNumber(entry.value) : `${Number(entry.value).toFixed(2)}%`}
                   </span>
                 </p>
               )
@@ -338,7 +338,7 @@ const SlaPerformance = () => {
             column1='State'
             column2='Requests within SLA count'
             subset_id='82'
-            default_level='state'
+            sortby='requests_within_sla__count_'
             categories={categories}
           />
         )}
