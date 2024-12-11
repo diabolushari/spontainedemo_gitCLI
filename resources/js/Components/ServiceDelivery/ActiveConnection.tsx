@@ -71,7 +71,7 @@ export const formatNumber = (value: number) => {
   } else if (value >= 100000) {
     return (value / 100000).toFixed(2) + ' L'
   } else if (value >= 1000) {
-    return (value / 1000).toFixed(2) + 'K'
+    return (value / 1000).toFixed(2) + ' K'
   }
   return value.toString()
 }
@@ -196,7 +196,7 @@ const ActiveConnection = () => {
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
+        <div className='small-1stop-header flex w-14 flex-col rounded-2xl bg-1stop-alt-gray'>
           <button
             className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {

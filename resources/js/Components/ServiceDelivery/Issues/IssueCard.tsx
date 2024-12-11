@@ -83,9 +83,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
         <div className='grid w-full max-w-md grid-cols-2 gap-2 p-2'>
           <button
             onClick={() => handleGraphSelection('Customer Complaints - Aggregate', null)}
-            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='xlmetric-1stop'>
+            <p className='smmetric-1stop lg:mdmetric-1stop'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(complaintCount('Total') ?? 0)}
             </p>
             <p className='small-1stop-header text-center'>Total Complaints</p>
@@ -94,9 +94,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             onClick={() =>
               handleGraphSelection('Customer Complaints - All Types', 'NO POWER SUPPLY')
             }
-            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='mdmetric-1stop'>
+            <p className='smmetric-1stop lg:mdmetric-1stop'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
@@ -109,9 +109,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             onClick={() =>
               handleGraphSelection('Customer Complaints - All Types', 'VOLTAGE RELATED')
             }
-            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='mdmetric-1stop'>
+            <p className='smmetric-1stop lg:mdmetric-1stop'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
@@ -124,9 +124,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             onClick={() =>
               handleGraphSelection('Customer Complaints - All Types', 'SERVICE CONNECTION RELATED')
             }
-            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'
+            className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='mdmetric-1stop pt-4'>
+            <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (

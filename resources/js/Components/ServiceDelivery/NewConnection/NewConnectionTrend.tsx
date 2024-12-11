@@ -90,7 +90,8 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
     <div className='flex w-full flex-col pr-4'>
       <div className='mt-4 flex w-full justify-end gap-2 p-2'>
         <span className='subheader-sm-1stop'>
-          Trend of Requests Completed <span className='underline'>Beyond</span> SLA
+          {/* Trend of Requests Completed <span className='underline'>Beyond</span> SLA */}
+          Trend of Requests Breaching SLA
         </span>
       </div>
 
