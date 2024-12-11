@@ -163,7 +163,7 @@ const SlaPerformance = () => {
                 >
                   {`${dataKey}:`}{' '}
                   <span className='small-1stop font-bold'>
-                    {toggleValue ? entry.value : `${Number(entry.value).toFixed(2)}%`}
+                    {toggleValue ? formatNumber(entry.value) : `${Number(entry.value).toFixed(2)}%`}
                   </span>
                 </p>
               )
