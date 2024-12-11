@@ -10,7 +10,8 @@ interface Props {
   prevLevel?: OfficeData | null
   selectedOffice?: OfficeData | null
   tableCols: TableColName[]
-  setOfficeLevel: React.Dispatch<React.SetStateAction<string | null>>
+  setOfficeLevel: React.Dispatch<React.SetStateAction<string>>
+  exportUrl: string
 }
 
 export default function OfficeLevelSubsetTable({
@@ -20,6 +21,7 @@ export default function OfficeLevelSubsetTable({
   selectedOffice,
   tableCols,
   setOfficeLevel,
+  exportUrl,
 }: Readonly<Props>) {
   const { setRegion, setCircle, setDivision, setSubdivision } = useContext(SelectedOfficeContext)
 
@@ -117,6 +119,10 @@ export default function OfficeLevelSubsetTable({
     }
   }
 
+  const openExportUrl = () => {
+    window.open(exportUrl, '_blank')
+  }
+
   return (
     <>
       <div className='flex flex-col gap-2'>
@@ -153,7 +159,10 @@ export default function OfficeLevelSubsetTable({
         </div>
       )}
 
-      <div className='w-full pb-4 text-end font-bold text-1stop-highlight'>
+      <div
+        onClick={openExportUrl}
+        className='w-full cursor-pointer pb-4 text-end font-bold text-1stop-highlight'
+      >
         <b>
           <i className='las la-download text-xl'></i>
         </b>

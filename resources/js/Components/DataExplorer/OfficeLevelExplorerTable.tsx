@@ -6,7 +6,15 @@ import {
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import Modal from '@/ui/Modal/Modal'
@@ -20,12 +28,14 @@ interface Props {
   subset: SubsetDetail
   officeLevel: string
   oldFilters: Record<string, string>
+  setActiveTab: Dispatch<SetStateAction<string>>
 }
 
 export default function OfficeLevelExplorerTable({
   subset,
   officeLevel,
   oldFilters,
+  setActiveTab,
 }: Readonly<Props>) {
   const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
 
@@ -211,19 +221,6 @@ export default function OfficeLevelExplorerTable({
             >
               <i className='la la-filter'></i>
             </button>
-            <a
-              className='flex items-center justify-center rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
-              href={route('subset-export', {
-                ...searchParams,
-                subsetDetail: subset.id,
-                level: officeLevel,
-                office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
-              })}
-              target='_blank'
-              rel='noreferrer'
-            >
-              <i className='la la-file-excel'></i>
-            </a>
           </div>
           {appliedFilters.length > 0 && (
             <div className='flex gap-5'>
@@ -258,6 +255,13 @@ export default function OfficeLevelExplorerTable({
         prevLevel={prevLevelOffice}
         selectedOffice={selectedOffice}
         tableData={dataTable?.data}
+        setOfficeLevel={setActiveTab}
+        exportUrl={route('subset-export', {
+          ...searchParams,
+          subsetDetail: subset.id,
+          level: officeLevel,
+          office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
+        })}
       />
       {showModal && (
         <Modal

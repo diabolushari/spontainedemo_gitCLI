@@ -194,6 +194,11 @@ export default function OfficeRanking({
             selectedOffice={selectedOffice}
             prevLevel={prevLevelOffice}
             setOfficeLevel={setSelectedOfficeLevel}
+            exportUrl={route('subset-export', {
+              subsetDetail: subset.id,
+              month: dateToYearMonth(selectedMonth),
+              level: officeLevel,
+            })}
           />
           <div className='flex w-full flex-col'>
             {graphValues?.data != null && (

@@ -163,6 +163,7 @@ export default function DataExplorerPage({
                   subset={selectedSubset}
                   officeLevel={activeTab}
                   oldFilters={oldFilters}
+                  setActiveTab={setActiveTab}
                 />
               )}
             </Card>
