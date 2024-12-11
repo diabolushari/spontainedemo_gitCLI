@@ -181,8 +181,8 @@ export default function OfficeRankingPage({
                       />
                     </div>
                     <div className='place-items-center rounded-br-lg bg-1stop-highlight2'>
-                      <i className='la la-filter'></i>
-                      <p className='small-1stop-header'>Filters</p>
+                      {/*<i className='la la-filter'></i>*/}
+                      {/*<p className='small-1stop-header'>Filters</p>*/}
                     </div>
                   </div>
                 </div>
