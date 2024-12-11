@@ -9,11 +9,11 @@ import Skeleton from 'react-loading-skeleton'
 
 export interface InactiveGraphValues {
   conn_status_code: string
-  consumer_count: number
   data_date: string
   consumer_category: string
   voltage: string
-  month_year: string
+  month: string
+  total_consumers__count_: number
 }
 
 interface Properties {
@@ -39,12 +39,13 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
   const selectedRange = parseInt(selectedValue.split(' ')[0])
 
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/57?${
+    `subset/198?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than_or_equal=${Number(monthYear)}`
+        ? 'latest=month'
+        : `month_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_less_than_or_equal=${Number(monthYear)}`
     }`
   )
+  console.log(graphValues)
 
   useEffect(() => {
     if (!selectedMonth && graphValues?.latest_value) {
@@ -69,15 +70,15 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
   const chartData = selectedMonths
     .map((month) => {
       const filteredValues = graphValues?.data.filter(
-        (value) => value.voltage === selectedVoltage && value.month_year === month
+        (value) => value.voltage === selectedVoltage && value.month === month
       )
 
       const totalConsumerCount = filteredValues?.reduce(
-        (sum, value) => sum + value.consumer_count,
+        (sum, value) => sum + value.total_consumers__count_,
         0
       )
 
-      return { month, consumer_count: totalConsumerCount || 0 }
+      return { month, total_consumers__count_: totalConsumerCount || 0 }
     })
     .reverse()
 
@@ -187,7 +188,7 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
               <Tooltip content={renderCustomTooltip} />
               <Area
                 type='monotone'
-                dataKey='consumer_count'
+                dataKey='total_consumers__count_'
                 stroke={solidColors[0]}
                 fill={solidColors[1]}
                 opacity={0.7}
