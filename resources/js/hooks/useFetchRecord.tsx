@@ -9,7 +9,6 @@ export default function useFetchRecord<T>(url: string): [T | null, boolean] {
   const fetchList = useCallback(async () => {
     setLoading(true)
     setList(null)
-
     try {
       const { data } = await axios.get(url)
       setList(data)

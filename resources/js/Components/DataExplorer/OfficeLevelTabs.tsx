@@ -1,9 +1,11 @@
 import handleEnterPress from '@/libs/handle-enter'
 import Dropdown from '@/ui/button/DropDown'
+import { useMemo } from 'react'
 
 interface Props {
   activeTab: string
   setActiveTab: (tab: string) => void
+  showState?: boolean
 }
 
 const tabItems = [
@@ -15,14 +17,26 @@ const tabItems = [
   { name: 'Sections*', value: 'section' },
 ]
 
-export default function OfficeLevelTabs({ activeTab, setActiveTab }: Props) {
+export function getNextOfficeLevel(currentLevel: string) {
+  const index = tabItems.findIndex((tab) => tab.value === currentLevel)
+  return tabItems[index + 1]?.value || 'state'
+}
+
+export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = true }: Props) {
+  const tabs = useMemo(() => {
+    if (showState) {
+      return tabItems
+    }
+    return tabItems.filter((tab) => tab.value !== 'state')
+  }, [showState])
+
   return (
     <div
       className='mr-4 w-full items-center rounded-lg sm:flex'
       role='tablist'
     >
       <div className='hidden w-full items-center rounded-lg sm:flex'>
-        {tabItems.map((tab) => (
+        {tabs.map((tab) => (
           <div
             key={tab.value}
             className={`group mr-16 flex cursor-pointer items-center rounded-t-lg p-2 pt-2 md:pt-2 ${

@@ -10,6 +10,7 @@ interface Props {
   prevLevel?: OfficeData | null
   selectedOffice?: OfficeData | null
   tableCols: TableColName[]
+  setOfficeLevel: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export default function OfficeLevelSubsetTable({
@@ -18,63 +19,9 @@ export default function OfficeLevelSubsetTable({
   prevLevel,
   selectedOffice,
   tableCols,
+  setOfficeLevel,
 }: Readonly<Props>) {
   const { setRegion, setCircle, setDivision, setSubdivision } = useContext(SelectedOfficeContext)
-
-  const selectOffice = (row: DataTableItem) => {
-    if (officeLevel === 'state' || row['office_code' as keyof typeof row] == null) {
-      return
-    }
-    const office = {
-      office_name:
-        (row['office_name' as keyof typeof row] as string) ??
-        (row['office_code' as keyof typeof row] as string),
-      office_code: row['office_code' as keyof typeof row] as string,
-    }
-    if (officeLevel === 'region') {
-      setRegion?.(office)
-      setCircle?.(null)
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (officeLevel === 'circle') {
-      setCircle?.(office)
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (officeLevel === 'division') {
-      setDivision?.(office)
-      setSubdivision?.(null)
-    }
-    if (officeLevel === 'subdivision') {
-      setSubdivision?.(office)
-    }
-  }
-
-  const colHeads = useMemo(() => {
-    return tableCols.map((col) => col.name)
-  }, [tableCols])
-
-  const removeOffice = () => {
-    if (officeLevel === 'region') {
-      setRegion?.(null)
-      setCircle?.(null)
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (officeLevel === 'circle') {
-      setCircle?.(null)
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (officeLevel === 'division') {
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (officeLevel === 'subdivision') {
-      setSubdivision?.(null)
-    }
-  }
 
   const { prevLevelName, currentLevelName } = useMemo(() => {
     switch (officeLevel) {
@@ -110,6 +57,65 @@ export default function OfficeLevelSubsetTable({
         }
     }
   }, [officeLevel])
+
+  const selectOffice = (row: DataTableItem) => {
+    if (officeLevel === 'state' || row['office_code' as keyof typeof row] == null) {
+      return
+    }
+    const office = {
+      office_name:
+        (row['office_name' as keyof typeof row] as string) ??
+        (row['office_code' as keyof typeof row] as string),
+      office_code: row['office_code' as keyof typeof row] as string,
+    }
+    if (officeLevel === 'region') {
+      setOfficeLevel('circle')
+      setRegion?.(office)
+      setCircle?.(null)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'circle') {
+      setOfficeLevel('division')
+      setCircle?.(office)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'division') {
+      setOfficeLevel('subdivision')
+      setDivision?.(office)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'subdivision') {
+      setOfficeLevel('section')
+      setSubdivision?.(office)
+    }
+  }
+
+  const colHeads = useMemo(() => {
+    return tableCols.map((col) => col.name)
+  }, [tableCols])
+
+  const removeOffice = () => {
+    if (officeLevel === 'region') {
+      setRegion?.(null)
+      setCircle?.(null)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'circle') {
+      setCircle?.(null)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'division') {
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'subdivision') {
+      setSubdivision?.(null)
+    }
+  }
 
   return (
     <>
@@ -181,7 +187,7 @@ export default function OfficeLevelSubsetTable({
                         <>
                           <p className='small-1stop'>{item[col.source as keyof DataTableItem]}</p>
 
-                          <p className='axial-label-1stop text-1stop-dark-gray pt-2'>
+                          <p className='axial-label-1stop pt-2 text-1stop-dark-gray'>
                             {item['office_code' as keyof DataTableItem]}
                           </p>
                         </>

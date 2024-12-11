@@ -1,34 +1,40 @@
-import { DataTableItem, SubsetDetail, SubsetMeasureField } from '@/interfaces/data_interfaces'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
+import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import SelectList from '@/ui/form/SelectList'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Paginator, solidColors } from '@/ui/ui_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import RestPagination from '@/ui/Pagination/RestPagination'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { CustomTooltip } from '../CustomTooltip'
+import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
 
 interface Props {
   subset: SubsetDetail
   officeLevel: string
+  selectedSortField: string
+  selectedSortOrder: string
+  selectedLimit: string
+  setSelectedOfficeLevel: Dispatch<SetStateAction<string>>
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
-const listTypes: { name: string }[] = [
-  { name: 'Top 3' },
-  { name: 'Top 5' },
-  { name: 'Top 10' },
-  { name: 'Top 20' },
-  { name: 'Bottom 10' },
-]
-
-export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) {
+export default function OfficeRanking({
+  subset,
+  officeLevel,
+  selectedSortField,
+  selectedSortOrder,
+  selectedLimit,
+  setSelectedOfficeLevel,
+  selectedMonth,
+  setSelectedMonth,
+}: Readonly<Props>) {
   const [page, setPage] = useState(1)
-  const [selectedListType, setSelectedListType] = useState('Top 10')
   const {
     region,
     circle,
@@ -52,40 +58,26 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
     setPage(1)
   }, [officeLevel, subset])
 
-  const sortData = useMemo(() => {
-    const [sortOrder, limit] = selectedListType.split(' ')
-    return { sortOrder: sortOrder === 'Top' ? 'DESC' : 'ASC', limit: limit }
-  }, [selectedListType])
-
-  const measureFields = useMemo(() => {
-    return subset.measures as SubsetMeasureField[]
-  }, [subset])
-
-  const [selectedSortField, setSelectedSortField] = useState(
-    measureFields.length > 0 ? measureFields[0].subset_column : ''
+  const [graphValues, loading] = useFetchRecord<{
+    data: Paginator<DataTableItem>
+    latest_value: string | null
+  }>(
+    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${selectedSortOrder}&office_code=${prevLevelOffice?.office_code ?? ''}&month=${dateToYearMonth(selectedMonth)}` +
+      `&limit=${selectedLimit}&page=${page}&per_page=10`
   )
 
   useEffect(() => {
-    if (measureFields.length > 0) {
-      setSelectedSortField(measureFields[0].subset_column)
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
     }
-  }, [measureFields])
-
-  const [graphValues, loading] = useFetchRecord<{ data: Paginator<DataTableItem> }>(
-    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${sortData.sortOrder}&office_code=${prevLevelOffice?.office_code ?? ''}` +
-      `&limit=${sortData.limit}&page=${page}&per_page=10`
-  )
+  }, [setSelectedMonth, graphValues, selectedMonth])
 
   const tableCols = useMemo(() => {
     const cols: TableColName[] = []
 
     if (officeLevel != 'state') {
-      //   cols.push({
-      //     name: 'Office Code',
-      //     source: 'office_code',
-      //     type: 'string',
-      //   })
-
       cols.push({
         name: 'Office Name',
         source: 'office_name',
@@ -132,9 +124,10 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
   }, [graphValues, selectedSortField])
 
   const handleTooltipClick = (data: { office_code: string | null; office_name: string | null }) => {
-    if (officeLevel === 'state') {
+    if (officeLevel === 'state' || officeLevel === 'section') {
       return
     }
+    setSelectedOfficeLevel(getNextOfficeLevel(officeLevel))
     const office = {
       office_name:
         (data['office_name' as keyof typeof data] as string) ??
@@ -173,23 +166,17 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
               data={chartData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-              {/* <CartesianGrid strokeDasharray='3 3' /> */}
               <XAxis
                 dataKey='office_name'
                 style={{ fontSize: '10' }}
                 axisLine={false}
                 tickLine={false}
               />
-              {/* <YAxis
-                tickFormatter={(value) => formatNumber(value)}
-                style={{ fontSize: '10' }}
-              /> */}
               <Tooltip
                 formatter={(value: number) => `${formatNumber(value)}`}
                 content={<CustomTooltip valueType='percentage' />}
                 cursor={{ fill: 'var(--colour-1stop-accent2)' }}
               />
-
               <Bar
                 dataKey='count'
                 fill={solidColors[0]}
@@ -199,27 +186,6 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
             </BarChart>
           </ResponsiveContainer>
         </div>
-
-        {/* <div className='mt-10 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
-        <div className='flex flex-col'>
-          <SelectList
-            list={listTypes}
-            dataKey='name'
-            displayKey='name'
-            setValue={setSelectedListType}
-            value={selectedListType}
-          />
-        </div>
-        <div className='flex flex-col'>
-          <SelectList
-            list={measureFields}
-            dataKey='subset_column'
-            displayKey='subset_field_name'
-            setValue={setSelectedSortField}
-            value={selectedSortField}
-          />
-        </div>
-      </div> */}
         <div className='rounded-lg bg-white p-4'>
           <OfficeLevelSubsetTable
             officeLevel={officeLevel}
@@ -227,6 +193,7 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
             tableData={graphValues?.data.data}
             selectedOffice={selectedOffice}
             prevLevel={prevLevelOffice}
+            setOfficeLevel={setSelectedOfficeLevel}
           />
           <div className='flex w-full flex-col'>
             {graphValues?.data != null && (

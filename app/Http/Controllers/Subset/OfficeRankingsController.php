@@ -43,7 +43,7 @@ class OfficeRankingsController extends Controller implements HasMiddleware
         return Inertia::render('OfficeRanking/OfficeRankingPage', [
             'subsetGroup' => $subsetGroup,
             'subsetItems' => $groups,
-            'oldTab' => $request->input('tab', 'state'),
+            'oldTab' => $request->input('tab', 'region'),
             'oldSubsetName' => $request->input('subset', null),
             'oldRoute' => $request->input('route'),
         ]);

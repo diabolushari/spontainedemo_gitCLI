@@ -1,4 +1,9 @@
-import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_interfaces'
+import {
+  SubsetDetail,
+  SubsetGroup,
+  SubsetGroupItem,
+  SubsetMeasureField,
+} from '@/interfaces/data_interfaces'
 import { useMemo, useState } from 'react'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import BreadCrumbs, { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
@@ -23,13 +28,7 @@ interface Props {
   oldRoute?: string
 }
 
-const listTypes: { name: string }[] = [
-  { name: '3' },
-  { name: '5' },
-  { name: '10' },
-  { name: '20' },
-  { name: '10' },
-]
+const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 
 export default function OfficeRankingPage({
   subsetGroup,
@@ -73,7 +72,16 @@ export default function OfficeRankingPage({
       ?.subset as SubsetDetail | null | undefined
   }, [subsetItems, selectedSubsetId])
 
+  const measureFields = useMemo(() => {
+    return (selectedSubset?.measures ?? []) as SubsetMeasureField[]
+  }, [selectedSubset])
+
+  const [selectedSortField, setSelectedSortField] = useState(
+    measureFields.length > 0 ? measureFields[0].subset_column : ''
+  )
+
   const [selectedListType, setSelectedListType] = useState('10')
+  const [selectedSortOrder, setSelectedSortOrder] = useState('desc')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   return (
@@ -85,13 +93,11 @@ export default function OfficeRankingPage({
       setLevelName={setLevelName}
       levelCode={levelCode}
       setLevelCode={setLevelCode}
-      //   breadCrumbs={breadCrumb}
     >
       <DetailDashboardPadding>
         <Card className='grid grid-cols-5'>
           <div className='mx-4 mt-10 space-y-2'>
             <BreadCrumbs breadcrumbItems={breadCrumb} />
-
             <p className='h3-1stop pt-4'>Ranked Analysis</p>
             <p className='body-1stop ml-1 pt-2'>{subsetGroup.name}</p>
             <p className='axial-label-1stop ml-1'>{subsetGroup.description}</p>
@@ -106,13 +112,11 @@ export default function OfficeRankingPage({
                   setValue={setSelectedSubsetId}
                   value={selectedSubsetId}
                   showAllOption
-                  //   label='Select An Analysis Set'
                   allOptionText='Select Subset'
                   style='1stop-background'
                 />
               </div>
             </div>
-
             <div className='mr-1 rounded-lg'>
               <div className='grid w-full grid-cols-4 rounded-lg pb-4'>
                 <div className='col-span-3 flex w-full flex-row rounded-lg'>
@@ -135,20 +139,23 @@ export default function OfficeRankingPage({
                         <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                           <input
                             type='radio'
-                            name='radio'
-                            checked
+                            name='sorting'
+                            checked={selectedSortOrder === 'desc'}
+                            value='desc'
+                            onChange={() => setSelectedSortOrder('desc')}
                             className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                           />
                         </div>
                         <p className='small-1stop-header'>Top Value</p>
                       </div>
-
                       <div className='flex flex-row items-center gap-2'>
                         <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                           <input
                             type='radio'
                             name='radio'
-                            checked
+                            checked={selectedSortOrder === 'asc'}
+                            value='asc'
+                            onChange={() => setSelectedSortOrder('asc')}
                             className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                           />
                         </div>
@@ -157,11 +164,11 @@ export default function OfficeRankingPage({
                     </div>{' '}
                     <div className='mx-4 flex flex-col pt-1'>
                       <SelectList
-                        list={[{ name: 'Measure 1' }, { name: 'Measure 2' }, { name: 'Measure 3' }]}
-                        dataKey='name'
-                        displayKey='name'
-                        setValue={setSelectedListType}
-                        value={selectedListType}
+                        list={measureFields}
+                        dataKey='susbet_column'
+                        displayKey='subset_field_name'
+                        setValue={setSelectedSortField}
+                        value={selectedSortField}
                         style='1stop-small'
                       />
                     </div>
@@ -183,6 +190,7 @@ export default function OfficeRankingPage({
               <OfficeLevelTabs
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                showState={false}
               />
               <SelectedOfficeContext.Provider
                 value={{
@@ -200,6 +208,12 @@ export default function OfficeRankingPage({
                   <OfficeRanking
                     subset={selectedSubset}
                     officeLevel={activeTab}
+                    selectedSortField={selectedSortField}
+                    selectedLimit={selectedListType}
+                    selectedSortOrder={selectedSortOrder}
+                    setSelectedOfficeLevel={setActiveTab}
+                    selectedMonth={selectedMonth}
+                    setSelectedMonth={setSelectedMonth}
                   />
                 )}
               </SelectedOfficeContext.Provider>
