@@ -7,7 +7,7 @@ import DataShowIcon from '../ui/DatashowIcon'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import SelectList from '@/ui/form/SelectList'
 import { Cat } from 'lucide-react'
-import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import Skeleton from 'react-loading-skeleton'
 import { CustomTooltip } from '../CustomTooltip'
 import { solidColors } from '@/ui/ui_interfaces'
@@ -102,10 +102,12 @@ const ArrearsCategory = () => {
             <p></p>
           </button>
         </div>
-        <div className='flex-col'>
-          <div className='mt-4 flex w-full gap-2 p-2 pt-5'>
+        <div className='w-full flex-col space-y-4 px-2'>
+          <div className='mt-4 flex w-full justify-end gap-2'>
             <span className='subheader-sm-1stop'>Arrears By Category</span>
-            <div className='justify-end pl-10'>
+          </div>
+          <div className='flex justify-end'>
+            <div>
               <SelectList
                 list={voltageType.map((voltage) => ({
                   key: voltage,
@@ -123,31 +125,42 @@ const ArrearsCategory = () => {
           </div>
           <div className='p-5'>
             {chartData?.length ? (
-              <BarChart
-                width={1000}
+              <ResponsiveContainer
+                width='100%'
                 height={150}
-                data={chartData}
               >
-                <XAxis dataKey='ConsumerCategory' />
-                <YAxis hide />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar
-                  dataKey='TotalArrears'
-                  fill={solidColors[0]}
-                />
+                <BarChart
+                  //   width={600}
+                  //   height={150}
+                  data={chartData}
+                >
+                  <XAxis
+                    dataKey='ConsumerCategory'
+                    tickFormatter={(tick) =>
+                      tick.charAt(0).toUpperCase() + tick.slice(1).toLowerCase()
+                    }
+                    tick={{ fontSize: 10 }}
+                  />
+                  <YAxis hide />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar
+                    dataKey='TotalArrears'
+                    fill={solidColors[0]}
+                  />
 
-                <Bar
-                  dataKey='UndisputedArrears'
-                  fill={solidColors[1]}
-                />
-                <Bar
-                  dataKey='DisputedArrears'
-                  fill={solidColors[2]}
-                />
-              </BarChart>
+                  <Bar
+                    dataKey='UndisputedArrears'
+                    fill={solidColors[1]}
+                  />
+                  <Bar
+                    dataKey='DisputedArrears'
+                    fill={solidColors[2]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             ) : (
               <Skeleton
-                width={1000}
+                width='100%'
                 height={150}
               />
             )}

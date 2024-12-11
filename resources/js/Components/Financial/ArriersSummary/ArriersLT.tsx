@@ -257,7 +257,7 @@ const ArriersLT = () => {
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
+        <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
           <button
             className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
@@ -278,7 +278,7 @@ const ArriersLT = () => {
           >
             <Top10Icon />
           </button>
-          <button
+          {/* <button
             className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
             onClick={() => {
               // setLevelName('office_code')
@@ -302,7 +302,7 @@ const ArriersLT = () => {
             }}
           >
             <p></p>
-          </button>
+          </button> */}
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
@@ -460,7 +460,10 @@ const ArriersLT = () => {
                     width={100}
                     height={100}
                   >
-                    <Tooltip formatter={(value: number) => formatNumber(value)} />
+                    <Tooltip
+                      formatter={(value: number) => formatNumber(value)}
+                      content={<CustomTooltip />}
+                    />
 
                     <Pie
                       data={data}

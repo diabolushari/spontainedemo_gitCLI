@@ -1,6 +1,6 @@
 import ApplicationLogo from '@/Components/ApplicationLogo'
 import { Link } from '@inertiajs/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface Properties {
   isShowSideBar?: boolean
@@ -143,10 +143,22 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
   const handleSideBarClick = () => {
     setIsShowSideBar(!isShowSideBar)
   }
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  useEffect(() => {
+    if (isShowSideBar) {
+      const timeoutId = setTimeout(() => {
+        setIsExpanded(true)
+      }, 500)
+      return () => clearTimeout(timeoutId)
+    } else {
+      setIsExpanded(false)
+    }
+  }, [isShowSideBar])
 
   return (
     <div className=''>
-      {isShowSideBar ? (
+      {isShowSideBar && isExpanded ? (
         <div
           className={`fixed top-0 z-40 flex min-h-screen flex-col border-r border-gray-200 bg-1stop-white py-6 pl-1 shadow-2xl`}
           // onClick={handleSideBarClick}

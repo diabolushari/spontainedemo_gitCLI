@@ -100,8 +100,8 @@ const AllArears = () => {
           </button>
         </div>
         {selectedLevel === 1 && (
-          <div className='ml-10 p-5 pl-10 pt-10'>
-            <Card className='w-full bg-1stop-accent2 p-5'>
+          <div className='mr-2 px-4 pt-10'>
+            <Card className='w-full bg-1stop-accent2 p-4'>
               <div className='text-center'>
                 <div className='h2-1stop pr-3'>
                   {isLoading ? <Skeleton width={60} /> : formatNumber(totalArrears)}
@@ -109,8 +109,8 @@ const AllArears = () => {
                 <div className='body-1stop'>Total Arrears</div>
               </div>
             </Card>
-            <div className='flex justify-around gap-5 p-3 pt-7'>
-              <Card className='w-1/2 bg-1stop-gray p-5 text-center'>
+            <div className='flex justify-around gap-2 p-3 pt-7'>
+              <Card className='w-full bg-1stop-gray p-5 text-center'>
                 <div>
                   <div className='h3-1stop text-nowrap'>
                     {isLoading ? <Skeleton width={60} /> : formatNumber(lTArrears)}
@@ -118,7 +118,7 @@ const AllArears = () => {
                   <div className='small-1stop'>LT Arrears</div>
                 </div>
               </Card>
-              <Card className='w-1/2 bg-1stop-white p-5 text-center'>
+              <Card className='w-full bg-1stop-white p-5 text-center'>
                 <div>
                   <div className='h3-1stop text-nowrap'>
                     {isLoading ? <Skeleton width={60} /> : formatNumber(hTArrears)}
@@ -151,15 +151,13 @@ const AllArears = () => {
           <p className='mdmetric-1stop'>All Arrears</p>
         </div>
         <div
-          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
+          className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50 px-4'
           //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
         >
-          <div style={{ opacity: 1 }}>
-            <MonthPicker
-              selectedMonth={selectedMonth}
-              setSelectedMonth={setSelectedMonth}
-            />
-          </div>
+          <MonthPicker
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link href={`/data-explorer/Total Arrears?latest=month&route=${route('finance.index')}`}>

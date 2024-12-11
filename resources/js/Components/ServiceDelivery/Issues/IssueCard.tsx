@@ -85,7 +85,7 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
             onClick={() => handleGraphSelection('Customer Complaints - Aggregate', null)}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='smmetric-1stop lg:mdmetric-1stop'>
+            <p className='smmetric-1stop lg:xlmetric-1stop'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(complaintCount('Total') ?? 0)}
             </p>
             <p className='small-1stop-header text-center'>Total Complaints</p>
