@@ -60,7 +60,7 @@ const ComplaintList = ({
   const [topOrBottom, setTopOrBottom] = useState(sortOrder)
   const [headers, setHeaders] = useState([column1, column2])
   const [listType, setListType] = useState('10')
-  const [title, setTitle] = useState('GENERIC COMPLAINTS')
+  const [title, setTitle] = useState('NO POWER SUPPLY')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
     `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy ?? 'complaint_count'}&sort_order=${topOrBottom}&limit=${listType}&complaint_type=${title}&page=${page}`

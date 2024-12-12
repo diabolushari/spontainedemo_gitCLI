@@ -190,17 +190,26 @@ const ActiveConnection = () => {
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
+      const excludedCategories = [
+        graphData[0]?.consumer_category,
+        graphData[1]?.consumer_category,
+        graphData[2]?.consumer_category,
+      ]
+
       router.get(
         route('data-explorer', {
           subsetGroup: 'Active Connections Summary',
           voltage: voltageType === 'Total' ? '' : voltageType,
           month: dateToYearMonth(selectedMonth),
           consumer_category: data.name === 'Other' ? '' : data.name,
-          route: route('service-delivery.index'),
+          consumer_category_not_in:
+            data.name === 'Other'
+              ? `${excludedCategories.filter((category) => category).join(',')}`
+              : '',
         })
       )
     },
-    [voltageType, selectedMonth]
+    [graphData, voltageType, selectedMonth]
   )
 
   return (

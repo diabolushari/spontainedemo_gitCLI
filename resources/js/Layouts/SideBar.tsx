@@ -1,5 +1,6 @@
 import ApplicationLogo from '@/Components/ApplicationLogo'
 import { Link } from '@inertiajs/react'
+import Hamburger from 'hamburger-react'
 import React, { useEffect, useState } from 'react'
 
 interface Properties {
@@ -144,6 +145,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
     setIsShowSideBar(!isShowSideBar)
   }
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isOpen, setOpen] = useState(false)
 
   useEffect(() => {
     if (isShowSideBar) {
@@ -157,132 +159,201 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
   }, [isShowSideBar])
 
   return (
-    <div className=''>
-      {isShowSideBar && isExpanded ? (
-        <div
-          className={`fixed top-0 z-40 flex min-h-screen flex-col border-r border-gray-200 bg-1stop-white py-6 pl-1 shadow-2xl`}
-          // onClick={handleSideBarClick}
-        >
-          <div className='flex pb-2'>
-            <div className='cursor-pointer'>
-              <Link href='/service-delivery'>
-                <ApplicationLogo className='h-20 w-20' />
-              </Link>
-            </div>
-            <div className='flex items-end'>
-              <span className='subheader-1stop ml-3 mt-5'>
-                ANALYTICS <br /> DASHBOARD
-              </span>
-            </div>
-            <div className='flex'>
-              <svg
-                onClick={handleSideBarClick}
-                className='cursor-pointer'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M3 10C3 4.47715 7.47715 0 13 0H24V24H13C7.47715 24 3 19.5228 3 14V10Z'
-                  fill='var(--colour-1stop-highlight)'
-                />
-                <path
-                  d='M11.828 12.364L16.778 17.314L15.364 18.728L9 12.364L15.364 6L16.778 7.414L11.828 12.364Z'
-                  fill='white'
-                />
-              </svg>
-            </div>
-          </div>
-          <hr className='mt-4 border-1stop-gray' />
-          <div className='ml-4 mt-10 flex flex-col gap-10'>
-            {dashboardSidebarItems.map((item) => (
-              <div
-                className='mr-auto flex items-center gap-3'
-                key={item.name}
-              >
-                <div
-                  className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'}`}
-                >
-                  <Link href={item.link}>{item.image.svg}</Link>
-                </div>
-
-                <Link
-                  href={item.link}
-                  key={item.name}
-                >
-                  <span className='small-1stop-header pl-2 pt-2 font-bold hover:text-xs'>
-                    {item.name}
-                  </span>
+    <div>
+      <div className='hidden sm:block'>
+        {isShowSideBar && isExpanded ? (
+          <div
+            className={`fixed top-0 z-40 flex min-h-screen flex-col border-r border-gray-200 bg-1stop-white py-6 pl-1 shadow-2xl`}
+            // onClick={handleSideBarClick}
+          >
+            <div className='flex pb-2'>
+              <div className='cursor-pointer'>
+                <Link href='/service-delivery'>
+                  <ApplicationLogo className='h-20 w-20' />
                 </Link>
               </div>
-            ))}
-          </div>
-
-          <div className='ml-4 mt-auto flex items-center gap-3 rounded-full'>
-            <div
-              className='rounded-full p-2'
-              dangerouslySetInnerHTML={{
-                __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
-<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
-</svg>`,
-              }}
-            />{' '}
-            <Link
-              href='/data-detail'
-              className='flex'
-            >
-              <span className='small-1stop-header pl-2 pt-2 font-bold'>Admin</span>
-            </Link>
-          </div>
-        </div>
-      ) : (
-        <div
-          className={`fixed top-0 z-40 flex min-h-screen flex-col items-center gap-10 border-r border-gray-200 bg-1stop-white px-1 py-6 shadow-2xl`}
-          onMouseEnter={() => setIsShowSideBar(true)}
-        >
-          <div className='cursor-pointer pb-2'>
-            <Link href='/service-delivery'>
-              <ApplicationLogo className='h-20 w-20' />
-            </Link>
-          </div>
-          <div className='mt-4 flex flex-col gap-10'>
-            {dashboardSidebarItems.map((item) => (
-              <div
-                onClick={handleSideBarClick}
-                className='mr-auto flex cursor-pointer items-center gap-3'
-                key={item.name}
-              >
-                <div
-                  className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'} `}
-                  onMouseEnter={() => setIsShowSideBar(true)}
-                >
-                  {item.image.svg}
-                </div>
+              <div className='flex items-end'>
+                <span className='subheader-1stop ml-3 mt-5'>
+                  ANALYTICS <br /> DASHBOARD
+                </span>
               </div>
-            ))}
-          </div>
-          <div className='mt-auto flex items-center justify-center gap-3 rounded-full'>
-            <Link
-              href=''
-              className='rounded-full'
-              onMouseEnter={() => setIsShowSideBar(true)}
-            >
+              <div className='flex'>
+                <svg
+                  onClick={handleSideBarClick}
+                  className='cursor-pointer'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M3 10C3 4.47715 7.47715 0 13 0H24V24H13C7.47715 24 3 19.5228 3 14V10Z'
+                    fill='var(--colour-1stop-highlight)'
+                  />
+                  <path
+                    d='M11.828 12.364L16.778 17.314L15.364 18.728L9 12.364L15.364 6L16.778 7.414L11.828 12.364Z'
+                    fill='white'
+                  />
+                </svg>
+              </div>
+            </div>
+            <hr className='mt-4 border-1stop-gray' />
+            <div className='ml-4 mt-10 flex flex-col gap-10'>
+              {dashboardSidebarItems.map((item) => (
+                <div
+                  className='mr-auto flex items-center gap-3'
+                  key={item.name}
+                >
+                  <div
+                    className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'}`}
+                  >
+                    <Link href={item.link}>{item.image.svg}</Link>
+                  </div>
+
+                  <Link
+                    href={item.link}
+                    key={item.name}
+                  >
+                    <span className='small-1stop-header pl-2 pt-2 font-bold hover:text-xs'>
+                      {item.name}
+                    </span>
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            <div className='ml-4 mt-auto flex items-center gap-3 rounded-full'>
               <div
                 className='rounded-full p-2'
                 dangerouslySetInnerHTML={{
                   __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
+<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
 <path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
 </svg>`,
                 }}
-              />
+              />{' '}
+              <Link
+                href='/data-detail'
+                className='flex'
+              >
+                <span className='small-1stop-header pl-2 pt-2 font-bold'>Admin</span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div
+            className={`fixed top-0 z-40 flex min-h-screen flex-col items-center gap-10 border-r border-gray-200 bg-1stop-white px-1 py-6 shadow-2xl`}
+            onMouseEnter={() => setIsShowSideBar(true)}
+          >
+            <div className='cursor-pointer pb-2'>
+              <Link href='/service-delivery'>
+                <ApplicationLogo className='h-20 w-20' />
+              </Link>
+            </div>
+            <div className='mt-4 flex flex-col gap-10'>
+              {dashboardSidebarItems.map((item) => (
+                <div
+                  onClick={handleSideBarClick}
+                  className='mr-auto flex cursor-pointer items-center gap-3'
+                  key={item.name}
+                >
+                  <div
+                    className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'} `}
+                    onMouseEnter={() => setIsShowSideBar(true)}
+                  >
+                    {item.image.svg}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className='mt-auto flex items-center justify-center gap-3 rounded-full'>
+              <Link
+                href=''
+                className='rounded-full'
+                onMouseEnter={() => setIsShowSideBar(true)}
+              >
+                <div
+                  className='rounded-full p-2'
+                  dangerouslySetInnerHTML={{
+                    __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
+<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
+</svg>`,
+                  }}
+                />
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className='block sm:hidden'>
+        <div className='flex w-full bg-1stop-white'>
+          <div className='cursor-pointer p-5'>
+            <Link href='/service-delivery'>
+              <ApplicationLogo className='h-20 w-20' />
             </Link>
           </div>
+          <div className='py-10'>
+            <span className='subheader-1stop ml-3 mt-5 p-5'>ANALYTICS</span>
+            <span className='subheader-1stop ml-3 mt-5 p-5'> DASHBOARD</span>
+          </div>
+          <div className='flex p-5 pt-7'>
+            <Hamburger
+              toggled={isOpen}
+              toggle={setOpen}
+            />
+          </div>
         </div>
-      )}
+        <div>
+          {isOpen && (
+            <div className='h-screen w-full'>
+              <div className='z-10 h-full'>
+                <div className='ml-4 mt-10 flex flex-col gap-10'>
+                  {dashboardSidebarItems.map((item) => (
+                    <div
+                      className='mr-auto flex items-center gap-3'
+                      key={item.name}
+                    >
+                      <div
+                        className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'}`}
+                      >
+                        <Link href={item.link}>{item.image.svg}</Link>
+                      </div>
+
+                      <Link
+                        href={item.link}
+                        key={item.name}
+                      >
+                        <span className='small-1stop-header pl-2 pt-2 font-bold hover:text-xs'>
+                          {item.name}
+                        </span>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+                <div className='ml-4 mt-auto flex items-center gap-3 rounded-full pt-10'>
+                  <div
+                    className='rounded-full p-2'
+                    dangerouslySetInnerHTML={{
+                      __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
+<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
+</svg>`,
+                    }}
+                  />
+                  <Link
+                    href='/data-detail'
+                    className='flex'
+                  >
+                    <span className='small-1stop-header pl-2 pt-2 font-bold'>Admin</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

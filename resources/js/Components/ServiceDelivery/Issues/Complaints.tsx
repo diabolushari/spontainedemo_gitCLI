@@ -57,7 +57,10 @@ const Complaints = () => {
               />
             </div>
             <div className='flex w-2/3'>
-              <PowerInterruptionTrend2 />
+              <PowerInterruptionTrend2
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+              />
             </div>
           </div>
         )}

@@ -24,8 +24,12 @@ interface ComplaintValues extends Model {
   month_year: string
 }
 
-const PowerInterruptionTrend2 = () => {
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+interface Props {
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+}
+
+const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => {
   const [monthYear, setMonthYear] = useState('')
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [yearList, setYearList] = useState<{ yearName: string }[]>([])
@@ -33,6 +37,7 @@ const PowerInterruptionTrend2 = () => {
   const [yearFilter, setYearFilter] = useState('')
   const [referenceMonthYear, setReferenceMonthYear] = useState('')
   const [selectedRange, setSelectedRange] = useState('')
+
   useEffect(() => {
     setSelectedRange(`${(Number(graphValues?.latest_value) % 100) - 1}`)
     setReferenceMonthYear(`${Number(graphValues?.latest_value) - 1}`)
@@ -43,7 +48,8 @@ const PowerInterruptionTrend2 = () => {
     setReferenceMonthYear(
       Number(selectedRange) < 10 ? yearFilter + '0' + selectedRange : yearFilter + selectedRange
     )
-  }, [setReferenceMonthYear, selectedRange, yearFilter])
+  }, [selectedRange, yearFilter])
+
   useEffect(() => {
     for (let i = new Date().getFullYear(); i >= 2017; i--) {
       setYearList((prev) => [
@@ -64,6 +70,7 @@ const PowerInterruptionTrend2 = () => {
       setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
+
   useEffect(() => {
     if (selectedMonth != null) {
       setMonthYear(
