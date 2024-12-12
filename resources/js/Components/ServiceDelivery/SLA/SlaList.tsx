@@ -25,10 +25,10 @@ interface Properties {
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
+  { name: 'Region', value: 'region' },
+  { name: 'Circle', value: 'circle' },
   { name: 'Subdivision', value: 'subdivision' },
   { name: 'Division', value: 'division' },
-  { name: 'Circle', value: 'circle' },
-  { name: 'Region', value: 'region' },
 ]
 interface ConsumerList extends Model {
   office_code: string
@@ -57,7 +57,7 @@ const SlaList = ({
   const [title, setTitle] = useState('Ownership change')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'state')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=requests_within_sla____&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
   )
 
   useEffect(() => {

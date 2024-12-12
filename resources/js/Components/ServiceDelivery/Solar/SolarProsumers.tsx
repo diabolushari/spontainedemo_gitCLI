@@ -147,8 +147,8 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   )
 
   return (
-    <div className='flex flex-row space-x-1 p-2 pb-8'>
-      <div className='flex w-1/2 flex-col gap-1 pt-4'>
+    <div className='flex w-full flex-col space-x-1 p-2 pb-8 md:flex-row'>
+      <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
         {/* Total Connections */}
         <div className='flex flex-col border p-2'>
           <p className='xlmetric-1stop'>
@@ -266,7 +266,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
       </div>
 
       {/* Graph */}
-      <div className='flex w-1/2 justify-center'>
+      <div className='flex justify-center md:w-1/2'>
         {graphValues?.data.length == 0 ? (
           <Skeleton
             circle={true}

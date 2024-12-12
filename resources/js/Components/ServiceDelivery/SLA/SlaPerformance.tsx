@@ -225,15 +225,7 @@ const SlaPerformance = () => {
             <Top10Icon />
           </button>
 
-          <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('section_code')
-              // setLevelCode(level?.record.section_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
+          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
         </div>
         {selectedLevel === 1 && (
           <div className='flex w-full flex-row space-x-1 p-2 pt-4'>

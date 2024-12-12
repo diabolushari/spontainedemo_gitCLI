@@ -1,11 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import MonthPicker from '@/ui/form/MonthPicker'
-import { CustomLegend, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import {
+  CustomLegend,
+  dateToYearMonth,
+  formatNumber,
+} from '@/Components/ServiceDelivery/ActiveConnection'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
@@ -180,7 +184,7 @@ const ArriersHT = () => {
       }
     }
   }
-  console.log(graphData, filters(1))
+
   const arrearCount = (range: string) => {
     switch (range) {
       case 'Total':
@@ -198,11 +202,6 @@ const ArriersHT = () => {
         )
     }
   }
-  //   const graphFilter = (index: number) => {
-  //     return graphValues?.data
-  //       .filter((value) => filters(value, index))
-  //       .reduce((sum, value) => sum + value.consumer_count, 0)
-  //   }
 
   const data = [
     {
@@ -255,7 +254,20 @@ const ArriersHT = () => {
           : 0
     }
   }
-
+  const handleGraphSelection = useCallback(
+    (data: { name: string | null }) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Collection Summary',
+          voltage: 'HT',
+          month: dateToYearMonth(selectedMonth),
+          consumer_category: data.name === 'Other' ? '' : data.name,
+          route: route('finance.index'),
+        })
+      )
+    },
+    [selectedMonth]
+  )
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -280,43 +292,20 @@ const ArriersHT = () => {
           >
             <Top10Icon />
           </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-            }}
-          ></button>
-          <button
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.division_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('section_code')
-              // setLevelCode(level?.record.section_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
+          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
-          <div className='flex w-full flex-row space-x-1 p-2'>
-            <div className='flex w-1/2 flex-col gap-1 pt-4'>
-              {/* Total Connections */}
+          <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
+            <div className='flex w-full justify-end md:hidden'>
               <button
-                className='small-1stop mb-auto ml-auto cursor-pointer justify-end'
+                className='small-1stop mb-auto cursor-pointer justify-end'
                 onClick={handleToogleNumber}
               >
                 {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
               </button>
+            </div>
+            <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
               <div className='flex flex-col border p-2'>
                 <p className='xlmetric-1stop'>
                   {graphValues?.data.length ? (
@@ -449,7 +438,15 @@ const ArriersHT = () => {
             </div>
 
             {/* Graph */}
-            <div className='relative flex w-1/2 justify-center'>
+            <div className='relative flex flex-col justify-center md:w-1/2'>
+              <div className='hidden w-full justify-end md:flex'>
+                <button
+                  className='small-1stop mb-auto cursor-pointer justify-end'
+                  onClick={handleToogleNumber}
+                >
+                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+                </button>
+              </div>
               {isLoading ? (
                 <Skeleton
                   circle={true}
@@ -471,6 +468,7 @@ const ArriersHT = () => {
                       paddingAngle={2}
                       dataKey='value'
                       stroke='none'
+                      onClick={handleGraphSelection}
                     >
                       {data.map((entry, index) => (
                         <Cell
@@ -517,7 +515,7 @@ const ArriersHT = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Arrear Summary?latest=month&voltage=HT&route=${route('finance.index')}`}
+            href={`/data-explorer/Arrear Summary?month=${dateToYearMonth(selectedMonth)}&voltage=HT&route=${route('finance.index')}`}
           >
             <MoreButton />
           </Link>

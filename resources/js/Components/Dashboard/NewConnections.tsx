@@ -196,20 +196,19 @@ const NewConnections = () => {
           >
             <Top10Icon />
           </button>
-          <div
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-          >
-            <p></p>
-          </div>
-          <div
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-          >
-            <p></p>
-          </div>
+          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
         </div>
         {selectedLevel === 1 && (
-          <div className='flex w-full flex-row space-x-1 p-2'>
-            <div className='flex w-1/2 flex-col gap-1 pt-4'>
+          <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
+            <div className='flex w-full justify-end md:hidden'>
+              <button
+                className='small-1stop mb-auto cursor-pointer justify-end'
+                onClick={handleToogleNumber}
+              >
+                {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+              </button>
+            </div>
+            <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
               <div className='flex flex-col border p-2'>
                 <p className='xlmetric-1stop'>
                   {isLoading ? (
@@ -292,8 +291,8 @@ const NewConnections = () => {
               </div>
             </div>
 
-            <div className='relative flex w-1/2 flex-col pt-2'>
-              <div className='flex w-full justify-end'>
+            <div className='relative flex flex-col pt-2 md:w-1/2'>
+              <div className='hidden w-full justify-end md:flex'>
                 <button
                   className='small-1stop mb-auto cursor-pointer justify-end'
                   onClick={handleToogleNumber}

@@ -78,9 +78,9 @@ const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Propertie
   )
 
   return (
-    <div className='flex w-full'>
+    <div className='flex w-full flex-col md:flex-row'>
       <div className='flex justify-center'>
-        <div className='grid w-full max-w-md grid-cols-2 gap-2 p-2'>
+        <div className='grid w-full grid-cols-2 gap-2 p-2 md:max-w-md'>
           <button
             onClick={() => handleGraphSelection('Customer Complaints - Aggregate', null)}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-1 hover:bg-1stop-highlight2 lg:p-5'

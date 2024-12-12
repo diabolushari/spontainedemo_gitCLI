@@ -68,7 +68,7 @@ export default function OfficeLevelExplorerTable({
       })
     )
   }, [subset, officeLevel, searchParams, division, subdivision, prevLevelOffice])
-
+console.log(url)
   const [dataTable, loading] = useFetchRecord<{
     data: DataTableItem[]
     latest: string | null | number

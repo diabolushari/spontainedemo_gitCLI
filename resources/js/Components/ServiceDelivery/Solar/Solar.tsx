@@ -55,6 +55,7 @@ const Solar = () => {
           >
             <Top10Icon />
           </button>
+          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
         </div>
         {selectedLevel === 1 && (
           <SolarProsumers

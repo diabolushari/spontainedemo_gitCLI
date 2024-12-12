@@ -227,29 +227,12 @@ const ActiveConnection = () => {
           >
             <Top10Icon />
           </button>
-          <button
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.division_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('section_code')
-              // setLevelCode(level?.record.section_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
+          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
-          <div className='flex w-full flex-row space-x-1 p-2'>
-            <div className='flex w-1/2 flex-col gap-1 pt-4'>
+          <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
+            <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
               {/* Total Connections */}
               <div className='flex flex-col border p-2'>
                 <p className='xlmetric-1stop'>
@@ -343,7 +326,7 @@ const ActiveConnection = () => {
             </div>
 
             {/* Graph */}
-            <div className='relative flex w-1/2 justify-center'>
+            <div className='relative flex justify-center md:w-1/2'>
               {isLoading ? (
                 <Skeleton
                   circle={true}
