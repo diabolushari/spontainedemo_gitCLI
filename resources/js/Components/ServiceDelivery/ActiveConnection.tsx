@@ -83,6 +83,16 @@ export function dateToYearMonth(date?: Date | null) {
   return `${date.getFullYear()}${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}`
 }
 
+export function yearMonthToDate(yearMonth?: string | null): Date | null {
+  if (yearMonth == null) {
+    return null
+  }
+
+  const year = Number(yearMonth) / 100
+  const month = Number(yearMonth) % 100
+  return new Date(Math.trunc(year), month - 1, 1)
+}
+
 const ActiveConnection = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 

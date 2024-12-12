@@ -9,69 +9,71 @@ import {
   dimensionOperations,
   measureOperations,
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
+import { dateToYearMonth } from '@/Components/ServiceDelivery/ActiveConnection'
+
+export interface AppliedSubsetFilter {
+  id: number
+  filter: string
+  filterKey: string
+  filterValue: string
+}
 
 export default function useAppliedFilters(
-  dates: SubsetDateField[],
-  dimensions: SubsetDimensionField[],
-  measures: SubsetMeasureField[],
-  filters: Record<string, string>
+  filters: Record<string, string>,
+  selectedMonth: Date | null,
+  dates?: SubsetDateField[],
+  dimensions?: SubsetDimensionField[],
+  measures?: SubsetMeasureField[]
 ) {
-  const [appliedFilters, setAppliedFilters] = useState<
-    {
-      id: number
-      filter: string
-      filterKey: string
-      filterValue: string
-    }[]
-  >([])
+  const [appliedFilters, setAppliedFilters] = useState<AppliedSubsetFilter[]>([])
 
   useEffect(() => {
-    const newFilters: {
-      id: number
-      filter: string
-      filterKey: string
-      filterValue: string
-    }[] = []
+    const allFilters: Record<string, string | undefined | null> = {
+      ...filters,
+      month: dateToYearMonth(selectedMonth),
+    }
+
+    const newFilters: AppliedSubsetFilter[] = []
 
     let uuidCounter = 1
 
-    dates.forEach((date) => {
+    dates?.forEach((date) => {
       dateOperations.forEach((dateOperation) => {
         const filter = `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
-        if (filters[filter] != null) {
+        if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({
             id: uuidCounter++,
             filter: `${date.subset_field_name} ${dateOperation.operation} ${filters[filter]}`,
             filterKey: filter,
-            filterValue: filters[filter],
+            filterValue: allFilters[filter],
           })
         }
       })
     })
 
-    dimensions.forEach((dimension) => {
+    dimensions?.forEach((dimension) => {
       dimensionOperations.forEach((dimensionOperation) => {
         const filter = `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
-        if (filters[filter] != null) {
+        if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({
             id: uuidCounter++,
             filter: `${dimension.subset_field_name} ${dimensionOperation.operation} ${filters[filter]}`,
             filterKey: filter,
-            filterValue: filters[filter],
+            filterValue: allFilters[filter],
           })
         }
       })
     })
 
-    measures.forEach((measure) => {
+    measures?.forEach((measure) => {
       measureOperations.forEach((measureOperation) => {
         const filter = `${measure.subset_column}${measureOperation.value == '=' ? '' : measureOperation.value}`
-        if (filters[filter] != null) {
+        if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({
             id: uuidCounter++,
             filter: `${measure.subset_field_name} ${measureOperation.operation} ${filters[filter]}`,
             filterKey: filter,
-            filterValue: filters[filter],
+            filterValue: allFilters[filter],
           })
         }
       })
@@ -87,7 +89,7 @@ export default function useAppliedFilters(
     }
 
     setAppliedFilters(newFilters)
-  }, [dates, dimensions, measures, filters])
+  }, [dates, dimensions, measures, filters, selectedMonth])
 
   return { appliedFilters }
 }

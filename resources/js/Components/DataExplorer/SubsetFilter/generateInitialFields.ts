@@ -38,6 +38,9 @@ const generateInitialFields = (
     })
     dimensions.forEach((dimension) => {
       dimensionOperations.forEach((dimensionOperation) => {
+        if (dimension.subset_column == 'month') {
+          return
+        }
         const columnName =
           dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
         if (

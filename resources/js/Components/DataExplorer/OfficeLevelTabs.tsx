@@ -35,7 +35,7 @@ export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = t
       className='mr-4 w-full items-center rounded-lg sm:flex'
       role='tablist'
     >
-      <div className='hidden w-full items-center rounded-lg sm:flex'>
+      <div className='hidden w-full items-center rounded-lg lg:grid lg:grid-cols-6'>
         {tabs.map((tab) => (
           <div
             key={tab.value}
@@ -59,7 +59,7 @@ export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = t
           </div>
         ))}
       </div>
-      <div className='flex w-full flex-col sm:hidden'>
+      <div className='flex w-full flex-col lg:hidden'>
         <Dropdown
           list={tabItems}
           dataKey='value'

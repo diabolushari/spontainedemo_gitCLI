@@ -6,7 +6,7 @@ import { Paginator, solidColors } from '@/ui/ui_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { dateToYearMonth, formatNumber, yearMonthToDate } from '../ServiceDelivery/ActiveConnection'
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
@@ -22,6 +22,7 @@ interface Props {
   setSelectedOfficeLevel: Dispatch<SetStateAction<string>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+  searchParams: Record<string, string>
 }
 
 export default function OfficeRanking({
@@ -33,6 +34,7 @@ export default function OfficeRanking({
   setSelectedOfficeLevel,
   selectedMonth,
   setSelectedMonth,
+  searchParams,
 }: Readonly<Props>) {
   const [page, setPage] = useState(1)
   const {
@@ -62,15 +64,23 @@ export default function OfficeRanking({
     data: Paginator<DataTableItem>
     latest_value: string | null
   }>(
-    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${selectedSortOrder}&office_code=${prevLevelOffice?.office_code ?? ''}&month=${dateToYearMonth(selectedMonth)}` +
-      `&limit=${selectedLimit}&page=${page}&per_page=10`
+    route('subset.summary', {
+      subsetDetail: subset.id,
+      ...searchParams,
+      level: officeLevel,
+      month: dateToYearMonth(selectedMonth),
+      sort_by: selectedSortField,
+      sort_order: selectedSortOrder,
+      limit: selectedLimit,
+      page: page,
+      per_page: 10,
+      office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
+    })
   )
 
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
-      const year = Number(graphValues?.latest_value) / 100
-      const month = Number(graphValues?.latest_value) % 100
-      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+      setSelectedMonth(yearMonthToDate(graphValues?.latest_value))
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
@@ -85,7 +95,7 @@ export default function OfficeRanking({
       })
     }
 
-    subset.measures.forEach((measure) => {
+    subset.measures?.forEach((measure) => {
       if (measure.info == null) {
         return
       }
@@ -109,7 +119,7 @@ export default function OfficeRanking({
     })
 
     return cols
-  }, [subset, officeLevel, selectedSortField])
+  }, [subset, officeLevel])
 
   const chartData = useMemo(() => {
     return (

@@ -34,7 +34,7 @@ class SubsetOfficeLevelDataController extends Controller implements HasMiddlewar
 
         $filters = $request->all();
         $latestValue = null;
-        if ($request->filled('latest')) {
+        if ($request->filled('latest') && $request->filled($request->input('latest'))) {
             $maxValue = $findMaxValue->findMaxValue($subsetDetail, $request->input('latest'));
             if ($maxValue != null && $maxValue->max_value != null) {
                 $filters[$request->input('latest')] = $maxValue->max_value;
