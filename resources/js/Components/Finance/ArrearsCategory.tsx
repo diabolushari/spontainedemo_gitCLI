@@ -103,15 +103,18 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 <Bar
                   dataKey='TotalArrears'
                   fill={solidColors[0]}
+                  onClick={handleGraphSelection}
                 />
 
                 <Bar
                   dataKey='UndisputedArrears'
                   fill={solidColors[1]}
+                  onClick={handleGraphSelection}
                 />
                 <Bar
                   dataKey='DisputedArrears'
                   fill={solidColors[2]}
+                  onClick={handleGraphSelection}
                 />
               </BarChart>
             </ResponsiveContainer>
