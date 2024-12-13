@@ -119,10 +119,10 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
   }
   return (
     <div className='flex w-full flex-col pb-10 pr-4'>
-      <div className='mt-2 flex w-full justify-end gap-2 p-2'>
+      <div className='flex w-full justify-end gap-2 p-1'>
         <span className='subheader-sm-1stop'>Trend of Solar Generation</span>
       </div>
-      <div className='mt-4 flex w-full items-center justify-between gap-2'>
+      <div className='flex w-full items-center justify-between gap-2'>
         <div className='flex justify-center gap-4'>
           <button
             className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${

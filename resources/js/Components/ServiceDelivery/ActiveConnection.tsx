@@ -246,7 +246,7 @@ const ActiveConnection = () => {
           >
             <Top10Icon />
           </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
+          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (

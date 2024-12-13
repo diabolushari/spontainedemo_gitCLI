@@ -196,7 +196,7 @@ const NewConnections = () => {
           >
             <Top10Icon />
           </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
+          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
         </div>
         {selectedLevel === 1 && (
           <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>

@@ -23,7 +23,9 @@ const SolarGeneration = () => {
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-14'>
-        <div className='py-2'>{/* <p className='mdmetric-1stop'>Solar Generation</p> */}</div>
+        <div className='py-2'>
+          <p className='mdmetric-1stop'>Solar Generation</p>
+        </div>
         <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 px-4'>
           {/* {graphValues.length > 0 &&
         new Date(graphValues[0].data_date).toLocaleDateString('en-US', {

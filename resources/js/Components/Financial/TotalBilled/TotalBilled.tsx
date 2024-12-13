@@ -233,7 +233,7 @@ const TotalBilled = () => {
           >
             <Top10Icon />
           </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
+          <div className='md:min-h-40 h-full  border-r border-white bg-1stop-alt-gray'></div>
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
