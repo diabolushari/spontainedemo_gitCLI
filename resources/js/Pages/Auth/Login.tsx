@@ -48,7 +48,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
 
   return (
     <div className='flex min-h-screen flex-col justify-start bg-gradient-to-tr from-1stop-login-gradient-fr via-1stop-login-gradient-vi to-1stop-login-gradient-to py-10 md:items-center md:justify-center'>
-      <div className='grid grid-cols-1 rounded-lg p-4 md:grid-cols-2'>
+      <div className='grid grid-cols-1 rounded-lg p-0 md:grid-cols-2 md:p-4 lg:p-0'>
         <div className='hidden w-full rounded-lg md:block'>
           <img
             src='/bg-signin-kseb.png'
@@ -56,7 +56,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
             className='h-full rounded-l-lg object-cover object-center'
           />
         </div>
-        <div className='w-full rounded-lg bg-blue-100 p-8 md:rounded-r-lg lg:rounded-r-lg'>
+        <div className='w-full bg-blue-100 p-8 md:rounded-r-lg lg:rounded-r-3xl'>
           <div className='mb-4 flex justify-center'>
             <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
           </div>
