@@ -69,7 +69,7 @@ const NewConnections = () => {
             return (
               <li
                 key={`item-${index}`}
-                style={{ marginRight: 10, color: 'black', fontSize: '8px' }}
+                style={{ marginRight: 10, color: 'black', fontSize: '8px', lineHeight: '10px' }}
               >
                 <span
                   style={{
@@ -196,7 +196,7 @@ const NewConnections = () => {
           >
             <Top10Icon />
           </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
+          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
         </div>
         {selectedLevel === 1 && (
           <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
@@ -292,7 +292,7 @@ const NewConnections = () => {
             </div>
 
             <div className='relative flex flex-col pt-2 md:w-1/2'>
-              <div className='hidden w-full justify-end md:flex'>
+              <div className='absolute hidden w-full justify-end md:flex'>
                 <button
                   className='small-1stop mb-auto cursor-pointer justify-end'
                   onClick={handleToogleNumber}
@@ -307,7 +307,10 @@ const NewConnections = () => {
                   width={200}
                 />
               ) : (
-                <ResponsiveContainer className='small-1stop'>
+                <ResponsiveContainer
+                  className='small-1stop'
+                  height={300}
+                >
                   <PieChart
                     width={100}
                     height={100}
@@ -365,9 +368,9 @@ const NewConnections = () => {
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='flex py-2'>
-          <p className='mdmetric-1stop'>Servicing New Connections</p>
+          <p className='md:mdmetric-1stop smmetric-1stop'>Servicing New Connections</p>
         </div>
-        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50'>
+        <div className='small-1stop-header flex h-full w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50'>
           {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
               month: 'short',
@@ -380,7 +383,7 @@ const NewConnections = () => {
             />
           </div>
         </div>
-        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
+        <div className='flex justify-end pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >

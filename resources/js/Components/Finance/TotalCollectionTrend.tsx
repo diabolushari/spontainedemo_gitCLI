@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { renderCustomTooltip } from '../Financial/TotalBilled/BillingTrend'
 
 export interface TotalCollectionTrendValues {
   month: string
@@ -77,12 +78,12 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
         0
       )
 
-      return { month, TotalCollection: totalCollection || 0 }
+      return { month, total_collection: totalCollection || 0 }
     })
     .reverse()
 
   const voltageType = ['LT', 'HT', 'EHT']
-
+  console.log(chartData)
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({
     name: `${i + 3} MONTHS`,
     value: i + 3,
@@ -147,12 +148,13 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
                 style={{ fontSize: 10 }}
               />
               <Tooltip
-                formatter={(value: number) => [`${formatNumber(value)}`, 'Total Collection']}
+                // formatter={(value: number) => [`${formatNumber(value)}`, 'Total Collection']}
+                content={renderCustomTooltip}
                 labelFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
               />
               <Area
                 type='monotone'
-                dataKey='TotalCollection'
+                dataKey='total_collection'
                 stroke={solidColors[0]}
                 fill={solidColors[1]}
                 opacity={0.7}

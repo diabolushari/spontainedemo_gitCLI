@@ -51,7 +51,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
   return (
     <div className='flex w-full flex-col'>
       {selectedLevel === 1 && (
-        <div className='ml-10 p-5 pl-10 pt-10'>
+        <div className='p-5 pt-10 md:ml-10 md:pl-10'>
           <Card className='w-full bg-1stop-accent2 p-5'>
             <div className='text-center'>
               <div className='h2-1stop pr-3'>

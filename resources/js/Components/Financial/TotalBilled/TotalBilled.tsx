@@ -233,7 +233,7 @@ const TotalBilled = () => {
           >
             <Top10Icon />
           </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
+          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
@@ -390,7 +390,10 @@ const TotalBilled = () => {
                 </button>
               </div>
               {graphValues?.data.length ? (
-                <ResponsiveContainer className='small-1stop'>
+                <ResponsiveContainer
+                  className='small-1stop'
+                  height={300}
+                >
                   <PieChart
                     width={100}
                     height={100}
@@ -447,12 +450,12 @@ const TotalBilled = () => {
         )}
       </div>
       {/* //Footer */}
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
+      <div className='flex h-full justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='py-4'>
-          <p className='mdmetric-1stop'>Billing/Total Demand</p>
+          <p className='md:mdmetric-1stop smmetric-1stop'>Billing/Total Demand</p>
         </div>
         <div
-          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
+          className='small-1stop-header flex w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50 px-4'
           //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
         >
           <div style={{ opacity: 1 }}>
@@ -462,7 +465,7 @@ const TotalBilled = () => {
             />
           </div>
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Demand Analysis?month=${dateToYearMonth(selectedMonth)}&route=${route('finance.index')}`}
           >

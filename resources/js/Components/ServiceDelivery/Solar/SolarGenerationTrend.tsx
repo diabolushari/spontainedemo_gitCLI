@@ -118,12 +118,12 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
     return null
   }
   return (
-    <div className='flex w-full flex-col pb-10 pr-4'>
-      <div className='mt-2 flex w-full justify-end gap-2 p-2'>
+    <div className='flex w-full flex-col pr-4 lg:py-10'>
+      <div className='flex w-full justify-end gap-2'>
         <span className='subheader-sm-1stop'>Trend of Solar Generation</span>
       </div>
-      <div className='mt-4 flex w-full items-center justify-between gap-2'>
-        <div className='flex justify-center gap-4'>
+      <div className='flex w-full flex-col items-center justify-between gap-2 md:flex-row'>
+        <div className='ml-5 flex justify-center gap-4 pb-2'>
           <button
             className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
               selectedValue === '3 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'

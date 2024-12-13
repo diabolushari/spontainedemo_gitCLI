@@ -283,7 +283,10 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
             width={200}
           />
         ) : (
-          <ResponsiveContainer className='small-1stop'>
+          <ResponsiveContainer
+            className='small-1stop'
+            height={300}
+          >
             <PieChart
               width={200}
               height={200}

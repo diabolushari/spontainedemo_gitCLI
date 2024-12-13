@@ -206,7 +206,7 @@ export default function DashboardLayout({
         transition={{ duration: 0.3 }}
         className='inset-0'
       >
-        <main className={cn(`ml-14 mr-2 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
+        <main className={cn(`mr-2 flex flex-col md:ml-14`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
         </main>
       </motion.div>

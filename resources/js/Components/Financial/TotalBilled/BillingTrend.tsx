@@ -4,12 +4,33 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import { BillingValues } from './TotalBilled'
+import { CustomTooltip } from '@/Components/CustomTooltip'
 
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
+export const renderCustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+    const value = payload[0].value
+    console.log(label)
+    const name = payload[0].dataKey.replace('_', ' ')
 
+    return (
+      <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+        <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+        <div>
+          <span className={`small-1stop text-[${payload[0].stroke}]`}>
+            {name[0].toUpperCase()}
+            {name.slice(1)} :<span className='small-1stop font-bold'>{formatNumber(value)}</span>
+          </span>
+        </div>
+      </div>
+    )
+  }
+  return null
+}
 const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [selectedVoltage, setSelectedVoltage] = useState('LT')
@@ -79,22 +100,7 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='ml-2 flex gap-2'>
-            <span className='subheader-sm-1stop'>Trend of Top Active Connections</span>
-
-            {/* <div className=''>
-              <SelectList
-                list={dateEarlier.map((month, index) => ({
-                  key: index,
-                  value: month,
-                  text: month,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedValue}
-                setValue={setSelectedValue}
-              />
-            </div> */}
+            <span className='subheader-sm-1stop'>Trend of Top Billing/Total Demand</span>
           </div>
           <div className='mx-4 flex w-full justify-end gap-2'>
             <div>
@@ -141,7 +147,8 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                   style={{ fontSize: 10 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
+                  // formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
+                  content={renderCustomTooltip}
                   labelFormatter={(month) =>
                     month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
                   }

@@ -133,7 +133,7 @@ const PendancyCard = () => {
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='flex w-full flex-col rounded-lg p-2'>
+        <div className='flex w-full flex-col rounded-lg p-3'>
           <div className='flex w-full justify-end'>
             <button
               className='small-1stop mb-auto cursor-pointer justify-end'
@@ -168,30 +168,6 @@ const PendancyCard = () => {
                 />
               </div>
             </div>
-
-            {/* <div className='flex'>
-              <div className='flex flex-col p-5 pt-0'>
-                {isLoading ? (
-                  <Skeleton />
-                ) : (
-                  <span className='xlmetric-1stop'>
-                    {toggleValue ? `${complWithinSLa.toFixed(2)}%` : formatNumber(complWithinSLa)}
-                  </span>
-                )}
-                <span className='small-1stop text-nowrap'>Compl. within SLA</span>
-              </div>
-              <div className='w-full md:w-2/3'>
-                <SelectList
-                  setValue={setTitle}
-                  list={graphValues?.data ?? []}
-                  displayKey='request_type'
-                  dataKey='request_type'
-                  showAllOption
-                  value={title}
-                  style='1stop-small'
-                />
-              </div>
-            </div> */}
           </div>
 
           <div className='flex w-full flex-col justify-center px-2 pt-10'>
@@ -315,7 +291,7 @@ const PendancyCard = () => {
         </div>
       </div>
 
-      <div className='flex h-full items-center justify-end gap-1 gap-4 rounded-b-2xl bg-1stop-alt-gray px-4'>
+      <div className='flex h-full items-center justify-end gap-4 rounded-b-2xl bg-1stop-alt-gray px-4'>
         <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 py-2'>
           <DatePicker
             value={selectedDate ?? ''}
@@ -324,7 +300,7 @@ const PendancyCard = () => {
           />
         </div>
 
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Requests Completion Report?date=${selectedDate}&route=${route('service-delivery.index')}`}
           >

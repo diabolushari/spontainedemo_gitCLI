@@ -172,8 +172,8 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
   }, [isShowSideBar])
 
   return (
-    <div>
-      <div className='hidden sm:block'>
+    <div className='w-full'>
+      <div className='hidden md:block'>
         {isShowSideBar && isExpanded ? (
           <div
             className={`fixed top-0 z-40 flex min-h-screen flex-col border-r border-gray-200 bg-1stop-white py-6 pl-1 shadow-2xl`}
@@ -358,7 +358,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
           </button>
         )}
       </div>
-      <div className='block sm:hidden'>
+      <div className='block md:hidden'>
         <div className='flex w-full bg-1stop-white'>
           <div className='cursor-pointer py-5'>
             <Link href='/service-delivery'>
@@ -373,7 +373,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
             </span>
             <span className='subheader-1stop ml-3 mt-5 p-5'> </span>
           </div>
-          <div className='flex p-5 pt-7'>
+          <div className='ml-auto flex p-5 pt-7'>
             <Hamburger
               toggled={isOpen}
               toggle={setOpen}

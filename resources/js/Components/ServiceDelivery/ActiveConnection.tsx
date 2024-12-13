@@ -45,7 +45,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
         return (
           <li
             key={`item-${index}`}
-            style={{ marginRight: 10, color: 'black', fontSize: '8px' }}
+            style={{ marginRight: 10, color: 'black', fontSize: '8px', lineHeight: '10px' }}
             className='uppercase'
           >
             <span
@@ -55,6 +55,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
                 height: 10,
                 backgroundColor: entry.color,
                 marginRight: 5,
+                paddingTop: 1,
               }}
             />
             {`${entry.value} (${percentage}%)`} {/* Append percentage */}
@@ -246,7 +247,7 @@ const ActiveConnection = () => {
           >
             <Top10Icon />
           </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
+          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
         </div>
         {/* Data Section */}
         {selectedLevel === 1 && (
@@ -353,7 +354,10 @@ const ActiveConnection = () => {
                   width={200}
                 />
               ) : (
-                <ResponsiveContainer className='small-1stop'>
+                <ResponsiveContainer
+                  className='small-1stop'
+                  height={300}
+                >
                   <PieChart
                     width={100}
                     height={100}
@@ -407,12 +411,9 @@ const ActiveConnection = () => {
       {/* //Footer */}
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='py-4'>
-          <p className='mdmetric-1stop'>Active Connections</p>
+          <p className='md:mdmetric-1stop smmetric-1stop'>Active Connections</p>
         </div>
-        <div
-          className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50'
-          //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
-        >
+        <div className='small-1stop-header flex h-full w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50'>
           <div style={{ opacity: 1 }}>
             <MonthPicker
               selectedMonth={selectedMonth}
@@ -420,7 +421,7 @@ const ActiveConnection = () => {
             />
           </div>
         </div>
-        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
+        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Active Connections Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >

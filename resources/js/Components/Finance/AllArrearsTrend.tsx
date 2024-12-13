@@ -6,6 +6,7 @@ import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '@/Components/CustomTooltip'
 import Skeleton from 'react-loading-skeleton'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { renderCustomTooltip } from '../Financial/TotalBilled/BillingTrend'
 
 export interface AllArrearsValues {
   month: string
@@ -66,7 +67,7 @@ const AllArrearsTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
       const value = graphValues?.data.find((v) => v.month === month)
       return {
         month,
-        TotalArrears: value?.total_arrears ?? 0,
+        total_arrears: value?.total_arrears ?? 0,
       }
     })
     .reverse()
@@ -120,13 +121,13 @@ const AllArrearsTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 style={{ fontSize: 10 }}
               />
               <Tooltip
-                formatter={(value: number) => [`${formatNumber(value)}`, 'Total Arrears']}
+                // formatter={(value: number) => [`${formatNumber(value)}`, 'Total Arrears']}
                 labelFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
-                content={<CustomTooltip />}
+                content={renderCustomTooltip}
               />
               <Area
                 type='monotone'
-                dataKey='TotalArrears'
+                dataKey='total_arrears'
                 stroke={solidColors[0]}
                 fill={solidColors[1]}
                 opacity={0.7}

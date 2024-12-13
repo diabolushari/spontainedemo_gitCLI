@@ -457,7 +457,10 @@ const ArriersLT = () => {
                   width={200}
                 />
               ) : (
-                <ResponsiveContainer className='small-1stop'>
+                <ResponsiveContainer
+                  className='small-1stop'
+                  height={300}
+                >
                   <PieChart
                     width={100}
                     height={100}
@@ -504,14 +507,11 @@ const ArriersLT = () => {
         )}
       </div>
       {/* //Footer */}
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
+      <div className='flex h-full justify-between rounded-b-2xl bg-1stop-alt-gray pl-12 md:px-4'>
         <div className='py-4'>
-          <p className='mdmetric-1stop'>Arrears Age-wise, LT</p>
+          <p className='md:mdmetric-1stop smmetric-1stop'>Arrears Age-wise, LT</p>
         </div>
-        <div
-          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
-          //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
-        >
+        <div className='small-1stop-header flex w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50 md:px-4'>
           <div style={{ opacity: 1 }}>
             <MonthPicker
               selectedMonth={selectedMonth}
@@ -519,7 +519,7 @@ const ArriersLT = () => {
             />
           </div>
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex items-center px-2 hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Arrear Summary?month=${dateToYearMonth(selectedMonth)}&voltage=LT&route=${route('finance.index')}`}
           >

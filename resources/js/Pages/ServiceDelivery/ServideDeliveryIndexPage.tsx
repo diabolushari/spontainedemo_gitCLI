@@ -24,7 +24,7 @@ const ServideDeliveryIndexPage = () => {
       setLevelCode={setLevelCode}
     >
       <DashboardPadding>
-        <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-14'>
+        <div className='flex flex-col gap-5 pt-8 sm:pt-14 md:pl-10'>
           <div className='grid w-full grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-2'>
             <ActiveConnection />
             <NewConnections />

@@ -14,7 +14,7 @@ import { CustomTooltip } from '../CustomTooltip'
 import { solidColors } from '@/ui/ui_interfaces'
 import { Legend } from '@headlessui/react'
 import { CustomLegend } from './TotalCollected'
-import { dateToYearMonth } from '../ServiceDelivery/ActiveConnection'
+import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 export interface ArrearsCategoryValues {
   month: string
   consumer_category: string
@@ -26,6 +26,54 @@ export interface ArrearsCategoryValues {
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+}
+const renderCustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+    const align = (name: string) => {
+      const temp = name.replace('_', ' ')
+      return `${temp[0].toUpperCase()}${temp.slice(1)}`
+    }
+
+    return (
+      <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+        <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+        <div className='flex flex-col'>
+          {payload.map((value) => {
+            return (
+              <span
+                className={`small-1stop text-[${value.fill}]`}
+                key={value.name}
+              >
+                {align(value.dataKey)}:
+                <span className='small-1stop font-bold'>{formatNumber(value.value)}</span>
+              </span>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+  return null
+}
+const customizedGroupTick = ({ index, x, y, payload }: any) => {
+  const label = payload.value
+  return (
+    <g>
+      <g>
+        <text
+          x={x}
+          y={y}
+          dy={16}
+          textAnchor='end'
+          className='axial-label-1stop'
+        >
+          {label[0].toUpperCase()}
+          {label.slice(1).toLowerCase()}
+        </text>
+      </g>
+    </g>
+  )
 }
 const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedVoltageType, setSelectedVoltageType] = useState('LT')
@@ -46,10 +94,10 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const filteredValues = graphValues?.data.filter((value) => value.voltage === selectedVoltageType)
 
   const chartData = filteredValues?.map((value) => ({
-    ConsumerCategory: value.consumer_category,
-    TotalArrears: value.total_arrears,
-    DisputedArrears: value.disputed_arrears,
-    UndisputedArrears: value.undisputed_arrears,
+    consumer_category: value.consumer_category,
+    total_arrears: value.total_arrears,
+    disputed_arrears: value.disputed_arrears,
+    undisputed_arrears: value.undisputed_arrears,
   }))
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
@@ -97,22 +145,25 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 height={150}
                 data={chartData}
               >
-                <XAxis dataKey='ConsumerCategory' />
+                <XAxis
+                  dataKey='consumer_category'
+                  tick={customizedGroupTick}
+                />
                 <YAxis hide />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={renderCustomTooltip} />
                 <Bar
-                  dataKey='TotalArrears'
+                  dataKey='total_arrears'
                   fill={solidColors[0]}
                   onClick={handleGraphSelection}
                 />
 
                 <Bar
-                  dataKey='UndisputedArrears'
+                  dataKey='undisputed_arrears'
                   fill={solidColors[1]}
                   onClick={handleGraphSelection}
                 />
                 <Bar
-                  dataKey='DisputedArrears'
+                  dataKey='disputed_arrears'
                   fill={solidColors[2]}
                   onClick={handleGraphSelection}
                 />

@@ -9,6 +9,7 @@ import ComplaintList from './ComplaintList'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
 import PowerInterruptionTrend2 from '../PowerInterruptionTrend2'
+import { div } from 'framer-motion/client'
 import { dateToYearMonth } from '../ActiveConnection'
 
 const Complaints = () => {
@@ -49,14 +50,14 @@ const Complaints = () => {
 
         {selectedLevel === 1 && (
           <div className='flex w-full flex-col md:flex-row'>
-            <div className='flex md:w-1/3'>
+            <div className='flex pt-2 md:w-1/3 md:pt-0'>
               <IssueCard
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
                 setCategories={setCategories}
               />
             </div>
-            <div className='flex w-2/3'>
+            <div className='flex w-full md:w-2/3'>
               <PowerInterruptionTrend2
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
@@ -77,17 +78,17 @@ const Complaints = () => {
         )}
       </div>
 
-      <div className='flex items-center justify-between gap-1 rounded-b-2xl bg-1stop-alt-gray px-2 pl-14'>
+      <div className='flex h-full justify-between gap-1 rounded-b-2xl bg-1stop-alt-gray px-2 pl-14'>
         <div className='py-3'>
-          <p className='mdmetric-1stop'>Customer Complaints</p>
+          <p className='md:mdmetric-1stop smmetric-1stop'>Customer Complaints</p>
         </div>
-        <div className='small-1stop-header flex h-full items-center justify-center bg-1stop-accent2'>
+        <div className='small-1stop-header flex w-1/4 flex-col items-center justify-center bg-1stop-accent2'>
           <MonthPicker
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
           />
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Customer Complaints Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
