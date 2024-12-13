@@ -41,10 +41,20 @@ class SubsetFilterBuilder
                 $query->whereRaw($column.' <= ? ', [$filters[$date->subset_column.'_to']]);
             }
             if (isset($filters[$date->subset_column.'_in'])) {
-                $query->whereRaw($column.' IN ('.$filters[$date->subset_column.'_in'].') ');
+                $splited = explode(',', $filters[$date->subset_column.'_in']);
+                $query->where(function (Builder $query) use ($column, $splited) {
+                    foreach ($splited as $split) {
+                        $query->orWhereRaw($column.' = ? ', [$split]);
+                    }
+                });
             }
             if (isset($filters[$date->subset_column.'_not_in'])) {
-                $query->whereRaw($column.' NOT IN ('.$filters[$date->subset_column.'_not_in'].')');
+                $splited = explode(',', $filters[$date->subset_column.'_not_in']);
+                $query->where(function (Builder $query) use ($column, $splited) {
+                    foreach ($splited as $split) {
+                        $query->whereRaw($column.' != ? ', [$split]);
+                    }
+                });
             }
         });
 
@@ -87,10 +97,20 @@ class SubsetFilterBuilder
                 $query->whereRaw($column.' <= ? ', [$filters[$dimension->subset_column.'_less_than_or_equal']]);
             }
             if (isset($filters[$dimension->subset_column.'_in'])) {
-                $query->whereRaw($column.' IN ('.$filters[$dimension->subset_column.'_in'].') ');
+                $splited = explode(',', $filters[$dimension->subset_column.'_in']);
+                $query->where(function (Builder $query) use ($column, $splited) {
+                    foreach ($splited as $split) {
+                        $query->orWhereRaw($column.' = ? ', [$split]);
+                    }
+                });
             }
             if (isset($filters[$dimension->subset_column.'_not_in'])) {
-                $query->whereRaw($column.' NOT IN ('.$filters[$dimension->subset_column.'_not_in'].') ');
+                $splited = explode(',', $filters[$dimension->subset_column.'_not_in']);
+                $query->where(function (Builder $query) use ($column, $splited) {
+                    foreach ($splited as $split) {
+                        $query->whereRaw($column.' != ? ', [$split]);
+                    }
+                });
             }
         });
 
@@ -127,21 +147,6 @@ class SubsetFilterBuilder
                     $query->havingRaw($statement, $params);
                 } else {
                     $query->whereRaw($statement, $params);
-                }
-            }
-
-            if (isset($filters[$measure->subset_column.'_in'])) {
-                if ($subsetDetail->group_data == 1) {
-                    $query->havingRaw($column.' IN ('.$filters[$measure->subset_column.'_in'].') ');
-                } else {
-                    $query->whereRaw($column.' IN ('.$filters[$measure->subset_column.'_in'].') ');
-                }
-            }
-            if (isset($filters[$measure->subset_column.'_not_in'])) {
-                if ($subsetDetail->group_data == 1) {
-                    $query->havingRaw($column.' NOT IN ('.$filters[$measure->subset_column.'_not_in'].') ');
-                } else {
-                    $query->whereRaw($column.' NOT IN ('.$filters[$measure->subset_column.'_not_in'].') ');
                 }
             }
         });

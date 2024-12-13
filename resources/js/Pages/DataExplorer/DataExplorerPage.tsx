@@ -1,13 +1,31 @@
-import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import DashboardLayout from '@/Layouts/DashboardLayout'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_interfaces'
+import React, {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import {
+  SubsetDateField,
+  SubsetDetail,
+  SubsetDimensionField,
+  SubsetGroup,
+  SubsetGroupItem,
+  SubsetMeasureField,
+} from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
 import OfficeLevelExplorerTable from '@/Components/DataExplorer/OfficeLevelExplorerTable'
 import Card from '@/ui/Card/Card'
 import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
-import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import { showError } from '@/ui/alerts'
+import DetailDashboardLayout from '@/Layouts/DetailDashboardLayout'
+import MonthPicker from '@/ui/form/MonthPicker'
+import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
+import Modal from '@/ui/Modal/Modal'
+import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
+import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
 
 interface Props {
   subsetGroup: SubsetGroup
@@ -62,26 +80,14 @@ export default function DataExplorerPage({
   oldFilters,
   oldRoute,
 }: Readonly<Props>) {
-  const breadCrumb: BreadcrumbItemLink[] = useMemo(() => {
-    return [
-      {
-        item: 'Home',
-        link: oldRoute ?? route('service-delivery.index'),
-      },
-      {
-        item: subsetGroup.name,
-        link: '',
-      },
-    ]
-  }, [oldRoute, subsetGroup.name])
-
-  const [sectionCode, setSectionCode] = useState('')
-  const [levelName, setLevelName] = useState('')
-  const [levelCode, setLevelCode] = useState('')
+  const [showSearchModal, setShowSearchModal] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
   const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
   const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(
+    yearMonthToDate(oldFilters['month'])
+  )
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsetItems, oldSubsetName)
@@ -114,62 +120,122 @@ export default function DataExplorerPage({
     setActiveTab(tab)
   }
 
+  const [searchParams, setSearchParams] = useState<Record<string, string>>({
+    level: activeTab,
+    ...oldFilters,
+  })
+
+  const { appliedFilters } = useAppliedFilters(
+    searchParams,
+    selectedMonth,
+    selectedSubset?.dates as SubsetDateField[] | undefined,
+    selectedSubset?.dimensions as SubsetDimensionField[] | undefined,
+    selectedSubset?.measures as SubsetMeasureField[] | undefined
+  )
+
+  const onSubmit = useCallback(
+    (query: string | null) => {
+      setShowSearchModal(false)
+      if (query == null) {
+        return
+      }
+      const searchParams = new URLSearchParams(query)
+      const params = Object.fromEntries(searchParams.entries())
+      setSearchParams({
+        ...params,
+        level: activeTab,
+      })
+    },
+    [activeTab]
+  )
+
   return (
-    <DashboardLayout
-      type={subsetGroup.name}
-      sectionCode={sectionCode}
-      setSectionCode={setSectionCode}
-      levelName={levelName}
-      setLevelName={setLevelName}
-      levelCode={levelCode}
-      setLevelCode={setLevelCode}
-      breadCrumbs={breadCrumb}
+    <DetailDashboardLayout
+      subsetGroup={subsetGroup}
+      oldRoute={oldRoute}
+      appliedFilters={appliedFilters}
+      setSearchParams={setSearchParams}
+      setSelectedMonth={setSelectedMonth}
     >
-      <DashboardPadding>
-        <div className='flex w-full flex-col gap-5 pl-12 pt-8 sm:pt-24'>
-          <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
-            <div className='flex flex-col'>
-              <SelectList
-                list={subsetItems}
-                dataKey='id'
-                displayKey='name'
-                setValue={setSelectedSubsetId}
-                value={selectedSubsetId}
-                showAllOption
-                label='Select An Analysis Set'
-                allOptionText='Select Subset'
+      <div className='flex w-full flex-col gap-5 p-5'>
+        <div className='grid w-full grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4'>
+          <div className='flex flex-col'>
+            <SelectList
+              list={subsetItems}
+              dataKey='id'
+              displayKey='name'
+              setValue={setSelectedSubsetId}
+              value={selectedSubsetId}
+              showAllOption
+              allOptionText='Select Subset'
+              style='1stop-background'
+            />
+          </div>
+          <div className='grid grid-cols-2 md:col-start-3 lg:col-start-4'>
+            <div className='place-items-center rounded-tl-lg bg-1stop-accent2'>
+              <MonthPicker
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
               />
             </div>
+            <div
+              onClick={() => setShowSearchModal(true)}
+              className='place-items-center rounded-br-lg bg-1stop-highlight2'
+            >
+              <i className='la la-filter'></i>
+              <p className='small-1stop-header'>Filters</p>
+            </div>
           </div>
-          <SelectedOfficeContext.Provider
-            value={{
-              region: selectedRegion,
-              setRegion: setSelectedRegion,
-              circle: selectedCircle,
-              setCircle: setSelectedCircle,
-              division: selectedDivision,
-              setDivision: setSelectedDivision,
-              subdivision: selectedSubdivision,
-              setSubdivision: setSelectedSubdivision,
-            }}
-          >
-            <Card className='p-2'>
-              <OfficeLevelTabs
-                activeTab={activeTab}
-                setActiveTab={changeTab}
-              />
-              {selectedSubset != null && (
-                <OfficeLevelExplorerTable
-                  subset={selectedSubset}
-                  officeLevel={activeTab}
-                  oldFilters={oldFilters}
-                  setActiveTab={setActiveTab}
-                />
-              )}
-            </Card>
-          </SelectedOfficeContext.Provider>
         </div>
-      </DashboardPadding>
-    </DashboardLayout>
+        <SelectedOfficeContext.Provider
+          value={{
+            region: selectedRegion,
+            setRegion: setSelectedRegion,
+            circle: selectedCircle,
+            setCircle: setSelectedCircle,
+            division: selectedDivision,
+            setDivision: setSelectedDivision,
+            subdivision: selectedSubdivision,
+            setSubdivision: setSelectedSubdivision,
+          }}
+        >
+          <Card className='p-2'>
+            <OfficeLevelTabs
+              activeTab={activeTab}
+              setActiveTab={changeTab}
+            />
+            {selectedSubset != null && (
+              <OfficeLevelExplorerTable
+                subset={selectedSubset}
+                officeLevel={activeTab}
+                oldFilters={oldFilters}
+                setActiveTab={setActiveTab}
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+              />
+            )}
+          </Card>
+        </SelectedOfficeContext.Provider>
+        {showSearchModal && selectedSubset != null && (
+          <Modal
+            title='Search'
+            setShowModal={setShowSearchModal}
+          >
+            <div className='p-2'>
+              <SubsetFilterForm
+                dates={selectedSubset.dates as SubsetDateField[]}
+                measures={selectedSubset.measures as SubsetMeasureField[]}
+                dimensions={selectedSubset.dimensions as SubsetDimensionField[]}
+                subset={selectedSubset}
+                filters={searchParams}
+                onSubmit={onSubmit}
+              />
+            </div>
+          </Modal>
+        )}
+      </div>
+    </DetailDashboardLayout>
   )
 }

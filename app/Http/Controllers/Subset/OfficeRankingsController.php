@@ -46,6 +46,7 @@ class OfficeRankingsController extends Controller implements HasMiddleware
             'oldTab' => $request->input('tab', 'region'),
             'oldSubsetName' => $request->input('subset', null),
             'oldRoute' => $request->input('route'),
+            'oldFilters' => $request->all(),
         ]);
     }
 }
