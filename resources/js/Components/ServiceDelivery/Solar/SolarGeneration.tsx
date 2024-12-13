@@ -3,15 +3,12 @@ import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
 import { Link } from '@inertiajs/react'
 import MoreButton from '../../MoreButton'
-import SolarProsumers from './SolarProsumers'
-import SolarCapacityTrend from './SolarCapacityTrend'
-import Solar from './Solar'
+
 import SolarGenerationTrend from './SolarGenerationTrend'
+import { dateToYearMonth } from '../ActiveConnection'
 
 const SolarGeneration = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-
-  const [selectedLevel, setSelectedLevel] = useState(1)
 
   return (
     <Card className='flex w-full flex-col'>
@@ -37,7 +34,7 @@ const SolarGeneration = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Solar Generation Trend?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Solar Generation Trend?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

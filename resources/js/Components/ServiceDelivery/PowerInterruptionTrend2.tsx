@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   XAxis,
   YAxis,
@@ -15,8 +15,9 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import SelectList from '@/ui/form/SelectList'
 import { Model } from '@/interfaces/data_interfaces'
 import { monthList } from '@/libs/dates'
-import { formatNumber } from './ActiveConnection'
+import { dateToYearMonth, formatNumber } from './ActiveConnection'
 import { solidColors } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
 
 interface ComplaintValues extends Model {
   complaint_count: number
@@ -120,6 +121,18 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
   }, [chartData, referenceData])
 
   const isLoading = !chartData || chartData?.data.length === 0
+
+  const handleGraphSelection = useCallback((data: { name: string | null }, selectedMonth: Date) => {
+    console.log(data.name)
+    router.get(
+      route('data-explorer', {
+        subsetGroup: 'Complaint Volumes Comparison',
+        month: dateToYearMonth(selectedMonth),
+        complaint_type: data.name === 'Other' ? '' : data.name,
+        route: route('service-delivery.index'),
+      })
+    )
+  })
 
   return (
     <div className='flex w-full flex-col gap-2 p-3'>
@@ -232,6 +245,7 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
                 dataKey='current'
                 fill={solidColors[0]}
                 barSize={30}
+                onClick={() => handleGraphSelection(selectedMonth)}
               >
                 <LabelList
                   dataKey='name'
@@ -245,6 +259,7 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
                 dataKey='previous'
                 fill={solidColors[1]}
                 barSize={30}
+                onClick={() => handleGraphSelection(referenceMonthYear)}
               ></Bar>
             </BarChart>
           </ResponsiveContainer>

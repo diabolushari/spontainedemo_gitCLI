@@ -129,21 +129,30 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
+      const excludedCategories = [
+        graphData[0]?.consumer_category,
+        graphData[1]?.consumer_category,
+        graphData[2]?.consumer_category,
+      ]
       router.get(
         route('data-explorer', {
           subsetGroup: 'Solar Prosumer Statistics',
           subset: isMW
             ? 'Solar Generation Capacity - All Categories'
             : 'Solar Prosumers - All Categories',
-          consumer_category: data.name,
+
           month: dateToYearMonth(selectedMonth),
           route: route('service-delivery.index'),
-
+          consumer_category: data.name === 'Other' ? '' : data.name,
+          consumer_category_not_in:
+            data.name === 'Other'
+              ? `${excludedCategories.filter((category) => category).join(',')}`
+              : '',
           voltage: voltageType === 'Total' ? '' : voltageType,
         })
       )
     },
-    [selectedMonth, isMW, voltageType]
+    [selectedMonth, isMW, voltageType, graphData]
   )
 
   return (

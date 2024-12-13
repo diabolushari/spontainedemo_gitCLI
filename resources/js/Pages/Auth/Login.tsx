@@ -1,5 +1,4 @@
-import GuestLayout from '@/Layouts/GuestLayout'
-import { Head, Link } from '@inertiajs/react'
+import { Link } from '@inertiajs/react'
 import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import React, { useMemo } from 'react'
@@ -56,7 +55,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
             className='h-full rounded-l-lg object-cover object-center'
           />
         </div>
-        <div className='w-full bg-blue-100 p-8 md:rounded-r-lg lg:rounded-r-3xl'>
+        <div className='w-full bg-blue-100 p-8 md:rounded-r-3xl lg:rounded-r-3xl'>
           <div className='mb-4 flex justify-center'>
             <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
           </div>
