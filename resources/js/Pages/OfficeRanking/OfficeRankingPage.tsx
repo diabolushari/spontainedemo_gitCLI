@@ -4,7 +4,7 @@ import {
   SubsetGroupItem,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   initSelectedSubset,
   OfficeData,
@@ -59,9 +59,11 @@ export default function OfficeRankingPage({
     return (selectedSubset?.measures ?? []) as SubsetMeasureField[]
   }, [selectedSubset])
 
-  const [selectedSortField, setSelectedSortField] = useState(
-    measureFields.length > 0 ? measureFields[0].subset_column : ''
-  )
+  const [selectedSortField, setSelectedSortField] = useState('')
+
+  useEffect(() => {
+    setSelectedSortField(measureFields.length > 0 ? measureFields[0].subset_column : '')
+  }, [measureFields])
 
   const [selectedListType, setSelectedListType] = useState('10')
   const [selectedSortOrder, setSelectedSortOrder] = useState('desc')
@@ -70,6 +72,10 @@ export default function OfficeRankingPage({
   )
 
   const [searchParams, setSearchParams] = useState({})
+
+  const sortField = useMemo(() => {
+    return measureFields.find((field) => field.subset_column === selectedSortField) ?? null
+  }, [selectedSortField, measureFields])
 
   return (
     <DetailDashboardLayout
@@ -95,7 +101,7 @@ export default function OfficeRankingPage({
       </div>
       <div className='mr-1 rounded-lg'>
         <div className='grid w-full grid-cols-4 rounded-lg pb-4 lg:grid-cols-5'>
-          <div className='grid grid-cols-2 rounded-lg md:grid-cols-4 lg:col-span-5 xl:col-span-3'>
+          <div className='col-span-4 grid grid-cols-2 rounded-lg md:grid-cols-4 lg:col-span-5 xl:col-span-4 2xl:col-span-3'>
             <div className='col-span-1 rounded-l-lg bg-1stop-alt-gray'>
               <p className='small-1stop-header p-2 pt-2 text-center'>RANKED VALUES</p>
               <div className='mx-8 flex flex-col'>
@@ -141,7 +147,7 @@ export default function OfficeRankingPage({
               <div className='mx-4 flex flex-col pt-1'>
                 <SelectList
                   list={measureFields}
-                  dataKey='susbet_column'
+                  dataKey='subset_column'
                   displayKey='subset_field_name'
                   setValue={setSelectedSortField}
                   value={selectedSortField}
@@ -181,7 +187,7 @@ export default function OfficeRankingPage({
             <OfficeRanking
               subset={selectedSubset}
               officeLevel={activeTab}
-              selectedSortField={selectedSortField}
+              selectedSortField={sortField}
               selectedLimit={selectedListType}
               selectedSortOrder={selectedSortOrder}
               setSelectedOfficeLevel={setActiveTab}

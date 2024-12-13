@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { FormFieldProp as FormFieldProperty } from '../ui_interfaces'
+import { FormFieldProp } from '../ui_interfaces'
 import ErrorText from '@/typography/ErrorText'
 
 export interface Properties<
@@ -8,17 +8,17 @@ export interface Properties<
   U extends number | string,
   V extends number | string | null,
   T extends Record<K, U> & Record<G, V>,
-> extends FormFieldProperty {
+> extends FormFieldProp {
   list: T[]
   dataKey: K
   displayKey: G
   showAllOption?: boolean
   allOptionText?: string
   showLabel?: boolean
-  style?: 'normal' | 'bottom-border' | 'dark' | '1stop-small' | '1stop-background' | '1stop-large'
+  style?: string
 }
 
-const getStyle = (style: 'normal' | 'bottom-border' | 'dark' | '1stop-small' | undefined) => {
+const getStyle = (style: string | undefined) => {
   switch (style) {
     case 'normal': {
       return ` w-full appearance-none rounded-lg border border-gray-300 py-3 pl-3 text-sm text-gray-800

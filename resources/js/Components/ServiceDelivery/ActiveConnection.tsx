@@ -73,7 +73,7 @@ export const formatNumber = (value: number) => {
   } else if (value >= 1000) {
     return (value / 1000).toFixed(2) + ' K'
   }
-  return value.toString()
+  return value.toFixed(2).toString()
 }
 
 export function dateToYearMonth(date?: Date | null) {

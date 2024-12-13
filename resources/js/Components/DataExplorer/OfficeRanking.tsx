@@ -1,4 +1,4 @@
-import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
+import { DataTableItem, SubsetDetail, SubsetMeasureField } from '@/interfaces/data_interfaces'
 import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -10,13 +10,12 @@ import { dateToYearMonth, formatNumber, yearMonthToDate } from '../ServiceDelive
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
-import { CustomTooltip } from '../CustomTooltip'
 import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
 
 interface Props {
   subset: SubsetDetail
   officeLevel: string
-  selectedSortField: string
+  selectedSortField: SubsetMeasureField | null
   selectedSortOrder: string
   selectedLimit: string
   setSelectedOfficeLevel: Dispatch<SetStateAction<string>>
@@ -66,7 +65,7 @@ export default function OfficeRanking({
       subsetDetail: subset.id,
       level: officeLevel,
       month: dateToYearMonth(selectedMonth),
-      sort_by: selectedSortField,
+      sort_by: selectedSortField?.subset_column,
       sort_order: selectedSortOrder,
       limit: selectedLimit,
       page: page,
@@ -74,12 +73,6 @@ export default function OfficeRanking({
       office_code: prevLevelOffice?.office_code ?? '',
     })
   )
-
-  useEffect(() => {
-    if (selectedMonth == null && graphValues != null) {
-      setSelectedMonth(yearMonthToDate(graphValues?.latest_value))
-    }
-  }, [setSelectedMonth, graphValues, selectedMonth])
 
   const tableCols = useMemo(() => {
     const cols: TableColName[] = []
@@ -119,14 +112,21 @@ export default function OfficeRanking({
   }, [subset, officeLevel])
 
   const chartData = useMemo(() => {
+    const fieldName = selectedSortField?.subset_field_name ?? 'Value'
     return (
       graphValues?.data?.data.map((item) => ({
         office_name: item.office_name,
         office_code: item.office_code,
-        count: item[selectedSortField as keyof typeof item] || 0,
+        [fieldName]: item[selectedSortField?.subset_column as keyof typeof item] || 0,
       })) || []
     )
   }, [graphValues, selectedSortField])
+
+  useEffect(() => {
+    if (graphValues?.latest_value != null && selectedMonth == null) {
+      setSelectedMonth(yearMonthToDate(graphValues.latest_value))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
 
   const handleTooltipClick = (data: { office_code: string | null; office_name: string | null }) => {
     if (officeLevel === 'state' || officeLevel === 'section') {
@@ -179,11 +179,11 @@ export default function OfficeRanking({
               />
               <Tooltip
                 formatter={(value: number) => `${formatNumber(value)}`}
-                content={<CustomTooltip valueType='percentage' />}
+                // content={<CustomTooltip valueType='percentage' />}
                 cursor={{ fill: 'var(--colour-1stop-accent2)' }}
               />
               <Bar
-                dataKey='count'
+                dataKey={selectedSortField?.subset_field_name ?? 'Value'}
                 fill={solidColors[0]}
                 barSize={30}
                 onClick={handleTooltipClick}

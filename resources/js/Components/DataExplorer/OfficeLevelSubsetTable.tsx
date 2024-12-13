@@ -159,14 +159,13 @@ export default function OfficeLevelSubsetTable({
         </div>
       )}
 
-      <div
-        onClick={openExportUrl}
-        className='w-full cursor-pointer pb-4 text-end font-bold text-1stop-highlight'
-      >
-        <b>
-          <i className='las la-download text-xl'></i>
-        </b>
-        <span className='axial-label-1stop uppercase'>Download this data</span>
+      <div className='w-full pb-4 text-end font-bold text-1stop-highlight'>
+        <button onClick={openExportUrl}>
+          <b>
+            <i className='las la-download text-xl'></i>
+          </b>
+          <span className='axial-label-1stop uppercase'>Download this data</span>
+        </button>
       </div>
       <Table
         heads={colHeads}
