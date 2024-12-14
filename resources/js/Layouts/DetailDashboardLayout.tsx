@@ -4,13 +4,15 @@ import { SubsetGroup } from '@/interfaces/data_interfaces'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DetailDashboardPadding from '@/Layouts/DetailDashboardPadding'
 import Card from '@/ui/Card/Card'
-import { AppliedSubsetFilter } from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
+import { AppliedSubsetFilterItem } from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
+import AppliedSubsetFilter from '@/Components/DataExplorer/SubsetFilter/AppliedSubsetFilter'
 
 interface Props {
+  pageTitle: string
   subsetGroup: SubsetGroup
   oldRoute?: string
   children?: React.ReactNode
-  appliedFilters: AppliedSubsetFilter[]
+  appliedFilters?: AppliedSubsetFilterItem[]
   setSearchParams: Dispatch<SetStateAction<Record<string, string>>>
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
@@ -22,6 +24,7 @@ export default function DetailDashboardLayout({
   appliedFilters,
   setSearchParams,
   setSelectedMonth,
+  pageTitle,
 }: Readonly<Props>) {
   const breadCrumb: BreadcrumbItemLink[] = useMemo(() => {
     return [
@@ -40,26 +43,6 @@ export default function DetailDashboardLayout({
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
 
-  const removeFilter = (filterKey: string) => {
-    if (filterKey === 'month') {
-      setSelectedMonth(null)
-      return
-    }
-
-    setSearchParams((oldValues) => {
-      const keys = Object.keys(oldValues)
-      const remainingFilters: Record<string, string> = {}
-
-      keys
-        .filter((key) => key != filterKey)
-        .forEach((key) => {
-          remainingFilters[key] = oldValues[key]
-        })
-
-      return remainingFilters
-    })
-  }
-
   return (
     <DashboardLayout
       type={subsetGroup.name}
@@ -75,25 +58,20 @@ export default function DetailDashboardLayout({
           <div className='flex flex-col'>
             <div className='space-y-2 p-4'>
               <BreadCrumbs breadcrumbItems={breadCrumb} />
-              <p className='h3-1stop pt-4'>Ranked Analysis</p>
+              <p className='h3-1stop pt-4'>{pageTitle}</p>
               <p className='body-1stop ml-1 pt-2'>{subsetGroup.name}</p>
               <p className='axial-label-1stop ml-1'>{subsetGroup.description}</p>
             </div>
             <div className='flex flex-col gap-5 p-4'>
               <div className='flex flex-col gap-2'>
-                {appliedFilters.map((filter) => {
-                  return (
-                    <div
-                      className='flex justify-between gap-5'
-                      key={filter.id}
-                    >
-                      <span>{filter.filter}</span>
-                      <button onClick={() => removeFilter(filter.filterKey)}>
-                        <i className='la la-close' />
-                      </button>
-                    </div>
-                  )
-                })}
+                {appliedFilters?.map((appliedFilter) => (
+                  <AppliedSubsetFilter
+                    key={appliedFilter.id}
+                    appliedFilter={appliedFilter}
+                    setSelectedMonth={setSelectedMonth}
+                    setSearchParams={setSearchParams}
+                  />
+                ))}
               </div>
             </div>
           </div>

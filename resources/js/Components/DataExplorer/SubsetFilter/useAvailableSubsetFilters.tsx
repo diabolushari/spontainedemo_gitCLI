@@ -34,7 +34,7 @@ export default function useAvailableSubsetFilters(
       if (dimension.subset_column === 'section_code') {
         fields.push({
           fieldId: dimension.field_id,
-          fieldName: 'Office Code',
+          fieldName: 'Office',
           column: 'office_code',
           type: 'office',
         })

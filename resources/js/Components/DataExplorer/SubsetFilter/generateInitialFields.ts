@@ -9,12 +9,14 @@ import {
   dimensionOperations,
   measureOperations,
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
+import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
 const generateInitialFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
   measures: SubsetMeasureField[],
-  dimensions: SubsetDimensionField[]
+  dimensions: SubsetDimensionField[],
+  offices?: OfficeData[]
 ) => {
   const fields: SubsetFilterFormField[] = []
 
@@ -47,12 +49,15 @@ const generateInitialFields = (
           key === `${columnName}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
         ) {
           if (columnName === 'office_code') {
+            const office = offices?.find((office) => office.office_code === filters[key])
+            const officeName = (office?.office_name as string) ?? filters[key]
+            const officeCode = (office?.office_code as string) ?? filters[key]
             fields.push({
               id: 0,
               field: columnName ?? '',
               operator: dimensionOperation.value,
               value: '',
-              officeData: { office_name: filters[key] ?? '', office_code: filters[key] ?? '' },
+              officeData: { office_name: officeName ?? '', office_code: officeCode ?? '' },
               dimensionData: null,
               type: 'office',
             })

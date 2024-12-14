@@ -10,8 +10,9 @@ import {
   measureOperations,
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 import { dateToYearMonth } from '@/Components/ServiceDelivery/ActiveConnection'
+import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
-export interface AppliedSubsetFilter {
+export interface AppliedSubsetFilterItem {
   id: number
   filter: string
   filterKey: string
@@ -21,11 +22,12 @@ export interface AppliedSubsetFilter {
 export default function useAppliedFilters(
   filters: Record<string, string>,
   selectedMonth: Date | null,
+  offices: OfficeData[],
   dates?: SubsetDateField[],
   dimensions?: SubsetDimensionField[],
   measures?: SubsetMeasureField[]
 ) {
-  const [appliedFilters, setAppliedFilters] = useState<AppliedSubsetFilter[]>([])
+  const [appliedFilters, setAppliedFilters] = useState<AppliedSubsetFilterItem[]>([])
 
   useEffect(() => {
     const allFilters: Record<string, string | undefined | null> = {
@@ -33,7 +35,7 @@ export default function useAppliedFilters(
       month: dateToYearMonth(selectedMonth),
     }
 
-    const newFilters: AppliedSubsetFilter[] = []
+    const newFilters: AppliedSubsetFilterItem[] = []
 
     let uuidCounter = 1
 
@@ -57,7 +59,7 @@ export default function useAppliedFilters(
         if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({
             id: uuidCounter++,
-            filter: `${dimension.subset_field_name} ${dimensionOperation.operation} ${filters[filter]}`,
+            filter: `${dimension.subset_field_name} ${dimensionOperation.operation} ${allFilters[filter]}`,
             filterKey: filter,
             filterValue: allFilters[filter],
           })
@@ -71,7 +73,7 @@ export default function useAppliedFilters(
         if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({
             id: uuidCounter++,
-            filter: `${measure.subset_field_name} ${measureOperation.operation} ${filters[filter]}`,
+            filter: `${measure.subset_field_name} ${measureOperation.operation} ${allFilters[filter]}`,
             filterKey: filter,
             filterValue: allFilters[filter],
           })
@@ -80,16 +82,21 @@ export default function useAppliedFilters(
     })
 
     if (filters['office_code'] != null) {
+      const office = offices.find((office) => office.office_code === allFilters['office_code'])
+      let officeName = allFilters['office_code']
+      if (office != null) {
+        officeName = `${office.office_name} (${office.office_code}) - ${office.level}`
+      }
       newFilters.push({
         id: uuidCounter++,
-        filter: `Office Code ${filters['office_code']}`,
+        filter: `Office Code ${officeName}`,
         filterKey: 'office_code',
-        filterValue: filters['office_code'],
+        filterValue: allFilters['office_code'] ?? '',
       })
     }
 
     setAppliedFilters(newFilters)
-  }, [dates, dimensions, measures, filters, selectedMonth])
+  }, [dates, dimensions, measures, filters, offices, selectedMonth])
 
   return { appliedFilters }
 }

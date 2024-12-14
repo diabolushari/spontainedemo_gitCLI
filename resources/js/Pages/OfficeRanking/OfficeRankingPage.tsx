@@ -71,7 +71,7 @@ export default function OfficeRankingPage({
     yearMonthToDate(oldFilters['month'])
   )
 
-  const [searchParams, setSearchParams] = useState({})
+  const [searchParams, setSearchParams] = useState<Record<string, string>>({})
 
   const sortField = useMemo(() => {
     return measureFields.find((field) => field.subset_column === selectedSortField) ?? null
@@ -83,7 +83,7 @@ export default function OfficeRankingPage({
       oldRoute={oldRoute}
       setSearchParams={setSearchParams}
       setSelectedMonth={setSelectedMonth}
-      appliedFilters={[]}
+      pageTitle='Ranked Analysis'
     >
       <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
         <div className='flex flex-col pt-4'>

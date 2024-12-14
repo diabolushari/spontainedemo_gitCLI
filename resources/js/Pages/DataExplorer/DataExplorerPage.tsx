@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react'
 import {
+  officeLevels,
   SubsetDateField,
   SubsetDetail,
   SubsetDimensionField,
@@ -34,11 +35,13 @@ interface Props {
   oldSubsetName: string | null
   oldFilters: Record<string, string>
   oldRoute?: string
+  offices: OfficeData[]
 }
 
 export interface OfficeData {
   office_code: string | number
   office_name: string | number
+  level?: string
 }
 
 export const initSelectedSubset = (
@@ -79,6 +82,7 @@ export default function DataExplorerPage({
   oldSubsetName,
   oldFilters,
   oldRoute,
+  offices,
 }: Readonly<Props>) {
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
@@ -108,7 +112,21 @@ export default function DataExplorerPage({
     setSelectedSubdivision(null)
   }, [selectedSubset, setSelectedDivision, setSelectedSubdivision])
 
+  const [searchParams, setSearchParams] = useState<Record<string, string>>({
+    level: activeTab,
+    ...oldFilters,
+  })
+
   const changeTab = (tab: string) => {
+    const office = offices.find((office) => office.office_code == searchParams['office_code'])
+    if (office != null) {
+      const selectedOfficeLevel = officeLevels.find((level) => level.name == office.level)?.level
+      const tabsLevel = officeLevels.find((level) => level.name == tab)?.level
+      if (selectedOfficeLevel != null && tabsLevel != null && selectedOfficeLevel > tabsLevel) {
+        showError('Please select a level lower than the current level')
+        return
+      }
+    }
     if (tab === 'subdivision' && selectedDivision == null) {
       showError('Please select a division first')
       return
@@ -120,14 +138,10 @@ export default function DataExplorerPage({
     setActiveTab(tab)
   }
 
-  const [searchParams, setSearchParams] = useState<Record<string, string>>({
-    level: activeTab,
-    ...oldFilters,
-  })
-
   const { appliedFilters } = useAppliedFilters(
     searchParams,
     selectedMonth,
+    offices,
     selectedSubset?.dates as SubsetDateField[] | undefined,
     selectedSubset?.dimensions as SubsetDimensionField[] | undefined,
     selectedSubset?.measures as SubsetMeasureField[] | undefined
@@ -139,23 +153,39 @@ export default function DataExplorerPage({
       if (query == null) {
         return
       }
-      const searchParams = new URLSearchParams(query)
-      const params = Object.fromEntries(searchParams.entries())
+      const newSearchParams = new URLSearchParams(query)
+      const params = Object.fromEntries(newSearchParams.entries())
+      //if office_code is filled then switch tab to offices level
+      if (params.office_code != null) {
+        //if not same as oldParams
+        if (searchParams['office_code'] === params.office_code) {
+          return
+        }
+        setSelectedRegion(null)
+        setSelectedCircle(null)
+        setSelectedDivision(null)
+        setSelectedSubdivision(null)
+        const office = offices.find((office) => office.office_code == params.office_code)
+        if (office != null && office.level != null) {
+          setActiveTab(office.level)
+        }
+      }
       setSearchParams({
         ...params,
         level: activeTab,
       })
     },
-    [activeTab]
+    [activeTab, offices, searchParams]
   )
 
   return (
     <DetailDashboardLayout
       subsetGroup={subsetGroup}
       oldRoute={oldRoute}
-      appliedFilters={appliedFilters}
       setSearchParams={setSearchParams}
       setSelectedMonth={setSelectedMonth}
+      pageTitle='Analysis Sets'
+      appliedFilters={appliedFilters}
     >
       <div className='flex w-full flex-col gap-5 p-5'>
         <div className='grid w-full grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4'>
@@ -178,13 +208,13 @@ export default function DataExplorerPage({
                 setSelectedMonth={setSelectedMonth}
               />
             </div>
-            <div
+            <button
               onClick={() => setShowSearchModal(true)}
               className='place-items-center rounded-br-lg bg-1stop-highlight2'
             >
               <i className='la la-filter'></i>
               <p className='small-1stop-header'>Filters</p>
-            </div>
+            </button>
           </div>
         </div>
         <SelectedOfficeContext.Provider
@@ -221,6 +251,7 @@ export default function DataExplorerPage({
         {showSearchModal && selectedSubset != null && (
           <Modal
             title='Search'
+            large
             setShowModal={setShowSearchModal}
           >
             <div className='p-2'>
@@ -231,6 +262,7 @@ export default function DataExplorerPage({
                 subset={selectedSubset}
                 filters={searchParams}
                 onSubmit={onSubmit}
+                offices={offices}
               />
             </div>
           </Modal>
