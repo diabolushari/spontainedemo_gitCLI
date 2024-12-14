@@ -46,10 +46,16 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
   }, [graphValues?.latest_value])
 
   useEffect(() => {
+    if (
+      selectedMonth?.getFullYear().toString() == yearFilter &&
+      selectedMonth.getMonth().toString() == (Number(selectedRange) - 1).toString()
+    ) {
+      setSelectedRange((Number(selectedRange) - 1).toString())
+    }
     setReferenceMonthYear(
       Number(selectedRange) < 10 ? yearFilter + '0' + selectedRange : yearFilter + selectedRange
     )
-  }, [selectedRange, yearFilter])
+  }, [selectedRange, yearFilter, selectedMonth])
 
   useEffect(() => {
     for (let i = new Date().getFullYear(); i >= 2017; i--) {
@@ -122,17 +128,21 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
 
   const isLoading = !chartData || chartData?.data.length === 0
 
-  const handleGraphSelection = useCallback((data: { name: string | null }, selectedMonth: Date) => {
-    console.log(data.name)
-    router.get(
-      route('data-explorer', {
-        subsetGroup: 'Complaint Volumes Comparison',
-        month: dateToYearMonth(selectedMonth),
-        complaint_type: data.name === 'Other' ? '' : data.name,
-        route: route('service-delivery.index'),
-      })
-    )
-  })
+  const handleGraphSelection = useCallback(
+    (data: { name: string | null }) => {
+      console.log(data.name)
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Complaint Volumes Comparison',
+          // subset: 'Customer Complaints',
+          month: dateToYearMonth(selectedMonth),
+          complaint_type: data.name === 'Other' ? '' : data.name,
+          route: route('service-delivery.index'),
+        })
+      )
+    },
+    [selectedMonth]
+  )
 
   return (
     <div className='flex w-full flex-col gap-2 p-3'>
@@ -245,7 +255,7 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
                 dataKey='current'
                 fill={solidColors[0]}
                 barSize={30}
-                onClick={() => handleGraphSelection(selectedMonth)}
+                onClick={handleGraphSelection}
               >
                 <LabelList
                   dataKey='name'
@@ -259,7 +269,7 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
                 dataKey='previous'
                 fill={solidColors[1]}
                 barSize={30}
-                onClick={() => handleGraphSelection(referenceMonthYear)}
+                onClick={handleGraphSelection}
               ></Bar>
             </BarChart>
           </ResponsiveContainer>

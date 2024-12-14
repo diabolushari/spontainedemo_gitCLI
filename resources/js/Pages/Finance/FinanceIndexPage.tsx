@@ -28,10 +28,8 @@ const FinanceIndexPage = () => {
         <div className='flex flex-col gap-5 pt-8 sm:pt-24 md:pl-10'>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <TotalBilled />
-
             <TotalCollected />
           </div>
-
           <div className='flex flex-col gap-2 lg:flex-row'>
             <div className='flex w-full'>
               <ArrearsCountAndGraph />

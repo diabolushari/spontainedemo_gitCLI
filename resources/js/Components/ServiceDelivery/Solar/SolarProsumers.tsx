@@ -169,7 +169,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <input
                 defaultChecked
                 type='radio'
-                name='radio'
+                name='radioSolar'
                 onClick={() => {
                   setVoltageType('Total')
                   setiSMW(true)
@@ -191,7 +191,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                 <input
                   type='radio'
-                  name='radio'
+                  name='radioSolar'
                   onClick={() => {
                     setVoltageType('LT')
                     setiSMW(true)
@@ -212,7 +212,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                 <input
                   type='radio'
-                  name='radio'
+                  name='radioSolar'
                   onClick={() => {
                     setVoltageType('HT')
                     setiSMW(true)
@@ -236,7 +236,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                 <input
                   type='radio'
-                  name='radio'
+                  name='radioSolar'
                   onClick={() => {
                     setVoltageType('LT')
                     setiSMW(false)
@@ -261,7 +261,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                 <input
                   type='radio'
-                  name='radio'
+                  name='radioSolar'
                   onClick={() => {
                     setVoltageType('HT')
                     setiSMW(false)

@@ -221,10 +221,12 @@ const TotalCollected = () => {
                   <p className='small-1stop-header'>Total Collection</p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
+                      defaultChecked
                       type='radio'
-                      name='radio'
+                      name='radioCollected'
+                      value='Total'
                       checked={voltageType === 'Total'}
-                      onClick={() => setVoltageType('Total')}
+                      onChange={() => setVoltageType('Total')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -249,8 +251,9 @@ const TotalCollected = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setVoltageType('LT')}
+                        name='radioCollected'
+                        value='LT'
+                        onChange={() => setVoltageType('LT')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -274,8 +277,9 @@ const TotalCollected = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setVoltageType('HT')}
+                        name='radioCollected'
+                        value='HT'
+                        onChange={() => setVoltageType('HT')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -300,8 +304,9 @@ const TotalCollected = () => {
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
                       type='radio'
-                      name='radio'
-                      onClick={() => setVoltageType('EHT')}
+                      name='radioCollected'
+                      value='EHT'
+                      onChange={() => setVoltageType('EHT')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
