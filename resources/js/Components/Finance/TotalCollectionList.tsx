@@ -68,7 +68,7 @@ const TotalCollectionList = ({
       <div className='flex items-center justify-end gap-5 pr-4'>
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <button
-            className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
+            className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setTopOrBottom('desc')
             }}
@@ -119,7 +119,7 @@ const TotalCollectionList = ({
             </svg>
           </button>
           <button
-            className={`${topOrBottom == 'asc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
+            className={`${topOrBottom == 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setTopOrBottom('asc')
             }}
@@ -214,39 +214,42 @@ const TotalCollectionList = ({
             height={80}
           />
         ) : (
-          <tbody>
-            {graphValues?.data.data.map((value) => {
-              return (
-                <tr
-                  className='small-1stop text-start'
-                  key={value.office_name}
+          <>
+            <tbody>
+              {graphValues?.data.data.map((value) => {
+                return (
+                  <tr
+                    className='small-1stop text-start'
+                    key={value.office_name}
+                  >
+                    <td className=''>{value.office_name}</td>
+                    <td className='pl-2 text-start'>{formatNumber(value.total_collection)}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            <div className='flex w-full items-center gap-5'>
+              <div className='flex min-w-full flex-col'>
+                {graphValues?.data != null && (
+                  <RestPagination
+                    pagination={graphValues.data}
+                    onNewPage={setPage}
+                  />
+                )}
+              </div>
+              <div className='ml-auto flex w-full justify-end pt-3'>
+                <Link
+                  href={route}
+                  className='small-1stop'
                 >
-                  <td className=''>{value.office_name}</td>
-                  <td className='pl-2 text-start'>{formatNumber(value.total_collection)}</td>
-                </tr>
-              )
-            })}
-          </tbody>
+                  <div className='rounded-md bg-1stop-highlight2 px-1 text-xl hover:opacity-70'>
+                    <i className='las la-expand-arrows-alt'></i>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </>
         )}
-
-        <div className='flex w-full items-center gap-5'>
-          <div className='flex min-w-full flex-col'>
-            {graphValues?.data != null && (
-              <RestPagination
-                pagination={graphValues.data}
-                onNewPage={setPage}
-              />
-            )}
-          </div>
-          <div className='ml-auto flex w-full justify-end pt-3'>
-            <Link
-              href={route}
-              className='small-1stop link'
-            >
-              Details
-            </Link>
-          </div>
-        </div>
       </table>
     </div>
   )

@@ -270,7 +270,7 @@ const ArriersHT = () => {
   )
   return (
     <Card className='flex w-full flex-col'>
-      <div className='flex w-full'>
+      <div className='flex h-5/6 w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
           <button
             className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
@@ -510,8 +510,8 @@ const ArriersHT = () => {
         )}
       </div>
       {/* //Footer */}
-      <div className='flex h-full justify-between rounded-b-2xl bg-1stop-alt-gray pl-12 md:px-4'>
-        <div className='py-4'>
+      <div className='flex h-1/6 justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
+        <div className='py-2'>
           <p className='md:mdmetric-1stop smmetric-1stop'>Arrears Age-wise, HT</p>
         </div>
         <div

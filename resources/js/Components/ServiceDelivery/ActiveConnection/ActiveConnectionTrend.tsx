@@ -109,31 +109,31 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
     return null
   }
   return (
-    <div className='flex w-full flex-col pr-4'>
+    <div className='flex w-full flex-col pl-2 pr-4'>
       <div className='mt-4 flex w-full justify-end gap-2 p-2'>
         <span className='subheader-sm-1stop'>Trend of Active Connections</span>
       </div>
-      <div className='mt-4 flex w-full items-center justify-between gap-2'>
+      <div className='mt-2 flex w-full items-center justify-between gap-2 pb-4'>
         <div className='flex justify-center gap-4'>
           <button
-            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
-              selectedValue === '3 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '3 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
             }`}
             onClick={() => setSelectedValue('3 MONTHS')}
           >
             3 M
           </button>
           <button
-            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
-              selectedValue === '6 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '6 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
             }`}
             onClick={() => setSelectedValue('6 MONTHS')}
           >
             6 M
           </button>
           <button
-            className={`body-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
-              selectedValue === '12 MONTHS' ? 'bg-1stop-alt-gray' : 'hover:bg-1stop-alt-gray'
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '12 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
             }`}
             onClick={() => setSelectedValue('12 MONTHS')}
           >

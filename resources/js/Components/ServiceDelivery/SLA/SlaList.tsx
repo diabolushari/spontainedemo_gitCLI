@@ -110,7 +110,7 @@ const SlaList = ({
 
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <div
-            className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
+            className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setTopOrBottom('desc')
             }}
@@ -161,7 +161,7 @@ const SlaList = ({
             </svg>
           </div>
           <div
-            className={`${topOrBottom == 'asc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
+            className={`${topOrBottom == 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setTopOrBottom('asc')
             }}
@@ -255,42 +255,46 @@ const SlaList = ({
             height={80}
           />
         ) : (
-          <tbody>
-            {graphValues?.data.data.map((value) => {
-              return (
-                <tr
-                  className='small-1stop text-start'
-                  key={value.office_name}
+          <>
+            <tbody>
+              {graphValues?.data.data.map((value) => {
+                return (
+                  <tr
+                    className='small-1stop text-start'
+                    key={value.office_name}
+                  >
+                    <td className=''>{value.office_name}</td>
+                    <td className='pl-2 text-start'>
+                      {toggleValue
+                        ? value.requests_within_sla__count_
+                        : value.requests_within_sla____?.toFixed(2)}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            <div className='flex w-full items-center gap-5 pt-10'>
+              <div className='flex min-w-full flex-col'>
+                {graphValues?.data != null && (
+                  <RestPagination
+                    pagination={graphValues.data}
+                    onNewPage={setPage}
+                  />
+                )}
+              </div>
+              <div className='ml-auto flex w-full justify-end pt-3'>
+                <Link
+                  href={`office-rankings/SLA Performance Comparison?route=${route('service-delivery.index')}`}
+                  className='small-1stop'
                 >
-                  <td className=''>{value.office_name}</td>
-                  <td className='pl-2 text-start'>
-                    {toggleValue
-                      ? value.requests_within_sla__count_
-                      : value.requests_within_sla____?.toFixed(2)}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
+                  <div className='rounded-md bg-1stop-highlight2 px-1 text-xl hover:opacity-70'>
+                    <i className='las la-expand-arrows-alt'></i>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </>
         )}
-        <div className='flex w-full items-center gap-5 pt-10'>
-          <div className='flex min-w-full flex-col'>
-            {graphValues?.data != null && (
-              <RestPagination
-                pagination={graphValues.data}
-                onNewPage={setPage}
-              />
-            )}
-          </div>
-          <div className='ml-auto flex w-full justify-end pt-3'>
-            <Link
-              href={`office-rankings/SLA Performance Comparison?route=${route('service-delivery.index')}`}
-              className='link small-1stop'
-            >
-              Details
-            </Link>
-          </div>
-        </div>
       </table>
     </div>
   )
