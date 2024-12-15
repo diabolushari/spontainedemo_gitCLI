@@ -318,10 +318,12 @@ const ArriersHT = () => {
                   <p className='small-1stop-header'>Total Arrears</p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
+                      defaultChecked
                       type='radio'
-                      name='radio'
+                      name='radioHT'
+                      value='Total'
                       checked={range === 'Total'}
-                      onClick={() => setRange('Total')}
+                      onChange={() => setRange('Total')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -347,8 +349,9 @@ const ArriersHT = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setRange('0-3')}
+                        name='radioHT'
+                        value='0-3'
+                        onChange={() => setRange('0-3')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -373,8 +376,9 @@ const ArriersHT = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setRange('4-6')}
+                        name='radioHT'
+                        value='4-6'
+                        onChange={() => setRange('4-6')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -402,8 +406,9 @@ const ArriersHT = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setRange('7-12')}
+                        name='radioHT'
+                        value='7-12'
+                        onChange={() => setRange('7-12')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -427,8 +432,9 @@ const ArriersHT = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setRange('>12')}
+                        name='radioHT'
+                        value='>12'
+                        onChange={() => setRange('>12')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>

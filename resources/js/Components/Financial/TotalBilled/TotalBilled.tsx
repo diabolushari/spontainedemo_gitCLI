@@ -262,8 +262,9 @@ const TotalBilled = () => {
                     <input
                       defaultChecked
                       type='radio'
-                      name='radio'
-                      onClick={() => setVoltageType('Total')}
+                      name='radioBilling'
+                      value='Total'
+                      onChange={() => setVoltageType('Total')}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -289,8 +290,9 @@ const TotalBilled = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setVoltageType('LT')}
+                        name='radioBilling'
+                        value='LT'
+                        onChange={() => setVoltageType('LT')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -315,8 +317,9 @@ const TotalBilled = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setVoltageType('LT')}
+                        name='radioBilling'
+                        value='LT'
+                        onChange={() => setVoltageType('LT')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -343,8 +346,9 @@ const TotalBilled = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setVoltageType('HT')}
+                        name='radioBilling'
+                        value='HT'
+                        onChange={() => setVoltageType('HT')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -369,8 +373,9 @@ const TotalBilled = () => {
                     <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                       <input
                         type='radio'
-                        name='radio'
-                        onClick={() => setVoltageType('EHT')}
+                        name='radioBilling'
+                        value='EHT'
+                        onChange={() => setVoltageType('EHT')}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
