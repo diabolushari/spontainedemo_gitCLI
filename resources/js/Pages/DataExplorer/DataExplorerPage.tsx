@@ -117,6 +117,10 @@ export default function DataExplorerPage({
     ...oldFilters,
   })
 
+  useEffect(() => {
+    console.log(searchParams)
+  }, [searchParams])
+
   const changeTab = (tab: string) => {
     const office = offices.find((office) => office.office_code == searchParams['office_code'])
     if (office != null) {
@@ -156,11 +160,8 @@ export default function DataExplorerPage({
       const newSearchParams = new URLSearchParams(query)
       const params = Object.fromEntries(newSearchParams.entries())
       //if office_code is filled then switch tab to offices level
-      if (params.office_code != null) {
+      if (params.office_code != null && searchParams['office_code'] != params.office_code) {
         //if not same as oldParams
-        if (searchParams['office_code'] === params.office_code) {
-          return
-        }
         setSelectedRegion(null)
         setSelectedCircle(null)
         setSelectedDivision(null)

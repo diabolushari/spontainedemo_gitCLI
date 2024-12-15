@@ -3,8 +3,6 @@ export const dateOperations = [
   { operation: 'not equals', value: '_not' },
   { operation: 'from', value: '_from' },
   { operation: 'to', value: '_to' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
 ]
 
 export const dimensionOperations = [

@@ -191,6 +191,12 @@ export default function SubsetFilterForm({
     event.preventDefault()
     const urlParams = new URLSearchParams()
     let errorFlag = false
+    //For grouping multiple =, != data into _in, not_ins
+    const groupedData: {
+      field: string
+      operator: '=' | '_not'
+      value: string[]
+    }[] = []
     formFields.forEach((formField) => {
       if (formField.field == '' || formField.operator == '') {
         return
@@ -207,6 +213,24 @@ export default function SubsetFilterForm({
         showError('Please fill in the value for or remove: ' + formField.field)
         return
       }
+      if (
+        (formField.operator === '=' || formField.operator === '_not') &&
+        (formField.type == 'dimension' || formField.type == 'string' || formField.type == 'date')
+      ) {
+        const existingGroup = groupedData.find(
+          (group) => group.field === formField.field && group.operator === formField.operator
+        )
+        if (existingGroup != null) {
+          existingGroup.value.push(searchValue)
+        } else {
+          groupedData.push({
+            field: formField.field,
+            operator: formField.operator,
+            value: [searchValue],
+          })
+        }
+        return
+      }
       urlParams.set(
         `${formField.field}${formField.operator == '=' ? '' : formField.operator}`,
         searchValue
@@ -215,6 +239,20 @@ export default function SubsetFilterForm({
     if (errorFlag) {
       return
     }
+    groupedData.forEach((group) => {
+      if (group.value.length == 1) {
+        urlParams.set(
+          `${group.field}${group.operator == '=' ? '' : group.operator}`,
+          group.value[0]
+        )
+      }
+      if (group.value.length > 1) {
+        urlParams.set(
+          `${group.field}${group.operator == '=' ? '_in' : '_not_in'}`,
+          group.value.join(',')
+        )
+      }
+    })
     onSubmit(urlParams.toString())
   }
 

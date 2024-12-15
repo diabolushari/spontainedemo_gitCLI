@@ -12,6 +12,11 @@ import {
 import { dateToYearMonth } from '@/Components/ServiceDelivery/ActiveConnection'
 import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
+const additionalOperations = [
+  { operation: 'in list', value: '_in' },
+  { operation: 'not in list', value: '_not_in' },
+]
+
 export interface AppliedSubsetFilterItem {
   id: number
   filter: string
@@ -40,7 +45,8 @@ export default function useAppliedFilters(
     let uuidCounter = 1
 
     dates?.forEach((date) => {
-      dateOperations.forEach((dateOperation) => {
+      const allOperations = [...dateOperations, ...additionalOperations]
+      allOperations.forEach((dateOperation) => {
         const filter = `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
         if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({
@@ -54,7 +60,8 @@ export default function useAppliedFilters(
     })
 
     dimensions?.forEach((dimension) => {
-      dimensionOperations.forEach((dimensionOperation) => {
+      const allOperations = [...dimensionOperations, ...additionalOperations]
+      allOperations.forEach((dimensionOperation) => {
         const filter = `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
         if (allFilters[filter] != null && allFilters[filter] !== '') {
           newFilters.push({

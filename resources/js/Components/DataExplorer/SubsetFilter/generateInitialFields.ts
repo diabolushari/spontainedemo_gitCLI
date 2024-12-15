@@ -37,6 +37,32 @@ const generateInitialFields = (
           })
         }
       })
+      if (key === `${date.subset_column}_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: date.subset_column ?? '',
+            operator: '==',
+            value,
+            officeData: null,
+            dimensionData: null,
+            type: date.use_expression === 1 ? 'string' : 'date',
+          })
+        })
+      }
+      if (key === `${date.subset_column}_not_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: date.subset_column ?? '',
+            operator: '_not',
+            value,
+            officeData: null,
+            dimensionData: null,
+            type: date.use_expression === 1 ? 'string' : 'date',
+          })
+        })
+      }
     })
     dimensions.forEach((dimension) => {
       dimensionOperations.forEach((dimensionOperation) => {
@@ -74,6 +100,32 @@ const generateInitialFields = (
           })
         }
       })
+      if (key === `${dimension.subset_column}_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: dimension.subset_column ?? '',
+            operator: '==',
+            value,
+            officeData: null,
+            dimensionData: { value },
+            type: 'dimension',
+          })
+        })
+      }
+      if (key === `${dimension.subset_column}_not_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: dimension.subset_column ?? '',
+            operator: '_not',
+            value,
+            officeData: null,
+            dimensionData: { value },
+            type: 'dimension',
+          })
+        })
+      }
     })
     measures.forEach((measure) => {
       measureOperations.forEach((measureOperation) => {
