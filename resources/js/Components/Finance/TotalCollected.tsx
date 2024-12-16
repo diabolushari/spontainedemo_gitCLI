@@ -69,7 +69,7 @@ const TotalCollected = () => {
       .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
       .reverse()
   }, [graphValues, voltageType])
-  console.log(graphData)
+  console.log(graphValues)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -80,33 +80,33 @@ const TotalCollected = () => {
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
-  const filters = (value: CollectionGraphValues, index: number) => {
-    if (index < 3) {
-      if (voltageType == 'Total') {
-        return value.payment_channel_group === graphData[index]?.payment_channel_group
-      } else {
-        return (
-          value.payment_channel_group === graphData[index]?.payment_channel_group &&
-          value.voltage == voltageType
-        )
-      }
-    } else {
-      if (voltageType == 'Total') {
-        return (
-          value.payment_channel_group !== graphData[0]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[1]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[2]?.payment_channel_group
-        )
-      } else {
-        return (
-          value.payment_channel_group !== graphData[0]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[1]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[2]?.payment_channel_group &&
-          value.voltage == voltageType
-        )
-      }
-    }
-  }
+  // const filters = (value: CollectionGraphValues, index: number) => {
+  //   if (index < 3) {
+  //     if (voltageType == 'Total') {
+  //       return value.payment_channel_group === graphData[index]?.payment_channel_group
+  //     } else {
+  //       return (
+  //         value.payment_channel_group === graphData[index]?.payment_channel_group &&
+  //         value.voltage == voltageType
+  //       )
+  //     }
+  //   } else {
+  //     if (voltageType == 'Total') {
+  //       return (
+  //         value.payment_channel_group !== graphData[0]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[1]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[2]?.payment_channel_group
+  //       )
+  //     } else {
+  //       return (
+  //         value.payment_channel_group !== graphData[0]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[1]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[2]?.payment_channel_group &&
+  //         value.voltage == voltageType
+  //       )
+  //     }
+  //   }
+  // }
 
   const TotalCollection = (voltage: string) => {
     if (voltage != 'Total') {
@@ -118,31 +118,35 @@ const TotalCollected = () => {
     }
   }
 
-  const graphFilter = (index: number) => {
-    return graphData
-      .filter((value) => filters(value, index))
-      .reduce((sum, value) => sum + value.total_collection, 0)
-  }
+  // const graphFilter = (index: number) => {
+  //   return graphData
+  //     .filter((value) => filters(value, index))
+  //     .reduce((sum, value) => sum + value.total_collection, 0)
+  // }
 
+  const findValue = (status: string) => {
+    if (voltageType === 'Total') {
+      return graphValues?.data
+        .filter((value) => value.payment_channel_group === status)
+        .reduce((sum, value) => sum + value.total_collection, 0)
+    } else {
+      return graphValues?.data
+        .filter((value) => value.payment_channel_group === status && value.voltage === voltageType)
+        .reduce((sum, value) => sum + value.total_collection, 0)
+    }
+  }
+  console.log(graphData.filter((value) => value.payment_channel_group == 'ONLINE'))
   const data = [
     {
-      name: graphData[0]?.payment_channel_group,
-      value: graphFilter(0),
+      name: 'ONLINE',
+      value: findValue('Online'),
     },
     {
-      name: graphData[1]?.payment_channel_group,
-      value: graphFilter(1),
-    },
-    {
-      name: graphData[2]?.payment_channel_group,
-      value: graphFilter(2),
-    },
-    {
-      name: 'Other',
-      value: graphFilter(3),
+      name: 'OFFLINE',
+      value: findValue('Offline'),
     },
   ]
-
+  // console.log(data)
   const ltPercent = TotalCollection('LT')
     ? (TotalCollection('LT') * 100) / TotalCollection('Total')
     : 0
