@@ -185,17 +185,27 @@ const TotalBilled = () => {
     : 0
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
+      const excludedCategories = [
+        graphData[0]?.consumer_category,
+        graphData[1]?.consumer_category,
+        graphData[2]?.consumer_category,
+      ]
       router.get(
         route('data-explorer', {
           subsetGroup: 'Demand Analysis',
+          subset: 'Demand-All Categories',
           voltage: voltageType === 'Total' ? '' : voltageType,
           month: dateToYearMonth(selectedMonth),
           consumer_category: data.name === 'Other' ? '' : data.name,
+          consumer_category_not_in:
+            data.name === 'Other'
+              ? `${excludedCategories.filter((category) => category).join(',')}`
+              : '',
           route: route('finance.index'),
         })
       )
     },
-    [voltageType, selectedMonth]
+    [voltageType, selectedMonth, graphData]
   )
 
   return (

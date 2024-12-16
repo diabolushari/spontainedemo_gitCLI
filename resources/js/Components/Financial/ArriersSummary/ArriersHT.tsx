@@ -256,17 +256,26 @@ const ArriersHT = () => {
   }
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
+      const excludedCategories = [
+        graphData[0]?.consumer_category,
+        graphData[1]?.consumer_category,
+        graphData[2]?.consumer_category,
+      ]
       router.get(
         route('data-explorer', {
           subsetGroup: 'Collection Summary',
           voltage: 'HT',
           month: dateToYearMonth(selectedMonth),
           consumer_category: data.name === 'Other' ? '' : data.name,
+          consumer_category_not_in:
+            data.name === 'Other'
+              ? `${excludedCategories.filter((category) => category).join(',')}`
+              : '',
           route: route('finance.index'),
         })
       )
     },
-    [selectedMonth]
+    [selectedMonth, graphData]
   )
   return (
     <Card className='flex w-full flex-col'>
