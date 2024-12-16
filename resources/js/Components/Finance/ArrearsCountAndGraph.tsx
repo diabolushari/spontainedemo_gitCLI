@@ -89,7 +89,7 @@ const ArrearsCountAndGraph = () => {
         )}
       </div>
 
-      <div className='flex h-full rounded-b-2xl bg-1stop-alt-gray pl-12 selection:justify-between md:px-4'>
+      <div className='flex h-full justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='py-4'>
           <p className='md:mdmetric-1stop smmetric-1stop'>Arrears by Category</p>
         </div>

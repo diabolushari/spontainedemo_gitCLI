@@ -284,3 +284,12 @@ export interface SubsetGroupItem extends Model {
   item_number: number
   subset?: Partial<SubsetDetail> | null
 }
+
+export const officeLevels = [
+  { level: 0, name: 'state' },
+  { level: 1, name: 'region' },
+  { level: 2, name: 'circle' },
+  { level: 3, name: 'division' },
+  { level: 4, name: 'subdivision' },
+  { level: 5, name: 'section' },
+]

@@ -116,22 +116,25 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
   return (
     <div className='flex w-full flex-col'>
       <div className='flex-col'>
-        <div className='mt-4 flex w-full gap-2 p-2 pt-5'>
-          <span className='subheader-sm-1stop'>Arrears By Category</span>
-          <div className='justify-end pl-10'>
-            <SelectList
-              list={voltageType.map((voltage) => ({
-                key: voltage,
-                value: voltage,
-                text: voltage,
-              }))}
-              dataKey='value'
-              displayKey='text'
-              showAllOption={true}
-              value={selectedVoltageType}
-              setValue={setSelectedVoltageType}
-              style='1stop-small'
-            />
+        <div className='mt-2 flex w-full flex-col justify-end gap-2 p-3'>
+          <span className='subheader-sm-1stop text-end'>Arrears By Category</span>
+
+          <div className='flex flex-row justify-end gap-2'>
+            <div>
+              <SelectList
+                list={voltageType.map((voltage) => ({
+                  key: voltage,
+                  value: voltage,
+                  text: voltage,
+                }))}
+                dataKey='value'
+                displayKey='text'
+                showAllOption={true}
+                value={selectedVoltageType}
+                setValue={setSelectedVoltageType}
+                style='1stop-small'
+              />
+            </div>
           </div>
         </div>
         <div className='p-5'>
@@ -141,7 +144,7 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
               width='100%'
             >
               <BarChart
-                width='100%'
+                // width='100%'
                 height={150}
                 data={chartData}
               >
@@ -171,7 +174,7 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
             </ResponsiveContainer>
           ) : (
             <Skeleton
-              width={1000}
+              width='100%'
               height={150}
             />
           )}

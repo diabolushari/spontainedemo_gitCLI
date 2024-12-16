@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DataExplorer;
 use App\Http\Controllers\Controller;
 use App\Models\SubsetGroup\SubsetGroup;
 use App\Models\SubsetGroup\SubsetGroupItem;
+use App\Services\DistributionHierarchy\CachedOfficeLIst;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
@@ -22,7 +23,7 @@ class DataExplorerController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(string $subsetGroup, Request $request): Response
+    public function __invoke(string $subsetGroup, CachedOfficeLIst $cachedOfficeLIst, Request $request): Response
     {
         $subsetGroup = SubsetGroup::where('name', $subsetGroup)->firstOrFail();
 
@@ -38,6 +39,8 @@ class DataExplorerController extends Controller implements HasMiddleware
             ->orderBy('item_number')
             ->get();
 
+        $offices = $cachedOfficeLIst->getList();
+
         return Inertia::render('DataExplorer/DataExplorerPage', [
             'subsetGroup' => $subsetGroup,
             'subsetItems' => $groups,
@@ -45,6 +48,7 @@ class DataExplorerController extends Controller implements HasMiddleware
             'oldSubsetName' => $request->input('subset', null),
             'oldFilters' => $request->all(),
             'oldRoute' => $request->input('route'),
+            'offices' => $offices,
         ]);
     }
 }

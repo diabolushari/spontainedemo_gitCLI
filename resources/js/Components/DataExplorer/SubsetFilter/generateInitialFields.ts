@@ -9,12 +9,14 @@ import {
   dimensionOperations,
   measureOperations,
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
+import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
 const generateInitialFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
   measures: SubsetMeasureField[],
-  dimensions: SubsetDimensionField[]
+  dimensions: SubsetDimensionField[],
+  offices?: OfficeData[]
 ) => {
   const fields: SubsetFilterFormField[] = []
 
@@ -35,6 +37,32 @@ const generateInitialFields = (
           })
         }
       })
+      if (key === `${date.subset_column}_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: date.subset_column ?? '',
+            operator: '==',
+            value,
+            officeData: null,
+            dimensionData: null,
+            type: date.use_expression === 1 ? 'string' : 'date',
+          })
+        })
+      }
+      if (key === `${date.subset_column}_not_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: date.subset_column ?? '',
+            operator: '_not',
+            value,
+            officeData: null,
+            dimensionData: null,
+            type: date.use_expression === 1 ? 'string' : 'date',
+          })
+        })
+      }
     })
     dimensions.forEach((dimension) => {
       dimensionOperations.forEach((dimensionOperation) => {
@@ -47,12 +75,15 @@ const generateInitialFields = (
           key === `${columnName}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
         ) {
           if (columnName === 'office_code') {
+            const office = offices?.find((office) => office.office_code === filters[key])
+            const officeName = (office?.office_name as string) ?? filters[key]
+            const officeCode = (office?.office_code as string) ?? filters[key]
             fields.push({
               id: 0,
               field: columnName ?? '',
               operator: dimensionOperation.value,
               value: '',
-              officeData: { office_name: filters[key] ?? '', office_code: filters[key] ?? '' },
+              officeData: { office_name: officeName ?? '', office_code: officeCode ?? '' },
               dimensionData: null,
               type: 'office',
             })
@@ -69,6 +100,32 @@ const generateInitialFields = (
           })
         }
       })
+      if (key === `${dimension.subset_column}_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: dimension.subset_column ?? '',
+            operator: '==',
+            value,
+            officeData: null,
+            dimensionData: { value },
+            type: 'dimension',
+          })
+        })
+      }
+      if (key === `${dimension.subset_column}_not_in`) {
+        filters[key]?.split(',').forEach((value) => {
+          fields.push({
+            id: 0,
+            field: dimension.subset_column ?? '',
+            operator: '_not',
+            value,
+            officeData: null,
+            dimensionData: { value },
+            type: 'dimension',
+          })
+        })
+      }
     })
     measures.forEach((measure) => {
       measureOperations.forEach((measureOperation) => {

@@ -132,7 +132,7 @@ const PendancyCard = () => {
 
   return (
     <Card className='flex w-full flex-col'>
-      <div className='flex w-full'>
+      <div className='flex h-5/6 w-full'>
         <div className='flex w-full flex-col rounded-lg p-3'>
           <div className='flex w-full justify-end'>
             <button
@@ -291,7 +291,7 @@ const PendancyCard = () => {
         </div>
       </div>
 
-      <div className='flex h-full items-center justify-end gap-4 rounded-b-2xl bg-1stop-alt-gray px-4'>
+      <div className='flex h-1/6 items-center justify-end gap-4 rounded-b-2xl bg-1stop-alt-gray px-4'>
         <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 py-2'>
           <DatePicker
             value={selectedDate ?? ''}

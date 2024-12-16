@@ -5,6 +5,7 @@ import React, { useContext, useMemo } from 'react'
 import Table from '@/ui/Table/Table'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 
+
 interface Props {
   tableData?: DataTableItem[]
   officeLevel: string
@@ -201,7 +202,13 @@ export default function OfficeLevelSubsetTable({
                           </p>
                         </>
                       ) : col.type === 'number' ? (
-                        formatNumber(item[col.source as keyof DataTableItem] as number)
+                        item[col.source as keyof DataTableItem] !== null ? (
+                          (item[col.source as keyof DataTableItem] as number) > 1000 ? (
+                            formatNumber(item[col.source as keyof DataTableItem] as number)
+                          ) : (
+                            (item[col.source as keyof DataTableItem] as number).toFixed(2)
+                          )
+                        ) : null
                       ) : (
                         item[col.source as keyof DataTableItem]
                       )}

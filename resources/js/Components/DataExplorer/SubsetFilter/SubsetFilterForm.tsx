@@ -14,6 +14,8 @@ import { XIcon } from 'lucide-react'
 import { availableOperators } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 import useAvailableSubsetFilters from '@/Components/DataExplorer/SubsetFilter/useAvailableSubsetFilters'
 import DatePicker from '@/ui/form/DatePicker'
+import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
+import { showError } from '@/ui/alerts'
 
 interface Props {
   dates: SubsetDateField[]
@@ -22,6 +24,7 @@ interface Props {
   subset: SubsetDetail
   filters: Record<string, string | undefined | null>
   onSubmit: (querystring: string | null) => void
+  offices?: OfficeData[]
 }
 
 export type SubsetFilterFormType = 'date' | 'dimension' | 'number' | 'office' | 'month' | 'string'
@@ -36,17 +39,38 @@ export interface SubsetFilterFormField {
   type: SubsetFilterFormType
 }
 
+function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
+  if (fields.length === 0) {
+    return true
+  }
+  const lastField = fields[fields.length - 1]
+  if (lastField.field === '' || lastField.operator === '') {
+    return false
+  }
+  if (lastField.type === 'dimension' && lastField.dimensionData == null) {
+    return false
+  }
+  if (lastField.type === 'office' && lastField.officeData == null) {
+    return false
+  }
+  if (lastField.type !== 'dimension' && lastField.type !== 'office' && lastField.value === '') {
+    return false
+  }
+  return true
+}
+
 export default function SubsetFilterForm({
   subset,
   dates,
   measures,
   dimensions,
   filters,
+  offices,
   onSubmit,
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState<SubsetFilterFormField[]>(
-    generateInitialFields(filters, dates, measures, dimensions).map((formField) => {
+    generateInitialFields(filters, dates, measures, dimensions, offices).map((formField) => {
       return {
         ...formField,
         id: uuidRef.current++,
@@ -70,15 +94,8 @@ export default function SubsetFilterForm({
       ])
       return
     }
-
     //if last form field is filled, add a new form field
-    if (
-      formFields[formFields.length - 1].field !== '' &&
-      formFields[formFields.length - 1].operator !== '' &&
-      (formFields[formFields.length - 1].type == 'dimension' ||
-        formFields[formFields.length - 1].type == 'office' ||
-        formFields[formFields.length - 1].value !== '')
-    ) {
+    if (isLastFieldFilled(formFields)) {
       setFormFields((prevFormFields) => {
         return [
           ...prevFormFields,
@@ -173,6 +190,13 @@ export default function SubsetFilterForm({
   const formSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const urlParams = new URLSearchParams()
+    let errorFlag = false
+    //For grouping multiple =, != data into _in, not_ins
+    const groupedData: {
+      field: string
+      operator: '=' | '_not'
+      value: string[]
+    }[] = []
     formFields.forEach((formField) => {
       if (formField.field == '' || formField.operator == '') {
         return
@@ -185,12 +209,49 @@ export default function SubsetFilterForm({
         searchValue = formField.officeData?.office_code ?? ''
       }
       if (searchValue === '') {
+        errorFlag = true
+        showError('Please fill in the value for or remove: ' + formField.field)
+        return
+      }
+      if (
+        (formField.operator === '=' || formField.operator === '_not') &&
+        (formField.type == 'dimension' || formField.type == 'string' || formField.type == 'date')
+      ) {
+        const existingGroup = groupedData.find(
+          (group) => group.field === formField.field && group.operator === formField.operator
+        )
+        if (existingGroup != null) {
+          existingGroup.value.push(searchValue)
+        } else {
+          groupedData.push({
+            field: formField.field,
+            operator: formField.operator,
+            value: [searchValue],
+          })
+        }
         return
       }
       urlParams.set(
         `${formField.field}${formField.operator == '=' ? '' : formField.operator}`,
         searchValue
       )
+    })
+    if (errorFlag) {
+      return
+    }
+    groupedData.forEach((group) => {
+      if (group.value.length == 1) {
+        urlParams.set(
+          `${group.field}${group.operator == '=' ? '' : group.operator}`,
+          group.value[0]
+        )
+      }
+      if (group.value.length > 1) {
+        urlParams.set(
+          `${group.field}${group.operator == '=' ? '_in' : '_not_in'}`,
+          group.value.join(',')
+        )
+      }
     })
     onSubmit(urlParams.toString())
   }
@@ -244,7 +305,7 @@ export default function SubsetFilterForm({
     >
       {formFields.map((formField) => (
         <div
-          className={`grid ${formField.type === 'dimension' || formField.type === 'office' ? 'grid-cols-2' : 'grid-cols-3'} gap-2`}
+          className={`grid grid-cols-3 gap-2`}
           key={formField.id}
         >
           <div className='flex flex-col'>
@@ -259,20 +320,18 @@ export default function SubsetFilterForm({
               allOptionText='Select Field'
             />
           </div>
-          {!(formField.type === 'dimension' || formField.type === 'office') && (
-            <div className='flex flex-col'>
-              <SelectList
-                label='Operator'
-                list={availableOperators(formField.type ?? '')}
-                dataKey='value'
-                displayKey='operation'
-                setValue={(value) => setOperator(formField.id, value)}
-                value={formField.operator}
-                showAllOption
-                allOptionText='Select Operator'
-              />
-            </div>
-          )}
+          <div className='flex flex-col'>
+            <SelectList
+              label='Operator'
+              list={availableOperators(formField.type ?? '')}
+              dataKey='value'
+              displayKey='operation'
+              setValue={(value) => setOperator(formField.id, value)}
+              value={formField.operator}
+              showAllOption
+              allOptionText='Select Operator'
+            />
+          </div>
           <div className='flex items-end justify-between'>
             <div className='flex-grow-1 flex-shrink-1 flex w-full flex-col'>
               {(formField.type == 'string' || formField.type == 'number') && (
@@ -292,6 +351,7 @@ export default function SubsetFilterForm({
               {formField.type == 'office' && (
                 <ComboBox
                   label='Office'
+                  placeholder='Search By Office Name'
                   value={formField.officeData}
                   dataKey='office_code'
                   displayKey='office_name'
@@ -304,7 +364,8 @@ export default function SubsetFilterForm({
               )}
               {formField.type == 'dimension' && (
                 <ComboBox
-                  label='Value'
+                  label={`${formField.field}`}
+                  placeholder={`Search For ${formField.field} Options`}
                   value={formField.dimensionData}
                   dataKey='value'
                   displayKey='value'

@@ -3,21 +3,11 @@ export const dateOperations = [
   { operation: 'not equals', value: '_not' },
   { operation: 'from', value: '_from' },
   { operation: 'to', value: '_to' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
 ]
 
 export const dimensionOperations = [
   { operation: 'equals', value: '=' },
   { operation: 'not equals', value: '_not' },
-  { operation: 'contains', value: '_like' },
-  { operation: 'not containing', value: '_not_like' },
-  { operation: 'greater than', value: '_greater_than' },
-  { operation: 'greater than or equal', value: '_greater_than_or_equal' },
-  { operation: 'less than', value: '_less_than' },
-  { operation: 'less than or equal', value: '_less_than_or_equal' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
 ]
 
 export const measureOperations = [
@@ -27,8 +17,6 @@ export const measureOperations = [
   { operation: 'greater than or equal', value: '_greater_than_or_equal' },
   { operation: 'less than', value: '_less_than' },
   { operation: 'less than or equal', value: '_less_than_or_equal' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
 ]
 
 export const availableOperators = (type: string) => {
@@ -41,6 +29,8 @@ export const availableOperators = (type: string) => {
       return dimensionOperations
     case 'number':
       return measureOperations
+    case 'office':
+      return [{ operation: 'equals', value: '=' }]
     default:
       return []
   }

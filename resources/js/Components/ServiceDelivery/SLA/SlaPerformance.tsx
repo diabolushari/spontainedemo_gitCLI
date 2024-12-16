@@ -192,7 +192,7 @@ const SlaPerformance = () => {
 
   return (
     <Card className='flex w-full flex-col'>
-      <div className='flex w-full'>
+      <div className='flex h-5/6 w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
           <button
             className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
@@ -233,7 +233,7 @@ const SlaPerformance = () => {
               <div>
                 {isLoading ? (
                   <Skeleton
-                    height={300}
+                    height={200}
                     width='100%'
                   />
                 ) : (
@@ -336,7 +336,7 @@ const SlaPerformance = () => {
         )}
       </div>
 
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-14'>
+      <div className='flex h-1/6 items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-14'>
         <div className='py-1'>
           <p className='md:mdmetric-1stop smmetric-1stop'>SLA Performance by Request Type</p>
         </div>

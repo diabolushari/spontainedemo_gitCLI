@@ -98,11 +98,11 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   return (
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='ml-2 flex gap-2'>
+        <div className='mt-4 flex w-full flex-col gap-4 p-2'>
+          <div className='ml-2 flex justify-end gap-2 px-2'>
             <span className='subheader-sm-1stop'>Trend of Top Billing/Total Demand</span>
           </div>
-          <div className='mx-4 flex w-full justify-end gap-2'>
+          <div className='flex w-full justify-end gap-2 px-2'>
             <div>
               <SelectList
                 list={voltageType.map((voltage) => ({
