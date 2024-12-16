@@ -10,7 +10,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class ScheduledDataLoadListener implements ShouldQueue
 {
 
-    public $queue = '1stop';
 
     public function __construct(
         private readonly RunScheduledJob $job,
