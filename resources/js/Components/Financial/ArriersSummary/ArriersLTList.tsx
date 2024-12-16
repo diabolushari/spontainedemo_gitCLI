@@ -1,3 +1,4 @@
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -265,7 +266,7 @@ const ArriersLTList = ({
                     key={value.office_name}
                   >
                     <td className=''>{value.office_name}</td>
-                    <td className=''>{findValue(value)}</td>
+                    <td className=''>{formatNumber(findValue(value))}</td>
                   </tr>
                 )
               })}
