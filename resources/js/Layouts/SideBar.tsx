@@ -390,8 +390,19 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
               ))}
             </div>
 
-            <div className='mt-auto'>
-              <div className='mt-48 py-2'>
+            <div className='mt-20 flex flex-col items-center border-t border-1stop-alt-gray'>
+              <div
+                className='mt-6 flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
+                ref={profileRef}
+              >
+                <button
+                  className={`h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-1stop-gray bg-1stop-accent2 text-2xl text-black`}
+                  onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+                >
+                  {userInitial}
+                </button>
+              </div>
+              <div className='py-2'>
                 <Link
                   href='/data-detail'
                   className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
@@ -406,17 +417,6 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                     }}
                   />
                 </Link>
-              </div>
-              <div
-                className='ml-4 mt-52 flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
-                ref={profileRef}
-              >
-                <button
-                  className={`h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-1stop-gray bg-1stop-accent2 text-2xl text-black`}
-                  onClick={() => setIsProfileDropdown(!isProfileDropdown)}
-                >
-                  {userInitial}
-                </button>
               </div>
             </div>
           </button>
