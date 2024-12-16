@@ -133,8 +133,8 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
       console.log(data.name)
       router.get(
         route('data-explorer', {
-          subsetGroup: 'Complaint Volumes Comparison',
-          // subset: 'Customer Complaints',
+          subsetGroup: 'Customer Complaints Summary',
+          subset: 'Customer Complaints - All Types',
           month: dateToYearMonth(selectedMonth),
           complaint_type: data.name === 'Other' ? '' : data.name,
           route: route('service-delivery.index'),
