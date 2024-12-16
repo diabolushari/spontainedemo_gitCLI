@@ -35,7 +35,7 @@ class DataLoaderConnectionController extends Controller implements HasMiddleware
         /** @var LengthAwarePaginator<DataLoaderConnection> $dataLoaderConnections */
         $dataLoaderConnections = DataLoaderConnection::when(
             $request->search != null,
-            fn ($query) => $query->where('name', 'like', "%$request->search%")
+            fn($query) => $query->where('name', 'like', "%$request->search%")
         )
             ->withCount('queries')
             ->paginate(20)

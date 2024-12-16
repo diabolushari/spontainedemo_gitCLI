@@ -200,6 +200,7 @@ export interface DataLoaderJob extends Model {
   data_detail_id: number
   query_id: number
   delete_existing_data: 0 | 1
+  duplicate_identification_field: string | null
   detail?: Partial<DataDetail> | null
   loader_query?: Partial<DataLoaderQuery> | null
   statuses?: JobStatuses[]

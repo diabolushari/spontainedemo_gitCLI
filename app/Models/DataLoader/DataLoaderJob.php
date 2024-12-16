@@ -26,6 +26,7 @@ class DataLoaderJob extends Model
         'day_of_month',
         'month_of_year',
         'delete_existing_data',
+        'duplicate_identification_field',
         'query_id',
         'data_detail_id',
         'created_by',

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('loader_jobs', function (Blueprint $table) {
             $table->id();
-
             //fields
             $table->string('name');
             $table->text('description')->nullable();
@@ -24,15 +23,13 @@ return new class extends Migration
             $table->string('day_of_week')->nullable(); // required for type weekly
             $table->unsignedBigInteger('day_of_month')->nullable(); // required for type monthly, yearly
             $table->unsignedBigInteger('month_of_year')->nullable(); // required for type yearly
-
             $table->boolean('delete_existing_data')->default(false);
-
+            $table->string('duplicate_identification_field')
+                ->nullable();
             $table->foreignId('query_id')
                 ->constrained('loader_queries');
-
             $table->foreignId('data_detail_id')
                 ->constrained('data_details');
-
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()

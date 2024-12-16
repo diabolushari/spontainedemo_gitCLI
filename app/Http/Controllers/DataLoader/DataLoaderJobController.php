@@ -34,9 +34,9 @@ class DataLoaderJobController extends Controller implements HasMiddleware
     {
         /** @var LengthAwarePaginator<DataLoaderJob> $dataLoaderJobs */
         $dataLoaderJobs = DataLoaderJob::with('loaderQuery')
+            ->with(['loaderQuery', 'latest'])
             ->paginate(20)
             ->withQueryString();
-        $dataLoaderJobs->load('loaderQuery', 'latest');
 
         return Inertia::render('DataLoader/DataLoaderJobIndex', [
             'dataLoaderJobs' => $dataLoaderJobs,
@@ -48,21 +48,19 @@ class DataLoaderJobController extends Controller implements HasMiddleware
 
     public function create(Request $request): Response
     {
+        $dataDetail = DataDetail::where('id', $request->input('dataDetail'))
+            ->with(['dateFields', 'dimensionFields'])
+            ->firstOrFail();
 
         $connections = DataLoaderConnection::select('id', 'name')
             ->orderBy('name')
             ->get();
 
-        $dataTables = DataDetail::select('id', 'name')
-            ->orderBy('name')
-            ->get();
-
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'connections' => $connections,
-            'dataTables' => $dataTables,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'dataDetail' => $request->input('dataDetail', null),
+            'dataDetail' => $dataDetail,
         ]);
     }
 
@@ -83,7 +81,6 @@ class DataLoaderJobController extends Controller implements HasMiddleware
 
     public function show(DataLoaderJob $dataLoaderJob): Response
     {
-
         $dataLoaderJob->load('loaderQuery:id,name', 'detail:id,name', 'statuses');
 
         return Inertia::render('DataLoader/DataLoaderJobShow', [
@@ -97,18 +94,18 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get();
 
-        $dataTables = DataDetail::select('id', 'name')
-            ->orderBy('name')
-            ->get();
-
         $query = DataLoaderQuery::select('id', 'name', 'connection_id')
             ->where('id', $dataLoaderJob->query_id)
             ->first();
 
+        $dataDetail = DataDetail::where('id', $dataLoaderJob->data_detail_id)
+            ->with(['dateFields', 'dimensionFields'])
+            ->firstOrFail();
+
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'job' => $dataLoaderJob,
             'connections' => $connections,
-            'dataTables' => $dataTables,
+            'dataDetail' => $dataDetail,
             'connectionId' => $query?->connection_id ?? null,
         ]);
     }

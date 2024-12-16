@@ -62,7 +62,8 @@ readonly class RunScheduledJob
         $result = $this->importToDataTable->importToDataTable(
             $dataLoaderJob->detail,
             $data,
-            $dataLoaderJob->delete_existing_data == 1
+            $dataLoaderJob->delete_existing_data == 1,
+            $dataLoaderJob->duplicate_identification_field
         );
 
         try {

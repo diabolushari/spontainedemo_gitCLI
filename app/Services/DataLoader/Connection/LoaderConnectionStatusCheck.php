@@ -35,7 +35,6 @@ class LoaderConnectionStatusCheck
         /** @var string|null $vpnPassword */
         $vpnPassword = config('app.vpn_password');
 
-        Log::info("VPN Password: $vpnPassword");
         if ($vpnPassword !== null) {
             $result = Process::run("echo $vpnPassword | sudo snx -s 125.17.229.163 -u xocortx");
             Log::info($result->output());

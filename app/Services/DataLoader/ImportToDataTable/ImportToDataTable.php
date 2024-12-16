@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 readonly class ImportToDataTable
 {
+    use DeleteDuplicateEntriesForField;
+
     public function __construct(
         private MapColumnsToField $mapColumnsToField,
         private ConvertToDataTable $convertToDataTable,
@@ -34,7 +36,8 @@ readonly class ImportToDataTable
     public function importToDataTable(
         DataDetail $dataDetail,
         array $data,
-        bool $deleteExistingData = false
+        bool $deleteExistingData = false,
+        ?string $duplicationIdentifierField = null
     ): array {
 
         $status = [
@@ -94,23 +97,30 @@ readonly class ImportToDataTable
         }
 
         //save data
+        DB::beginTransaction();
         try {
-            //            DB::transaction(function () use ($dataTable, $dataDetail, $deleteExistingData) {
-            if ($deleteExistingData) {
+            if ($deleteExistingData && $duplicationIdentifierField == null) {
                 DB::table($dataDetail->table_name)->truncate();
+            }
+            if ($deleteExistingData && $duplicationIdentifierField != null) {
+                $this->deleteDuplicateEntries(
+                    $dataDetail,
+                    $duplicationIdentifierField,
+                    $data
+                );
             }
             foreach (array_chunk($dataTable, 1000) as $chunk) {
                 DB::table($dataDetail->table_name)->insert($chunk);
             }
-            //            });
-
         } catch (Exception $e) {
+            DB::rollBack();
             $status['error_message'] = $e->getMessage();
             $status['completed_at'] = now();
 
             return $status;
         }
 
+        DB::commit();
         $status['is_successful'] = true;
         $status['total_records'] = count($dataTable);
         $status['completed_at'] = now();

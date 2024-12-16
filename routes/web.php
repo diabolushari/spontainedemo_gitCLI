@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\ScheduledDataLoadEvent;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Models\DataLoader\DataLoaderJob;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -178,4 +180,8 @@ Route::get('subset-export/{subsetDetail}', SubsetExportController::class)
 Route::get('office-rankings/{subsetGroupName}', OfficeRankingsController::class)
     ->name('office-rankings');
 
-require __DIR__.'/auth.php';
+Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob) {
+    return ScheduledDataLoadEvent::dispatch($loaderJob);
+});
+
+require __DIR__ . '/auth.php';

@@ -17,16 +17,14 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
-  dataTables: Pick<DataDetail, 'id' | 'name'>[]
   job?: DataLoaderJob | null
   connectionId?: number | null
-  dataDetail?: string | null
+  dataDetail: DataDetail
 }
 
 export default function DataLoaderJobCreate({
   job,
   connections,
-  dataTables,
   connectionId,
   dataDetail,
 }: Readonly<Props>) {
@@ -38,12 +36,13 @@ export default function DataLoaderJobCreate({
     cron_type: job?.cron_type ?? HOURLY_CRON,
     schedule_time: job?.schedule_time ?? '',
     day_of_week: job?.day_of_week ?? '',
-    day_of_month: job?.day_of_month ?? '',
-    month_of_year: job?.month_of_year ?? '',
-    data_detail_id: job?.data_detail_id ?? '',
+    day_of_month: job?.day_of_month?.toString() ?? '',
+    month_of_year: job?.month_of_year?.toString() ?? '',
+    data_detail_id: job?.data_detail_id.toString() ?? dataDetail.id.toString(),
     connection_id: connectionId ?? '',
     query_id: job?.query_id ?? '',
     delete_existing_data: job?.delete_existing_data === 1,
+    duplicate_identification_field: job?.duplicate_identification_field ?? '',
   })
 
   useEffect(() => {
@@ -67,6 +66,25 @@ export default function DataLoaderJobCreate({
       setFormValue('month_of_year')('')
     }
   }, [formData.cron_type, setFormValue])
+
+  const dataTableFields = useMemo(() => {
+    const fields: { column: string; field: string }[] = []
+    dataDetail.date_fields?.forEach((dateField) => {
+      fields.push({
+        field: dateField.field_name as string,
+        column: dateField.column as string,
+      })
+    })
+
+    dataDetail.dimension_fields?.forEach((dimensionField) => {
+      fields.push({
+        field: dimensionField.field_name as string,
+        column: dimensionField.column as string,
+      })
+    })
+
+    return fields
+  }, [dataDetail])
 
   const formItems = useMemo(<
     T,
@@ -140,14 +158,16 @@ export default function DataLoaderJobCreate({
         label: 'Delete Existing Data When Running A Job',
         setValue: toggleBoolean('delete_existing_data'),
       },
-      data_detail_id: {
+      duplicate_identification_field: {
         type: 'select',
-        label: 'Target Data Table',
-        setValue: setFormValue('data_detail_id'),
-        list: dataTables,
-        displayKey: 'name',
-        dataKey: 'id',
-        allOptionText: 'Select a data table',
+        list: dataTableFields,
+        dataKey: 'column',
+        displayKey: 'field',
+        label: 'Duplicate Identification Field',
+        setValue: setFormValue('duplicate_identification_field'),
+        showAllOption: true,
+        allOptionText: 'DELETE ALL DATA',
+        hidden: !formData.delete_existing_data,
       },
       connection_id: {
         type: 'select',
@@ -175,9 +195,10 @@ export default function DataLoaderJobCreate({
     setFormValue,
     formData.cron_type,
     connections,
-    dataTables,
     formData.connection_id,
     toggleBoolean,
+    dataTableFields,
+    formData.delete_existing_data,
   ])
 
   const backUrl = useMemo(() => {
@@ -212,7 +233,7 @@ export default function DataLoaderJobCreate({
       url={job == null ? route('loader-jobs.store') : route('loader-jobs.update', job.id)}
       formData={formData}
       formItems={formItems}
-      title={job == null ? 'Create Job' : 'Edit Job'}
+      title={`${job == null ? 'Create Job: ' : 'Edit Job: '} ${dataDetail.name}`}
       backUrl={backUrl}
       formStyles='w-1/2 md:grid-cols-1'
       type='data'

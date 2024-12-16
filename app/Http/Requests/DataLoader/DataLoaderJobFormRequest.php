@@ -20,6 +20,7 @@ class DataLoaderJobFormRequest extends Data
         public ?string $dayOfWeek,
         public ?string $monthOfYear,
         public ?int $dayOfMonth,
+        public ?string $duplicateIdentificationField,
         public int $queryId,
         public int $dataDetailId,
         public bool $deleteExistingData

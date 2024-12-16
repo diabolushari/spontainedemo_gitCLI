@@ -1,21 +1,21 @@
+import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
+import OfficeRanking from '@/Components/DataExplorer/OfficeRanking'
+import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
 import {
   SubsetDetail,
   SubsetGroup,
   SubsetGroupItem,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
-import React, { useEffect, useMemo, useState } from 'react'
+import DetailDashboardLayout from '@/Layouts/DetailDashboardLayout'
 import {
   initSelectedSubset,
   OfficeData,
   SelectedOfficeContext,
 } from '@/Pages/DataExplorer/DataExplorerPage'
-import SelectList from '@/ui/form/SelectList'
-import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
-import OfficeRanking from '@/Components/DataExplorer/OfficeRanking'
 import MonthPicker from '@/ui/form/MonthPicker'
-import DetailDashboardLayout from '@/Layouts/DetailDashboardLayout'
-import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
+import SelectList from '@/ui/form/SelectList'
+import { useEffect, useMemo, useState } from 'react'
 
 interface Props {
   subsetGroup: SubsetGroup
