@@ -16,7 +16,7 @@ Schedule::call(function () {
 })->everyTenMinutes();
 
 Schedule::call(function () {
-    \Illuminate\Support\Facades\Log::info('Running scheduled job');
+    \Illuminate\Support\Facades\Log::info('Running scheduled job: '.now()->toDateTimeString());
     $runScheduleQuery = new StartScheduledJobs;
     $runScheduleQuery->run();
 })->everyMinute();

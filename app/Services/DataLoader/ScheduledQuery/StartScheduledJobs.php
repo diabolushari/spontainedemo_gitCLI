@@ -6,6 +6,7 @@ use App\Events\ScheduledDataLoadEvent;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\CronTypes;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class StartScheduledJobs
 {
@@ -29,10 +30,12 @@ class StartScheduledJobs
 
     private function runHourlyQueries(): void
     {
+        Log::info('Running hourly queries');
         DataLoaderJob::where('cron_type', CronTypes::HOURLY)
             ->active()
             ->get()
             ->each(function ($query) {
+                Log::info('Running job: '.$query->name);
                 ScheduledDataLoadEvent::dispatch($query);
             });
     }
