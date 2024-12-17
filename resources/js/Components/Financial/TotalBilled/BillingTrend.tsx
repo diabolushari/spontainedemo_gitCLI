@@ -96,7 +96,7 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   }))
 
   return (
-    <div className='flex-shrink-1 flex w-full flex-col'>
+    <div className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='mt-4 flex w-full flex-col gap-4 p-2'>
           <div className='ml-2 flex justify-end gap-2 px-2'>
