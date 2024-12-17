@@ -4,12 +4,12 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import { BillingValues } from './TotalBilled'
-import { CustomTooltip } from '@/Components/CustomTooltip'
 
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
+
 export const renderCustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
@@ -96,7 +96,7 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   }))
 
   return (
-    <div className='flex w-full flex-col'>
+    <div className='flex-grow-1 flex flex-col'>
       <div className='flex w-full'>
         <div className='mt-4 flex w-full flex-col gap-4 p-2'>
           <div className='ml-2 flex justify-end gap-2 px-2'>
