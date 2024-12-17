@@ -218,7 +218,7 @@ const TotalBilled = () => {
   )
 
   return (
-    <Card className='flex w-full flex-col'>
+    <Card className='flex flex-col'>
       <div className='flex h-5/6 w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
           <button
