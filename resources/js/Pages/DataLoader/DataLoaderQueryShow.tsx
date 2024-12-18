@@ -9,6 +9,7 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import { getHttpError } from '@/ui/alerts'
 import axios from 'axios'
 import Button from '@/ui/button/Button'
+import { renderToReadableStream } from 'react-dom/server'
 
 interface Props {
   dataLoaderQuery: DataLoaderQuery
@@ -83,6 +84,7 @@ export default function DataLoaderQueryShow({ dataLoaderQuery }: Readonly<Props>
       setError(true)
       const errorData = getHttpError(error)
       if (errorData != null) {
+        setError(true)
         setStatusMessage(errorData)
       }
     } finally {
