@@ -24,9 +24,9 @@ class AppServiceProvider extends ServiceProvider
         //     ScheduledDataLoadEvent::class,
         //     ScheduledDataLoadListener::class
         // );
-        //        if (config('app.url') !== 'http://localhost:8000') {
-        //            URL::forceScheme('https');
-        //            URL::forceRootUrl(config('app.url'));
-        //        }
+        if (config('app.url') !== 'http://localhost:8000') {
+            URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
+        }
     }
 }
