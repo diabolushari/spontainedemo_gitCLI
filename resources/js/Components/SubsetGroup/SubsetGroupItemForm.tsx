@@ -65,11 +65,15 @@ export default function SubsetGroupItemForm({
     G extends keyof L,
     L extends Record<K, string | number> & Record<G, string | number | null>,
   >() => {
-    const totalFields = (fields?.dates.length ?? 0) + (fields?.dimensions.length ?? 0)
+    const nonFilterDimensions = fields?.dimensions.filter(
+      (dimension) => dimension.filter_only === 0
+    )
+
+    const totalFields = (fields?.dates.length ?? 0) + (nonFilterDimensions?.length ?? 0)
 
     let hasMonthDimension = false
 
-    fields?.dimensions.forEach((dimension) => {
+    nonFilterDimensions?.forEach((dimension) => {
       if (dimension.subset_column === 'month') {
         hasMonthDimension = true
       }
