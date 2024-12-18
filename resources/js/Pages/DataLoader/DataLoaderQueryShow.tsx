@@ -79,6 +79,7 @@ export default function DataLoaderQueryShow({ dataLoaderQuery }: Readonly<Props>
       setStatusMessage(result.data.errorMessage)
       setResult(result.data.result ?? [])
     } catch (error) {
+      console.log(error)
       setError(true)
       const errorData = getHttpError(error)
       if (errorData != null) {
