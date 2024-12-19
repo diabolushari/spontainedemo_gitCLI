@@ -96,8 +96,36 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
       <div className='mt-4 flex w-full justify-end gap-2 p-2'>
         <span className='subheader-sm-1stop'>Trend of Collections</span>
       </div>
-      <div className='flex w-full justify-end gap-2 px-2'>
-        <div>
+      <div className='ml-2 mt-2 flex w-full flex-col items-end justify-between gap-2 pb-4 md:flex-row md:items-center'>
+        <div className='flex justify-center gap-4'>
+          {/* <div className='flex gap-4'> */}
+          <button
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '3 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('3 MONTHS')}
+          >
+            3 M
+          </button>
+          <button
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '6 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('6 MONTHS')}
+          >
+            6 M
+          </button>
+          <button
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '12 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('12 MONTHS')}
+          >
+            1 Y
+          </button>
+          {/* </div> */}
+        </div>
+        <div className='flex items-center gap-2'>
           <SelectList
             list={voltageType.map((voltage) => ({
               key: voltage,
@@ -111,17 +139,7 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
             setValue={setSelectedVoltage}
             style='1stop-small'
           />
-        </div>
-        <span className='small-1stop-header flex items-center'>CONSUMERS, PREVIOUS</span>
-        <div>
-          <SelectList
-            list={dateEarlier}
-            dataKey='value'
-            displayKey='name'
-            value={selectedRange}
-            setValue={(value) => setSelectedValue(`${value} MONTHS`)}
-            style='1stop-small'
-          />
+          <span className='small-1stop-header flex items-center'>CONSUMERS</span>
         </div>
       </div>
       <div className='w-full'>
@@ -138,9 +156,7 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
             <AreaChart data={chartData}>
               <XAxis
                 dataKey='month'
-                tickFormatter={
-                  (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
-                }
+                tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                 style={{ fontSize: 10 }}
               />
               <YAxis
@@ -148,7 +164,6 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
                 style={{ fontSize: 10 }}
               />
               <Tooltip
-                // formatter={(value: number) => [`${formatNumber(value)}`, 'Total Collection']}
                 content={renderCustomTooltip}
                 labelFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
               />
