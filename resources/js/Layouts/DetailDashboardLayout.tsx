@@ -56,13 +56,13 @@ export default function DetailDashboardLayout({
       <DetailDashboardPadding>
         <Card className='grid grid-cols-1 lg:grid-cols-5'>
           <div className='flex flex-col'>
-            <div className='space-y-2 p-4'>
+            <div className='mx-2 space-y-2 border-b border-b-1stop-alt-gray p-4 md:mx-0 md:border-none'>
               <BreadCrumbs breadcrumbItems={breadCrumb} />
               <p className='h3-1stop pt-4'>{pageTitle}</p>
               <p className='body-1stop ml-1 pt-2'>{subsetGroup.name}</p>
               <p className='axial-label-1stop ml-1'>{subsetGroup.description}</p>
             </div>
-            <div className='flex flex-col gap-5 p-4'>
+            <div className='flex flex-col gap-5 p-0 px-4 md:p-4 md:px-4'>
               <div className='flex flex-col gap-2'>
                 {appliedFilters?.map((appliedFilter) => (
                   <AppliedSubsetFilter
@@ -75,6 +75,7 @@ export default function DetailDashboardLayout({
               </div>
             </div>
           </div>
+
           <div className='flex grid-cols-1 flex-col gap-5 lg:col-span-4'>{children}</div>
         </Card>
       </DetailDashboardPadding>

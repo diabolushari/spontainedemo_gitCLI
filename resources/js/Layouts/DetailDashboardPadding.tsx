@@ -5,5 +5,5 @@ interface Props {
 }
 
 export default function DetailDashboardPadding({ children }: Props) {
-  return <div className='flex flex-col pl-10 pt-4'>{children}</div>
+  return <div className='flex flex-col pl-2 pt-4 md:pl-10'>{children}</div>
 }

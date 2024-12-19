@@ -162,7 +162,7 @@ export default function OfficeRanking({
 
   return (
     <FullSpinnerWrapper processing={loading}>
-      <div className='space-y-2 bg-1stop-white p-4'>
+      <div className='ml-1 space-y-2 rounded-lg bg-1stop-white p-4 md:ml-0'>
         <div className='rounded-lg bg-white'>
           <ResponsiveContainer
             width='100%'
