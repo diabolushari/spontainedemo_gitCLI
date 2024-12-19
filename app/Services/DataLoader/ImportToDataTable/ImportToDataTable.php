@@ -101,12 +101,22 @@ readonly class ImportToDataTable
             }
         }
 
-        Log::info('saving data to data table');
-        //save data
         try {
             if ($deleteExistingData && $duplicationIdentifierField == null) {
                 DB::table($dataDetail->table_name)->truncate();
             }
+        } catch (Exception $e) {
+            $status['error_message'] = $e->getMessage();
+            $status['completed_at'] = now();
+
+            return $status;
+        }
+
+        Log::info('saving data to data table');
+
+        DB::beginTransaction();
+        //save data
+        try {
             if ($deleteExistingData && $duplicationIdentifierField != null) {
                 $this->deleteDuplicateEntries(
                     $dataDetail,
@@ -118,12 +128,17 @@ readonly class ImportToDataTable
                 DB::table($dataDetail->table_name)->insert($chunk);
             }
         } catch (Exception $e) {
+            DB::rollBack();
+            Log::info('error while saving data to data table');
             $status['error_message'] = $e->getMessage();
             $status['completed_at'] = now();
 
             return $status;
         }
 
+        DB::commit();
+
+        Log::info('import successful');
         $status['is_successful'] = true;
         $status['total_records'] = count($dataTable);
         $status['completed_at'] = now();

@@ -48,8 +48,12 @@ trait DeleteDuplicateEntriesForField
                 }
             });
 
-        DB::table($dataDetail->table_name)
-            ->whereIn($column, $toBeDeleted)
-            ->delete();
+        do {
+            $deleted = DB::table($dataDetail->table_name)
+                ->whereIn($column, $toBeDeleted)
+                ->orderBy('id')
+                ->limit(10000)
+                ->delete();
+        } while ($deleted > 0);
     }
 }
