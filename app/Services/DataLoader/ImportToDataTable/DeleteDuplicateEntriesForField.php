@@ -52,7 +52,7 @@ trait DeleteDuplicateEntriesForField
             $deleted = DB::table($dataDetail->table_name)
                 ->whereIn($column, $toBeDeleted)
                 ->orderBy('id')
-                ->limit(1000)
+                ->limit(10000)
                 ->delete();
         } while ($deleted > 0);
     }
