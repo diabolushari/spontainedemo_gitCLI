@@ -152,6 +152,7 @@ export default function OfficeLevelExplorerTable({
           subsetDetail: subset.id,
           level: officeLevel,
           office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
+          excludeNonMeasurements: false,
         })}
       />
     </FullSpinnerWrapper>

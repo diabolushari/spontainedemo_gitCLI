@@ -18,11 +18,11 @@ interface Properties {
   default_level?: string
   sortBy?: string
   sortOrder?: string
-  categories: {
+  categories?: {
     sla_svc_group: string
   }[]
   selectedMonth: Date | null
-  setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
+  setSelectedMonth?: React.Dispatch<React.SetStateAction<Date>>
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -36,7 +36,7 @@ const levelTypes: { name: string; value: string }[] = [
 
 interface ConsumerList extends Model {
   office_code: string
-  office_name: string
+  office_name?: string
   complaint_count?: number
   consumer_count?: number
   sla_perf_cnt?: number
@@ -51,7 +51,6 @@ const SlaList = ({
   default_level,
   sortOrder = 'desc',
   selectedMonth,
-  setSelectedMonth,
 }: Properties) => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [page, setPage] = useState(1)
@@ -61,7 +60,7 @@ const SlaList = ({
   const [title, setTitle] = useState('Ownership change')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'section')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=requests_within_sla__count_&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
   )
   const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
 

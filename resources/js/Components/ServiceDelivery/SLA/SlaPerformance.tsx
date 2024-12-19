@@ -308,7 +308,7 @@ const SlaPerformance = () => {
             column1='State'
             column2='Requests within SLA count'
             subset_id='82'
-            sortby='requests_within_sla__count_'
+            selectedMonth={selectedMonth}
           />
         )}
       </div>

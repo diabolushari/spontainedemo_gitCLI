@@ -203,6 +203,7 @@ export default function DataExplorerPage({
                 date={selectedMonth}
                 subset={selectedSubset}
                 trendField={selectedSubsetItem.trend_field}
+                title={subsetItems.find((value) => value.subset.id == selectedSubset?.id).name}
               />
             )}
         </div>

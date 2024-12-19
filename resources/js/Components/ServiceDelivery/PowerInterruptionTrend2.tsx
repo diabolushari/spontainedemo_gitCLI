@@ -18,6 +18,7 @@ import { monthList } from '@/libs/dates'
 import { dateToYearMonth, formatNumber } from './ActiveConnection'
 import { solidColors } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
+import { CustomTooltip } from '../CustomTooltip'
 
 interface ComplaintValues extends Model {
   complaint_count: number
@@ -142,7 +143,35 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
     },
     [selectedMonth]
   )
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+      const align = (name: string) => {
+        const temp = name.replace('_', ' ')
+        return `${temp[0].toUpperCase()}${temp.slice(1)}`
+      }
 
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+          <div className='flex flex-col'>
+            {payload.map((value) => {
+              return (
+                <span
+                  className={`small-1stop text-[${value.fill}]`}
+                  key={value.name}
+                >
+                  {align(value.dataKey)}:
+                  <span className='small-1stop font-bold'>{formatNumber(value.value)}</span>
+                </span>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+    return null
+  }
   return (
     <div className='flex w-full flex-col gap-2 p-3'>
       <span className='subheader-sm-1stop text-end'>
@@ -209,44 +238,110 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
                 padding={{ top: 50 }}
               />
               <Legend
-                formatter={(value) => {
-                  if (value === 'current' && selectedMonth) {
-                    const currentMonthName = monthList.find(
-                      (m) => m.id === selectedMonth.getMonth() + 1
-                    )?.name
-                    const currentYear = selectedMonth.getFullYear()
-                    return `${currentMonthName}, ${currentYear}`
-                  }
+                content={({ payload }: LegendProps) => {
+                  if (!payload) return null
 
-                  if (value === 'previous') {
-                    const previousMonthName = monthList.find(
-                      (m) => m.id === Number(selectedRange)
-                    )?.name
-                    return `${previousMonthName}, ${yearFilter}`
-                  }
+                  return (
+                    <ul
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        listStyle: 'none',
+                        padding: 0,
+                      }}
+                    >
+                      {payload.map((entry, index) => {
+                        let formattedValue = entry.value
 
-                  return value
+                        if (entry.value === 'current' && selectedMonth) {
+                          const currentMonthName = monthList.find(
+                            (m) => m.id === selectedMonth.getMonth() + 1
+                          )?.name
+                          const currentYear = selectedMonth.getFullYear()
+                          formattedValue = `${currentMonthName}, ${currentYear}`
+                        } else if (entry.value === 'previous') {
+                          const previousMonthName = monthList.find(
+                            (m) => m.id === Number(selectedRange)
+                          )?.name
+                          formattedValue = `${previousMonthName}, ${yearFilter}`
+                        }
+
+                        return (
+                          <li
+                            key={`item-${index}`}
+                            style={{ marginRight: 10, fontSize: 8 }}
+                          >
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                width: 10,
+                                height: 10,
+                                backgroundColor: entry.color,
+                                marginRight: 5,
+                                paddingTop: 1,
+                              }}
+                            />
+                            {formattedValue}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )
                 }}
               />
 
               <Tooltip
-                formatter={(value: number, name: string) => {
-                  if (name === 'current' && selectedMonth) {
-                    const currentMonthName = monthList.find(
-                      (m) => m.id === selectedMonth.getMonth() + 1
-                    )?.name
-                    const currentYear = selectedMonth.getFullYear()
-                    return [`${formatNumber(value)} `, `${currentMonthName}, ${currentYear}`]
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className='rounded-xl border-2 bg-white py-2'>
+                        {label && <div className='small-1stop mx-2 mb-2 font-bold'>{label}</div>}
+
+                        <div>
+                          {payload.map((entry) => {
+                            const rawValue = entry?.value
+                            const name = entry?.name
+
+                            let formattedName = name
+                            let formattedValue = rawValue
+
+                            if (name === 'current' && selectedMonth) {
+                              const currentMonthName = monthList.find(
+                                (m) => m.id === selectedMonth.getMonth() + 1
+                              )?.name
+                              const currentYear = selectedMonth.getFullYear()
+                              formattedName = `${currentMonthName}, ${currentYear}`
+                              formattedValue = formatNumber(rawValue)
+                            } else if (name === 'previous') {
+                              const previousMonthName = monthList.find(
+                                (m) => m.id === Number(selectedRange)
+                              )?.name
+                              formattedName = `${previousMonthName}, ${yearFilter}`
+                              formattedValue = formatNumber(rawValue)
+                            } else {
+                              formattedValue = formatNumber(rawValue)
+                            }
+
+                            return (
+                              <div
+                                className='flex w-full flex-col'
+                                key={entry.dataKey || entry.name}
+                              >
+                                <div className='px-2'>
+                                  <span className='small-1stop'>
+                                    {formattedName} :{' '}
+                                    <span className='small-1stop font-bold'>{formattedValue}</span>
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )
                   }
 
-                  if (name === 'previous') {
-                    const previousMonthName = monthList.find(
-                      (m) => m.id === Number(selectedRange)
-                    )?.name
-                    return [`${formatNumber(value)} `, `${previousMonthName}, ${yearFilter}`]
-                  }
-
-                  return [formatNumber(value), name]
+                  return null
                 }}
               />
 

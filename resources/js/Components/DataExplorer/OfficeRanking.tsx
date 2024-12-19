@@ -204,6 +204,8 @@ export default function OfficeRanking({
               subsetDetail: subset.id,
               month: dateToYearMonth(selectedMonth),
               level: officeLevel,
+              limit: selectedLimit,
+              excludeNonMeasurements: true,
             })}
           />
           <div className='flex w-full flex-col'>

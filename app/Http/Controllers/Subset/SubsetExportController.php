@@ -32,14 +32,13 @@ class SubsetExportController extends Controller implements HasMiddleware
             ->get(
                 $subsetDetail,
                 true,
-                false,
+                $request->excludeNonMeasurements == '1' ? true :  false,
                 $request->input('level', 'region')
             )?->get()->toArray();
-
+    
         return Excel::download(new SubsetTableExport(
             $subsetDetail,
             $data,
-        ), Str::snake($subsetDetail->name).'.xlsx');
-
+        ), Str::snake($subsetDetail->name) . '.xlsx');
     }
 }
