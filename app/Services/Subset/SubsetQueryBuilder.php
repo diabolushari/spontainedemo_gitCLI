@@ -12,6 +12,7 @@ use App\Services\DistributionHierarchy\GetHierarchyTableDetail;
 use App\Services\DistributionHierarchy\OfficeList;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\JoinClause;
 
 readonly class SubsetQueryBuilder
 {
@@ -345,16 +346,12 @@ readonly class SubsetQueryBuilder
 
             $hierarchyQuery = $this->officeList->get($hierarchyTable)
                 ->selectRaw(
-                    'section_code as hierarchy_section_code, '
+                    '`section_code_record`.`name` as hierarchy_section_code, '
                     .$joinSelect
                 );
 
-            $query->joinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
-                $join->on(
-                    $detail->table_name.'.section_code',
-                    '=',
-                    'hierarchy.hierarchy_section_code'
-                );
+            $query->leftJoinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) {
+                $join->on('section_code_record.name', '=', 'hierarchy.hierarchy_section_code');
             });
 
             $selectColumns[] = $selectStatement;
