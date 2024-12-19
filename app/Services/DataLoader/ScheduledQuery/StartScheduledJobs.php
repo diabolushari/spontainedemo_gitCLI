@@ -40,7 +40,16 @@ class StartScheduledJobs
 
     private function runDailyQueries(string $time): void
     {
-        Log::info('runDailyQueries:'.$time);
+        Log::info('runDailyQueries:');
+        Log::info('jobs available: ');
+
+        Log::info(
+            DataLoaderJob::where('cron_type', CronTypes::DAILY)
+                ->active()
+                ->where('schedule_time', $time)
+                ->get()
+        );
+
         DataLoaderJob::where('cron_type', CronTypes::DAILY)
             ->active()
             ->where('schedule_time', $time)
