@@ -59,6 +59,7 @@ class MetaDataController extends Controller implements HasMiddleware
                 });
             })
             ->paginate(20)
+            ->withPath(route('meta-data.index'))
             ->withQueryString();
 
         return Inertia::render('MetaData/MetaDataIndex', [

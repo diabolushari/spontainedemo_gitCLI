@@ -135,6 +135,7 @@ class DataDetailController extends Controller implements HasMiddleware
 
         $dataTable = $queryDataTable->query($dataDetail)
             ->paginate(50)
+            ->withPath(route('data-detail.show', $dataDetail->id))
             ->withQueryString();
 
         $jobs = DataLoaderJob::where('data_detail_id', $dataDetail->id)
