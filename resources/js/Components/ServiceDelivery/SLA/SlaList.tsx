@@ -36,7 +36,7 @@ const levelTypes: { name: string; value: string }[] = [
 
 interface ConsumerList extends Model {
   office_code: string
-  office_name: string
+  office_name?: string
   complaint_count?: number
   consumer_count?: number
   sla_perf_cnt?: number
@@ -51,7 +51,6 @@ const SlaList = ({
   default_level,
   sortOrder = 'desc',
   selectedMonth,
-  setSelectedMonth,
 }: Properties) => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [page, setPage] = useState(1)

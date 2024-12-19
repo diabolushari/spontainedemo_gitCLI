@@ -142,7 +142,35 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
     },
     [selectedMonth]
   )
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+      const align = (name: string) => {
+        const temp = name.replace('_', ' ')
+        return `${temp[0].toUpperCase()}${temp.slice(1)}`
+      }
 
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+          <div className='flex flex-col'>
+            {payload.map((value) => {
+              return (
+                <span
+                  className={`small-1stop text-[${value.fill}]`}
+                  key={value.name}
+                >
+                  {align(value.dataKey)}:
+                  <span className='small-1stop font-bold'>{formatNumber(value.value)}</span>
+                </span>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+    return null
+  }
   return (
     <div className='flex w-full flex-col gap-2 p-3'>
       <span className='subheader-sm-1stop text-end'>

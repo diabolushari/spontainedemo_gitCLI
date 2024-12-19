@@ -20,9 +20,10 @@ interface Props {
   date: Date
   trendField: string
   subset: SubsetDetail
+  title: string
 }
 
-export default function DataExplorerTrend({ date, trendField, subset }: Readonly<Props>) {
+export default function DataExplorerTrend({ date, trendField, subset, title }: Readonly<Props>) {
   const { dateObject, prevYearDate } = useMemo(() => {
     return { dateObject: dayjs(date), prevYearDate: dayjs(date).subtract(1, 'year') }
   }, [date])
@@ -127,7 +128,7 @@ export default function DataExplorerTrend({ date, trendField, subset }: Readonly
   return (
     <div className='flex w-full flex-col gap-5 md:w-10/12'>
       <p className='subheader-sm-1stop'>
-        {subset.name}, {fieldName}
+        {title}, {fieldName}
       </p>
       <div className='flex justify-end gap-4'>
         <button

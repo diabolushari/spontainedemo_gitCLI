@@ -406,22 +406,24 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                   {userInitial}
                 </button>
               </div>
-              <div className='py-2'>
-                <Link
-                  href='/data-detail'
-                  className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
-                >
-                  <div
-                    className='rounded-full'
-                    dangerouslySetInnerHTML={{
-                      __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {userInfo.user.role === 'ADMIN' && (
+                <div className='py-2'>
+                  <Link
+                    href='/data-detail'
+                    className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
+                  >
+                    <div
+                      className='rounded-full'
+                      dangerouslySetInnerHTML={{
+                        __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
 <path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
 </svg>`,
-                    }}
-                  />
-                </Link>
-              </div>
+                      }}
+                    />
+                  </Link>
+                </div>
+              )}
             </div>
           </button>
         )}
