@@ -97,7 +97,7 @@ const ArriersHTList = ({
   return (
     <div className='flex w-full flex-col'>
       <div className='mt-4 flex w-full justify-end gap-2 p-2 pr-4'>
-        <span className='subheader-sm-1stop'>Ranked by Arrear Counts</span>
+        <span className='subheader-sm-1stop'>Ranked by Arrears Outstanding</span>
       </div>
       <div className='items center flex justify-end gap-5 pr-4'>
         <div className='flex flex-col'>

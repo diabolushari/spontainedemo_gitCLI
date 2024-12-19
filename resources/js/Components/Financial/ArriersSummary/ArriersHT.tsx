@@ -254,6 +254,24 @@ const ArriersHT = () => {
           : 0
     }
   }
+  const findSubset = () => {
+    switch (range) {
+      case '0-3':
+        return 'Arrears (0-3 Months) - All Categories'
+      case '4-6':
+        return 'Arrears (4-6 Months) - All Categories'
+
+      case '7-12':
+        return 'Arrears (7-12 Months) - All Categories'
+
+      case '>12':
+        return 'Arrears (>12 Months) - All Categories'
+      case 'Total':
+        return 'Arrears - All Categories'
+      default:
+        return []
+    }
+  }
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
       const excludedCategories = [
@@ -263,7 +281,8 @@ const ArriersHT = () => {
       ]
       router.get(
         route('data-explorer', {
-          subsetGroup: 'Collection Summary',
+          subsetGroup: 'Arrear Summary',
+          subset: findSubset(),
           voltage: 'HT',
           month: dateToYearMonth(selectedMonth),
           consumer_category: data.name === 'Other' ? '' : data.name,
@@ -511,7 +530,7 @@ const ArriersHT = () => {
         {selectedLevel === 2 && (
           <ArriersHTList
             column1='State'
-            column2='Arrear count'
+            column2='Arrear Amount'
             subset_id='180'
             default_level='section'
             route={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}

@@ -80,7 +80,7 @@ const ArrearsCountAndGraph = () => {
         {selectedLevel === 3 && (
           <AllArrearsList
             column1='Section'
-            column2='Arrears'
+            column2='Arrear Amount'
             subset_id='170'
             default_level='section'
             sortBy='total_arrears'

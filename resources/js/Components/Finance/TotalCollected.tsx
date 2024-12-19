@@ -153,7 +153,7 @@ const TotalCollected = () => {
           subsetGroup: 'Collection Summary',
           voltage: voltageType === 'Total' ? '' : voltageType,
           month: dateToYearMonth(selectedMonth),
-          consumer_category: data.name === 'Other' ? '' : data.name,
+          payment_channel: data.name === 'Other' ? '' : data.name,
           route: route('finance.index'),
         })
       )
