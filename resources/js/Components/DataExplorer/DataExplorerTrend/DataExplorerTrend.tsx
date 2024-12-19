@@ -126,7 +126,9 @@ export default function DataExplorerTrend({ date, trendField, subset }: Readonly
   }
   return (
     <div className='flex w-full flex-col gap-5 md:w-10/12'>
-      <p className='subheader-sm-1stop'>Trend Of {fieldName}</p>
+      <p className='subheader-sm-1stop'>
+        {subset.name}, {fieldName}
+      </p>
       <div className='flex justify-end gap-4'>
         <button
           className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${

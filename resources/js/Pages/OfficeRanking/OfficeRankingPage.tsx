@@ -86,7 +86,7 @@ export default function OfficeRankingPage({
       pageTitle='Ranked Analysis'
     >
       <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
-        <div className='flex flex-col pt-4'>
+        <div className='flex flex-col px-5 pt-4 md:px-2 lg:px-0'>
           <SelectList
             list={subsetItems}
             dataKey='id'
@@ -100,9 +100,9 @@ export default function OfficeRankingPage({
         </div>
       </div>
       <div className='mr-1 rounded-lg'>
-        <div className='grid w-full grid-cols-4 rounded-lg pb-4 lg:grid-cols-5'>
-          <div className='col-span-4 grid grid-cols-2 rounded-lg md:grid-cols-4 lg:col-span-5 xl:col-span-4 2xl:col-span-3'>
-            <div className='col-span-1 rounded-l-lg bg-1stop-alt-gray'>
+        <div className='grid w-full grid-cols-4 rounded-lg px-0 pb-4 md:px-2 lg:grid-cols-5 lg:px-0'>
+          <div className='col-span-4 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-0 md:rounded-lg lg:col-span-5 xl:col-span-4 2xl:col-span-3'>
+            <div className='col-span-1 ml-1 rounded-lg bg-1stop-alt-gray md:ml-0 md:rounded-l-lg md:rounded-r-none'>
               <p className='small-1stop-header p-2 pt-2 text-center'>RANKED VALUES</p>
               <div className='mx-8 flex flex-col'>
                 <SelectList
@@ -115,8 +115,8 @@ export default function OfficeRankingPage({
                 />
               </div>
             </div>
-            <div className='col-span-2 row-start-1 bg-1stop-white p-2 md:row-start-auto'>
-              <div className='grid grid-cols-2 p-2'>
+            <div className='col-span-2 row-start-1 ml-1 bg-1stop-white p-2 md:row-start-auto md:ml-0'>
+              <div className='mx-2 grid grid-cols-2 p-2 md:mx-0'>
                 <div className='flex flex-row items-center gap-2'>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
@@ -144,7 +144,7 @@ export default function OfficeRankingPage({
                   <p className='small-1stop-header'>Bottom</p>
                 </div>
               </div>{' '}
-              <div className='mx-4 flex flex-col pt-1'>
+              <div className='mx-2 flex flex-col pl-1 pt-1 md:mx-4 md:pl-0'>
                 <SelectList
                   list={measureFields}
                   dataKey='subset_column'
@@ -155,7 +155,7 @@ export default function OfficeRankingPage({
                 />
               </div>
             </div>
-            <div className='grid grid-rows-1 place-items-center rounded-lg rounded-tr-lg bg-1stop-accent2'>
+            <div className='grid grid-rows-1 place-items-center rounded-lg bg-1stop-accent2 md:rounded-l-none md:rounded-r-lg'>
               <MonthPicker
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
@@ -163,6 +163,7 @@ export default function OfficeRankingPage({
             </div>
           </div>
         </div>
+
         <OfficeLevelTabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}

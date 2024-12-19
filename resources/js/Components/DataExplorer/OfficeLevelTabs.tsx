@@ -59,7 +59,7 @@ export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = t
           </div>
         ))}
       </div>
-      <div className='flex w-full flex-col lg:hidden'>
+      <div className='flex w-full flex-col px-1 pb-2 md:px-2 md:pb-2 lg:hidden lg:px-0 lg:pb-0'>
         <Dropdown
           list={tabItems}
           dataKey='value'
