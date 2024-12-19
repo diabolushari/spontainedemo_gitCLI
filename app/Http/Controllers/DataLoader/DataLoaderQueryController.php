@@ -38,6 +38,7 @@ class DataLoaderQueryController extends Controller implements HasMiddleware
         )
             ->with('loaderConnection:id,name')
             ->paginate(20)
+            ->withPath(route('loader-queries.index'))
             ->withQueryString();
 
         return Inertia::render('DataLoader/DataLoaderQueryIndex', [
@@ -87,6 +88,7 @@ class DataLoaderQueryController extends Controller implements HasMiddleware
         RunLoaderQuery $runLoaderQuery
     ): Response {
         $dataLoaderQuery->load('loaderConnection');
+
         return Inertia::render('DataLoader/DataLoaderQueryShow', [
             'dataLoaderQuery' => $dataLoaderQuery,
             'error' => '',

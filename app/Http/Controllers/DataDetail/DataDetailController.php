@@ -37,11 +37,12 @@ class DataDetailController extends Controller implements HasMiddleware
 
         $details = DataDetail::when($request->filled('search'), function (Builder $builder) use ($request) {
             $builder->where('name', 'like', '%'.$request->input('search').'%');
-
         })->when($request->filled('type'), function (Builder $builder) use ($request) {
             $builder->where('subject_area', $request->type);
         })
-            ->paginate(20);
+            ->paginate(20)
+            ->withPath(route('data-detail.index'))
+            ->withQueryString();
 
         $referenceData = ReferenceData::fullData()
             ->where('domain', 'Data Detail')
