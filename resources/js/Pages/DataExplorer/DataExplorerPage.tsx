@@ -207,7 +207,7 @@ export default function DataExplorerPage({
             )}
         </div>
         <div className='border border-1stop-alt-gray'></div>
-        <div className='grid w-full grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4'>
+        <div className='grid w-full grid-cols-1 gap-4 md:grid-cols-3 md:gap-2 lg:grid-cols-4'>
           <div className='flex flex-col'>
             <SelectList
               list={subsetItems}
