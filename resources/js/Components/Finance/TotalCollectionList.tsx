@@ -63,7 +63,7 @@ const TotalCollectionList = ({
   return (
     <div className='flex w-full flex-col'>
       <div className='mt-4 flex w-full justify-end gap-2 pb-2 pr-4 pt-4'>
-        <span className='subheader-sm-1stop'>Ranked by Connection Counts</span>
+        <span className='subheader-sm-1stop'>Ranked by Collections</span>
       </div>
       <div className='flex items-center justify-end gap-5 pr-4'>
         <div className='flex rounded-lg bg-1stop-white p-1'>

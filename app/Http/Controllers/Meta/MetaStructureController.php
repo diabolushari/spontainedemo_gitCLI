@@ -32,6 +32,7 @@ class MetaStructureController extends Controller implements HasMiddleware
             ->when($request->filled(key: 'search'), fn (Builder $builder) => $builder
                 ->where('structure_name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
             ->paginate(20)
+            ->withPath(route('meta-structure.index'))
             ->withQueryString();
 
         return Inertia::render('MetaStructure/MetaStructureIndex', [

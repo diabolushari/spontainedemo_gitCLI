@@ -100,13 +100,14 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
     undisputed_arrears: value.undisputed_arrears,
   }))
   const handleGraphSelection = useCallback(
-    (data: { name: string | null }) => {
+    (data: { consumer_category: string | null }) => {
       router.get(
         route('data-explorer', {
           subsetGroup: 'Arrears Comparison',
+          subset: 'Arrears Analysis - Category-wise',
           voltage: selectedVoltageType,
           month: dateToYearMonth(selectedMonth),
-          consumer_category: data.name === 'Other' ? '' : data.name,
+          consumer_category: data.consumer_category === 'Other' ? '' : data.consumer_category,
           route: route('finance.index'),
         })
       )

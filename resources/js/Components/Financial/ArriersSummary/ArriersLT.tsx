@@ -258,6 +258,24 @@ const ArriersLT = () => {
       value: filters(3),
     },
   ]
+  const findSubset = () => {
+    switch (range) {
+      case '0-3':
+        return 'Arrears (0-3 Months) - All Categories'
+      case '4-6':
+        return 'Arrears (4-6 Months) - All Categories'
+
+      case '7-12':
+        return 'Arrears (7-12 Months) - All Categories'
+
+      case '>12':
+        return 'Arrears (>12 Months) - All Categories'
+      case 'Total':
+        return 'Arrears - All Categories'
+      default:
+        return []
+    }
+  }
   const totalCount = filters(0) + filters(1) + filters(2) + filters(3)
 
   const handleGraphSelection = useCallback(
@@ -269,7 +287,8 @@ const ArriersLT = () => {
       ]
       router.get(
         route('data-explorer', {
-          subsetGroup: 'Collection Summary',
+          subsetGroup: 'Arrear Summary',
+          subset: findSubset(),
           voltage: 'LT',
           month: dateToYearMonth(selectedMonth),
           consumer_category: data.name === 'Other' ? '' : data.name,
@@ -517,7 +536,7 @@ const ArriersLT = () => {
         {selectedLevel === 2 && (
           <ArriersLTList
             column1='State'
-            column2='Consumer count'
+            column2='Arrear Amount'
             subset_id='186'
             default_level='section'
             route={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
