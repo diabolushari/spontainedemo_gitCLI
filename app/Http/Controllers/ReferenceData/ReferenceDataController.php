@@ -27,7 +27,9 @@ class ReferenceDataController extends Controller implements HasMiddleware
     {
         $referenceData = ReferenceData::fullData()
             ->filter($searchRequest)
-            ->paginate(20);
+            ->paginate(20)
+            ->withPath(route('reference-data.index'))
+            ->withQueryString();
 
         $domains = ReferenceDataDomain::get();
 

@@ -4,6 +4,7 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import { BillingValues } from './TotalBilled'
+import { solidColors } from '@/ui/ui_interfaces'
 
 interface Properties {
   selectedMonth: Date | null
@@ -102,7 +103,36 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           <div className='ml-2 flex justify-end gap-2 px-2'>
             <span className='subheader-sm-1stop'>Trend of Top Billing/Total Demand</span>
           </div>
-          <div className='flex w-full justify-end gap-2 px-2'>
+
+          <div className='mt-2 flex w-full flex-col items-end justify-between gap-2 pb-4 md:flex-row md:items-center'>
+            <div className='flex justify-center gap-4'>
+              {/* <div className='flex gap-4'> */}
+              <button
+                className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+                  selectedValue === '3 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+                }`}
+                onClick={() => setSelectedValue('3 MONTHS')}
+              >
+                3 M
+              </button>
+              <button
+                className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+                  selectedValue === '6 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+                }`}
+                onClick={() => setSelectedValue('6 MONTHS')}
+              >
+                6 M
+              </button>
+              <button
+                className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+                  selectedValue === '12 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+                }`}
+                onClick={() => setSelectedValue('12 MONTHS')}
+              >
+                1 Y
+              </button>
+              {/* </div> */}
+            </div>
             <div>
               <SelectList
                 list={voltageType.map((voltage) => ({
@@ -118,17 +148,8 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 style='1stop-small'
               />
             </div>
-            <div>
-              <SelectList
-                list={dateEarlier}
-                dataKey='value'
-                displayKey='name'
-                value={selectedRange}
-                setValue={(value) => setSelectedValue(`${value} MONTHS`)}
-                style='1stop-small'
-              />
-            </div>
           </div>
+
           <div className='w-full'>
             <ResponsiveContainer
               width='100%'
@@ -137,9 +158,7 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               <AreaChart data={chartData}>
                 <XAxis
                   dataKey='month'
-                  tickFormatter={
-                    (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
-                  }
+                  tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
                   style={{ fontSize: 10 }}
                 />
                 <YAxis
@@ -147,7 +166,6 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                   style={{ fontSize: 10 }}
                 />
                 <Tooltip
-                  // formatter={(value: number) => [`${formatNumber(value)}`, 'Consumer Count']}
                   content={renderCustomTooltip}
                   labelFormatter={(month) =>
                     month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
@@ -156,8 +174,8 @@ const BillingTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 <Area
                   type='monotone'
                   dataKey='total_demand'
-                  stroke='#0091ff'
-                  fill='#0091ff'
+                  stroke={solidColors[0]}
+                  fill={solidColors[1]}
                 />
               </AreaChart>
             </ResponsiveContainer>

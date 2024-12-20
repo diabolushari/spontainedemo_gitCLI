@@ -136,6 +136,7 @@ const TotalCollected = () => {
       value: findValue('Offline'),
     },
   ]
+  const totalCount = findValue('Online') + findValue('Offline')
 
   const ltPercent = TotalCollection('LT')
     ? (TotalCollection('LT') * 100) / TotalCollection('Total')
@@ -328,7 +329,13 @@ const TotalCollected = () => {
                   >
                     <Tooltip
                       formatter={(value: number) => `${formatNumber(Number(value.toFixed(2)))}`}
-                      content={<CustomTooltip />}
+                      content={
+                        <CustomTooltip
+                          valueType={toggleValue ? 'count' : 'percentage'}
+                          totalCount={totalCount}
+                          isPercent
+                        />
+                      }
                     />
 
                     <Pie

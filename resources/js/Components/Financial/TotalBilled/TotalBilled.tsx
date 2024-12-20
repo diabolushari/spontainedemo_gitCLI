@@ -173,6 +173,7 @@ const TotalBilled = () => {
       value: graphFilter(3),
     },
   ]
+  const totalCount = graphFilter(0) + graphFilter(1) + graphFilter(2) + graphFilter(3)
 
   const domesticLtPercent = cunsumerCount('LT', 'DOMESTIC', true)
     ? (cunsumerCount('LT', 'DOMESTIC', true) * 100) / cunsumerCount('Total', '', false)
@@ -435,7 +436,13 @@ const TotalBilled = () => {
                   >
                     <Tooltip
                       formatter={(value: number) => `${formatNumber(value)}`}
-                      content={<CustomTooltip />}
+                      content={
+                        <CustomTooltip
+                          valueType={toggleValue ? 'count' : 'percentage'}
+                          totalCount={totalCount}
+                          isPercent
+                        />
+                      }
                     />
 
                     <Pie

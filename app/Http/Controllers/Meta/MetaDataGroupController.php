@@ -35,6 +35,7 @@ class MetaDataGroupController extends Controller implements HasMiddleware
         })
             ->withCount('items')
             ->paginate(20)
+            ->withPath(route('meta-data-group.index'))
             ->withQueryString();
 
         return Inertia::render('MetaGroup/MetaGroupIndex', [
@@ -108,7 +109,7 @@ class MetaDataGroupController extends Controller implements HasMiddleware
             ->with('metaData:id,name')
             ->with('metaData.metaStructure:id,structure_name')
             ->paginate(20)
-
+            ->withPath(route('meta-data-group.show', $metaDataGroup->id))
             ->withQueryString();
 
         return Inertia::render('MetaGroup/MetaGroupShow', [

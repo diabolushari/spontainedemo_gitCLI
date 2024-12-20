@@ -36,6 +36,7 @@ class DataLoaderJobController extends Controller implements HasMiddleware
         $dataLoaderJobs = DataLoaderJob::with('loaderQuery')
             ->with(['loaderQuery', 'latest'])
             ->paginate(20)
+            ->withPath(route('loader-jobs.index'))
             ->withQueryString();
 
         return Inertia::render('DataLoader/DataLoaderJobIndex', [

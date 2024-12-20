@@ -5,8 +5,9 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '@/Components/CustomTooltip'
 import Skeleton from 'react-loading-skeleton'
-import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import { renderCustomTooltip } from '../Financial/TotalBilled/BillingTrend'
+import { BillingValues } from '../Financial/TotalBilled/TotalBilled'
 
 export interface AllArrearsValues {
   month: string
@@ -84,17 +85,32 @@ const AllArrearsTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
       <div className='mt-4 flex w-full justify-end gap-2 p-2'>
         <span className='subheader-sm-1stop'>Trend of Total Arrears</span>
       </div>
-      <div className='flex w-full justify-end gap-2 px-2'>
-        <span className='small-1stop-header flex items-center'> PREVIOUS</span>
-        <div>
-          <SelectList
-            list={dateEarlier}
-            dataKey='value'
-            displayKey='name'
-            value={selectedRange}
-            setValue={(value) => setSelectedValue(`${value} MONTHS`)}
-            style='1stop-small'
-          />
+      <div className='ml-2 mt-2 flex w-full flex-col items-end justify-between gap-2 pb-4 md:flex-row md:items-center'>
+        <div className='justif-center flex gap-4'>
+          <button
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '3 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('3 MONTHS')}
+          >
+            3 M
+          </button>
+          <button
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '6 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('6 MONTHS')}
+          >
+            6 M
+          </button>
+          <button
+            className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
+              selectedValue === '12 MONTHS' ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
+            }`}
+            onClick={() => setSelectedValue('12 MONTHS')}
+          >
+            1 Y
+          </button>
         </div>
       </div>
       <div className='w-full'>

@@ -38,6 +38,7 @@ class MetaHierarchyController extends Controller implements HasMiddleware
         })
             ->withCount('items')
             ->paginate(20)
+            ->withPath(route('meta-hierarchy.index'))
             ->withQueryString();
 
         return Inertia::render('MetaHierarchy/MetaHierarchyIndex', [
