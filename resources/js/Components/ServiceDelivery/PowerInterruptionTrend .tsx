@@ -28,7 +28,7 @@ import DataShowIcon from '../ui/DatashowIcon'
 interface ComplaintValues extends Model {
   complaint_count: number
   complaint_type: string
-  month_year: string
+  month: string
 }
 
 const PowerInterruptionTrend = () => {
@@ -36,7 +36,7 @@ const PowerInterruptionTrend = () => {
   const [monthYear, setMonthYear] = useState('')
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [yearList, setYearList] = useState<{ yearName: string }[]>([])
-  const [graphValues] = useFetchRecord<{ latest_value: string }>(`subset/72?latest=month_year`)
+  const [graphValues] = useFetchRecord<{ latest_value: string }>(`subset/72?latest=month`)
   const [yearFilter, setYearFilter] = useState('')
   const [referenceMonthYear, setReferenceMonthYear] = useState('')
   const [selectedRange, setSelectedRange] = useState('')
@@ -80,11 +80,11 @@ const PowerInterruptionTrend = () => {
   }, [selectedMonth])
 
   const [chartData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?month_year=${monthYear}`
+    `subset/72?month=${monthYear}`
   )
 
   const [referenceData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?month_year=${referenceMonthYear}`
+    `subset/72?month=${referenceMonthYear}`
   )
 
   const comparedData = useMemo(() => {

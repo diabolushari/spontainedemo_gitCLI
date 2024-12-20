@@ -10,7 +10,7 @@ import { router } from '@inertiajs/react'
 
 interface SolarProsumersValue {
   consumer_count: number
-  month_year: string
+  month: string
   consumer_category: string
   voltage: string
   capacity_kw: number
@@ -26,7 +26,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [isMW, setiSMW] = useState(true)
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
   const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[]; latest_value: string }>(
-    `subset/71?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/71?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
   // graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
   const graphData = useMemo(() => {

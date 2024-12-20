@@ -23,7 +23,7 @@ import { CustomTooltip } from '../CustomTooltip'
 interface ComplaintValues extends Model {
   complaint_count: number
   complaint_type: string
-  month_year: string
+  month: string
 }
 
 interface Props {
@@ -35,7 +35,7 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
   const [monthYear, setMonthYear] = useState('')
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [yearList, setYearList] = useState<{ yearName: string }[]>([])
-  const [graphValues] = useFetchRecord<{ latest_value: string }>(`subset/72?latest=month_year`)
+  const [graphValues] = useFetchRecord<{ latest_value: string }>(`subset/72?latest=month`)
   const [yearFilter, setYearFilter] = useState('')
   const [referenceMonthYear, setReferenceMonthYear] = useState('')
   const [selectedRange, setSelectedRange] = useState('')
@@ -88,11 +88,11 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
   }, [selectedMonth])
 
   const [chartData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?month_year=${monthYear}`
+    `subset/72?month=${monthYear}`
   )
 
   const [referenceData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?month_year=${referenceMonthYear}`
+    `subset/72?month=${referenceMonthYear}`
   )
 
   const comparedData = useMemo(() => {

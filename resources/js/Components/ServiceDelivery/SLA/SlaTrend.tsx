@@ -9,7 +9,7 @@ import { solidColors } from '@/ui/ui_interfaces'
 import Skeleton from 'react-loading-skeleton'
 
 export interface SlaTrendValues {
-  month_year: string
+  month: string
   sla_perf_count: number
   sla_perf_perc: number
   sla_svc_group: string
@@ -38,10 +38,10 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   }>(
     `subset/78?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year_greater_than_or_equal=${
+        ? 'latest=month'
+        : `month_greater_than_or_equal=${
             Number(monthYear) - parseInt(selectedValue)
-          }&month_year_less_than_or_equal=${Number(monthYear)}`
+          }&month_less_than_or_equal=${Number(monthYear)}`
     }`
   )
 
@@ -75,7 +75,7 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const chartData = selectedMonths
     .map((month) => {
       const filteredValues = graphValues?.data?.filter(
-        (value) => value.sla_svc_group === title && value.month_year === month
+        (value) => value.sla_svc_group === title && value.month === month
       )
       return {
         month,

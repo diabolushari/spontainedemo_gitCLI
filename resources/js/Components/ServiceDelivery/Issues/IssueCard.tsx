@@ -12,8 +12,9 @@ import { dateToYearMonth, formatNumber } from '../ActiveConnection'
 interface ComplaintValues {
   complaint_count: number
   complaint_type: string
-  month_year: string
+  month: string
 }
+
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
@@ -28,7 +29,7 @@ interface Properties {
 
 const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Properties) => {
   const [graphValues] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/72?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
   useEffect(() => {
     setCategories(

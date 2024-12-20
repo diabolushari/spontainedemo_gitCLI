@@ -40,6 +40,12 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
 
   const selectedMonths = monthsInRange(parseInt(selectedValue.split(' ')[0]))
 
+  console.log(
+    selectedMonth
+      ? `subset/90?month_year_greater_than_or_equal=${selectedMonths[0]}&month_year_less_than_or_equal=${selectedMonths[selectedMonths.length - 1]}`
+      : 'subset/90?latest=month_year'
+  )
+
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
     latest_value: string

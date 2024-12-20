@@ -7,7 +7,7 @@ import { solidColors } from '@/ui/ui_interfaces'
 import Skeleton from 'react-loading-skeleton'
 
 export interface SolarCapacityTrendValues {
-  month_year: string
+  month: string
   voltage: string
   consumer_category: string
   consumer_count: number
@@ -18,6 +18,7 @@ interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
+
 export const convertToMW = (value: number) => {
   return (Number(value) / 1000).toFixed(2)
 }
@@ -47,15 +48,10 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
     `subset/71?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than_or_equal=${Number(monthYear)}`
+        ? 'latest=month'
+        : `month_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_less_than_or_equal=${Number(monthYear)}`
     }`
   )
-  // const [graphValues] = useFetchRecord<{ data: SolarCapacityTrendValues[]; latest_value: string }>(
-  //   `subset/71?latest=month_year
-  //     `
-  // )
-
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -69,7 +65,7 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
     )
   }, [selectedMonth])
 
-  const filteredValues = graphValues?.data.filter((value) => value.month_year === monthYear)
+  const filteredValues = graphValues?.data.filter((value) => value.month === monthYear)
 
   const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
 
@@ -78,7 +74,7 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
   // Filter and group data for the selected range
   const chartData = selectedMonths
     .map((month) => {
-      const filteredValues = graphValues?.data.filter((value) => value.month_year === month)
+      const filteredValues = graphValues?.data.filter((value) => value.month === month)
       const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
       return { month, capacity_mw: totalCapacityKw }
     })

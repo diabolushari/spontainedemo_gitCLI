@@ -23,7 +23,7 @@ export interface NewConnectionGraphValues {
   compl_beyond_sla_cnt: number
   compl_within_sla__: number
   compl_within_sla_cnt: number
-  month_year: string
+  month: string
   pend_beyond_sla__: number
   pend_beyond_sla_cnt: number
   pend_within_sla__: number
@@ -97,7 +97,7 @@ const NewConnections = () => {
     data: NewConnectionGraphValues[]
     latest_value: string
   }>(
-    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/63?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
   useEffect(() => {
@@ -360,7 +360,6 @@ const NewConnections = () => {
             default_level='section'
             displayKey='sla'
             sortBy='sla_perf_cnt'
-            // route={`office-rankings/SLA Compliance Analysis - New Connection Requests&latest=month_year?route=${route('service-delivery.index')}`}
             route={`office-rankings/SLA Compliance Analysis - New Connection Requests?latest=month&route=${route('service-delivery.index')}`}
           />
         )}

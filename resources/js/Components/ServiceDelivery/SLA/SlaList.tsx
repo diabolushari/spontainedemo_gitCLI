@@ -85,10 +85,10 @@ const SlaList = ({
   }>(
     `subset/78?${
       selectedMonth == null
-        ? 'latest=month_year'
-        : `month_year_greater_than_or_equal=${
+        ? 'latest=month'
+        : `month_greater_than_or_equal=${
             Number(monthYear) - 3
-          }&month_year_less_than_or_equal=${Number(monthYear)}`
+          }&month_less_than_or_equal=${Number(monthYear)}`
     }`
   )
 
