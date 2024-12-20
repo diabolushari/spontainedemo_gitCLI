@@ -406,7 +406,7 @@ const ActiveConnection = () => {
             column2='Consumer count'
             subset_id='198'
             default_level='section'
-            sortBy='total_consumer_count'
+            sortBy='total_consumers__count_'
             route={`/office-rankings/Active Connections?route=${route('service-delivery.index')}`}
           />
         )}

@@ -52,7 +52,11 @@ const BillingList = ({
   const [listType, setListType] = useState('10')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+    `/subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+  )
+
+  console.log(
+    `/subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
   useEffect(() => {

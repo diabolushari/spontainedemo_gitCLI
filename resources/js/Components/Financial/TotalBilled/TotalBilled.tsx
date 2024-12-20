@@ -320,7 +320,6 @@ const TotalBilled = () => {
                     </div>
                   </div>
                 </div>
-
                 {/* HT */}
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
@@ -487,7 +486,7 @@ const TotalBilled = () => {
             column2='Demand'
             subset_id='120'
             default_level='section'
-            sortBy='consumer_count'
+            sortBy='total_demand'
           />
         )}
       </div>
