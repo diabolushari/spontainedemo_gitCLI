@@ -221,6 +221,7 @@ const ArriersHT = () => {
       value: filters(3),
     },
   ]
+  const totalCount = filters(0) + filters(1) + filters(2) + filters(3)
 
   const findPercentage = (value: string) => {
     const total = graphValues?.data.reduce((sum, value) => sum + value.total_arrears, 0)
@@ -498,7 +499,13 @@ const ArriersHT = () => {
                   >
                     <Tooltip
                       formatter={(value: number) => `${formatNumber(value)}`}
-                      content={<CustomTooltip />}
+                      content={
+                        <CustomTooltip
+                          valueType={toggleValue ? 'count' : 'percentage'}
+                          totalCount={totalCount}
+                          isPercent
+                        />
+                      }
                     />
 
                     <Pie

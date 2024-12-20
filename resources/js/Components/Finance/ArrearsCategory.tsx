@@ -1,18 +1,13 @@
-import Card from '@/ui/Card/Card'
-import MonthPicker from '@/ui/form/MonthPicker'
-import { Link, router } from '@inertiajs/react'
 import { useCallback, useEffect, useState } from 'react'
-import MoreButton from '../MoreButton'
-import DataShowIcon from '../ui/DatashowIcon'
+
 import useFetchRecord from '@/hooks/useFetchRecord'
 import SelectList from '@/ui/form/SelectList'
-import { Cat } from 'lucide-react'
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 import Skeleton from 'react-loading-skeleton'
 import { CustomTooltip } from '../CustomTooltip'
 import { solidColors } from '@/ui/ui_interfaces'
-import { Legend } from '@headlessui/react'
 import { CustomLegend } from './TotalCollected'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 export interface ArrearsCategoryValues {
@@ -155,6 +150,52 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 />
                 <YAxis hide />
                 <Tooltip content={renderCustomTooltip} />
+                <Legend
+                  content={({ payload }: LegendProps) => {
+                    if (!payload) return null
+
+                    return (
+                      <ul
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          listStyle: 'none',
+                          padding: 0,
+                        }}
+                      >
+                        {payload.map((entry, index) => {
+                          let formattedValue = entry.value
+                          if (entry.value === 'total_arrears') formattedValue = 'TOTAL ARREARS'
+                          else if (entry.value === 'disputed_arrears')
+                            formattedValue = 'DISPUTED ARREARS'
+                          else if (entry.value === 'undisputed_arrears')
+                            formattedValue = 'UNDISPUTED ARREARS'
+
+                          return (
+                            <li
+                              key={`item-${index}`}
+                              style={{ marginRight: 10, fontSize: 8 }}
+                            >
+                              <span
+                                style={{
+                                  display: 'inline-block',
+                                  width: 10,
+                                  height: 10,
+                                  backgroundColor: entry.color,
+                                  marginRight: 5,
+                                  paddingTop: 1,
+                                }}
+                              />
+                              {formattedValue}
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )
+                  }}
+                  align='center'
+                />
+
                 <Bar
                   dataKey='total_arrears'
                   fill={solidColors[0]}

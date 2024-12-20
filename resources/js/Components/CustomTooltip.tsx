@@ -7,6 +7,8 @@ type ValueTypeOption = 'count' | 'percentage' | 'voltage'
 
 interface CustomTooltipProps extends TooltipProps<ValueType, NameType> {
   valueType?: ValueTypeOption
+  totalCount?: number
+  isPercent?: boolean
 }
 
 export const CustomTooltip = ({
@@ -14,6 +16,8 @@ export const CustomTooltip = ({
   payload,
   valueType = 'count',
   label,
+  totalCount = 1,
+  isPercent = false,
 }: CustomTooltipProps & { label?: string }) => {
   if (active && payload && payload[0]) {
     return (
@@ -31,8 +35,8 @@ export const CustomTooltip = ({
                   <span className='small-1stop'>
                     {pld.name} :{' '}
                     <span className='small-1stop font-bold'>
-                      {valueType === 'percentage'
-                        ? `${Number(pld.value).toFixed(2)}%`
+                      {valueType === 'percentage' && isPercent
+                        ? `${((pld.value * 100) / totalCount).toFixed(2)}%`
                         : valueType === 'voltage'
                           ? `${Number(pld.value).toFixed(2)}`
                           : formatNumber(pld.value)}
