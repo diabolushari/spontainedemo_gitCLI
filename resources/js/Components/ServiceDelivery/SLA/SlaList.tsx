@@ -60,7 +60,7 @@ const SlaList = ({
   const [title, setTitle] = useState('Ownership change')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'section')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
+    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}&sort_order=${topOrBottom}&limit=${listType}&request_type=${title}&page=${page}`
   )
   const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
 

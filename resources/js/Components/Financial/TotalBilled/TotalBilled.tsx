@@ -80,6 +80,7 @@ const TotalBilled = () => {
         : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
+
   // graphValues?.data.sort((a, b) => a.total_demand - b.total_demand).reverse()
   const graphData = useMemo(() => {
     if (graphValues?.data == null) {
@@ -110,10 +111,6 @@ const TotalBilled = () => {
     if (index < 3) {
       if (voltageType == 'Total') {
         return value.consumer_category === graphData[index].consumer_category
-      } else if (voltageType == 'LT') {
-        return !exclude
-          ? value.consumer_category === 'DOMESTIC' && value.voltage === 'LT'
-          : value.consumer_category != 'DOMESTIC' && value.voltage == 'LT'
       } else {
         return (
           value.consumer_category === graphData[index].consumer_category &&
