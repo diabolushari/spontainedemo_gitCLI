@@ -60,7 +60,7 @@ export default function DetailDashboardLayout({
               <BreadCrumbs breadcrumbItems={breadCrumb} />
               <p className='h3-1stop pt-4'>{pageTitle}</p>
               <p className='body-1stop ml-1 pt-2'>{subsetGroup.name}</p>
-              <p className='data-xs-1stop ml-1'>{subsetGroup.description}</p>
+              <p className='axial-label-1stop ml-1'>{subsetGroup.description}</p>
             </div>
             <div className='flex flex-col gap-5 p-0 px-4 md:p-4 md:px-4'>
               <div className='flex flex-col gap-2'>
