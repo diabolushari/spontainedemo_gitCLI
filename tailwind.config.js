@@ -25,10 +25,6 @@ export default {
         'small-1stop-header': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
         'xlmetric-1stop': ['var(--font-xlmetric-1stop)', ...defaultTheme.fontFamily.sans],
         'axial-label-1stop': ['var(--font-axial-label-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-xs-1stop': ['var(--font-data-xs-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-sm-1stop': ['var(--font-data-sm-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-md-1stop': ['var(--font-data-md-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-lg-1stop': ['var(--font-data-lg-1stop)', ...defaultTheme.fontFamily.sans],
       },
 
       colors: {

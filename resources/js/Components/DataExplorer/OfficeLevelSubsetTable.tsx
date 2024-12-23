@@ -190,15 +190,13 @@ export default function OfficeLevelSubsetTable({
                     return (
                       <td
                         key={index}
-                        className='standard-td data-sm-1stop'
+                        className='standard-td'
                       >
                         {col.name === 'Office Name' ? (
                           <>
-                            <p className='data-sm-1stop'>
-                              {item[col.source as keyof DataTableItem]}
-                            </p>
+                            <p className='small-1stop'>{item[col.source as keyof DataTableItem]}</p>
 
-                            <p className='data-sm-1stop pt-2 text-1stop-dark-gray'>
+                            <p className='axial-label-1stop pt-2 text-1stop-dark-gray'>
                               {item['office_code' as keyof DataTableItem]}
                             </p>
                           </>

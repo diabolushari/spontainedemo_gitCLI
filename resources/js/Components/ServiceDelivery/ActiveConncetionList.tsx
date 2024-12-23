@@ -203,7 +203,7 @@ const ActiveConncetionList = ({
               return (
                 <th
                   key={header}
-                  className='subheader-sm-1stop bg-1stop-white'
+                  className='small-1stop bg-1stop-white font-bold'
                 >
                   {header}
                 </th>
@@ -223,7 +223,7 @@ const ActiveConncetionList = ({
               {graphValues?.data.data.map((value) => {
                 return (
                   <tr
-                    className='data-xs-1stop text-start'
+                    className='small-1stop text-start'
                     key={value.office_name}
                   >
                     <td className=''>{value.office_name}</td>

@@ -19,7 +19,7 @@ body {
 }
 
 .standard-td {
-  @apply data-sm-1stop max-w-xs break-words px-3 py-6;
+  @apply axial-label-1stop max-w-xs break-words px-3 py-6;
 }
 
 .link {
@@ -185,19 +185,6 @@ body {
   @font-face {
     font-family: 'Poppins-Medium';
     src: url('/fonts/onestop/Poppins-Medium.woff');
-    font-style: normal;
-    font-weight: 500;
-  }
-
-  @font-face {
-    font-family: 'DMMono-Regular';
-    src: url('/fonts/onestop/DMMono-Regular.woff');
-    font-style: normal;
-    font-weight: 400;
-  }
-  @font-face {
-    font-family: 'DMMono-Medium';
-    src: url('/fonts/onestop/DMMono-Medium.woff');
     font-style: normal;
     font-weight: 500;
   }
@@ -391,34 +378,5 @@ body {
     font-weight: 200;
     line-height: 10px;
     letter-spacing: 0px;
-  }
-  .data-xs-1stop {
-    font-family: 'DMMono-Regular';
-    font-style: normal;
-    font-size: 10px;
-    font-weight: 200;
-    line-height: 14px;
-  }
-  .data-sm-1stop {
-    font-family: 'DMMono-Regular';
-    font-style: normal;
-    font-size: 12px;
-    font-weight: 200;
-    line-height: 16px;
-  }
-  .data-md-1stop {
-    font-family: 'DMMono-Regular';
-    font-style: normal;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 18px;
-  }
-
-  .data-lg-1stop {
-    font-family: 'DMMono-Medium';
-    font-style: normal;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
   }
 }

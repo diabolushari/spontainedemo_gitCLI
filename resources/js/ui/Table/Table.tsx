@@ -15,13 +15,13 @@ export default function Table({
   return (
     <div className={cn('snap-center overflow-auto', className)}>
       <table className='relative w-full border border-1stop-gray'>
-        <thead className='sticky top-0 bg-1stop-alt-gray'>
+        <thead className='sticky top-0 bg-white'>
           <tr className='border border-1stop-gray leading-none text-gray-700 focus:outline-none'>
             {heads.map((head) => {
               return (
                 <th
                   scope='col'
-                  className='data-sm-1stop px-3 py-3 text-left'
+                  className='small-1stop text-1stop-dark-gray px-3 py-3 text-left'
                   key={head}
                 >
                   {head}
@@ -31,7 +31,7 @@ export default function Table({
             {editColumn && (
               <th
                 scope='col'
-                className='data-sm-1stop px-3 py-3 text-left text-1stop-dark-gray'
+                className='axial-label-1stop text-1stop-dark-gray px-3 py-3 text-left'
               ></th>
             )}
           </tr>
