@@ -120,42 +120,6 @@ const ActiveConnection = () => {
   }, [setSelectedMonth, graphValues, selectedMonth])
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
-  const graphData = useMemo(() => {
-    if (graphValues?.data == null) {
-      return []
-    }
-    return [...graphValues.data]
-      .sort((a, b) => a.total_consumers__count_ - b.total_consumers__count_)
-      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
-      .reverse()
-  }, [graphValues, voltageType])
-  const filters = (value: InactiveGraphValues, index: number) => {
-    if (index < 3) {
-      if (voltageType == 'Total') {
-        return value.consumer_category === graphData[index].consumer_category
-      } else {
-        return (
-          value.consumer_category === graphData[index].consumer_category &&
-          value.voltage == voltageType
-        )
-      }
-    } else {
-      if (voltageType == 'Total') {
-        return (
-          value.consumer_category !== graphData[0]?.consumer_category &&
-          value.consumer_category !== graphData[1]?.consumer_category &&
-          value.consumer_category !== graphData[2]?.consumer_category
-        )
-      } else {
-        return (
-          value.consumer_category !== graphData[0]?.consumer_category &&
-          value.consumer_category !== graphData[1]?.consumer_category &&
-          value.consumer_category !== graphData[2]?.consumer_category &&
-          value.voltage == voltageType
-        )
-      }
-    }
-  }
 
   const cunsumerCount = (voltage: string) => {
     if (voltage != 'Total') {
@@ -166,54 +130,62 @@ const ActiveConnection = () => {
       return graphValues?.data.reduce((sum, value) => sum + value.total_consumers__count_, 0)
     }
   }
-
-  const graphFilter = (index: number) => {
-    return graphData
-      .filter((value) => filters(value, index))
+  const graphFilter = (category: string) => {
+    return graphValues?.data
+      .filter(
+        (value) =>
+          value.consumer_category === category &&
+          (voltageType === 'Total' || value.voltage === voltageType)
+      )
       .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   }
 
   const data = [
     {
-      name: graphData[0]?.consumer_category,
-      value: graphFilter(0),
+      name: 'DOMESTIC',
+      value: graphFilter('DOMESTIC'),
     },
     {
-      name: graphData[1]?.consumer_category,
-      value: graphFilter(1),
+      name: 'INDUSTRIAL',
+      value: graphFilter('INDUSTRIAL'),
     },
     {
-      name: graphData[2]?.consumer_category,
-      value: graphFilter(2),
+      name: 'COMMERCIAL',
+      value: graphFilter('COMMERCIAL'),
     },
     {
-      name: 'Other',
-      value: graphFilter(3),
+      name: 'AGRICULTURE',
+      value: graphFilter('AGRICULTURE'),
+    },
+    {
+      name: 'OTHER',
+      value:
+        cunsumerCount('Total') -
+        graphFilter('DOMESTIC') -
+        graphFilter('INDUSTRIAL') -
+        graphFilter('COMMERCIAL') -
+        graphFilter('AGRICULTURE'),
     },
   ]
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
-      const excludedCategories = [
-        graphData[0]?.consumer_category,
-        graphData[1]?.consumer_category,
-        graphData[2]?.consumer_category,
-      ]
+      const excludedCategories = ['DOMESTIC', 'INDUSTRIAL', 'COMMERCIAL', 'AGRICULTURE']
 
       router.get(
         route('data-explorer', {
           subsetGroup: 'Active Connections Summary',
           voltage: voltageType === 'Total' ? '' : voltageType,
           month: dateToYearMonth(selectedMonth),
-          consumer_category: data.name === 'Other' ? '' : data.name,
+          consumer_category: data.name === 'OTHER' ? '' : data.name,
           consumer_category_not_in:
-            data.name === 'Other'
+            data.name === 'OTHER'
               ? `${excludedCategories.filter((category) => category).join(',')}`
               : '',
         })
       )
     },
-    [graphData, voltageType, selectedMonth]
+    [voltageType, selectedMonth]
   )
 
   return (
