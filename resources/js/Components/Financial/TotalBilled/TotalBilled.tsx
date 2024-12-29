@@ -149,31 +149,44 @@ const TotalBilled = () => {
     }
   }
 
-  const graphFilter = (index: number) => {
+  const graphFilter = (category: string) => {
     return graphData
-      .filter((value) => filters(value, index))
+      .filter(
+        (value) =>
+          value.consumer_category === category &&
+          (voltageType === 'Total' || value.voltage === voltageType)
+      )
       .reduce((sum, value) => sum + value.total_demand, 0)
   }
+  const totalCount = graphValues?.data.reduce((sum, value) => sum + value.total_demand, 0)
 
   const data = [
     {
-      name: graphData[0]?.consumer_category,
-      value: graphFilter(0),
+      name: 'DOMESTIC',
+      value: graphFilter('DOMESTIC'),
     },
     {
-      name: graphData[1]?.consumer_category,
-      value: graphFilter(1),
+      name: 'INDUSTRIAL',
+      value: graphFilter('Industrial'),
     },
     {
-      name: graphData[2]?.consumer_category,
-      value: graphFilter(2),
+      name: 'COMMERCIAL',
+      value: graphFilter('Commercial'),
     },
     {
-      name: 'Other',
-      value: graphFilter(3),
+      name: 'AGRICULTURE',
+      value: graphFilter('Agriculture'),
+    },
+    {
+      name: 'OTHER',
+      value:
+        totalCount -
+        graphFilter('DOMESTIC') -
+        graphFilter('Industrial') -
+        graphFilter('Commercial') -
+        graphFilter('Agriculture'),
     },
   ]
-  const totalCount = graphFilter(0) + graphFilter(1) + graphFilter(2) + graphFilter(3)
 
   const domesticLtPercent = cunsumerCount('LT', 'DOMESTIC', true)
     ? (cunsumerCount('LT', 'DOMESTIC', true) * 100) / cunsumerCount('Total', '', false)

@@ -56,6 +56,8 @@ const ArriersLT = () => {
     }`
   )
 
+  console.log(graphValues)
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -105,90 +107,103 @@ const ArriersLT = () => {
   //     .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   // }
 
-  const filters = (index: number) => {
-    if (index < 3) {
-      switch (range) {
-        case 'Total':
-          return graphData.length > 0 ? graphData[index].total_arrears : 0
-        case '0-3':
-          return graphData.length > 0 ? graphData[index].arrears__0_3_months_ : 0
+  const filters = (category: string) => {
+    //if (index < 3) {
+    switch (range) {
+      case 'Total':
+        return graphData
+          .filter((item) => item.consumer_category === category)
+          .reduce((total, item) => total + item.total_arrears, 0)
+      case '0-3':
+        //return graphData.length > 0 ? graphData[index].arrears__0_3_months_ : 0
+        return graphData
+          .filter((item) => item.consumer_category === category)
+          .reduce((total, item) => total + item.arrears__0_3_months_, 0)
 
-        case '4-6':
-          return graphData.length > 0 ? graphData[index].arrears__4_6_months_ : 0
+      case '4-6':
+        //return graphData.length > 0 ? graphData[index].arrears__4_6_months_ : 0
+        return graphData
+          .filter((item) => item.consumer_category === category)
+          .reduce((total, item) => total + item.arrears__4_6_months_, 0)
+      case '7-12':
+        //return graphData.length > 0 ? graphData[index].arrears__7_12_months_ : 0
+        return graphData
+          .filter((item) => item.consumer_category === category)
+          .reduce((total, item) => total + item.arrears__7_12_months_, 0)
+      case '>12': {
+        const arrears_13_24 = graphData
+          .filter((data) => data.consumer_category === category)
+          .reduce((sum, data) => sum + (data.arrears__13_24_months_ || 0), 0)
 
-        case '7-12':
-          return graphData.length > 0 ? graphData[index].arrears__7_12_months_ : 0
+        const arrears_24_plus = graphData
+          .filter((data) => data.consumer_category === category)
+          .reduce((sum, data) => sum + (data.arrears___24_months_ || 0), 0)
 
-        case '>12':
-          return graphData.length > 0
-            ? graphData[index]?.arrears__13_24_months_ != null &&
-              graphData[index]?.arrears___24_months_ != null
-              ? graphData[index]?.arrears__13_24_months_ + graphData[index]?.arrears___24_months_
-              : 0
-            : 0
-      }
-    } else {
-      switch (range) {
-        case 'Total':
-          return graphData.length > 0
-            ? graphData
-                .filter(
-                  (value) =>
-                    value.consumer_category !== graphData[0]?.consumer_category &&
-                    value.consumer_category !== graphData[1]?.consumer_category &&
-                    value.consumer_category !== graphData[2]?.consumer_category
-                )
-                .reduce((sum, value) => sum + value.total_arrears, 0)
-            : 0
-        case '0-3':
-          return graphData.length > 0
-            ? graphValues?.data
-                .filter(
-                  (value) =>
-                    value.consumer_category !== graphData[0]?.consumer_category &&
-                    value.consumer_category !== graphData[1]?.consumer_category &&
-                    value.consumer_category !== graphData[2]?.consumer_category
-                )
-                .reduce((sum, value) => sum + value.arrears__0_3_months_, 0)
-            : 0
-        case '4-6':
-          return graphData.length > 0
-            ? graphData
-                .filter(
-                  (value) =>
-                    value.consumer_category !== graphData[0]?.consumer_category &&
-                    value.consumer_category !== graphData[1]?.consumer_category &&
-                    value.consumer_category !== graphData[2]?.consumer_category
-                )
-                .reduce((sum, value) => sum + value.arrears__4_6_months_, 0)
-            : 0
-        case '7-12':
-          return graphData.length > 0
-            ? graphData
-                .filter(
-                  (value) =>
-                    value.consumer_category !== graphData[0]?.consumer_category &&
-                    value.consumer_category !== graphData[1]?.consumer_category &&
-                    value.consumer_category !== graphData[2]?.consumer_category
-                )
-                .reduce((sum, value) => sum + value.arrears__7_12_months_, 0)
-            : 0
-        case '>12':
-          return graphData.length > 0
-            ? graphData
-                .filter(
-                  (value) =>
-                    value.consumer_category !== graphData[0]?.consumer_category &&
-                    value.consumer_category !== graphData[1]?.consumer_category &&
-                    value.consumer_category !== graphData[2]?.consumer_category
-                )
-                .reduce(
-                  (sum, value) => sum + value.arrears__13_24_months_ + value.arrears___24_months_,
-                  0
-                )
-            : 0
+        return arrears_13_24 + arrears_24_plus
       }
     }
+    // } else {
+    //   switch (range) {
+    //     case 'Total':
+    //       return graphData.length > 0
+    //         ? graphData
+    //             .filter(
+    //               (value) =>
+    //                 value.consumer_category !== graphData[0]?.consumer_category &&
+    //                 value.consumer_category !== graphData[1]?.consumer_category &&
+    //                 value.consumer_category !== graphData[2]?.consumer_category
+    //             )
+    //             .reduce((sum, value) => sum + value.total_arrears, 0)
+    //         : 0
+    //     case '0-3':
+    //       return graphData.length > 0
+    //         ? graphValues?.data
+    //             .filter(
+    //               (value) =>
+    //                 value.consumer_category !== graphData[0]?.consumer_category &&
+    //                 value.consumer_category !== graphData[1]?.consumer_category &&
+    //                 value.consumer_category !== graphData[2]?.consumer_category
+    //             )
+    //             .reduce((sum, value) => sum + value.arrears__0_3_months_, 0)
+    //         : 0
+    //     case '4-6':
+    //       return graphData.length > 0
+    //         ? graphData
+    //             .filter(
+    //               (value) =>
+    //                 value.consumer_category !== graphData[0]?.consumer_category &&
+    //                 value.consumer_category !== graphData[1]?.consumer_category &&
+    //                 value.consumer_category !== graphData[2]?.consumer_category
+    //             )
+    //             .reduce((sum, value) => sum + value.arrears__4_6_months_, 0)
+    //         : 0
+    //     case '7-12':
+    //       return graphData.length > 0
+    //         ? graphData
+    //             .filter(
+    //               (value) =>
+    //                 value.consumer_category !== graphData[0]?.consumer_category &&
+    //                 value.consumer_category !== graphData[1]?.consumer_category &&
+    //                 value.consumer_category !== graphData[2]?.consumer_category
+    //             )
+    //             .reduce((sum, value) => sum + value.arrears__7_12_months_, 0)
+    //         : 0
+    //     case '>12':
+    //       return graphData.length > 0
+    //         ? graphData
+    //             .filter(
+    //               (value) =>
+    //                 value.consumer_category !== graphData[0]?.consumer_category &&
+    //                 value.consumer_category !== graphData[1]?.consumer_category &&
+    //                 value.consumer_category !== graphData[2]?.consumer_category
+    //             )
+    //             .reduce(
+    //               (sum, value) => sum + value.arrears__13_24_months_ + value.arrears___24_months_,
+    //               0
+    //             )
+    //         : 0
+    //   }
+    // }
   }
 
   const arrearCount = (range: string) => {
@@ -242,20 +257,20 @@ const ArriersLT = () => {
   }
   const data = [
     {
-      name: graphData[0]?.consumer_category,
-      value: filters(0),
+      name: 'DOMESTIC',
+      value: filters('DOMESTIC'),
     },
     {
-      name: graphData[1]?.consumer_category,
-      value: filters(1),
+      name: ' INDUSTRIAL',
+      value: filters('Industrial'),
     },
     {
-      name: graphData[2]?.consumer_category,
-      value: filters(2),
+      name: ' COMMERCIAL',
+      value: filters('Commercial'),
     },
     {
-      name: 'Other',
-      value: filters(3),
+      name: 'AGRICULTURE',
+      value: filters('Agriculture'),
     },
   ]
   const findSubset = () => {

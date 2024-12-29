@@ -10,6 +10,7 @@ import { CustomTooltip } from '../CustomTooltip'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomLegend } from './TotalCollected'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { router } from '@inertiajs/react'
 export interface ArrearsCategoryValues {
   month: string
   consumer_category: string
@@ -24,7 +25,7 @@ interface Properties {
 }
 const renderCustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+    // const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
     const align = (name: string) => {
       const temp = name.replace('_', ' ')
       return `${temp[0].toUpperCase()}${temp.slice(1)}`
@@ -32,7 +33,7 @@ const renderCustomTooltip = ({ active, payload, label }: any) => {
 
     return (
       <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
-        <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+        <div className='small-1stop mb-2 font-bold'>{label}</div>
         <div className='flex flex-col'>
           {payload.map((value) => {
             return (
