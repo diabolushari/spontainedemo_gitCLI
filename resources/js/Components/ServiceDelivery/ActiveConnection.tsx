@@ -147,24 +147,24 @@ const ActiveConnection = () => {
     },
     {
       name: 'INDUSTRIAL',
-      value: graphFilter('INDUSTRIAL'),
+      value: graphFilter('Industrial'),
     },
     {
       name: 'COMMERCIAL',
-      value: graphFilter('COMMERCIAL'),
+      value: graphFilter('Commercial'),
     },
     {
       name: 'AGRICULTURE',
-      value: graphFilter('AGRICULTURE'),
+      value: graphFilter('Agriculture'),
     },
     {
       name: 'OTHER',
       value:
         cunsumerCount('Total') -
         graphFilter('DOMESTIC') -
-        graphFilter('INDUSTRIAL') -
-        graphFilter('COMMERCIAL') -
-        graphFilter('AGRICULTURE'),
+        graphFilter('Industrial') -
+        graphFilter('Commercial') -
+        graphFilter('Agriculture'),
     },
   ]
 
