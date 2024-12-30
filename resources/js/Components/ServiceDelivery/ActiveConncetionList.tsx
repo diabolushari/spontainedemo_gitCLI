@@ -54,10 +54,6 @@ const ActiveConncetionList = ({
     `/subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
-  console.log(
-    `/subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
-  )
-
   useEffect(() => {
     setHeaders([levelTypes.find((value) => value.value == officeLevel)?.name ?? column1, column2])
   }, [officeLevel, column1, column2])

@@ -28,7 +28,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[]; latest_value: string }>(
     `subset/71?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-  console.log(graphValues?.data)
   // graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
   const graphData = useMemo(() => {
     if (graphValues?.data == null) {
@@ -122,7 +121,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
         graphFilter('Agriculture'),
     },
   ]
-  console.log(data)
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
@@ -145,7 +143,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
         })
       )
     },
-    [selectedMonth, isMW, voltageType, graphData]
+    [selectedMonth, isMW, voltageType]
   )
 
   return (

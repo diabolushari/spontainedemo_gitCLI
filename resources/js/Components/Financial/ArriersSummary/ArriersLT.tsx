@@ -56,8 +56,6 @@ const ArriersLT = () => {
     }`
   )
 
-  console.log(graphValues)
-
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
