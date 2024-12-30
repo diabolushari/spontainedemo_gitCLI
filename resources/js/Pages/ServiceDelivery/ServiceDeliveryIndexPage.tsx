@@ -1,15 +1,15 @@
-import DashboardLayout from '@/Layouts/DashboardLayout'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import React, { useState } from 'react'
-import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
-import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
-import Solar from '@/Components/ServiceDelivery/Solar/Solar'
+import PendancyCard from '@/Components/Dashboard/PendancyCard'
+import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
 import Complaints from '@/Components/ServiceDelivery/Issues/Complaints'
 import SlaPerformance from '@/Components/ServiceDelivery/SLA/SlaPerformance'
+import Solar from '@/Components/ServiceDelivery/Solar/Solar'
 import SolarGeneration from '@/Components/ServiceDelivery/Solar/SolarGeneration'
+import DashboardLayout from '@/Layouts/DashboardLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import { useState } from 'react'
 
-const ServideDeliveryIndexPage = () => {
+const ServiceDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
@@ -41,11 +41,7 @@ const ServideDeliveryIndexPage = () => {
             <div className='flex w-full'>
               <Complaints />
             </div>
-            {/* <div className='flex w-full lg:w-2/3'>
-              <PowerInterruptionTrend />
-            </div> */}
           </div>
-
           <div className='flex flex-col gap-2 lg:flex-row'>
             <div className='flex w-full lg:w-1/2'>
               <Solar />
@@ -60,4 +56,4 @@ const ServideDeliveryIndexPage = () => {
   )
 }
 
-export default ServideDeliveryIndexPage
+export default ServiceDeliveryIndexPage

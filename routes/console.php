@@ -6,5 +6,3 @@ Schedule::call(function () {
     $runScheduleQuery = new StartScheduledJobs;
     $runScheduleQuery->run();
 })->everyMinute();
-
-Schedule::command('telescope:prune --hours=48')->daily();

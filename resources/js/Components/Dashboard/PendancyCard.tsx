@@ -1,18 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
-import MoreButton from '../MoreButton'
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Link, router } from '@inertiajs/react'
-import Card from '@/ui/Card/Card'
+import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { router } from '@inertiajs/react'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
-import DatePicker from '@/ui/form/DatePicker'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
-import { format } from 'path'
-import DataShowIcon from '../ui/DatashowIcon'
+import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import Skeleton from 'react-loading-skeleton'
 import { solidColors } from '@/ui/ui_interfaces'
+import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
 
 export interface PendencyGraphValues {
   date: string
@@ -131,7 +127,11 @@ const PendancyCard = () => {
   )
 
   return (
-    <Card className='flex w-full flex-col'>
+    <DashboardCardLayout
+      selectedDate={selectedDate}
+      setSelectedDate={setSelectedDate}
+      moreUrl={`/data-explorer/Requests Completion Report?date=${selectedDate}&route=${route('service-delivery.index')}`}
+    >
       <div className='flex h-5/6 w-full'>
         <div className='flex w-full flex-col rounded-lg p-3'>
           <div className='flex w-full justify-end'>
@@ -169,12 +169,10 @@ const PendancyCard = () => {
               </div>
             </div>
           </div>
-
           <div className='flex w-full flex-col justify-center px-2 pt-10'>
             <p className='small-1stop-header text-center'>
               Request Completion {toggleValue ? '%' : ''} by Days Taken
             </p>
-
             <div className='flex w-full justify-center'>
               {isLoading ? (
                 <Skeleton
@@ -188,14 +186,6 @@ const PendancyCard = () => {
                   data={data}
                   layout='vertical'
                 >
-                  {/* <Tooltip
-                    formatter={
-                      toggleValue
-                        ? (value: number) => `${value.toFixed(2)}%`
-                        : (value: number) => formatNumber(value)
-                    }
-                  /> */}
-
                   <Tooltip content={renderCustomTooltip} />
                   <XAxis
                     type='number'
@@ -290,25 +280,7 @@ const PendancyCard = () => {
           </div>
         </div>
       </div>
-
-      <div className='flex h-1/6 items-center justify-end gap-4 rounded-b-2xl bg-1stop-alt-gray px-4'>
-        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 py-2'>
-          <DatePicker
-            value={selectedDate ?? ''}
-            setValue={setSelectedDate}
-            disabled={false}
-          />
-        </div>
-
-        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/Requests Completion Report?date=${selectedDate}&route=${route('service-delivery.index')}`}
-          >
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+    </DashboardCardLayout>
   )
 }
 

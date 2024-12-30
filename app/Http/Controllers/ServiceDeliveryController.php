@@ -21,6 +21,6 @@ class ServiceDeliveryController extends Controller implements HasMiddleware
     public function index(): Response
     {
 
-        return Inertia::render('ServiceDelivery/ServideDeliveryIndexPage');
+        return Inertia::render('ServiceDelivery/ServiceDeliveryIndexPage');
     }
 }

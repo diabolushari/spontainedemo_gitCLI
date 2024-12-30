@@ -171,8 +171,6 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
     }
   }, [isShowSideBar])
 
-  console.log(userInfo.user.role)
-
   return (
     <div className='w-full'>
       <div className='hidden md:block'>
