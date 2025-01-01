@@ -15,6 +15,7 @@ import {
 import { solidColors } from '@/ui/ui_interfaces'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import { CustomTooltip } from '@/Components/CustomTooltip'
+import MonthNumberSelector from '@/Components/Dashboard/MonthNumberSelector'
 
 interface Props {
   date: Date
@@ -23,12 +24,57 @@ interface Props {
   title: string
 }
 
+interface LegendProps {
+  payload: {
+    color: string
+    type: string
+    value: string
+    payload: { name: string; value: number; color: string }[]
+  }[]
+}
+
+const CustomLegend = ({ payload }: LegendProps) => {
+  return (
+    <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
+      {payload.map(
+        (
+          entry: {
+            value: string
+            color: string
+          },
+          index: number
+        ) => {
+          return (
+            <li
+              key={`item-${index}`}
+              style={{ marginRight: 10, color: 'black', fontSize: '8px', lineHeight: '10px' }}
+            >
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: 10,
+                  height: 10,
+                  backgroundColor: entry.color,
+                  marginRight: 5,
+                  paddingTop: 1,
+                }}
+              />
+
+              {entry.value}
+            </li>
+          )
+        }
+      )}
+    </ul>
+  )
+}
+
 export default function DataExplorerTrend({ date, trendField, subset, title }: Readonly<Props>) {
   const { dateObject, prevYearDate } = useMemo(() => {
     return { dateObject: dayjs(date), prevYearDate: dayjs(date).subtract(1, 'year') }
   }, [date])
 
-  const [selectedValue, setSelectedValue] = useState(5)
+  const [selectedMonthValue, setSelectedMonthValue] = useState(5)
 
   const fieldName = useMemo(() => {
     return (
@@ -41,7 +87,9 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
     route('subset.show', {
       subsetDetail: subset.id,
       month_less_than_or_equal: dateObject.format('YYYYMM'),
-      month_greater_than_or_equal: dateObject.subtract(selectedValue, 'month').format('YYYYMM'),
+      month_greater_than_or_equal: dateObject
+        .subtract(selectedMonthValue, 'month')
+        .format('YYYYMM'),
     })
   )
 
@@ -49,7 +97,9 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
     route('subset.show', {
       subsetDetail: subset.id,
       month_less_than_or_equal: prevYearDate.format('YYYYMM'),
-      month_greater_than_or_equal: prevYearDate.subtract(selectedValue, 'month').format('YYYYMM'),
+      month_greater_than_or_equal: prevYearDate
+        .subtract(selectedMonthValue, 'month')
+        .format('YYYYMM'),
     })
   )
 
@@ -59,7 +109,7 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
     const currentYear = dateObject.year().toString()
     const prevYear = prevYearDate.year().toString()
 
-    for (let i = 0; i <= selectedValue; i++) {
+    for (let i = 0; i <= selectedMonthValue; i++) {
       const currentYearMonth = dateObject.subtract(i, 'month')
       const prevYearMonth = prevYearDate.subtract(i, 'month')
 
@@ -79,82 +129,18 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
     }
 
     return { chartData: data.reverse(), keys: [currentYear, prevYear] }
-  }, [dateObject, prevYearDate, selectedValue, currentYearValues, prevYearValues])
+  }, [dateObject, prevYearDate, selectedMonthValue, currentYearValues, prevYearValues, trendField])
 
-  interface LegendProps {
-    payload: {
-      color: string
-      type: string
-      value: string
-      payload: { name: string; value: number; color: string }[]
-    }[]
-  }
-
-  const CustomLegend = ({ payload }: LegendProps) => {
-    return (
-      <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
-        {payload.map(
-          (
-            entry: {
-              value: string
-              color: string
-            },
-            index: number
-          ) => {
-            return (
-              <li
-                key={`item-${index}`}
-                style={{ marginRight: 10, color: 'black', fontSize: '8px', lineHeight: '10px' }}
-              >
-                <span
-                  style={{
-                    display: 'inline-block',
-                    width: 10,
-                    height: 10,
-                    backgroundColor: entry.color,
-                    marginRight: 5,
-                    paddingTop: 1,
-                  }}
-                />
-
-                {entry.value}
-              </li>
-            )
-          }
-        )}
-      </ul>
-    )
-  }
   return (
     <div className='flex w-full flex-col gap-5 md:w-10/12'>
       <p className='subheader-sm-1stop'>
         {title}, {fieldName}
       </p>
-      <div className='flex justify-end gap-4'>
-        <button
-          className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
-            selectedValue === 2 ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
-          }`}
-          onClick={() => setSelectedValue(2)}
-        >
-          3 M
-        </button>
-        <button
-          className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
-            selectedValue === 5 ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
-          }`}
-          onClick={() => setSelectedValue(5)}
-        >
-          6 M
-        </button>
-        <button
-          className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
-            selectedValue === 11 ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
-          }`}
-          onClick={() => setSelectedValue(11)}
-        >
-          1 Y
-        </button>
+      <div className='flex justify-end'>
+        <MonthNumberSelector
+          selectedValue={selectedMonthValue}
+          setSelectedValue={setSelectedMonthValue}
+        />
       </div>
       <div className='h-96 w-full'>
         <ResponsiveContainer

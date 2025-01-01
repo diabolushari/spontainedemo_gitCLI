@@ -1,14 +1,14 @@
 import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
-import DashboardTrendList from '@/Components/Dashboard/DashbaordCard/DashboardTrendList'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { solidColors } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { CustomTooltip } from '../CustomTooltip'
-import ActiveConnectionTrend from './ActiveConnection/ActiveConnectionTrend'
+import DashboardTrendGraph from '@/Components/Dashboard/DashbaordCard/DashboardTrendGraph'
 
 export interface InactiveGraphValues {
   conn_status_code: string
@@ -98,12 +98,12 @@ const ActiveConnection = () => {
   const [selectedLevel, setSelectedLevel] = useState('overview')
   const [voltageType, setVoltageType] = useState('Total')
 
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
+
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/198?${
-      selectedMonth == null
-        ? 'latest=month'
-        : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
-    }`
+    `subset/198?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}`
   )
 
   useEffect(() => {
@@ -313,7 +313,6 @@ const ActiveConnection = () => {
                       />
                     ))}
                   </Pie>
-
                   <Legend content={CustomLegend} />
                 </PieChart>
               </ResponsiveContainer>
@@ -322,19 +321,29 @@ const ActiveConnection = () => {
           </div>
         </div>
       )}
-      {selectedLevel === 'trend' && (
-        <ActiveConnectionTrend
+      {selectedLevel === 'trend' && selectedMonth != null && (
+        <DashboardTrendGraph
+          subsetId={198}
+          cardTitle='Trend of Active Connections'
           selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
+          dataField='total_consumers__count_'
+          dataFieldName='Total Consumer Count'
+          filterListFetchURL={route('static-list', { type: 'voltage' })}
+          filterFieldName='voltage'
+          filterListKey='value'
+          defaultFilterValue='LT'
+          chartType='area'
         />
       )}
-      {selectedLevel === 'ranking' && (
-        <DashboardTrendList
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
           subsetId={198}
-          title='Ranked by Connection Counts'
-          column='total_consumers__count_'
-          columnTitle='Consumer Count'
-          rankingUrl={`/office-rankings/Active Connections?route=${route('service-delivery.index')}`}
+          cardTitle='Ranked by Connection Counts'
+          dataField='total_consumers__count_'
+          dataFieldName='Consumer Count'
+          rankingPageUrl={`/office-rankings/Active Connections?route=${route('service-delivery.index')}`}
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
         />
       )}
     </DashboardCardLayout>

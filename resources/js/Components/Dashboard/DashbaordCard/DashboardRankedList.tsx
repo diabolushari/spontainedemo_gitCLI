@@ -6,13 +6,20 @@ import Skeleton from 'react-loading-skeleton'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Link } from '@inertiajs/react'
+import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
 
 interface Props {
   subsetId: number
-  title: string
-  column: string
-  columnTitle: string
-  rankingUrl: string
+  cardTitle: string
+  dataField: string
+  dataFieldName: string
+  rankingPageUrl: string
+  timePeriod: string
+  timePeriodFieldName: string
+  filterFieldName?: string
+  filterListKey?: string
+  filterListFetchURL?: string
+  defaultFilterValue?: string
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -26,32 +33,77 @@ const levelTypes: { name: string; value: string }[] = [
 
 type SummaryItem = Record<string, number | string | null | undefined>
 
-export default function DashboardTrendList({
+export default function DashboardRankedList({
   subsetId,
-  column,
-  title,
-  columnTitle,
-  rankingUrl,
+  dataField,
+  cardTitle,
+  dataFieldName,
+  rankingPageUrl,
+  timePeriod,
+  timePeriodFieldName,
+  defaultFilterValue,
+  filterListFetchURL,
+  filterListKey,
+  filterFieldName,
 }: Readonly<Props>) {
-  const [page, setPage] = useState(1)
+  const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
-  const [listType, setListType] = useState('10')
+  const [itemLimit, setItemLimit] = useState('10')
   const [officeLevel, setOfficeLevel] = useState('section')
-  const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(
-    `/subset-summary/${subsetId}?level=${officeLevel}&sort_by=${column}&sort_order=${sortOrder}&limit=${listType}&page=${page}`
-  )
+  const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
+
+  const fetchUrl = useMemo(() => {
+    const params = {
+      subsetDetail: subsetId,
+      level: officeLevel,
+      sort_by: dataField,
+      sort_order: sortOrder,
+      limit: itemLimit,
+      page: pageNumber,
+      [timePeriodFieldName]: timePeriod,
+    }
+
+    if (filterFieldName != null) {
+      params[filterFieldName] = filterValue
+    }
+
+    return route('subset.summary', {
+      ...params,
+    })
+  }, [
+    subsetId,
+    officeLevel,
+    dataField,
+    sortOrder,
+    itemLimit,
+    timePeriod,
+    timePeriodFieldName,
+    filterFieldName,
+    filterValue,
+    pageNumber,
+  ])
+
+  const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
 
   const headers = useMemo(() => {
     const selectedLevel = levelTypes.find((value) => value.value == officeLevel)
-    return [selectedLevel?.name ?? '', columnTitle]
-  }, [officeLevel, columnTitle])
+    return [selectedLevel?.name ?? '', dataFieldName]
+  }, [officeLevel, dataFieldName])
 
   return (
     <div className='flex w-full flex-col'>
       <div className='mt-4 flex w-full justify-end gap-2 pb-2 pr-4 pt-4'>
-        <span className='subheader-sm-1stop'>{title}</span>
+        <span className='subheader-sm-1stop'>{cardTitle}</span>
       </div>
       <div className='flex items-center justify-end gap-5 pr-4'>
+        {filterListFetchURL != null && filterFieldName != null && filterListKey != null && (
+          <FieldUniqueValueDropdown
+            listFetchURL={filterListFetchURL}
+            selectedValue={filterValue}
+            setSelectedValue={setFilterValue}
+            dataKey={filterListKey}
+          />
+        )}
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <button
             className={`${sortOrder == 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
@@ -159,8 +211,8 @@ export default function DashboardTrendList({
         <div className='flex flex-col'>
           <SelectList
             list={listTypes}
-            value={listType}
-            setValue={setListType}
+            value={itemLimit}
+            setValue={setItemLimit}
             dataKey='name'
             displayKey='name'
             style='1stop-small'
@@ -209,7 +261,7 @@ export default function DashboardTrendList({
                   >
                     <td className=''>{value.office_name}</td>
                     <td className='pl-2 text-start'>
-                      {formatNumber((value[column] ?? null) as number)}
+                      {formatNumber((value[dataField] ?? null) as number)}
                     </td>
                   </tr>
                 )
@@ -221,13 +273,13 @@ export default function DashboardTrendList({
               {graphValues?.data != null && (
                 <RestPagination
                   pagination={graphValues.data}
-                  onNewPage={setPage}
+                  onNewPage={setPageNumber}
                 />
               )}
             </div>
             <div className='flex flex-shrink-0 justify-end pt-4'>
               <Link
-                href={rankingUrl}
+                href={rankingPageUrl}
                 className='small-2stop'
               >
                 <div className='bg-2stop-highlight2 rounded-md px-1 text-xl hover:opacity-70'>

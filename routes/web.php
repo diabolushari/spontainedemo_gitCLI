@@ -27,6 +27,7 @@ use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\ServiceDeliveryController;
+use App\Http\Controllers\StaticListController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\FindLevelController;
 use App\Http\Controllers\Subset\OfficeRankingsController;
@@ -180,5 +181,8 @@ Route::get('office-rankings/{subsetGroupName}', OfficeRankingsController::class)
     ->name('office-rankings');
 Route::get('subset-fields', SubsetFieldsListController::class)
     ->name('subset-fields');
+
+Route::get('static-list', StaticListController::class)
+    ->name('static-list');
 
 require __DIR__.'/auth.php';

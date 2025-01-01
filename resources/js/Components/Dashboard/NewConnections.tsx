@@ -9,7 +9,6 @@ import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 import DataShowIcon from '../ui/DatashowIcon'
 import TrendIcon from '../ui/TrendIcon'
@@ -17,6 +16,7 @@ import Top10Icon from '../ui/Top10Icon'
 import NewConnectionsList from '../ServiceDelivery/NewConnectionsList'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '../CustomTooltip'
+import DashboardTrendGraph from '@/Components/Dashboard/DashbaordCard/DashboardTrendGraph'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -340,16 +340,16 @@ const NewConnections = () => {
                   </PieChart>
                 </ResponsiveContainer>
               )}
-              {/* <span className='subheader-sm-1stop absolute bottom-11'>
-                REQUESTS SERVICED: SLA PERFORMANCE SPLIT
-              </span> */}
             </div>
           </div>
         )}
-        {selectedLevel === 2 && (
-          <NewConnectionTrend
+        {selectedLevel === 2 && selectedMonth != null && (
+          <DashboardTrendGraph
+            subsetId={90}
+            cardTitle='Trend of Requests Breaching SLA'
+            dataField='requests_breaching_sla__count_'
+            dataFieldName='RequestsBreachingSla'
             selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
           />
         )}
         {selectedLevel === 3 && (

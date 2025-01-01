@@ -74,7 +74,7 @@ export default function DashboardCardLayout({
             <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
           </div>
         )}
-        <div className='flex-grow'>{children}</div>
+        <div className='flex-shrink-1 flex-grow'>{children}</div>
       </div>
       {/*Footer:if no title then Justify end else  justify between  */}
       <div
