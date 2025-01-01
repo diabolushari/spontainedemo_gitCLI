@@ -26,7 +26,14 @@ class StaticListController extends Controller implements HasMiddleware
                 ['value' => 'HT'],
                 ['value' => 'EHT'],
             ],
-            default => []
+            default => [],
+            'ageWise' => [
+                ['value' => '0-3'],
+                ['value' => '4-6'],
+                ['value' => '7-12'],
+                ['value' => '13-24'],
+                ['value' => '>24'],
+            ]
         };
 
         return response()->json([
