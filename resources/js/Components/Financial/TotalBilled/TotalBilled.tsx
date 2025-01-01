@@ -1,22 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import Card from '@/ui/Card/Card'
-import MoreButton from '@/Components/MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link, router } from '@inertiajs/react'
+import { router } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import MonthPicker from '@/ui/form/MonthPicker'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import BillingTrend from './BillingTrend'
-import BillingList from './BillingList'
-import DataShowIcon from '@/Components/ui/DatashowIcon'
-import TrendIcon from '@/Components/ui/TrendIcon'
-import Top10Icon from '@/Components/ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '@/Components/CustomTooltip'
 import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
+import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
+import DashboardTrendGraph from '@/Components/Dashboard/DashbaordCard/DashboardTrendGraph'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 
 export interface BillingValues {
   consumer_category: string
@@ -71,7 +66,7 @@ const TotalBilled = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(true)
   const [exclude, setExclude] = useState(false)
 
-  const [selectedLevel, setSelectedLevel] = useState(1)
+  const [selectedLevel, setSelectedLevel] = useState('overview')
 
   const [graphValues] = useFetchRecord<{ data: BillingValues[]; latest_value: string }>(
     `subset/120?${
@@ -227,74 +222,140 @@ const TotalBilled = () => {
     },
     [voltageType, selectedMonth, graphData]
   )
-
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
   return (
-    <Card className='flex flex-col'>
-      <div className='flex h-5/6 w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <TrendIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel(3)
-            }}
-          >
-            <Top10Icon />
-          </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
-        </div>
-        {/* Data Section */}
-        {selectedLevel === 1 && (
-          <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
-            <div className='flex w-full justify-end md:hidden'>
-              <button
-                className='small-1stop mb-auto cursor-pointer justify-end'
-                onClick={handleToogleNumber}
-              >
-                {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-              </button>
+    <DashboardCardLayout
+      title='Billing/Total Demand'
+      selectedLevel={selectedLevel}
+      setSelectedLevel={setSelectedLevel}
+      selectedMonth={selectedMonth}
+      setSelectedMonth={setSelectedMonth}
+      moreUrl={`/data-explorer/Demand Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('finance.index')}`}
+    >
+      {selectedLevel === 'overview' && (
+        <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
+          <div className='flex w-full justify-end md:hidden'>
+            <button
+              className='small-1stop mb-auto cursor-pointer justify-end'
+              onClick={handleToogleNumber}
+            >
+              {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+            </button>
+          </div>
+          <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
+            {/* Total Connections */}
+            <div className='flex flex-col border p-2'>
+              <p className='xlmetric-1stop'>
+                {graphValues?.data.length ? (
+                  formatNumber(cunsumerCount('Total', '', false) ?? 0)
+                ) : (
+                  <Skeleton />
+                )}
+              </p>
+              <div className='flex flex-row justify-between'>
+                <p className='small-1stop-header'>Total Demand Value</p>
+                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                  <input
+                    defaultChecked
+                    type='radio'
+                    name='radioBilling'
+                    value='Total'
+                    onChange={() => {
+                      setVoltageType('Total')
+                      setExclude(false)
+                    }}
+                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                  />
+                </div>
+              </div>
             </div>
-            <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
-              {/* Total Connections */}
-              <div className='flex flex-col border p-2'>
-                <p className='xlmetric-1stop'>
+
+            <div className='flex w-full flex-row space-x-1'>
+              {/* LT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
                   {graphValues?.data.length ? (
-                    formatNumber(cunsumerCount('Total', '', false) ?? 0)
+                    toggleValue ? (
+                      formatNumber(cunsumerCount('LT', 'DOMESTIC', true) ?? 0)
+                    ) : (
+                      domesticLtPercent.toFixed(2) + '%'
+                    )
                   ) : (
                     <Skeleton />
                   )}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>Total Demand Value</p>
+                  <p className='small-1stop-header'>Domestic-LT </p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
-                      defaultChecked
                       type='radio'
                       name='radioBilling'
-                      value='Total'
+                      value='LT'
                       onChange={() => {
-                        setVoltageType('Total')
+                        setVoltageType('LT')
+                        setExclude(false)
+                      }}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* HT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(cunsumerCount('LT', 'DOMESTIC', false) ?? 0)
+                    ) : (
+                      otherLtPercent.toFixed(2) + '%'
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>Others-LT </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radioBilling'
+                      value='LT'
+                      onChange={() => {
+                        setVoltageType('LT')
+                        setExclude(true)
+                      }}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className='flex w-full flex-row space-x-1'>
+              {/* LT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(cunsumerCount('HT', '', false) ?? 0)
+                    ) : (
+                      htPercent.toFixed(2) + '%'
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>HT </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radioBilling'
+                      value='HT'
+                      onChange={() => {
+                        setVoltageType('HT')
                         setExclude(false)
                       }}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
@@ -303,231 +364,123 @@ const TotalBilled = () => {
                 </div>
               </div>
 
-              <div className='flex w-full flex-row space-x-1'>
-                {/* LT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(cunsumerCount('LT', 'DOMESTIC', true) ?? 0)
-                      ) : (
-                        domesticLtPercent.toFixed(2) + '%'
-                      )
+              {/* HT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(cunsumerCount('EHT', '', false) ?? 0)
                     ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>Domestic-LT </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radioBilling'
-                        value='LT'
-                        onChange={() => {
-                          setVoltageType('LT')
-                          setExclude(false)
-                        }}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-                {/* HT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(cunsumerCount('LT', 'DOMESTIC', false) ?? 0)
-                      ) : (
-                        otherLtPercent.toFixed(2) + '%'
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>Others-LT </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radioBilling'
-                        value='LT'
-                        onChange={() => {
-                          setVoltageType('LT')
-                          setExclude(true)
-                        }}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex w-full flex-row space-x-1'>
-                {/* LT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(cunsumerCount('HT', '', false) ?? 0)
-                      ) : (
-                        htPercent.toFixed(2) + '%'
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>HT </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radioBilling'
-                        value='HT'
-                        onChange={() => {
-                          setVoltageType('HT')
-                          setExclude(false)
-                        }}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* HT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(cunsumerCount('EHT', '', false) ?? 0)
-                      ) : (
-                        `${ehtPercent.toFixed(2)}%`
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>EHT</p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radioBilling'
-                        value='EHT'
-                        onChange={() => {
-                          setVoltageType('EHT')
-                          setExclude(false)
-                        }}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Graph */}
-            <div className='relative flex flex-col pt-2 md:w-1/2'>
-              <div className='hidden w-full justify-end md:flex'>
-                <button
-                  className='small-1stop mb-auto cursor-pointer justify-end'
-                  onClick={handleToogleNumber}
-                >
-                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-                </button>
-              </div>
-              {graphValues?.data.length ? (
-                <ResponsiveContainer
-                  className='small-1stop'
-                  height={300}
-                >
-                  <PieChart
-                    width={100}
-                    height={100}
-                  >
-                    <Tooltip
-                      formatter={(value: number) => `${formatNumber(value)}`}
-                      content={
-                        <CustomTooltip
-                          valueType={toggleValue ? 'count' : 'percentage'}
-                          totalCount={totalCount}
-                          isPercent
-                        />
-                      }
+                      `${ehtPercent.toFixed(2)}%`
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>EHT</p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radioBilling'
+                      value='EHT'
+                      onChange={() => {
+                        setVoltageType('EHT')
+                        setExclude(false)
+                      }}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
-
-                    <Pie
-                      data={data}
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey='value'
-                      stroke='none'
-                      onClick={handleGraphSelection}
-                    >
-                      {data.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={solidColors[index % solidColors.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Legend content={CustomLegend} />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <Skeleton
-                  circle={true}
-                  height={200}
-                  width={200}
-                />
-              )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        )}
-        {selectedLevel === 2 && (
-          <BillingTrend
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
-        )}
-        {selectedLevel === 3 && (
-          <BillingList
-            route={`office-rankings/Demand Analysis?route=${route('finance.index')}`}
-            column1='Section'
-            column2='Demand'
-            subset_id='120'
-            default_level='section'
-            sortBy='total_demand'
-          />
-        )}
-      </div>
-      {/* //Footer */}
-      <div className='flex h-1/6 justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
-        <div className='py-4'>
-          <p className='md:mdmetric-1stop smmetric-1stop'>Billing/Total Demand</p>
-        </div>
-        <div
-          className='small-1stop-header flex w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50 px-4'
-          //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
-        >
-          <div style={{ opacity: 1 }}>
-            <MonthPicker
-              selectedMonth={selectedMonth}
-              setSelectedMonth={setSelectedMonth}
-            />
+
+          {/* Graph */}
+          <div className='relative flex flex-col pt-2 md:w-1/2'>
+            <div className='hidden w-full justify-end md:flex'>
+              <button
+                className='small-1stop mb-auto cursor-pointer justify-end'
+                onClick={handleToogleNumber}
+              >
+                {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+              </button>
+            </div>
+            {graphValues?.data.length ? (
+              <ResponsiveContainer
+                className='small-1stop'
+                height={300}
+              >
+                <PieChart
+                  width={100}
+                  height={100}
+                >
+                  <Tooltip
+                    formatter={(value: number) => `${formatNumber(value)}`}
+                    content={
+                      <CustomTooltip
+                        valueType={toggleValue ? 'count' : 'percentage'}
+                        totalCount={totalCount}
+                        isPercent
+                      />
+                    }
+                  />
+
+                  <Pie
+                    data={data}
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey='value'
+                    stroke='none'
+                    onClick={handleGraphSelection}
+                  >
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={solidColors[index % solidColors.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend content={CustomLegend} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <Skeleton
+                circle={true}
+                height={200}
+                width={200}
+              />
+            )}
           </div>
         </div>
-        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/Demand Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('finance.index')}`}
-          >
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+      )}
+      {selectedLevel === 'trend' && selectedMonth != null && (
+        <DashboardTrendGraph
+          subsetId={120}
+          cardTitle='Trend of Top Billing/Total Demand'
+          selectedMonth={selectedMonth}
+          dataField='total_demand'
+          dataFieldName='Total Demand'
+          filterListFetchURL={route('static-list', { type: 'voltage' })}
+          filterFieldName='voltage'
+          filterListKey='value'
+          defaultFilterValue='LT'
+          chartType='area'
+        />
+      )}
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
+          subsetId={120}
+          cardTitle='Ranked by Total Demand'
+          dataField='total_demand'
+          dataFieldName='Demand'
+          rankingPageUrl={`office-rankings/Demand Analysis?route=${route('finance.index')}`}
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
+        />
+      )}
+    </DashboardCardLayout>
   )
 }
 export default TotalBilled
