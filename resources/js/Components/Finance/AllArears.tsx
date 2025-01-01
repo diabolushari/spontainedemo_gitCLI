@@ -62,11 +62,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
     },
     [selectedMonth]
   )
-  const detailRoute = () => {
-    router.get(
-      `/data-explorer/Arrears Comparison?latest=${selectedMonth}&route=${route('finance.index')}`
-    )
-  }
+
   return (
     <div className='flex w-full flex-col md:flex-row'>
       {selectedLevel === 1 && (
