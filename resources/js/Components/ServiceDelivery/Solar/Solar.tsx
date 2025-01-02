@@ -35,7 +35,7 @@ const Solar = () => {
       )}
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
-          subsetId={71}
+          subsetId={311}
           dataField='capacity_kw'
           dataFieldName='Capacity (MW)'
           cardTitle='Trend of Installed Capacity'

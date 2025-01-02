@@ -13,7 +13,7 @@ const SolarGeneration = () => {
       moreUrl={`/data-explorer/Solar Generation Trend?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
     >
       <DashboardTrendGraph
-        subsetId={113}
+        subsetId={312}
         cardTitle='Trend of Solar Generation'
         dataField='generation__kwh_'
         dataFieldName='Generation (MWh)'

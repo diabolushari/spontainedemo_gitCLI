@@ -243,7 +243,7 @@ const ArriersHTList = ({
               return (
                 <th
                   key={header}
-                  className='small-1stop bg-1stop-white font-bold'
+                  className='subheader-sm-1stop bg-1stop-white'
                 >
                   {header}
                 </th>
@@ -263,11 +263,11 @@ const ArriersHTList = ({
               {graphValues?.data.data.map((value) => {
                 return (
                   <tr
-                    className='small-1stop text-left'
+                    className='data-xs-1stop text-start'
                     key={value.office_name}
                   >
                     <td className=''>{value.office_name}</td>
-                    <td className=''>
+                    <td className='pl-2 text-start'>
                       {formatNumber(Number(findValue(value)?.toFixed(2)) ?? null)}
                     </td>
                   </tr>
@@ -288,7 +288,7 @@ const ArriersHTList = ({
                   href={route}
                   className='small-1stop'
                 >
-                  <div className='rounded-md bg-1stop-highlight2 px-1 text-xl hover:opacity-70'>
+                  <div className='rounded-md px-1 text-xl hover:opacity-70'>
                     <i className='las la-expand-arrows-alt'></i>
                   </div>
                 </Link>
