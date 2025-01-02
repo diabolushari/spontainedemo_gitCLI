@@ -40,6 +40,7 @@ const Solar = () => {
           dataFieldName='Capacity (MW)'
           cardTitle='Trend of Installed Capacity'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
           chartType='area'
         />
       )}

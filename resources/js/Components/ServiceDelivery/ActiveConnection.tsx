@@ -326,6 +326,7 @@ const ActiveConnection = () => {
           subsetId={195}
           cardTitle='Trend of Active Connections'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
           dataField='total_consumers__count_'
           dataFieldName='Total Consumer Count'
           filterListFetchURL={route('static-list', { type: 'voltage' })}

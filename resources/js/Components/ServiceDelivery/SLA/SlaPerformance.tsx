@@ -271,6 +271,7 @@ const SlaPerformance = () => {
           dataField='sla_perf_perc'
           dataFieldName='SLA Performance (%)'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
           filterListFetchURL={`/subset/78?month=${monthYear}`}
           filterListKey={'sla_svc_group'}
           filterFieldName={'request_type'}
@@ -285,7 +286,7 @@ const SlaPerformance = () => {
           timePeriod={monthYear}
           timePeriodFieldName='month'
           dataField={showPercentage ? 'requests_within_sla__count_' : 'requests_within_sla____'}
-          dataFieldName={showPercentage ? 'requests_within_sla__count_' : 'requests_within_sla____'}
+          dataFieldName={showPercentage ? 'Requests within SLA count' : 'Request within SLA (%)'}
           rankingPageUrl={`office-rankings/SLA Performance Analysis?route=${route('service-delivery.index')}`}
           defaultFilterValue={'Ownership change'}
           filterListFetchURL={`/subset/78?month=${monthYear}`}

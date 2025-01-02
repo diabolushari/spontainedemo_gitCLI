@@ -357,6 +357,7 @@ const TotalCollected = () => {
           subsetId={225}
           cardTitle='Trend of Collections'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
           dataField='total_collection'
           dataFieldName='Total Collection'
           filterListFetchURL={route('static-list', { type: 'voltage' })}

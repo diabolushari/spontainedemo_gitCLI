@@ -304,6 +304,7 @@ const NewConnections = () => {
           dataField='requests_breaching_sla__count_'
           dataFieldName='RequestsBreachingSla'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
         />
       )}
       {selectedLevel === 'ranking' && selectedMonth != null && (

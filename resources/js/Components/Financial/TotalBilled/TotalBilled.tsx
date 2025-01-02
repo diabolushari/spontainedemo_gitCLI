@@ -460,6 +460,7 @@ const TotalBilled = () => {
           subsetId={120}
           cardTitle='Trend of Top Billing/Total Demand'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
           dataField='total_demand'
           dataFieldName='Total Demand'
           filterListFetchURL={route('static-list', { type: 'voltage' })}

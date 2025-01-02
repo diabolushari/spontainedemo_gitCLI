@@ -43,6 +43,7 @@ const ArrearsCountAndGraph = () => {
           subsetId={170}
           cardTitle='Trend of Total Arrears'
           selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
           dataField='total_arrears'
           dataFieldName='Total Arrears'
           chartType='area'
