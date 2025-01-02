@@ -339,12 +339,11 @@ const ArriersLT = () => {
       setSelectedMonth={setSelectedMonth}
       moreUrl={`/data-explorer/Arrear Summary?month=${dateToYearMonth(selectedMonth)}&voltage=LT&route=${route('finance.index')}`}
     >
-      {' '}
       {selectedLevel === 'overview' && (
         <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
           <div className='flex w-full justify-end md:hidden'>
             <button
-              className='small-1stop mb-auto cursor-pointer justify-end'
+              className='small-1stop mb-auto cursor-pointer justify-end p-2'
               onClick={handleToogleNumber}
             >
               {toggleValue ? <ToogleNumber /> : <TooglePercentage />}

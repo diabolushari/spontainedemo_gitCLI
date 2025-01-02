@@ -528,6 +528,10 @@ const ArriersHT = () => {
           dataField='total_arrears'
           dataFieldName='Arrear Amount'
           rankingPageUrl={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}
+          // defaultFilterValue={''}
+          // filterListFetchURL={route('static-list', { type: 'ageWise' })}
+          // filterListKey={'value'}
+          // filterFieldName={''}
         />
       )}
 
