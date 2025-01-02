@@ -1,22 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import Skeleton from 'react-loading-skeleton'
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  TooltipProps,
-  XAxis,
-  YAxis,
-} from 'recharts'
 import { solidColors } from '@/ui/ui_interfaces'
 import MonthNumberSelector from '@/Components/Dashboard/MonthNumberSelector'
 import dayjs from 'dayjs'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
+import SimpleBarChart from '@/Components/Charts/SimpleBarChart'
+import SimpleAreaChart from '@/Components/Charts/SimpleAreaChart'
 
 interface Props {
   subsetId: number
@@ -30,25 +20,6 @@ interface Props {
   filterListFetchURL?: string
   defaultFilterValue?: string
   chartType?: 'bar' | 'area'
-}
-
-const renderCustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
-  if (active && payload && payload.length) {
-    const formattedLabel = `${label?.slice(4)}/${label?.slice(0, 4)}` // Format MM/YYYY
-    const value = payload[payload.length - 1]?.value
-    return (
-      <div className='rounded-xl border-3 bg-white p-4 shadow-lg'>
-        <div className='small-2stop mb-2 font-bold'>{formattedLabel}</div>
-        <div>
-          <span className='small-2stop'>
-            {payload[payload.length - 1]?.dataKey}:{' '}
-            <span className='small-2stop font-bold'>{formatNumber(value)}</span>
-          </span>
-        </div>
-      </div>
-    )
-  }
-  return null
 }
 
 export default function DashboardTrendGraph({
@@ -97,8 +68,6 @@ export default function DashboardTrendGraph({
     latest_value: string | null | undefined
   }>(fetchUrl)
 
-  console.log(fetchUrl)
-
   useEffect(() => {
     if (setSelectedMonth == null || selectedMonth != null) {
       return
@@ -123,7 +92,7 @@ export default function DashboardTrendGraph({
       .map((month) => {
         const value = graphValues?.data.find((v) => v.month === month)
         return {
-          month,
+          month: `${month?.slice(4)}/${month?.slice(0, 4)}`,
           [dataFieldName]: value?.[dataField] ?? 0,
         }
       })
@@ -157,57 +126,19 @@ export default function DashboardTrendGraph({
           />
         )}
         {!isLoading && chartType === 'area' && (
-          <ResponsiveContainer
-            width='99%'
-            height={199}
-          >
-            <AreaChart data={chartData}>
-              <XAxis
-                dataKey='month'
-                tickFormatter={
-                  (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
-                }
-                style={{ fontSize: 10 }}
-              />
-              <YAxis
-                tickFormatter={(value) => formatNumber(value)}
-                style={{ fontSize: 10 }}
-              />
-              <Tooltip content={renderCustomTooltip} />
-              <Area
-                type='monotone'
-                dataKey={dataFieldName}
-                stroke={solidColors[0]}
-                fill={solidColors[1]}
-                opacity={0.7}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <SimpleAreaChart
+            dataKey='month'
+            dataFieldName={dataFieldName}
+            chartData={chartData}
+          />
         )}
         {!isLoading && chartType === 'bar' && (
-          <ResponsiveContainer
-            width='99%'
-            height={199}
-          >
-            <BarChart data={chartData}>
-              <XAxis
-                dataKey='month'
-                tickFormatter={(month) => `${month.slice(3)}/${month.slice(0, 4)}`}
-                style={{ fontSize: '8' }}
-              />
-              <YAxis
-                tickFormatter={(value) => formatNumber(value)}
-                style={{ fontSize: '8' }}
-              />
-              <Tooltip content={renderCustomTooltip} />
-              <Bar
-                dataKey={dataFieldName}
-                fill={solidColors[5]}
-                stroke={solidColors[5]}
-                barSize={18}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <SimpleBarChart
+            chartData={chartData}
+            dataFieldName={dataFieldName}
+            dataKey='month'
+            color={solidColors[7]}
+          />
         )}
       </div>
     </div>

@@ -61,7 +61,7 @@ export const CustomLegend = ({ payload }: LegendProps) => {
   )
 }
 
-export const formatNumber = (value: number | null) => {
+export const formatNumber = (value?: number | null) => {
   if (value == null) {
     return
   }
