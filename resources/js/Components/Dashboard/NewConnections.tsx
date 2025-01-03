@@ -338,7 +338,7 @@ const NewConnections = () => {
               ? 'Overall SLA Compliant Requests (%)'
               : 'Overall SLA Compliant Requests (count)'
           }
-          rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?latest=month&route=${route('service-delivery.index')}`}
+          rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?&month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           timePeriodFieldName='month'
           timePeriod={monthYear}
         />

@@ -48,7 +48,7 @@ const Complaints = () => {
           cardTitle='Ranked by Complaint Counts'
           timePeriod={monthYear}
           timePeriodFieldName='month'
-          rankingPageUrl={`/office-rankings/Customer Complaints Analysis?route=${route('service-delivery.index')}`}
+          rankingPageUrl={`/office-rankings/Customer Complaints Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
           filterListFetchURL={'/subset/72?month=' + monthYear}
           filterListKey='complaint_type'
           filterFieldName='complaint_type'

@@ -476,7 +476,7 @@ const TotalBilled = () => {
           cardTitle='Ranked by Total Demand'
           dataField='total_demand'
           dataFieldName='Demand'
-          rankingPageUrl={`office-rankings/Demand Analysis?route=${route('finance.index')}`}
+          rankingPageUrl={`office-rankings/Demand Analysis?month=${monthYear}&route=${route('finance.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
         />
