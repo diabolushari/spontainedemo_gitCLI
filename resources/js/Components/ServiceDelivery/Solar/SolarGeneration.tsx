@@ -15,7 +15,7 @@ const SolarGeneration = () => {
       <DashboardTrendGraph
         subsetId={312}
         cardTitle='Trend of Solar Generation'
-        dataField='generation__kwh_'
+        dataField='generation__mwh__'
         dataFieldName='Generation (MWh)'
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}

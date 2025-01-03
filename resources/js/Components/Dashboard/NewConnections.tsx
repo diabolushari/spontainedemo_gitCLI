@@ -201,8 +201,12 @@ const NewConnections = () => {
                     `${completedWithinSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Compl. within SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[0] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
 
@@ -216,8 +220,12 @@ const NewConnections = () => {
                     `${pendingWithinSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Pending within SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[2] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
             </div>
@@ -233,8 +241,12 @@ const NewConnections = () => {
                     `${completedBeyondSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Compl. beyond SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[1] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
               <div className='flex w-1/2 flex-col border p-2'>
@@ -247,8 +259,12 @@ const NewConnections = () => {
                     `${pendingBeyondSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Pending beyond SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[3] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
             </div>
@@ -305,6 +321,7 @@ const NewConnections = () => {
           dataFieldName='RequestsBreachingSla'
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
+          chartType='area'
         />
       )}
       {selectedLevel === 'ranking' && selectedMonth != null && (
@@ -321,7 +338,7 @@ const NewConnections = () => {
               ? 'Overall SLA Compliant Requests (%)'
               : 'Overall SLA Compliant Requests (count)'
           }
-          rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?latest=month&route=${route('service-delivery.index')}`}
+          rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?&month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           timePeriodFieldName='month'
           timePeriod={monthYear}
         />

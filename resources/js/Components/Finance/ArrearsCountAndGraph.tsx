@@ -55,7 +55,7 @@ const ArrearsCountAndGraph = () => {
           cardTitle='Ranked by Arrears Outstanding'
           dataField='total_arrears'
           dataFieldName='Total Arrears'
-          rankingPageUrl={`office-rankings/Total Arrears?route=${route('finance.index')}`}
+          rankingPageUrl={`office-rankings/Total Arrears?month=${monthYear}&route=${route('finance.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
         />

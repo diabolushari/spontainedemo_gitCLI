@@ -14,9 +14,9 @@ export interface InactiveGraphValues {
   conn_status_code: string
   total_consumers__count_: number
   data_date: string
-  consumer_category: string
   voltage: string
   month: string
+  tariff_category: string
 }
 
 // -----------Remove this section when done----------------
@@ -103,8 +103,9 @@ const ActiveConnection = () => {
   }, [selectedMonth])
 
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/198?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}`
+    `subset/314?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}`
   )
+  console.log(graphValues)
 
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
@@ -129,7 +130,7 @@ const ActiveConnection = () => {
     return graphValues?.data
       .filter(
         (value) =>
-          value.consumer_category === category &&
+          value.tariff_category === category &&
           (voltageType === 'Total' || value.voltage === voltageType)
       )
       .reduce((sum, value) => sum + value.total_consumers__count_, 0)
@@ -142,24 +143,24 @@ const ActiveConnection = () => {
     },
     {
       name: 'INDUSTRIAL',
-      value: graphFilter('Industrial'),
+      value: graphFilter('INDUSTRIAL'),
     },
     {
       name: 'COMMERCIAL',
-      value: graphFilter('Commercial'),
+      value: graphFilter('COMMERCIAL'),
     },
     {
       name: 'AGRICULTURE',
-      value: graphFilter('Agriculture'),
+      value: graphFilter('AGRICULTURE'),
     },
     {
       name: 'OTHER',
       value:
         cunsumerCount('Total') -
         graphFilter('DOMESTIC') -
-        graphFilter('Industrial') -
-        graphFilter('Commercial') -
-        graphFilter('Agriculture'),
+        graphFilter('INDUSTRIAL') -
+        graphFilter('COMMERCIAL') -
+        graphFilter('AGRICULTURE'),
     },
   ]
 
@@ -323,7 +324,7 @@ const ActiveConnection = () => {
       )}
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
-          subsetId={195}
+          subsetId={315}
           cardTitle='Trend of Active Connections'
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}

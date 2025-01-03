@@ -136,7 +136,7 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
           subsetGroup: 'Customer Complaints Summary',
           subset: 'Customer Complaints - All Types',
           month: dateToYearMonth(selectedMonth),
-          complaint_type: data.name === 'Other' ? '' : data.name,
+          complaint_type: data.name === 'Power Failures' ? 'NO POWER SUPPLY' : data.name,
           route: route('service-delivery.index'),
         })
       )

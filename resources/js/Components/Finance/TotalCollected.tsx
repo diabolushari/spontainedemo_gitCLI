@@ -373,7 +373,7 @@ const TotalCollected = () => {
           cardTitle='Ranked by Total Collection'
           dataField='total_collection'
           dataFieldName='Collection'
-          rankingPageUrl={`office-rankings/Collection Analysis?route=${route('finance.index')}`}
+          rankingPageUrl={`office-rankings/Collection Analysis?month=${monthYear}route=${route('finance.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
         />

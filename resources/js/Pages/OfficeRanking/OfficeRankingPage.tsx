@@ -16,6 +16,7 @@ import {
 import MonthPicker from '@/ui/form/MonthPicker'
 import SelectList from '@/ui/form/SelectList'
 import { useEffect, useMemo, useState } from 'react'
+import { set } from 'react-datepicker/dist/date_utils'
 
 interface Props {
   subsetGroup: SubsetGroup
@@ -24,6 +25,7 @@ interface Props {
   oldSubsetName: string | null
   oldFilters: Record<string, string>
   oldRoute?: string
+  defaultSort?: string
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -35,6 +37,7 @@ export default function OfficeRankingPage({
   oldSubsetName,
   oldRoute,
   oldFilters,
+  defaultSort,
 }: Readonly<Props>) {
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
@@ -62,8 +65,14 @@ export default function OfficeRankingPage({
   const [selectedSortField, setSelectedSortField] = useState('')
 
   useEffect(() => {
-    setSelectedSortField(measureFields.length > 0 ? measureFields[0].subset_column : '')
-  }, [measureFields])
+    const field = measureFields.find((field) => field.subset_field_name === defaultSort)
+    console.log(field)
+    if (field != null) {
+      setSelectedSortField(field.subset_column)
+    } else {
+      setSelectedSortField(measureFields[0].subset_column)
+    }
+  }, [measureFields, defaultSort])
 
   const [selectedListType, setSelectedListType] = useState('10')
   const [selectedSortOrder, setSelectedSortOrder] = useState('desc')
