@@ -7,11 +7,6 @@ import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardR
 
 const Solar = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-  const [categories, setCategories] = useState<
-    {
-      voltage: string
-    }[]
-  >([])
   const [selectedLevel, setSelectedLevel] = useState('overview')
 
   const monthYear = useMemo(() => {
@@ -36,7 +31,7 @@ const Solar = () => {
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
           subsetId={311}
-          dataField='capacity_kw'
+          dataField='capacity__mw_'
           dataFieldName='Capacity (MW)'
           cardTitle='Trend of Installed Capacity'
           selectedMonth={selectedMonth}

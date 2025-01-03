@@ -305,6 +305,7 @@ const NewConnections = () => {
           dataFieldName='RequestsBreachingSla'
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
+          chartType='area'
         />
       )}
       {selectedLevel === 'ranking' && selectedMonth != null && (

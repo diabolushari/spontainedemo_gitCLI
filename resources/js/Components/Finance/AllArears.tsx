@@ -47,6 +47,11 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
       .filter((value) => value.voltage === 'HT')
       .reduce((sum, value) => sum + value.total_arrears, 0) || 0
 
+  const ehtArrears =
+    graphValues?.data
+      .filter((value) => value.voltage === 'EHT')
+      .reduce((sum, value) => sum + value.total_arrears, 0) || 0
+
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
   const handleGraphSelection = useCallback(
     (subset: string, selectedVoltageType: string | null) => {
@@ -77,7 +82,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
               </p>
               <p className='small-1stop-header text-center'>Total Arrears</p>
             </button>
-            <div className='grid grid-cols-2 gap-2'>
+            <div className='grid grid-cols-3 gap-2'>
               <button
                 onClick={() => handleGraphSelection('Arrears - Aggregate (LT Only)', 'LT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
@@ -95,6 +100,15 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
                   {isLoading ? <Skeleton width={60} /> : formatNumber(hTArrears)}
                 </p>
                 <p className='small-1stop-header text-center'>HT Arrears</p>
+              </button>
+              <button
+                onClick={() => handleGraphSelection('', '')}
+                className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
+              >
+                <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
+                  {isLoading ? <Skeleton width={60} /> : formatNumber(ehtArrears)}
+                </p>
+                <p className='small-1stop-header text-center'>EHT Arrears</p>
               </button>
             </div>
           </div>

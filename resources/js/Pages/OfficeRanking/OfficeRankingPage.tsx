@@ -64,6 +64,7 @@ export default function OfficeRankingPage({
   useEffect(() => {
     setSelectedSortField(measureFields.length > 0 ? measureFields[0].subset_column : '')
   }, [measureFields])
+  console.log(measureFields)
 
   const [selectedListType, setSelectedListType] = useState('10')
   const [selectedSortOrder, setSelectedSortOrder] = useState('desc')
