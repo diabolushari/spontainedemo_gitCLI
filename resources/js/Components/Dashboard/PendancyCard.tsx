@@ -17,8 +17,6 @@ export interface PendencyGraphValues {
   requests_completed_5_15_days__count_: number
   requests_completed_16_30_days____: number
   requests_completed_16_30_days__count_: number
-  requests_completed__5_days____: number
-  requests_completed__5_days__count_: number
   requests_completed__30_days____: number
   requests_completed__30_days__count_: number
   requests_completed__count_: number
@@ -26,6 +24,10 @@ export interface PendencyGraphValues {
   requests_completed_within_sla__count_: number
   requests_received__count_: number
   sla_days: number
+  requests_completed_2_4_days____: number
+  requests_completed_2_4_days__count_: number
+  requests_completed___1_day____: number
+  requests_completed___1_day__count_: number
 }
 
 const PendancyCard = () => {
@@ -40,19 +42,24 @@ const PendancyCard = () => {
     data: PendencyGraphValues[]
     date: string
     latest_value: string
-  }>(`/subset/96?${selectedDate == null ? 'latest=date' : `date=${selectedDate}`}`)
+  }>(`/subset/317?${selectedDate == null ? 'latest=date' : `date=${selectedDate}`}`)
+  console.log(graphValues)
   useEffect(() => {
     if (selectedDate == null && graphValues != null) {
       setSelectedDate(graphValues.latest_value)
     }
   }, [setSelectedDate, graphValues, selectedDate])
 
-  const lessThan5Days = toggleValue
+  const lessThan1Days = toggleValue
     ? graphValues?.data.find((value) => value.request_type === title)
-        ?.requests_completed__5_days____ || 0
+        ?.requests_completed___1_day____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
-        ?.requests_completed__5_days__count_ || 0
-
+        ?.requests_completed___1_day__count_ || 0
+  const between24Days = toggleValue
+    ? graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_2_4_days____ || 0
+    : graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_2_4_days__count_ || 0
   const betweem515Days = toggleValue
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_5_15_days____ || 0
@@ -74,7 +81,16 @@ const PendancyCard = () => {
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_within_sla__count_ || 0
 
-  const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
+  const data = [
+    {
+      name: 'days',
+      lessThan1Days,
+      between24Days,
+      betweem515Days,
+      betweem1630Days,
+      greaterThan30Days,
+    },
+  ]
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const renderCustomTooltip = ({ active, payload, label }: any) => {
@@ -197,11 +213,19 @@ const PendancyCard = () => {
                     hide
                   />
                   <Bar
-                    dataKey='lessThan5Days'
+                    dataKey='lessThan1Days'
                     stackId='a'
                     fill={solidColors[6]}
                     onClick={() => {
-                      handleGraphSelection('Requests Completion - Less Than 5 Days')
+                      handleGraphSelection('Requests Completion - Less Than 1 Days')
+                    }}
+                  />
+                  <Bar
+                    dataKey='between24Days'
+                    stackId='a'
+                    fill={solidColors[1]}
+                    onClick={() => {
+                      handleGraphSelection('Requests Completion - 2 to 4 Days')
                     }}
                   />
                   <Bar
@@ -230,18 +254,30 @@ const PendancyCard = () => {
               )}
             </div>
           </div>
-          <div className='grid grid-cols-4 justify-center gap-2 pb-10 md:justify-start md:gap-5'>
+          <div className='grid grid-cols-5 justify-center gap-2 pb-10 md:justify-start md:gap-5'>
             <div className='text-center'>
               <button
                 className='smmetric-1stop'
                 style={{ color: solidColors[6] }}
                 onClick={() => {
-                  handleGraphSelection('Requests Completion - Less Than 5 Days')
+                  handleGraphSelection('Requests Completion - Less Than 1 Days')
                 }}
               >
-                {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
+                {toggleValue ? `${lessThan1Days.toFixed(2)}%` : formatNumber(lessThan1Days)}
               </button>
-              <div className='small-1stop'>{'<5 days'}</div>
+              <div className='small-1stop'>{'<1 days'}</div>
+            </div>
+            <div className='text-center'>
+              <button
+                className='smmetric-1stop'
+                style={{ color: solidColors[1] }}
+                onClick={() => {
+                  handleGraphSelection('Requests Completion - 2 to 4 Days')
+                }}
+              >
+                {toggleValue ? `${between24Days.toFixed(2)}%` : formatNumber(between24Days)}
+              </button>
+              <div className='small-1stop'>5-15 days</div>
             </div>
             <div className='text-center'>
               <button
