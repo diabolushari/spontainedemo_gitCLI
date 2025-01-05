@@ -266,9 +266,9 @@ const SlaPerformance = () => {
       )}
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
-          subsetId={78}
+          subsetId={313}
           cardTitle='Trend of SLA Performance'
-          dataField='sla_perf_perc'
+          dataField='sla_performance____'
           dataFieldName='SLA Performance (%)'
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}

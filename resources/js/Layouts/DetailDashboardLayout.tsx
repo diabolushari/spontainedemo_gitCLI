@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
 import BreadCrumbs, { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import { SubsetGroup } from '@/interfaces/data_interfaces'
 import DashboardLayout from '@/Layouts/DashboardLayout'
@@ -43,6 +43,10 @@ export default function DetailDashboardLayout({
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
 
+  const removeAllFilters = useCallback(() => {
+    setSearchParams({})
+  }, [setSearchParams])
+
   return (
     <DashboardLayout
       type={subsetGroup.name}
@@ -72,6 +76,14 @@ export default function DetailDashboardLayout({
                     setSearchParams={setSearchParams}
                   />
                 ))}
+                <div className='flex justify-end gap-2'>
+                  <button
+                    className='link'
+                    onClick={removeAllFilters}
+                  >
+                    Reset Filters
+                  </button>
+                </div>
               </div>
             </div>
           </div>

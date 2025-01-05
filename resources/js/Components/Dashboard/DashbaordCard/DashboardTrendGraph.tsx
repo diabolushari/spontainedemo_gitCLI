@@ -63,6 +63,8 @@ export default function DashboardTrendGraph({
     })
   }, [subsetId, selectedMonth, selectedMonthValue, filterValue, filterFieldName, setSelectedMonth])
 
+  console.log(fetchUrl)
+
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
