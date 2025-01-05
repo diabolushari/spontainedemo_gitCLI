@@ -6,12 +6,17 @@ import { Paginator, solidColors } from '@/ui/ui_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import { dateToYearMonth, formatNumber, yearMonthToDate } from '../ServiceDelivery/ActiveConnection'
+import {
+  dateToYearMonth,
+  formatNumber,
+  yearMonthToDate,
+} from '../../ServiceDelivery/ActiveConnection'
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
-import { CustomTooltip } from '../CustomTooltip'
+import { CustomTooltip } from '../../CustomTooltip'
+import SecondarySort from '@/Components/DataExplorer/OfficeRanking/SecondarySort'
 
 interface Props {
   subset: SubsetDetail
@@ -22,6 +27,12 @@ interface Props {
   setSelectedOfficeLevel: Dispatch<SetStateAction<string>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+  secondarySortField: string
+  setSecondarySortField: React.Dispatch<SetStateAction<string>>
+  secondarySortOrder: string
+  setSecondarySortOrder: React.Dispatch<React.SetStateAction<string>>
+  showSecondarySortField: boolean
+  setShowSecondarySortField: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function OfficeRanking({
@@ -33,6 +44,12 @@ export default function OfficeRanking({
   setSelectedOfficeLevel,
   selectedMonth,
   setSelectedMonth,
+  secondarySortField,
+  setSecondarySortField,
+  secondarySortOrder,
+  setSecondarySortOrder,
+  showSecondarySortField,
+  setShowSecondarySortField,
 }: Readonly<Props>) {
   const [page, setPage] = useState(1)
   const {
@@ -72,6 +89,8 @@ export default function OfficeRanking({
       page: page,
       per_page: 10,
       office_code: prevLevelOffice?.office_code ?? '',
+      secondary_sort_by: secondarySortField,
+      secondary_sort_order: secondarySortOrder,
     })
   )
 
@@ -192,6 +211,16 @@ export default function OfficeRanking({
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <SecondarySort
+          subset={subset}
+          selectedSortField={selectedSortField}
+          secondarySortField={secondarySortField}
+          setSecondarySortField={setSecondarySortField}
+          secondarySortOrder={secondarySortOrder}
+          setSecondarySortOrder={setSecondarySortOrder}
+          showSecondarySortField={showSecondarySortField}
+          setShowSecondarySortField={setShowSecondarySortField}
+        />
         <div className='rounded-lg bg-white p-4'>
           <OfficeLevelSubsetTable
             officeLevel={officeLevel}

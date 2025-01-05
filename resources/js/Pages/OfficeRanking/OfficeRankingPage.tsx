@@ -1,5 +1,5 @@
 import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
-import OfficeRanking from '@/Components/DataExplorer/OfficeRanking'
+import OfficeRanking from '@/Components/DataExplorer/OfficeRanking/OfficeRanking'
 import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
 import {
   SubsetDetail,
@@ -16,7 +16,6 @@ import {
 import MonthPicker from '@/ui/form/MonthPicker'
 import SelectList from '@/ui/form/SelectList'
 import { useEffect, useMemo, useState } from 'react'
-import { set } from 'react-datepicker/dist/date_utils'
 
 interface Props {
   subsetGroup: SubsetGroup
@@ -63,15 +62,20 @@ export default function OfficeRankingPage({
   }, [selectedSubset])
 
   const [selectedSortField, setSelectedSortField] = useState('')
+  const [secondarySortField, setSecondarySortField] = useState('')
+  const [secondarySortOrder, setSecondarySortOrder] = useState('desc')
+  const [showSecondarySort, setShowSecondarySort] = useState(false)
 
   useEffect(() => {
     const field = measureFields.find((field) => field.subset_field_name === defaultSort)
-    console.log(field)
+    setSecondarySortOrder('desc')
+    setSecondarySortField('')
+    setShowSecondarySort(false)
     if (field != null) {
       setSelectedSortField(field.subset_column)
-    } else {
-      setSelectedSortField(measureFields[0].subset_column)
+      return
     }
+    setSelectedSortField(measureFields[0].subset_column)
   }, [measureFields, defaultSort])
 
   const [selectedListType, setSelectedListType] = useState('10')
@@ -85,6 +89,14 @@ export default function OfficeRankingPage({
   const sortField = useMemo(() => {
     return measureFields.find((field) => field.subset_column === selectedSortField) ?? null
   }, [selectedSortField, measureFields])
+
+  const changeSortField = (subsetColumn: string) => {
+    if (secondarySortField === subsetColumn) {
+      setSecondarySortField('')
+      setSelectedSortOrder('desc')
+    }
+    setSelectedSortField(subsetColumn)
+  }
 
   return (
     <DetailDashboardLayout
@@ -158,7 +170,7 @@ export default function OfficeRankingPage({
                   list={measureFields}
                   dataKey='subset_column'
                   displayKey='subset_field_name'
-                  setValue={setSelectedSortField}
+                  setValue={changeSortField}
                   value={selectedSortField}
                   style='1stop-small'
                 />
@@ -200,6 +212,12 @@ export default function OfficeRankingPage({
               setSelectedOfficeLevel={setActiveTab}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
+              secondarySortField={secondarySortField}
+              setSecondarySortField={setSecondarySortField}
+              secondarySortOrder={secondarySortOrder}
+              setSecondarySortOrder={setSecondarySortOrder}
+              showSecondarySortField={showSecondarySort}
+              setShowSecondarySortField={setShowSecondarySort}
             />
           )}
         </SelectedOfficeContext.Provider>

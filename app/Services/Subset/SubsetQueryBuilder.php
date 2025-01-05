@@ -131,8 +131,8 @@ readonly class SubsetQueryBuilder
             }
             $groupingColumns[] = $column;
             $selectColumns[] = $column.' as `'.$date->subset_column.'`';
-            if ($date->sort_order != null || request()->input('sort_by') === $date->subset_column) {
-                $sortOrder = request()->filled('sort_order') ? request()->input('sort_order') : $date->sort_order;
+            if ($date->sort_order != null) {
+                $sortOrder = $date->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
                     $column,
                     strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
@@ -178,8 +178,8 @@ readonly class SubsetQueryBuilder
             $groupingColumns[] = '`'.$dimension->info->column.'`';
             $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->subset_column.'`';
 
-            if ($dimension->sort_order != null || request()->input('sort_by') === $dimension->subset_column) {
-                $sortOrder = request()->filled('sort_order') ? request()->input('sort_order') : $dimension->sort_order;
+            if ($dimension->sort_order != null) {
+                $sortOrder = $dimension->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
                     $dimension->info->column.'_record.name',
                     strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
@@ -225,8 +225,8 @@ readonly class SubsetQueryBuilder
             }
 
             $measureColumns[] = $column.' as `'.$measure->subset_column.'`';
-            if ($measure->sort_order != null || request()->input('sort_by') === $measure->subset_column) {
-                $sortOrder = request()->filled('sort_order') ? request()->input('sort_order') : $measure->sort_order;
+            if ($measure->sort_order != null) {
+                $sortOrder = $measure->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
                     $column,
                     strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'

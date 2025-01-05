@@ -103,9 +103,8 @@ const ActiveConnection = () => {
   }, [selectedMonth])
 
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[]; latest_value: string }>(
-    `subset/314?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}`
+    `/subset/314?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}`
   )
-  console.log(graphValues)
 
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {

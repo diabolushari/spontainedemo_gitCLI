@@ -7,6 +7,7 @@ use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetFindMaxValue;
 use App\Services\Subset\SubsetQueryBuilder;
+use App\Services\Subset\SubsetQuerySorting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -28,6 +29,7 @@ class SubsetDataController extends Controller implements HasMiddleware
         SubsetQueryBuilder $queryBuilder,
         SubsetFilterBuilder $filterBuilder,
         SubsetFindMaxValue $findMaxValue,
+        SubsetQuerySorting $querySorting,
         Request $request,
     ): JsonResponse {
         $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
@@ -49,6 +51,26 @@ class SubsetDataController extends Controller implements HasMiddleware
             $subsetDetail,
             $filters
         );
+
+        if ($request->filled('sort_by')) {
+            $querySorting->addSort(
+                $query,
+                $subsetDetail,
+                false,
+                $request->input('sort_by'),
+                $request->input('sort_order', 'ASC'),
+            );
+        }
+
+        if ($request->filled('secondary_sort_by')) {
+            $querySorting->addSort(
+                $query,
+                $subsetDetail,
+                false,
+                $request->input('secondary_sort_by'),
+                $request->input('secondary_sort_order', 'ASC'),
+            );
+        }
 
         return response()->json([
             'data' => $query->get(),
