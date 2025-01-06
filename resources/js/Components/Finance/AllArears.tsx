@@ -1,16 +1,8 @@
-import Card from '@/ui/Card/Card'
-import Top10Icon from '../ui/Top10Icon'
-import DataShowIcon from '../ui/DatashowIcon'
-import TrendIcon from '../ui/TrendIcon'
-import { Link, router } from '@inertiajs/react'
-import MoreButton from '../MoreButton'
-import MonthPicker from '@/ui/form/MonthPicker'
 import { useCallback, useEffect, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
-import AllArrearsTrend from './AllArrearsTrend'
 import Skeleton from 'react-loading-skeleton'
-import AllArrearsList from './AllArrearsList'
+import { router } from '@inertiajs/react'
 
 export interface AllArearsValue {
   month: string
@@ -28,7 +20,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
     data: AllArearsValue[]
     latest_value: string
   }>(
-    `subset/169?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/169?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
   )
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
