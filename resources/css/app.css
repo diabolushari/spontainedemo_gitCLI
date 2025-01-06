@@ -323,7 +323,7 @@ body {
     font-size: 18px;
     font-weight: 800;
     line-height: 22px;
-    letter-spacing: 4px;
+    letter-spacing: 2px;
   }
 
   .subheader-sm-1stop {
@@ -332,7 +332,7 @@ body {
     font-size: 12px;
     font-weight: 800;
     line-height: 14px;
-    letter-spacing: 3px;
+    letter-spacing: 1px;
   }
 
   .body-1stop {
@@ -346,13 +346,13 @@ body {
   .small-1stop {
     font-family: 'Figtree-Regular';
     font-style: normal;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 200;
     line-height: 16px;
   }
   .small-1stop-header {
     font-family: 'Figtree-Medium';
-    font-size: 10px;
+    font-size: 12px;
     line-height: 16px;
     text-transform: uppercase;
     font-weight: 800;
@@ -387,15 +387,15 @@ body {
   .axial-label-1stop {
     font-family: 'Figtree-Regular';
     font-style: normal;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 200;
-    line-height: 10px;
+    line-height: 12px;
     letter-spacing: 0px;
   }
   .data-xs-1stop {
     font-family: 'DMMono-Regular';
     font-style: normal;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 200;
     line-height: 14px;
   }
