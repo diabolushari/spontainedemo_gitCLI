@@ -1,21 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import Card from '@/ui/Card/Card'
-import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link, router } from '@inertiajs/react'
+import { router } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import MonthPicker from '@/ui/form/MonthPicker'
 import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import DataShowIcon from '../ui/DatashowIcon'
-import TrendIcon from '../ui/TrendIcon'
-import Top10Icon from '../ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '../CustomTooltip'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
-import TotalCollectionList from './TotalCollectionList'
-import TotalCollectionTrend from './TotalCollectionTrend'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import { CustomLegend } from '../Financial/TotalBilled/TotalBilled'
@@ -354,7 +346,7 @@ const TotalCollected = () => {
       )}{' '}
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
-          subsetId={225}
+          subsetId={309}
           cardTitle='Trend of Collections'
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}

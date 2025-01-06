@@ -457,7 +457,7 @@ const TotalBilled = () => {
       )}
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
-          subsetId={120}
+          subsetId={306}
           cardTitle='Trend of Top Billing/Total Demand'
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
