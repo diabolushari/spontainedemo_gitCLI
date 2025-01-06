@@ -26,9 +26,11 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [isMW, setiSMW] = useState(true)
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
   const [graphValues] = useFetchRecord<{ data: SolarProsumersValue[]; latest_value: string }>(
-    `subset/71?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/71?${
+      selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`
+    }`
   )
-  // graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
+
   const graphData = useMemo(() => {
     if (graphValues?.data == null) {
       return []
@@ -83,18 +85,19 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
       return count / 1000
     }
   }
-  const totalConsumerCount = graphValues?.data.reduce(
-    (total, item) => total + item.consumer_count,
-    0
-  )
-  const totalCapacity = graphValues?.data.reduce((total, item) => total + item.capacity_kw, 0)
+  const totalConsumerCount = graphValues?.data
+    .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
+    .reduce((total, item) => total + item.consumer_count, 0)
+  const totalCapacity = graphValues?.data
+    .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
+    .reduce((total, item) => total + item.capacity_kw, 0)
 
   const total = isMW ? totalCapacity / 1000 : totalConsumerCount
 
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
   }
-  const data = [
+  const dataFiltering = [
     {
       name: 'DOMESTIC',
       value: graphFilter('DOMESTIC'),
@@ -121,11 +124,92 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
         graphFilter('Agriculture'),
     },
   ]
-  console.log(data)
+
+  //Taking data top 3 and others
+  const graphValuesSorted = isMW
+    ? graphValues?.data
+        .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
+        .sort((a, b) => a.capacity_kw - b.capacity_kw)
+        .reverse()
+    : graphValues?.data
+        .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
+        .sort((a, b) => a.consumer_count - b.consumer_count)
+        .reverse()
+  console.log(graphValuesSorted)
+
+  const filters = (value: SolarProsumersValue, index: number) => {
+    if (index < 3) {
+      if (voltageType == 'Total') {
+        return value.consumer_category === graphValuesSorted?.[index].consumer_category
+      } else {
+        return (
+          value.consumer_category === graphValuesSorted?.[index].consumer_category &&
+          value.voltage == voltageType
+        )
+      }
+    } else {
+      if (voltageType == 'Total') {
+        return (
+          value.consumer_category !== graphValuesSorted?.[0]?.consumer_category &&
+          value.consumer_category !== graphValuesSorted?.[1]?.consumer_category &&
+          value.consumer_category !== graphValuesSorted?.[2]?.consumer_category
+        )
+      } else {
+        return (
+          value.consumer_category !== graphValuesSorted?.[0]?.consumer_category &&
+          value.consumer_category !== graphValuesSorted?.[1]?.consumer_category &&
+          value.consumer_category !== graphValuesSorted?.[2]?.consumer_category &&
+          value.voltage == voltageType
+        )
+      }
+    }
+  }
+
+  const graphIndexFilter = (index: number) => {
+    if (!isMW) {
+      return graphValuesSorted
+        ?.filter((value) => filters(value, index))
+        .reduce((sum, value) => sum + value.consumer_count, 0)
+    } else {
+      const count =
+        graphValuesSorted
+          ?.filter((value) => filters(value, index))
+          .reduce((sum, value) => sum + value.capacity_kw, 0) ?? 0
+      return count / 1000
+    }
+  }
+
+  const dataIndex = [
+    {
+      name: graphValues?.data[0]?.consumer_category,
+      value: graphIndexFilter(0),
+    },
+    {
+      name: graphValues?.data[1]?.consumer_category,
+      value: graphIndexFilter(1),
+    },
+    {
+      name: graphValues?.data[2]?.consumer_category,
+      value: graphIndexFilter(2),
+    },
+    {
+      name: 'OTHER',
+      value: graphIndexFilter(3),
+    },
+  ]
+
+  const data = voltageType === 'LT' ? dataFiltering : dataIndex
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
-      const excludedCategories = ['DOMESTIC', 'Industrial', 'Commercial', 'Agriculture']
+      const excludedCategoriesFiltering = ['DOMESTIC', 'Industrial', 'Commercial', 'Agriculture']
+      const excludedCategoriesIndex = [
+        graphValues?.data[0]?.consumer_category,
+        graphValues?.data[1]?.consumer_category,
+        graphValues?.data[2]?.consumer_category,
+      ]
+      const excludedCategories =
+        voltageType === 'LT' ? excludedCategoriesFiltering : excludedCategoriesIndex
       router.get(
         route('data-explorer', {
           subsetGroup: 'Solar Prosumer Statistics',
