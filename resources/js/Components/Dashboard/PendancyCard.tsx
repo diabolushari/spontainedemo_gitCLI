@@ -261,7 +261,7 @@ const PendancyCard = () => {
               >
                 {showPercentage ? `${lessThan1Days.toFixed(2)}%` : formatNumber(lessThan1Days)}
               </button>
-              <div className='small-1stop'>{' ≤1 days'}</div>
+              <div className='small-1stop'>{' ≤1 day'}</div>
             </div>
             <div className='text-center'>
               <button
