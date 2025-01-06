@@ -342,7 +342,7 @@ const ActiveConnection = () => {
           cardTitle='Ranked by Connection Counts'
           dataField='total_consumers__count_'
           dataFieldName='Consumer Count'
-          rankingPageUrl={`/office-rankings/Active Connections?route=${route('service-delivery.index')}`}
+          rankingPageUrl={`/office-rankings/Active Connections?month=${monthYear}&route=${route('service-delivery.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
         />

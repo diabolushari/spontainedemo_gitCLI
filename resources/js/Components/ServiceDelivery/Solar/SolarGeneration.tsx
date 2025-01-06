@@ -19,7 +19,7 @@ const SolarGeneration = () => {
         dataFieldName='Generation (MWh)'
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
-        filterListFetchURL={route('static-list', { type: 'voltage' })}
+        filterListFetchURL={route('static-list', { type: 'voltageExceptEht' })}
         filterFieldName='voltage'
         filterListKey='value'
         defaultFilterValue='LT'

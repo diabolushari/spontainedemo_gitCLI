@@ -39,7 +39,9 @@ export const CustomTooltip = ({
                         ? `${((pld.value * 100) / totalCount).toFixed(2)}%`
                         : valueType === 'voltage'
                           ? `${Number(pld.value).toFixed(2)}`
-                          : formatNumber(pld.value)}
+                          : valueType === 'percentage'
+                            ? formatNumber(pld.value) + '%'
+                            : formatNumber(pld.value)}
                     </span>
                   </span>
                 )}

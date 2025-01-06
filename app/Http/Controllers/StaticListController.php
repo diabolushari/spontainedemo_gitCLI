@@ -27,12 +27,9 @@ class StaticListController extends Controller implements HasMiddleware
                 ['value' => 'EHT'],
             ],
             default => [],
-            'ageWise' => [
-                ['value' => '0-3'],
-                ['value' => '4-6'],
-                ['value' => '7-12'],
-                ['value' => '13-24'],
-                ['value' => '>24'],
+            'voltageExceptEht' => [
+               ['value' => 'LT'],
+                ['value' => 'HT'],
             ]
         };
 

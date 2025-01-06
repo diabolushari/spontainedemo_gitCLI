@@ -47,7 +47,7 @@ const Solar = () => {
           cardTitle='Ranked by Capacity'
           timePeriod={monthYear}
           timePeriodFieldName='month'
-          rankingPageUrl={`/office-rankings/Solar Prosumer Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
+          rankingPageUrl={`/office-rankings/Solar Prosumers Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
         />
       )}
     </DashboardCardLayout>
