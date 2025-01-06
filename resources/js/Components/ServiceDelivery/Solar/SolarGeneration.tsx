@@ -19,6 +19,10 @@ const SolarGeneration = () => {
         dataFieldName='Generation (MWh)'
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        filterListFetchURL={route('static-list', { type: 'voltage' })}
+        filterFieldName='voltage'
+        filterListKey='value'
+        defaultFilterValue='LT'
         chartType='area'
       />
     </DashboardCardLayout>

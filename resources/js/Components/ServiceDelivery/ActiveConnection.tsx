@@ -172,8 +172,8 @@ const ActiveConnection = () => {
           subsetGroup: 'Active Connections Summary',
           voltage: voltageType === 'Total' ? '' : voltageType,
           month: dateToYearMonth(selectedMonth),
-          consumer_category: data.name === 'OTHER' ? '' : data.name,
-          consumer_category_not_in:
+          tariff_category: data.name === 'OTHER' ? '' : data.name,
+          tariff_category_not_in:
             data.name === 'OTHER'
               ? `${excludedCategories.filter((category) => category).join(',')}`
               : '',

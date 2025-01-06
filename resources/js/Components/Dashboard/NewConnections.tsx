@@ -329,14 +329,14 @@ const NewConnections = () => {
           subsetId={63}
           cardTitle={
             showPercentage
-              ? 'Ranked by Overall SLA Compliant Requests (%)'
-              : 'Ranked by Overall SLA Compliant Requests (count)'
+              ? 'Ranked by Overall SLA Compliant Requests (count)'
+              : 'Ranked by Overall SLA Compliant Requests (%)'
           }
-          dataField={!showPercentage ? 'sla_perf_cnt' : 'sla_perf__'}
+          dataField={!showPercentage ? 'sla_perf__' : 'sla_perf_cnt'}
           dataFieldName={
             showPercentage
-              ? 'Overall SLA Compliant Requests (%)'
-              : 'Overall SLA Compliant Requests (count)'
+              ? 'Overall SLA Compliant Requests (count)'
+              : 'Overall SLA Compliant Requests (%)'
           }
           rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?&month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           timePeriodFieldName='month'
