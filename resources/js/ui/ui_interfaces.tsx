@@ -87,15 +87,26 @@ export const colors = [
 ]
 
 export const solidColors = [
-  '#A5BE00',
-  '#64B5F6',
-  '#427AA1',
-  '#FEC601',
-  '#613DC1',
-  '#FF6392',
-  '#20BF55',
-  '#FFE45E',
+  '#385282',
+  '#AED35F',
+  '#64C19F',
+  '#C0C57D',
+  '#48A1E1',
+  '#C3DE80',
+  '#97C4AE',
+  '#41765D',
 ]
+
+// export const solidColors = [
+//   '#A5BE00',
+//   '#64B5F6',
+//   '#427AA1',
+//   '#FEC601',
+//   '#613DC1',
+//   '#FF6392',
+//   '#20BF55',
+//   '#FFE45E',
+// ]
 
 // export const solidColors = [
 //     '#A490C9',

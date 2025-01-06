@@ -228,7 +228,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                     href={item.link}
                     key={item.name}
                   >
-                    <span className='small-1stop-header pl-2 pt-2 font-bold hover:text-xs'>
+                    <span className='small-1stop-header rounded-lg p-2 font-bold hover:bg-1stop-alt-gray'>
                       {item.name}
                     </span>
                   </Link>
@@ -316,7 +316,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
 </svg>`,
                     }}
                   />
-                  <span className='small-1stop-header ml-2 pl-2 pt-2 font-bold hover:text-xs'>
+                  <span className='small-1stop-header ml-2 rounded-lg p-2 font-bold hover:bg-1stop-alt-gray'>
                     Admin
                   </span>
                 </Link>
@@ -467,7 +467,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                         href={item.link}
                         key={item.name}
                       >
-                        <span className='subheader-sm-1stop pl-2 pt-2 font-bold uppercase hover:text-xs'>
+                        <span className='subheader-sm-1stop p-2 font-bold uppercase hover:text-xs'>
                           {item.name}
                         </span>
                       </Link>
@@ -617,7 +617,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
 </svg>`,
                       }}
                     />
-                    <span className='small-1stop-header ml-2 pl-2 pt-2 font-bold hover:text-xs'>
+                    <span className='small-1stop-header ml-2 rounded-lg p-2 font-bold hover:bg-1stop-alt-gray'>
                       Admin
                     </span>
                   </Link>
