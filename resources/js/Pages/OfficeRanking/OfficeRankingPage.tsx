@@ -79,7 +79,7 @@ export default function OfficeRankingPage({
       return
     }
     setSelectedSortField(measureFields[0].subset_column)
-  }, [measureFields, defaultSort, secondarySort])
+  }, [measureFields, defaultSort])
 
   const [selectedListType, setSelectedListType] = useState('10')
   const [selectedSortOrder, setSelectedSortOrder] = useState('desc')
@@ -100,9 +100,15 @@ export default function OfficeRankingPage({
     }
     setSelectedSortField(subsetColumn)
   }
-  // if (secondarySort != null) {
-  //   changeSortField(secondarySort)
-  // }
+  useEffect(() => {
+    const secondarySortingField = measureFields.find(
+      (field) => field.subset_field_name === secondarySort
+    )
+    if (secondarySortingField != null) {
+      setSecondarySortField(secondarySortingField.subset_column)
+      setShowSecondarySort(true)
+    }
+  }, [measureFields, secondarySort])
 
   return (
     <DetailDashboardLayout
