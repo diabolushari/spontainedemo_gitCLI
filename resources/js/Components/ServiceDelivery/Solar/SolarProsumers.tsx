@@ -40,6 +40,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
       .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
       .reverse()
   }, [graphValues, voltageType])
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -179,34 +180,40 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
     }
   }
 
-  const dataIndex = [
-    {
-      name: graphValues?.data[0]?.consumer_category,
-      value: graphIndexFilter(0),
-    },
-    {
-      name: graphValues?.data[1]?.consumer_category,
-      value: graphIndexFilter(1),
-    },
-    {
-      name: graphValues?.data[2]?.consumer_category,
-      value: graphIndexFilter(2),
-    },
-    {
-      name: 'OTHER',
-      value: graphIndexFilter(3),
-    },
-  ]
+  const dataIndex = useMemo(() => {
+    console.log(graphValuesSorted)
+
+    return [
+      {
+        name: graphValuesSorted?.[0]?.consumer_category,
+        value: graphIndexFilter(0),
+      },
+      {
+        name: graphValuesSorted?.[1]?.consumer_category,
+        value: graphIndexFilter(1),
+      },
+      {
+        name: graphValuesSorted?.[2]?.consumer_category,
+        value: graphIndexFilter(2),
+      },
+      {
+        name: 'OTHER',
+        value: graphIndexFilter(3),
+      },
+    ]
+  }, [graphValuesSorted])
 
   const data = voltageType === 'LT' ? dataFiltering : dataIndex
+
+  console.log(data)
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
       const excludedCategoriesFiltering = ['DOMESTIC', 'Industrial', 'Commercial', 'Agriculture']
       const excludedCategoriesIndex = [
-        graphValues?.data[0]?.consumer_category,
-        graphValues?.data[1]?.consumer_category,
-        graphValues?.data[2]?.consumer_category,
+        graphValuesSorted?.[0]?.consumer_category,
+        graphValuesSorted?.[1]?.consumer_category,
+        graphValuesSorted?.[2]?.consumer_category,
       ]
       const excludedCategories =
         voltageType === 'LT' ? excludedCategoriesFiltering : excludedCategoriesIndex
