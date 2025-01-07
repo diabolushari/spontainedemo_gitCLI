@@ -176,13 +176,19 @@ export default function OfficeLevelSubsetTable({
                       >
                         {col.name === 'Office Name' ? (
                           <>
-                            <p className='data-sm-1stop'>
-                              {item[col.source as keyof DataTableItem]}
-                            </p>
-
-                            <p className='data-sm-1stop pt-2 text-1stop-dark-gray'>
-                              {item['office_code' as keyof DataTableItem]}
-                            </p>
+                            {item[col.source as keyof DataTableItem] == null && (
+                              <p>External To Hierarchy</p>
+                            )}
+                            {item[col.source as keyof DataTableItem] != null && (
+                              <>
+                                <p className='data-sm-1stop'>
+                                  {item[col.source as keyof DataTableItem]}
+                                </p>
+                                <p className='data-sm-1stop pt-2 text-1stop-dark-gray'>
+                                  {item['office_code' as keyof DataTableItem]}
+                                </p>
+                              </>
+                            )}
                           </>
                         ) : col.type === 'number' ? (
                           formatNumber(item[col.source as keyof DataTableItem] as number | null)

@@ -34,11 +34,16 @@ export default function AppliedSubsetFilter({
 
   return (
     <div
-      className='flex items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'
+      className='flex w-full items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'
       key={appliedFilter.id}
     >
-      <span className='axial-label-1stop break-words capitalize'>{appliedFilter.filter}</span>
-      <button onClick={() => removeFilter(appliedFilter.filterKey)}>
+      <div className='flex-shrink-1 w-full'>
+        <span className='axial-label-1stop break-words capitalize'>{appliedFilter.filter}</span>
+      </div>
+      <button
+        className='flex-grow'
+        onClick={() => removeFilter(appliedFilter.filterKey)}
+      >
         <i className='la la-close' />
       </button>
     </div>

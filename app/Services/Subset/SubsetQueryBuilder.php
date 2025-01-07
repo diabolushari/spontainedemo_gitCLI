@@ -350,13 +350,24 @@ readonly class SubsetQueryBuilder
                     .$joinSelect
                 );
 
-            $query->joinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) use ($detail) {
-                $join->on(
-                    $detail->table_name.'.section_code',
-                    '=',
-                    'hierarchy.hierarchy_section_code'
-                );
-            });
+            //if section is region then left join so data with no section is included
+            if ($groupingLevel === 'region') {
+                $query->leftJoinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) use ($detail) {
+                    $join->on(
+                        $detail->table_name.'.section_code',
+                        '=',
+                        'hierarchy.hierarchy_section_code'
+                    );
+                });
+            } else {
+                $query->joinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) use ($detail) {
+                    $join->on(
+                        $detail->table_name.'.section_code',
+                        '=',
+                        'hierarchy.hierarchy_section_code'
+                    );
+                });
+            }
 
             $selectColumns[] = $selectStatement;
             $selectColumns[] = $nameSelectStatement;

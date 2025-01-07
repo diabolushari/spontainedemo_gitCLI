@@ -232,7 +232,7 @@ export default function DataExplorerPage({
             </div>
             <button
               onClick={() => setShowSearchModal(true)}
-              className='place-items-center rounded-r-lg bg-1stop-highlight2'
+              className='flex items-center justify-center rounded-r-lg bg-1stop-highlight2 py-4'
             >
               <i className='la la-filter'></i>
               <p className='small-1stop-header'>Filters</p>

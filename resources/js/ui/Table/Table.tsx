@@ -21,7 +21,7 @@ export default function Table({
               return (
                 <th
                   scope='col'
-                  className='data-sm-1stop px-3 py-3 text-left'
+                  className='data-sm-1stop px-3 py-3 text-left font-bold'
                   key={head}
                 >
                   {head}
