@@ -30,50 +30,47 @@ export interface PendencyGraphValues {
 
 const PendancyCard = () => {
   const [title, setTitle] = useState('Load Change')
-  const [showPercentage, setShowPercentage] = useState<boolean>(true)
+  const [showPercentage, setShowPercentage] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
-  const handleToogleNumber = () => {
-    setShowPercentage(!showPercentage)
-  }
   const [graphValues] = useFetchRecord<{
     data: PendencyGraphValues[]
     date: string
     latest_value: string
   }>(`/subset/317?${selectedDate == null ? 'latest=date' : `date=${selectedDate}`}`)
-  console.log(graphValues)
+
   useEffect(() => {
     if (selectedDate == null && graphValues != null) {
       setSelectedDate(graphValues.latest_value)
     }
   }, [setSelectedDate, graphValues, selectedDate])
 
-  const lessThan1Days = showPercentage
+  const lessThan1Days = !showPercentage
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed___1_day____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed___1_day__count_ || 0
-  const between24Days = showPercentage
+  const between24Days = !showPercentage
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_2_4_days____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_2_4_days__count_ || 0
-  const betweem515Days = showPercentage
+  const betweem515Days = !showPercentage
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_5_15_days____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_5_15_days__count_ || 0
-  const betweem1630Days = showPercentage
+  const betweem1630Days = !showPercentage
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_16_30_days____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_16_30_days__count_ || 0
-  const greaterThan30Days = showPercentage
+  const greaterThan30Days = !showPercentage
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed__30_days____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed__30_days__count_ || 0
-  const complWithinSLa = showPercentage
+  const complWithinSLa = !showPercentage
     ? graphValues?.data.find((value) => value.request_type === title)
         ?.requests_completed_within_sla____ || 0
     : graphValues?.data.find((value) => value.request_type === title)
@@ -142,6 +139,10 @@ const PendancyCard = () => {
     [selectedDate, title]
   )
 
+  useEffect(() => {
+    console.log('percentage: ' + showPercentage)
+  }, [showPercentage])
+
   return (
     <DashboardCardLayout
       selectedDate={selectedDate}
@@ -160,7 +161,7 @@ const PendancyCard = () => {
                     <Skeleton width='100%' />
                   ) : (
                     <span className='xlmetric-1stop'>
-                      {showPercentage
+                      {!showPercentage
                         ? `${complWithinSLa.toFixed(2)}%`
                         : formatNumber(complWithinSLa)}
                     </span>
@@ -183,7 +184,7 @@ const PendancyCard = () => {
           </div>
           <div className='flex w-full flex-col justify-center px-2 pt-10'>
             <p className='small-1stop-header text-center'>
-              Request Completion {showPercentage ? '%' : ''} by Days Taken
+              Request Completion {!showPercentage ? '%' : ''} by Days Taken
             </p>
             <div className='flex w-full justify-center'>
               {isLoading ? (
@@ -259,7 +260,7 @@ const PendancyCard = () => {
                   handleGraphSelection('Requests Completion Within 1 Day')
                 }}
               >
-                {showPercentage ? `${lessThan1Days.toFixed(2)}%` : formatNumber(lessThan1Days)}
+                {!showPercentage ? `${lessThan1Days.toFixed(2)}%` : formatNumber(lessThan1Days)}
               </button>
               <div className='small-1stop'>{' ≤1 day'}</div>
             </div>
@@ -271,7 +272,7 @@ const PendancyCard = () => {
                   handleGraphSelection('Requests Completion - 2 to 4 Days')
                 }}
               >
-                {showPercentage ? `${between24Days.toFixed(2)}%` : formatNumber(between24Days)}
+                {!showPercentage ? `${between24Days.toFixed(2)}%` : formatNumber(between24Days)}
               </button>
               <div className='small-1stop'>2-4 days</div>
             </div>
@@ -283,7 +284,7 @@ const PendancyCard = () => {
                   handleGraphSelection('Requests Completion - 5 to 15 Days')
                 }}
               >
-                {showPercentage ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
+                {!showPercentage ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
               </button>
               <div className='small-1stop'>5-15 days</div>
             </div>
@@ -293,7 +294,7 @@ const PendancyCard = () => {
                 style={{ color: solidColors[7] }}
                 onClick={() => handleGraphSelection('Requests Completion - 16 to 30 Days')}
               >
-                {showPercentage ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
+                {!showPercentage ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
               </button>
               <div className='small-1stop'>16-30 days</div>
             </div>
@@ -305,7 +306,7 @@ const PendancyCard = () => {
                   handleGraphSelection('Requests Completion - More Than 30 Days')
                 }}
               >
-                {showPercentage
+                {!showPercentage
                   ? `${greaterThan30Days.toFixed(2)}%`
                   : formatNumber(greaterThan30Days)}
               </button>

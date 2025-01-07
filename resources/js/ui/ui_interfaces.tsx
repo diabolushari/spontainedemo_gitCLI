@@ -91,11 +91,11 @@ export const solidColors = [
   '#64C19F',
   '#228A62',
   '#344D7A',
-  '#9DCA3D',
   '#F4D761',
   '#5085E6',
   '#6B735C',
   '#CCBFBA',
+  '#E27396',
 ]
 
 // export const solidColors = [
