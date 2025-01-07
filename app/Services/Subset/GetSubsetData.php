@@ -44,7 +44,7 @@ readonly class GetSubsetData
             );
         }
 
-        if ($filterParams['secondary_sort_by']) {
+        if (isset($filterParams['secondary_sort_by'])) {
             $this->querySorting->addSort(
                 $query,
                 $subsetDetail,
