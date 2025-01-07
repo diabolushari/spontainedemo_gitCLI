@@ -80,7 +80,7 @@ const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
             }
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='smmetric-1stop lg:mdmetric-1stop'>
+            <p className='smmetric-1stop'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
@@ -95,7 +95,7 @@ const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
             }
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='smmetric-1stop lg:mdmetric-1stop'>
+            <p className='smmetric-1stop'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
@@ -110,7 +110,7 @@ const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
             }
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
+            <p className='smmetric-1stop pt-4'>
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (

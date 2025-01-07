@@ -79,7 +79,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 onClick={() => handleGraphSelection('Arrears - Aggregate (LT Only)', 'LT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
               >
-                <p className='smmetric-1stop lg:mdmetric-1stop'>
+                <p className='smmetric-1stop'>
                   {isLoading ? <Skeleton width={60} /> : formatNumber(lTArrears)}
                 </p>
                 <p className='small-1stop-header text-center'>LT Arrears</p>
@@ -88,7 +88,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 onClick={() => handleGraphSelection('Arrears - Aggregate (HT Only)', 'HT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
               >
-                <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
+                <p className='smmetric-1stop pt-4'>
                   {isLoading ? <Skeleton width={60} /> : formatNumber(hTArrears)}
                 </p>
                 <p className='small-1stop-header text-center'>HT Arrears</p>
@@ -97,7 +97,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 onClick={() => handleGraphSelection('Arrears - Aggregate (EHT Only)', 'EHT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
               >
-                <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
+                <p className='smmetric-1stop pt-4'>
                   {isLoading ? <Skeleton width={60} /> : formatNumber(ehtArrears)}
                 </p>
                 <p className='small-1stop-header text-center'>EHT Arrears</p>
