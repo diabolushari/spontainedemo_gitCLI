@@ -221,6 +221,10 @@ export default function OfficeRanking({
                 style={{ fontSize: '10' }}
                 axisLine={false}
                 tickLine={false}
+                tick={{
+                  angle: -45,
+                  textAnchor: 'end',
+                }}
               />
               <Tooltip
                 formatter={(value: number) => `${formatNumber(value)}`}

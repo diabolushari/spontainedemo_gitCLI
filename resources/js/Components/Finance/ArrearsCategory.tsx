@@ -52,23 +52,21 @@ const renderCustomTooltip = ({ active, payload, label }: any) => {
   }
   return null
 }
-const customizedGroupTick = ({ index, x, y, payload }: any) => {
-  const label = payload.value
+const CustomTick = (props) => {
+  const { x, y, payload } = props
+  const displayName = payload.value.length > 10 ? `${payload.value.slice(0, 9)}...` : payload.value
+
   return (
-    <g>
-      <g>
-        <text
-          x={x}
-          y={y}
-          dy={16}
-          textAnchor='end'
-          className='axial-label-1stop'
-        >
-          {label[0].toUpperCase()}
-          {label.slice(1).toLowerCase()}
-        </text>
-      </g>
-    </g>
+    <text
+      x={x}
+      y={y}
+      dy={16}
+      textAnchor='end'
+      transform={`rotate(-45, ${x}, ${y})`}
+      className='axial-label-1stop'
+    >
+      {displayName}
+    </text>
   )
 }
 const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
@@ -141,13 +139,15 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
               width='100%'
             >
               <BarChart
-                // width='100%'
+                width={20}
                 height={150}
                 data={chartData}
               >
                 <XAxis
                   dataKey='consumer_category'
-                  tick={customizedGroupTick}
+                  tick={<CustomTick />}
+                  height={80}
+                  interval={0}
                 />
                 <YAxis hide />
                 <Tooltip content={renderCustomTooltip} />
@@ -197,21 +197,23 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
                   align='center'
                 />
 
-                <Bar
+                {/* <Bar
                   dataKey='total_arrears'
                   fill={solidColors[0]}
                   onClick={handleGraphSelection}
-                />
+                /> */}
 
                 <Bar
                   dataKey='undisputed_arrears'
-                  fill={solidColors[1]}
+                  fill={solidColors[0]}
                   onClick={handleGraphSelection}
+                  stackId='a'
                 />
                 <Bar
                   dataKey='disputed_arrears'
-                  fill={solidColors[2]}
+                  fill={solidColors[1]}
                   onClick={handleGraphSelection}
+                  stackId='a'
                 />
               </BarChart>
             </ResponsiveContainer>
