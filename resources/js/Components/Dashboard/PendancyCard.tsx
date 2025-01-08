@@ -110,7 +110,7 @@ const PendancyCard = () => {
                 >
                   {`${dataKey}:`}
                   <span className='small-1stop font-bold'>
-                    {showPercentage
+                    {!showPercentage
                       ? `${Number(entry.value).toFixed(2)}%`
                       : formatNumber(entry.value)}
                   </span>

@@ -167,6 +167,10 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
             <XAxis
               dataKey='month'
               style={{ fontSize: 10 }}
+              tick={{
+                angle: -45,
+                textAnchor: 'end',
+              }}
             />
             <YAxis style={{ fontSize: 10 }} />
             <Tooltip />
