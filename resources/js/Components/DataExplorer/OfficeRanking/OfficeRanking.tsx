@@ -35,6 +35,23 @@ interface Props {
   setShowSecondarySortField: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+const CustomTick = (props) => {
+  const { x, y, payload } = props
+  const displayName = payload.value.length > 10 ? `${payload.value.slice(0, 9)}...` : payload.value
+
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={16}
+      textAnchor='end'
+      transform={`rotate(-45, ${x}, ${y})`}
+      className='axial-label-1stop'
+    >
+      {displayName}
+    </text>
+  )
+}
 export default function OfficeRanking({
   subset,
   officeLevel,
@@ -160,12 +177,13 @@ export default function OfficeRanking({
     const fieldName = selectedSortField?.subset_field_name ?? 'Value'
     return (
       graphValues?.data?.data.map((item) => ({
-        office_name: item.office_name,
+        office_name: item.office_name ? item.office_name : 'External To Hierarchy',
         office_code: item.office_code,
         [fieldName]: item[selectedSortField?.subset_column as keyof typeof item] || 0,
       })) || []
     )
   }, [graphValues, selectedSortField])
+  console.log(chartData)
 
   useEffect(() => {
     if (graphValues?.latest_value != null && selectedMonth == null) {
@@ -218,13 +236,9 @@ export default function OfficeRanking({
             >
               <XAxis
                 dataKey='office_name'
-                style={{ fontSize: '10' }}
-                axisLine={false}
-                tickLine={false}
-                tick={{
-                  angle: -45,
-                  textAnchor: 'end',
-                }}
+                tick={<CustomTick />}
+                height={80}
+                interval={0}
               />
               <Tooltip
                 formatter={(value: number) => `${formatNumber(value)}`}
