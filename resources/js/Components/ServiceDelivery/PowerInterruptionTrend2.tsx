@@ -8,6 +8,7 @@ import {
   BarChart,
   Bar,
   LabelList,
+  LegendProps,
 } from 'recharts'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -83,6 +84,20 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
     if (selectedMonth != null) {
       setMonthYear(
         `${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+      )
+    }
+  }, [selectedMonth])
+  useEffect(() => {
+    if (selectedMonth) {
+      const year = selectedMonth.getFullYear()
+      const month = selectedMonth.getMonth() // 0-based (January = 0)
+
+      // If the month is January, set reference to December of the previous year
+      const referenceYear = month === 0 ? year - 1 : year
+      const referenceMonth = month === 0 ? 12 : month // December = 12 (1-based)
+
+      setReferenceMonthYear(
+        `${referenceYear}${referenceMonth < 10 ? `0${referenceMonth}` : referenceMonth}`
       )
     }
   }, [selectedMonth])

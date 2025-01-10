@@ -109,36 +109,36 @@ const dashboardSidebarItems = [
     },
     link: '/finance',
   },
-  //   {
-  //     name: 'operations',
-  //     image: {
-  //       svg: (
-  //         <svg
-  //           width='30'
-  //           //   height='38'
-  //           viewBox='0 0 38 38'
-  //           fill='none'
-  //           xmlns='http://www.w3.org/2000/svg'
-  //         >
-  //           <path
-  //             d='M17.8889 21.3333H26.7778V16.6667H17.8889V21.3333ZM14.5556 21.3333H9V26H14.5556V21.3333ZM14.5556 12H9V16.6667H14.5556V12Z'
-  //             stroke='black'
-  //             strokeWidth='1'
-  //             strokeLinecap='round'
-  //             strokeLinejoin='round'
-  //           />
-  //           <path
-  //             d='M23.4444 21.3333H14.5556V26H23.4444M23.4444 21.3333V26M23.4444 21.3333H29V26H23.4444M9 21.3333H17.8889V16.6667H9V21.3333ZM14.5556 16.6667H23.4444V12H14.5556V16.6667Z'
-  //             stroke='black'
-  //             strokeWidth='1'
-  //             strokeLinecap='round'
-  //             strokeLinejoin='round'
-  //           />
-  //         </svg>
-  //       ),
-  //     },
-  //     link: '/operation',
-  //   },
+  {
+    name: 'operations',
+    image: {
+      svg: (
+        <svg
+          width='30'
+          //   height='38'
+          viewBox='0 0 38 38'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M17.8889 21.3333H26.7778V16.6667H17.8889V21.3333ZM14.5556 21.3333H9V26H14.5556V21.3333ZM14.5556 12H9V16.6667H14.5556V12Z'
+            stroke='black'
+            strokeWidth='1'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
+          <path
+            d='M23.4444 21.3333H14.5556V26H23.4444M23.4444 21.3333V26M23.4444 21.3333H29V26H23.4444M9 21.3333H17.8889V16.6667H9V21.3333ZM14.5556 16.6667H23.4444V12H14.5556V16.6667Z'
+            stroke='black'
+            strokeWidth='1'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
+        </svg>
+      ),
+    },
+    link: '/operation',
+  },
 ]
 
 const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) => {

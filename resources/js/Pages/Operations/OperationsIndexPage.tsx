@@ -1,8 +1,7 @@
-import Outages from '@/Components/operations/Outages'
-import PowerOutages from '@/Components/operations/PowerOutages'
+import Reliability from '@/Components/Operation/Reliability'
+import ServiceOutages from '@/Components/Operation/ServiceOutages'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import Card from '@/ui/Card/Card'
 import React, { useState } from 'react'
 
 const OperationsIndexPage = () => {
@@ -11,7 +10,7 @@ const OperationsIndexPage = () => {
   const [levelCode, setLevelCode] = useState('')
   return (
     <DashboardLayout
-      type='OPERATIONS'
+      type='operations'
       sectionCode={sectionCode}
       setSectionCode={setSectionCode}
       levelName={levelName}
@@ -20,20 +19,12 @@ const OperationsIndexPage = () => {
       setLevelCode={setLevelCode}
     >
       <DashboardPadding>
-        <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
-          <div className='flex gap-2 lg:flex-row'>
-            <PowerOutages
-              section_code={sectionCode}
-              levelCode={levelCode}
-              levelName={levelName}
-            />
-            <Card className='w-1/3'>
-              <Outages
-                section_code={sectionCode}
-                levelCode={levelCode}
-                levelName={levelName}
-              />
-            </Card>
+        <div className='flex flex-col gap-5 pt-8 sm:pt-14 md:pl-10'>
+          <div className='lg:flex-roww-full flex flex-col gap-2'>
+            <Reliability />
+          </div>
+          <div className='grid w-full grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-2'>
+            <ServiceOutages />
           </div>
         </div>
       </DashboardPadding>
