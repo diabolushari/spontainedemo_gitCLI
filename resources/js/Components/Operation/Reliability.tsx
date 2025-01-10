@@ -31,7 +31,7 @@ const Reliability = () => {
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       title='Reliability'
-      moreUrl={`/data-explorer/?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
+      moreUrl={`/data-explorer/Interruption Analysis?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
     >
       {selectedLevel === 'overview' && (
         <div className='flex w-full flex-col md:flex-row'>
@@ -63,7 +63,7 @@ const Reliability = () => {
       {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
           subsetId={344}
-          cardTitle='Ranked by Saidi'
+          cardTitle='Ranked by Interruption'
           dataField='saidi'
           dataFieldName='SAIDI'
           rankingPageUrl={route('office-rankings', {

@@ -111,6 +111,17 @@ const ServiceOutages = () => {
       </ul>
     )
   }
+
+  const availableRankingFields = [
+    {
+      subset_field_name: 'Scheduled Outage',
+      subset_column: 'scheduled_outages',
+    },
+    {
+      subset_field_name: 'Unscheduled Outages',
+      subset_column: 'unscheduled_outages',
+    },
+  ]
   return (
     <DashboardCardLayout
       title='Service Outage'
@@ -223,12 +234,13 @@ const ServiceOutages = () => {
       {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
           subsetId={342}
-          cardTitle='Ranked by Total Outage'
-          dataField='total_outages'
-          dataFieldName='Total Outage'
+          cardTitle='Ranked by  Outage'
+          dataField='scheduled_outages'
+          dataFieldName='Scheduled outages'
           rankingPageUrl={`/office-rankings/Service Outage Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
+          availableFields={availableRankingFields}
         />
       )}
     </DashboardCardLayout>

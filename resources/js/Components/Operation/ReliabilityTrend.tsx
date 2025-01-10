@@ -176,6 +176,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               dataKey='name'
               hide
             />
+            <Tooltip content={renderCustomTooltip} />
             <Bar
               dataKey='interruptionUrban'
               stackId='a'
@@ -188,7 +189,6 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               fill={solidColors[3]}
               onClick={() => handleGraphSelection('Interruptions - Analysis')}
             />
-            <Tooltip content={renderCustomTooltip} />
           </BarChart>
         </ResponsiveContainer>
       </div>
