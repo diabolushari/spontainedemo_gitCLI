@@ -117,7 +117,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           >
             {formatNumber(interruptionDurationUrban)} HRS
           </div>
-          <div className='small-1stop text-left'>
+          <div className='small-1stop text-center'>
             Interruption <br /> duration - urban
           </div>
         </div>
@@ -129,7 +129,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           >
             {formatNumber(interruptionDurationRural)} HRS
           </div>
-          <div className='small-1stop text-right'>
+          <div className='small-1stop text-center'>
             Interruption <br /> duration - rural
           </div>
         </div>
@@ -177,7 +177,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           >
             {formatNumber(interruptionUrban)}
           </div>
-          <div className='small-1stop text-left'>
+          <div className='small-1stop text-center'>
             Interruption -<br /> urban
           </div>
         </div>
@@ -189,7 +189,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           >
             {formatNumber(interruptionRural)}
           </div>
-          <div className='small-1stop text-right'>
+          <div className='small-1stop text-center'>
             Interruption -
             <br /> rural
           </div>
