@@ -3,6 +3,8 @@ import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnecti
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { solidColors } from '@/ui/ui_interfaces'
 import Skeleton from 'react-loading-skeleton'
+import { useCallback } from 'react'
+import { router } from '@inertiajs/react'
 
 interface Properties {
   selectedMonth: Date | null
@@ -72,6 +74,21 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
 
   const interruptionData = [{ name: 'Interruption ', interruptionUrban, interruptionRural }]
 
+  const handleGraphSelection = useCallback(
+    (subset: string) => {
+      router.get(
+        route('data-explorer', {
+          subsetGroup: 'Interruption Analysis',
+          subset: subset,
+
+          month: dateToYearMonth(selectedMonth),
+          route: route('operation.index'),
+        })
+      )
+    },
+    [selectedMonth]
+  )
+
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
   return (
     <div className='flex w-full flex-col'>
@@ -98,19 +115,22 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               dataKey='interruptionDurationUrban'
               stackId='a'
               fill={solidColors[0]}
-              onClick={() => ''}
+              onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
             />
             <Bar
               dataKey='interruptionDurationRural'
               stackId='a'
               fill={solidColors[2]}
-              onClick={() => ''}
+              onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div className='flex justify-between px-5'>
-        <div className='flex flex-col items-start px-10'>
+        <button
+          className='flex flex-col items-start px-10'
+          onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
+        >
           <div
             style={{ color: solidColors[0] }}
             className='smmetric-1stop'
@@ -120,9 +140,12 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           <div className='small-1stop text-center'>
             Interruption <br /> duration - urban
           </div>
-        </div>
+        </button>
 
-        <div className='flex flex-col items-end px-32'>
+        <button
+          className='flex flex-col items-end px-32'
+          onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
+        >
           <div
             style={{ color: solidColors[2] }}
             className='smmetric-1stop'
@@ -132,7 +155,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           <div className='small-1stop text-center'>
             Interruption <br /> duration - rural
           </div>
-        </div>
+        </button>
       </div>
 
       <div>
@@ -157,20 +180,23 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               dataKey='interruptionUrban'
               stackId='a'
               fill={solidColors[1]}
-              onClick={() => ''}
+              onClick={() => handleGraphSelection('Interruptions - Analysis')}
             />
             <Bar
               dataKey='interruptionRural'
               stackId='a'
               fill={solidColors[3]}
-              onClick={() => ''}
+              onClick={() => handleGraphSelection('Interruptions - Analysis')}
             />
             <Tooltip content={renderCustomTooltip} />
           </BarChart>
         </ResponsiveContainer>
       </div>
       <div className='flex justify-between px-5'>
-        <div className='flex flex-col items-start px-10'>
+        <button
+          className='flex flex-col items-start px-10'
+          onClick={() => handleGraphSelection('Interruptions - Analysis')}
+        >
           <div
             style={{ color: solidColors[1] }}
             className='smmetric-1stop'
@@ -180,9 +206,12 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           <div className='small-1stop text-center'>
             Interruption -<br /> urban
           </div>
-        </div>
+        </button>
 
-        <div className='flex flex-col items-end px-32'>
+        <button
+          className='flex flex-col items-end px-32'
+          onClick={() => handleGraphSelection('Interruptions - Analysis')}
+        >
           <div
             style={{ color: solidColors[3] }}
             className='smmetric-1stop'
@@ -193,7 +222,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             Interruption -
             <br /> rural
           </div>
-        </div>
+        </button>
       </div>
     </div>
   )
