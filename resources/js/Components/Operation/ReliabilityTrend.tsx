@@ -103,13 +103,26 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <Bar
               dataKey='interruptionDurationRural'
               stackId='a'
-              fill={solidColors[1]}
+              fill={solidColors[2]}
               onClick={() => ''}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div></div>
+      <div className='flex'>
+        <div className='flex-col justify-start p-5'>
+          <div style={{ color: solidColors[0] }}>{formatNumber(interruptionDurationUrban)}</div>
+          <div className=''>
+            Interruption <br /> duration - urban
+          </div>
+        </div>
+        <div className='flex-col justify-end p-5'>
+          <div style={{ color: solidColors[2] }}>{formatNumber(interruptionDurationRural)}</div>
+          <div className=''>
+            Interruption <br /> duration - rural
+          </div>
+        </div>
+      </div>
       <div>
         <ResponsiveContainer
           width='100%'
@@ -131,7 +144,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <Bar
               dataKey='interruptionUrban'
               stackId='a'
-              fill={solidColors[2]}
+              fill={solidColors[1]}
               onClick={() => ''}
             />
             <Bar
