@@ -57,8 +57,11 @@ const ServiceOutages = () => {
     (data: { name: string | null }) => {
       router.get(
         route('data-explorer', {
-          subsetGroup: 'SLA Compliance Analysis - New Connection Requests',
-          subset: data.name,
+          subsetGroup: 'Service Outages',
+          subset:
+            data.name == 'Scheduled outages'
+              ? 'Scheduled Outages - Aggregate'
+              : 'Unscheduled Outages - Aggregate',
           month: dateToYearMonth(selectedMonth),
           route: route('operation.index'),
         })
@@ -115,7 +118,7 @@ const ServiceOutages = () => {
       setSelectedMonth={setSelectedMonth}
       selectedLevel={selectedLevel}
       setSelectedLevel={setSelectedLevel}
-      moreUrl={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
+      moreUrl={`/data-explorer/Service Outages?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
     >
       {selectedLevel === 'overview' && (
         <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
@@ -183,7 +186,7 @@ const ServiceOutages = () => {
                     paddingAngle={2}
                     dataKey='value'
                     stroke='none'
-                    onClick={() => ''}
+                    onClick={handleGraphSelections}
                   >
                     {data.map((entry, index) => (
                       <Cell
@@ -223,7 +226,7 @@ const ServiceOutages = () => {
           cardTitle='Ranked by Total Outage'
           dataField='total_outages'
           dataFieldName='Total Outage'
-          rankingPageUrl={`/office-rankings/A?month=${monthYear}&route=${route('service-delivery.index')}`}
+          rankingPageUrl={`/office-rankings/Service Outage Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
         />
