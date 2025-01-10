@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Paginator } from '@/ui/ui_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -21,6 +21,10 @@ interface Props {
   filterListFetchURL?: string
   defaultFilterValue?: string
   onFilterChange?: (value: string) => void
+  availableFields?: {
+    subset_field_name: string
+    subset_column: string
+  }[]
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -47,12 +51,15 @@ export default function DashboardRankedList({
   filterListKey,
   filterFieldName,
   onFilterChange,
+  availableFields,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
   const [itemLimit, setItemLimit] = useState('10')
   const [officeLevel, setOfficeLevel] = useState('section')
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
+  const [selectedColumn, setSelectedColumn] = useState(dataField)
+  const [selectedFieldName, setSelectedFieldName] = useState(dataFieldName)
 
   useEffect(() => {
     if (onFilterChange == null) {
@@ -65,7 +72,7 @@ export default function DashboardRankedList({
     const params = {
       subsetDetail: subsetId,
       level: officeLevel,
-      sort_by: dataField,
+      sort_by: selectedColumn,
       sort_order: sortOrder,
       limit: itemLimit,
       page: pageNumber,
@@ -82,7 +89,7 @@ export default function DashboardRankedList({
   }, [
     subsetId,
     officeLevel,
-    dataField,
+    selectedColumn,
     sortOrder,
     itemLimit,
     timePeriod,
@@ -96,8 +103,22 @@ export default function DashboardRankedList({
 
   const headers = useMemo(() => {
     const selectedLevel = levelTypes.find((value) => value.value == officeLevel)
-    return [selectedLevel?.name ?? '', dataFieldName]
-  }, [officeLevel, dataFieldName])
+    return [selectedLevel?.name ?? '', selectedFieldName]
+  }, [officeLevel, selectedFieldName])
+
+  const switchDisplayedColumn = useCallback(
+    (column: string) => {
+      const selectedField = availableFields?.find((value) => value.subset_column == column)
+
+      if (selectedField == null) {
+        return
+      }
+
+      setSelectedColumn(column)
+      setSelectedFieldName(selectedField.subset_field_name)
+    },
+    [availableFields]
+  )
 
   return (
     <div className='flex w-full flex-col'>
@@ -105,6 +126,18 @@ export default function DashboardRankedList({
         <span className='subheader-sm-1stop'>{cardTitle}</span>
       </div>
       <div className='flex items-center justify-end gap-5 pr-4'>
+        {availableFields != null && (
+          <div className='flex flex-col'>
+            <SelectList
+              list={availableFields}
+              value={selectedColumn}
+              setValue={switchDisplayedColumn}
+              dataKey='subset_column'
+              displayKey='subset_field_name'
+              style='1stop-small'
+            />
+          </div>
+        )}
         {filterListFetchURL != null && filterFieldName != null && filterListKey != null && (
           <FieldUniqueValueDropdown
             listFetchURL={filterListFetchURL}
@@ -270,7 +303,7 @@ export default function DashboardRankedList({
                   >
                     <td className=''>{value.office_name}</td>
                     <td className='pl-2 text-start'>
-                      {formatNumber((value[dataField] ?? null) as number)}
+                      {formatNumber((value[selectedColumn] ?? null) as number)}
                     </td>
                   </tr>
                 )

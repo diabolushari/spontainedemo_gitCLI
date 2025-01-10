@@ -96,7 +96,7 @@ export default function DashboardCardLayout({
       </div>
       {/*Footer:if no title then Justify end else  justify between  */}
       <div
-        className={`flex-shsrink-0 mt-auto flex min-h-[4.2rem] items-center gap-4 justify-self-end ${title == null ? 'justify-end' : 'justify-between'} rounded-b-2xl bg-1stop-alt-gray px-4 pl-12`}
+        className={`mt-auto flex min-h-[4.2rem] flex-shrink-0 items-center gap-4 justify-self-end ${title == null ? 'justify-end' : 'justify-between'} rounded-b-2xl bg-1stop-alt-gray px-4 pl-12`}
       >
         <div className='py-4'>
           <p className='md:mdmetric-1stop smmetric-1stop'>{title ?? ' '}</p>
@@ -111,8 +111,11 @@ export default function DashboardCardLayout({
           </div>
         )}
         {selectedMonth != null && setSelectedMonth != null && (
-          <div className='small-1stop-header flex h-full w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50'>
-            <div style={{ opacity: 1 }}>
+          <div className='small-1stop-header w-1/ flex h-full bg-1stop-accent2 bg-opacity-50'>
+            <div
+              style={{ opacity: 1 }}
+              className='flex h-full flex-col items-center justify-center gap-2'
+            >
               <MonthPicker
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}

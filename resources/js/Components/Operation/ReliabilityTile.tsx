@@ -1,6 +1,6 @@
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { router } from '@inertiajs/react'
 import Skeleton from 'react-loading-skeleton'
 
@@ -8,6 +8,7 @@ interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
+
 interface ReliabilityTileValues {
   month: string
   saifi: number
@@ -15,13 +16,22 @@ interface ReliabilityTileValues {
   total_interruptions: number
   total_interruption_duration__h_: number
 }
+
 const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [graphValues] = useFetchRecord<{
     data: ReliabilityTileValues[]
     latest_value: string
   }>(
-    `subset/344?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
+    `/subset/344?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
   )
+
+  useEffect(() => {
+    if (selectedMonth == null && graphValues != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [setSelectedMonth, graphValues, selectedMonth])
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 

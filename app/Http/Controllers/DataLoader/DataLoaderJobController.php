@@ -33,8 +33,7 @@ class DataLoaderJobController extends Controller implements HasMiddleware
     public function index(DataLoaderJobSearchRequest $request): Response
     {
         /** @var LengthAwarePaginator<DataLoaderJob> $dataLoaderJobs */
-        $dataLoaderJobs = DataLoaderJob::with('loaderQuery')
-            ->with(['loaderQuery', 'latest'])
+        $dataLoaderJobs = DataLoaderJob::with(['loaderQuery', 'latest'])
             ->paginate(20)
             ->withPath(route('loader-jobs.index'))
             ->withQueryString();

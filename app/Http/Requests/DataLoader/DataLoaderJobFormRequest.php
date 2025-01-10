@@ -36,24 +36,24 @@ class DataLoaderJobFormRequest extends Data
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'cronType' => ['required', 'string', 'max:255'],
-            'startDate' => ['nullable', 'date'],
-            'endDate' => ['nullable', 'date', 'after_or_equal:startDate'],
-            'scheduleTime' => [
+            'cron_type' => ['required', 'string', 'max:255'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:startDate'],
+            'schedule_time' => [
                 'nullable',
                 'required_if:cronType,'.CronTypes::DAILY,
                 'required_if:cronType,'.CronTypes::WEEKLY,
                 'required_if:cronType,'.CronTypes::MONTHLY,
                 'required_if:cronType,'.CronTypes::YEARLY,
             ],
-            'dayOfWeek' => [
+            'day_of_week' => [
                 'nullable',
                 'string',
                 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
                 'required_if:cronType,'.CronTypes::WEEKLY,
             ],
-            'monthOfYear' => ['nullable', 'integer', 'min:1', 'max:12', 'required_if:cronType,'.CronTypes::YEARLY],
-            'dayOfMonth' => [
+            'month_of_year' => ['nullable', 'integer', 'min:1', 'max:12', 'required_if:cronType,'.CronTypes::YEARLY],
+            'day_of_month' => [
                 'nullable',
                 'integer',
                 'min:1',
@@ -61,8 +61,8 @@ class DataLoaderJobFormRequest extends Data
                 'required_if:cronType,'.CronTypes::MONTHLY,
                 'required_if:cronType,'.CronTypes::YEARLY,
             ],
-            'queryId' => ['required', 'int', 'exists:loader_queries,id'],
-            'dataDetailId' => ['required', 'int', 'exists:data_details,id'],
+            'query_id' => ['required', 'int', 'exists:loader_queries,id'],
+            'data_detail_id' => ['required', 'int', 'exists:data_details,id'],
         ];
     }
 }
