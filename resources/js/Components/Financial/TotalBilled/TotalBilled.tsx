@@ -212,7 +212,6 @@ const TotalBilled = () => {
   ]
 
   const data = voltageType === 'LT' ? dataFilter : dataIndex
-  console.log(data)
 
   const ltPercent = cunsumerCount('LT', '', false)
     ? (cunsumerCount('LT', '', false) * 100) / cunsumerCount('Total', '', false)

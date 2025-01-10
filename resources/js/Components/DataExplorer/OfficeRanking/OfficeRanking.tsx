@@ -183,7 +183,6 @@ export default function OfficeRanking({
       })) || []
     )
   }, [graphValues, selectedSortField])
-  console.log(chartData)
 
   useEffect(() => {
     if (graphValues?.latest_value != null && selectedMonth == null) {

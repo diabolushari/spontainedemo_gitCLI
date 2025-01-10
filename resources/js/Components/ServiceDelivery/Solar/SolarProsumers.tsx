@@ -136,7 +136,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
         .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
         .sort((a, b) => a.consumer_count - b.consumer_count)
         .reverse()
-  console.log(graphValuesSorted)
 
   const filters = (value: SolarProsumersValue, index: number) => {
     if (index < 3) {
@@ -181,8 +180,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   }
 
   const dataIndex = useMemo(() => {
-    console.log(graphValuesSorted)
-
     return [
       {
         name: graphValuesSorted?.[0]?.consumer_category,
@@ -204,8 +201,6 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   }, [graphValuesSorted])
 
   const data = voltageType === 'LT' ? dataFiltering : dataIndex
-
-  console.log(data)
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
