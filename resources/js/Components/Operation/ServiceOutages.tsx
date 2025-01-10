@@ -186,7 +186,7 @@ const ServiceOutages = () => {
                     paddingAngle={2}
                     dataKey='value'
                     stroke='none'
-                    onClick={handleGraphSelections}
+                    onClick={handleGraphSelection}
                   >
                     {data.map((entry, index) => (
                       <Cell
