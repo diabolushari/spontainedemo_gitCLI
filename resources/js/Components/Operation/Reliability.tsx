@@ -31,10 +31,10 @@ const Reliability = () => {
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       title='Reliability'
-      moreUrl={`/data-explorer/?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
+      moreUrl={`/data-explorer/Interruption Analysis?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
     >
       {selectedLevel === 'overview' && (
-        <div className='flex w-full flex-col md:flex-row'>
+        <div className='flex w-full flex-col pt-10 md:flex-row'>
           <div className='flex pt-2 md:w-1/3 md:pt-0'>
             <ReliabilityTile
               selectedMonth={selectedMonth}
@@ -63,10 +63,16 @@ const Reliability = () => {
       {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
           subsetId={344}
-          cardTitle='Ranked by Saidi'
+          cardTitle='Ranked by Interruption'
           dataField='saidi'
           dataFieldName='SAIDI'
-          rankingPageUrl={`/office-rankings/A?month=${monthYear}&route=${route('service-delivery.index')}`}
+          rankingPageUrl={route('office-rankings', {
+            subsetGroupName: 'Reliability Analysis',
+
+            month: dateToYearMonth(selectedMonth),
+            route: route('operation.index'),
+            subset: 'SAIDI',
+          })}
           timePeriod={monthYear}
           timePeriodFieldName='month'
           availableFields={availableRankingFields}
