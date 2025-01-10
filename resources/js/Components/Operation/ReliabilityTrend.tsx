@@ -111,14 +111,24 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
       </div>
       <div className='flex'>
         <div className='flex-col justify-start p-5'>
-          <div style={{ color: solidColors[0] }}>{formatNumber(interruptionDurationUrban)}</div>
-          <div className=''>
+          <div
+            style={{ color: solidColors[0] }}
+            className='smmetric-1stop'
+          >
+            {formatNumber(interruptionDurationUrban)} HRS
+          </div>
+          <div className='small-1stop'>
             Interruption <br /> duration - urban
           </div>
         </div>
         <div className='flex-col justify-end p-5'>
-          <div style={{ color: solidColors[2] }}>{formatNumber(interruptionDurationRural)}</div>
-          <div className=''>
+          <div
+            style={{ color: solidColors[2] }}
+            className='smmetric-1stop'
+          >
+            {formatNumber(interruptionDurationRural)} HRS
+          </div>
+          <div className='small-1stop'>
             Interruption <br /> duration - rural
           </div>
         </div>
@@ -156,6 +166,30 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <Tooltip content={renderCustomTooltip} />
           </BarChart>
         </ResponsiveContainer>
+      </div>
+      <div className='flex'>
+        <div className='flex-col justify-start p-5'>
+          <div
+            style={{ color: solidColors[1] }}
+            className='smmetric-1stop'
+          >
+            {formatNumber(interruptionUrban)}
+          </div>
+          <div className='small-1stop'>
+            Interruption -<br /> urban
+          </div>
+        </div>
+        <div className='flex-col justify-end p-5'>
+          <div
+            style={{ color: solidColors[3] }}
+            className='smmetric-1stop'
+          >
+            {formatNumber(interruptionRural)}
+          </div>
+          <div className='small-1stop'>
+            Interruption -<br /> rural
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -41,7 +41,7 @@ const Reliability = () => {
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
           subsetId={344}
-          cardTitle='Trend Of Interruption '
+          cardTitle='Trend Of Total Interruption '
           dataField='total_interruptions'
           dataFieldName='Total Outage'
           selectedMonth={selectedMonth}
@@ -52,9 +52,9 @@ const Reliability = () => {
       {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
           subsetId={344}
-          cardTitle='Ranked by Interruption'
-          dataField='total_interruptions'
-          dataFieldName='Total Interruption'
+          cardTitle='Ranked by Saidi'
+          dataField='saidi'
+          dataFieldName='SAIDI'
           rankingPageUrl={`/office-rankings/A?month=${monthYear}&route=${route('service-delivery.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'

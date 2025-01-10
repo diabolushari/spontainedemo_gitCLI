@@ -71,7 +71,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
               {isLoading ? (
                 <Skeleton width={60} />
               ) : (
-                formatNumber(totalInterruptionDuration) + ' hrs'
+                formatNumber(totalInterruptionDuration) + ' Hrs'
               )}
             </p>
             <p className='small-1stop-header text-center'>TOTAL INTERRUPTION DURATION</p>
@@ -80,7 +80,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             onClick={() => ''}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
-            <p className='smmetric-1stop'>
+            <p className='smmetric-1stop lg:xlmetric-1stop'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(saiFi)}
             </p>
             <p className='small-1stop-header text-center'>SAIFI</p>
