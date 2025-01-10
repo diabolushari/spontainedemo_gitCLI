@@ -74,7 +74,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='small-1stop-header text-center'>SAIDI</p>
           </button>
           <button
-            onClick={() => handleGraphSelection('SAIDI - Analysis')}
+            onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
             <p className='smmetric-1stop'>
@@ -96,7 +96,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='small-1stop-header text-center'>SAIFI</p>
           </button>
           <button
-            onClick={() => handleGraphSelection('SAIFI - Analysis')}
+            onClick={() => handleGraphSelection('Interruptions - Analysis')}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
             <p className='smmetric-1stop pt-4'>
