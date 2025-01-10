@@ -34,7 +34,7 @@ const Reliability = () => {
       moreUrl={`/data-explorer/Interruption Analysis?month=${dateToYearMonth(selectedMonth)}&route=${route('operation.index')}`}
     >
       {selectedLevel === 'overview' && (
-        <div className='flex w-full flex-col md:flex-row'>
+        <div className='flex w-full flex-col pt-10 md:flex-row'>
           <div className='flex pt-2 md:w-1/3 md:pt-0'>
             <ReliabilityTile
               selectedMonth={selectedMonth}
