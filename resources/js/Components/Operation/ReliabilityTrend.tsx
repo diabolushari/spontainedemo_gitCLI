@@ -91,137 +91,136 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
   return (
-    <div className='flex w-full flex-col'>
+    <div className='flex w-full flex-col lg:justify-between'>
       <div>
-        <ResponsiveContainer
-          width='100%'
-          height={50}
-        >
-          <BarChart
-            data={interruptionDurationData}
-            layout='vertical'
+        {isLoading ? (
+          <Skeleton height={50} />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={50}
           >
-            <XAxis
-              type='number'
-              hide
-            />
-            <YAxis
-              type='category'
-              dataKey='name'
-              hide
-            />
-            <Tooltip content={renderCustomTooltip} />
-            <Bar
-              dataKey='interruptionDurationUrban'
-              stackId='a'
-              fill={solidColors[0]}
-              onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
-            />
-            <Bar
-              dataKey='interruptionDurationRural'
-              stackId='a'
-              fill={solidColors[2]}
-              onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+            <BarChart
+              data={interruptionDurationData}
+              layout='vertical'
+            >
+              <XAxis
+                type='number'
+                hide
+              />
+              <YAxis
+                type='category'
+                dataKey='name'
+                hide
+              />
+              <Tooltip content={renderCustomTooltip} />
+              <Bar
+                dataKey='interruptionDurationUrban'
+                stackId='a'
+                fill={solidColors[0]}
+                onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
+              />
+              <Bar
+                dataKey='interruptionDurationRural'
+                stackId='a'
+                fill={solidColors[2]}
+                onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
-      <div className='flex justify-between px-5'>
+      <div className='flex justify-between px-0 lg:px-5'>
         <button
-          className='flex flex-col items-start px-10'
+          className='flex flex-col items-start px-2 md:px-10'
           onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
         >
           <div
             style={{ color: solidColors[0] }}
-            className='smmetric-1stop'
+            className='smmetric-1stop text-center'
           >
-            {formatNumber(interruptionDurationUrban)} HRS
+            {formatNumber(interruptionDurationUrban)} Hrs
           </div>
-          <div className='small-1stop text-center'>
-            Interruption <br /> duration - urban
-          </div>
+          <div className='small-1stop text-center'>Intrpn Dur - URBAN</div>
         </button>
 
         <button
-          className='flex flex-col items-end px-32'
+          className='flex flex-col items-end px-2 md:px-32'
           onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
         >
           <div
             style={{ color: solidColors[2] }}
             className='smmetric-1stop'
           >
-            {formatNumber(interruptionDurationRural)} HRS
+            {formatNumber(interruptionDurationRural)} Hrs
           </div>
-          <div className='small-1stop text-center'>
-            Interruption <br /> duration - rural
-          </div>
+          <div className='small-1stop text-center'>Intrpn Dur - RURAL</div>
         </button>
       </div>
 
       <div>
-        <ResponsiveContainer
-          width='100%'
-          height={50}
-        >
-          <BarChart
-            data={interruptionData}
-            layout='vertical'
+        {isLoading ? (
+          <Skeleton height={50} />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={50}
           >
-            <XAxis
-              type='number'
-              hide
-            />
-            <YAxis
-              type='category'
-              dataKey='name'
-              hide
-            />
-            <Tooltip content={renderCustomTooltip} />
-            <Bar
-              dataKey='interruptionUrban'
-              stackId='a'
-              fill={solidColors[1]}
-              onClick={() => handleGraphSelection('Interruptions - Analysis')}
-            />
-            <Bar
-              dataKey='interruptionRural'
-              stackId='a'
-              fill={solidColors[3]}
-              onClick={() => handleGraphSelection('Interruptions - Analysis')}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+            <BarChart
+              data={interruptionData}
+              layout='vertical'
+            >
+              <XAxis
+                type='number'
+                hide
+              />
+              <YAxis
+                type='category'
+                dataKey='name'
+                hide
+              />
+              <Tooltip content={renderCustomTooltip} />
+              <Bar
+                dataKey='interruptionUrban'
+                stackId='a'
+                fill={solidColors[1]}
+                onClick={() => handleGraphSelection('Interruptions - Analysis')}
+              />
+              <Bar
+                dataKey='interruptionRural'
+                stackId='a'
+                fill={solidColors[3]}
+                onClick={() => handleGraphSelection('Interruptions - Analysis')}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
-      <div className='flex justify-between px-5'>
+      <div className='flex justify-between px-0 lg:px-5'>
         <button
-          className='flex flex-col items-start px-10'
+          className='flex flex-col items-start px-2 md:px-10'
           onClick={() => handleGraphSelection('Interruptions - Analysis')}
         >
           <div
             style={{ color: solidColors[1] }}
-            className='smmetric-1stop'
+            className='smmetric-1stop text-center'
           >
             {formatNumber(interruptionUrban)}
           </div>
-          <div className='small-1stop text-center'>
-            Interruption -<br /> urban
-          </div>
+          <div className='small-1stop text-center'>Intrpns - URBAN</div>
         </button>
 
         <button
-          className='flex flex-col items-end px-32'
+          className='flex flex-col items-end px-2 md:px-32'
           onClick={() => handleGraphSelection('Interruptions - Analysis')}
         >
           <div
             style={{ color: solidColors[3] }}
-            className='smmetric-1stop'
+            className='smmetric-1stop text-center'
           >
             {formatNumber(interruptionRural)}
           </div>
-          <div className='small-1stop text-center'>
-            Interruption -
-            <br /> rural
-          </div>
+          <div className='small-1stop text-center'>Intrpns - RURAL</div>
         </button>
       </div>
     </div>

@@ -63,7 +63,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
   return (
     <div className='flex w-full flex-col md:flex-row'>
       <div className='flex justify-center'>
-        <div className='grid w-full grid-cols-2 gap-2 p-2 md:max-w-md'>
+        <div className='grid grid-cols-2 gap-2 p-2 md:max-w-md'>
           <button
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
             onClick={() => handleGraphSelection('SAIDI - Analysis')}
@@ -84,7 +84,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 formatNumber(totalInterruptionDuration) + ' Hrs'
               )}
             </p>
-            <p className='small-1stop-header text-center'>TOTAL INTERRUPTION DURATION</p>
+            <p className='small-1stop-header text-center'>TOT INTRPN DUR</p>
           </button>
           <button
             onClick={() => handleGraphSelection('SAIFI - Analysis')}
@@ -102,7 +102,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='smmetric-1stop pt-4'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(totalInterruption)}
             </p>
-            <p className='small-1stop-header text-center'>TOTAL INTERRUPTION</p>
+            <p className='small-1stop-header text-center'>TOT INTRPNS</p>
           </button>
         </div>
       </div>
