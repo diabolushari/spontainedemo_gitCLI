@@ -13,11 +13,12 @@ interface Properties {
 interface RelliabilityTrendValues {
   month: string
   total_interruption_duration__h_: number
-  interruption_duration___urban__h_: number
-  interruption_duration___rural__h_: number
+  avg_customer_interruption_duration___urban: number
+  avg_customer_interruption_duration___rural: number
   total_interruptions: number
-  interruptions___urban_: number
-  interruptions___rural: number
+  avg_customer_interruptions___urban: number
+  avg_customer_interruptions___rural: number
+  avg_customer_avg_customer_interruptions___rural: number
 }
 const renderCustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -50,29 +51,31 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
     data: RelliabilityTrendValues[]
     latest_value: string
   }>(
-    `subset/345?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
+    `subset/357?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
   )
-  const interruptionDurationRural = graphValues?.data.reduce(
-    (sum, record) => sum + record.interruption_duration___rural__h_,
+  const avgInterruptionDurationRural = graphValues?.data.reduce(
+    (sum, record) => sum + record.avg_customer_interruption_duration___rural,
     0
   )
-  const interruptionRural = graphValues?.data.reduce(
-    (sum, record) => sum + record.interruptions___rural,
+  const avgInterruptionRural = graphValues?.data.reduce(
+    (sum, record) => sum + record.avg_customer_interruptions___rural,
     0
   )
-  const interruptionDurationUrban = graphValues?.data.reduce(
-    (sum, record) => sum + record.interruption_duration___urban__h_,
+  const avgInterruptionDurationUrban = graphValues?.data.reduce(
+    (sum, record) => sum + record.avg_customer_interruption_duration___urban,
     0
   )
-  const interruptionUrban = graphValues?.data.reduce(
-    (sum, record) => sum + record.interruptions___urban_,
+  const avgInterruptionUrban = graphValues?.data.reduce(
+    (sum, record) => sum + record.avg_customer_interruptions___urban,
     0
   )
-  const interruptionDurationData = [
-    { name: 'Interruption Duration ', interruptionDurationUrban, interruptionDurationRural },
+  const avgInterruptionDurationData = [
+    { name: 'Interruption Duration ', avgInterruptionDurationUrban, avgInterruptionDurationRural },
   ]
 
-  const interruptionData = [{ name: 'Interruption ', interruptionUrban, interruptionRural }]
+  const avgInterruptionData = [
+    { name: 'Interruption ', avgInterruptionUrban, avgInterruptionRural },
+  ]
 
   const handleGraphSelection = useCallback(
     (subset: string) => {
@@ -98,7 +101,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           height={50}
         >
           <BarChart
-            data={interruptionDurationData}
+            data={avgInterruptionDurationData}
             layout='vertical'
           >
             <XAxis
@@ -112,13 +115,13 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             />
             <Tooltip content={renderCustomTooltip} />
             <Bar
-              dataKey='interruptionDurationUrban'
+              dataKey='avgInterruptionDurationUrban'
               stackId='a'
               fill={solidColors[0]}
               onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
             />
             <Bar
-              dataKey='interruptionDurationRural'
+              dataKey='avgInterruptionDurationRural'
               stackId='a'
               fill={solidColors[2]}
               onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
@@ -135,10 +138,10 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             style={{ color: solidColors[0] }}
             className='smmetric-1stop'
           >
-            {formatNumber(interruptionDurationUrban)} HRS
+            {formatNumber(avgInterruptionDurationUrban)} HRS
           </div>
           <div className='small-1stop text-center'>
-            Interruption <br /> duration - urban
+            Avg Interruption <br /> duration - urban
           </div>
         </button>
 
@@ -150,10 +153,10 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             style={{ color: solidColors[2] }}
             className='smmetric-1stop'
           >
-            {formatNumber(interruptionDurationRural)} HRS
+            {formatNumber(avgInterruptionDurationRural)} HRS
           </div>
           <div className='small-1stop text-center'>
-            Interruption <br /> duration - rural
+            Avg Interruption <br /> duration - rural
           </div>
         </button>
       </div>
@@ -164,7 +167,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           height={50}
         >
           <BarChart
-            data={interruptionData}
+            data={avgInterruptionData}
             layout='vertical'
           >
             <XAxis
@@ -178,13 +181,13 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             />
             <Tooltip content={renderCustomTooltip} />
             <Bar
-              dataKey='interruptionUrban'
+              dataKey='avgInterruptionUrban'
               stackId='a'
               fill={solidColors[1]}
               onClick={() => handleGraphSelection('Interruptions - Analysis')}
             />
             <Bar
-              dataKey='interruptionRural'
+              dataKey='avgInterruptionRural'
               stackId='a'
               fill={solidColors[3]}
               onClick={() => handleGraphSelection('Interruptions - Analysis')}
@@ -201,10 +204,10 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             style={{ color: solidColors[1] }}
             className='smmetric-1stop'
           >
-            {formatNumber(interruptionUrban)}
+            {formatNumber(avgInterruptionUrban)}
           </div>
           <div className='small-1stop text-center'>
-            Interruption -<br /> urban
+            Avg Interruption -<br /> urban
           </div>
         </button>
 
@@ -216,10 +219,10 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             style={{ color: solidColors[3] }}
             className='smmetric-1stop'
           >
-            {formatNumber(interruptionRural)}
+            {formatNumber(avgInterruptionRural)}
           </div>
           <div className='small-1stop text-center'>
-            Interruption -
+            Avg Interruption -
             <br /> rural
           </div>
         </button>
