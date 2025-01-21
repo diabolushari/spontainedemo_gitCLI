@@ -5,14 +5,14 @@ import React, { useMemo } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import ApplicationLogo from '@/Components/ApplicationLogo'
 
-export default function Login({ status }: { status?: string; canResetPassword: boolean }) {
+export default function Login() {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     remember: false,
-    email: '',
+    username: '',
     password: '',
   })
 
-  const { post, loading, errors } = useInertiaPost(route('login'))
+  const { post, loading, errors } = useInertiaPost<typeof formData>(route('login'))
 
   const formItems = useMemo(<
     T,
@@ -22,9 +22,9 @@ export default function Login({ status }: { status?: string; canResetPassword: b
     L extends Record<K, string | number> & Record<G, string | number | null>,
   >() => {
     return {
-      email: {
-        type: 'email' as const,
-        setValue: setFormValue('email'),
+      username: {
+        type: 'text' as const,
+        setValue: setFormValue('username'),
         placeholder: 'employee id or username',
       },
       password: {
@@ -63,7 +63,9 @@ export default function Login({ status }: { status?: string; canResetPassword: b
           <p className='body-1stop mb-8 mt-4 text-center'>Please Sign In</p>
 
           <div className='mb-4 text-center text-red-600'>
-            {(errors?.email || errors?.password || errors?.message) && <p>Invalid Credentials</p>}
+            {(errors?.username || errors?.password || errors?.message) && (
+              <p>Invalid Credentials</p>
+            )}
           </div>
           <FormBuilder
             formItems={formItems}
