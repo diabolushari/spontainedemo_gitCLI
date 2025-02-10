@@ -16,7 +16,12 @@ return new class extends Migration
             $table->foreignId('meta_hierarchy_id')
                 ->constrained('meta_hierarchies');
             $table->unsignedBigInteger('level');
-            $table->foreignId('meta_structure_id')
+            $table->string('name')->nullable();
+            $table->foreignId('primary_field_structure_id')
+                ->nullable()
+                ->constrained('meta_structures');
+            $table->foreignId('secondary_field_structure_id')
+                ->nullable()
                 ->constrained('meta_structures');
             $table->unique(['meta_hierarchy_id', 'level']);
             $table->softDeletes();

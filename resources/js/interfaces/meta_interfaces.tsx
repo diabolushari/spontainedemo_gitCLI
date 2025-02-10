@@ -14,7 +14,11 @@ export interface MetaData extends Model {
   structure_name?: string | null
   meta_hierarchy?: MetaHierarchy
   meta_group?: MetaDataGroup
-  hierarchy_item?: MetaHierarchyItem[]
+  hierarchy_primary_field?: MetaHierarchyItem[]
+  hierarchy_secondary_field?: MetaHierarchyItem[]
+  hierarchy_primary_field_count?: number
+  hierarchy_secondary_field_count?: number
+  group_item_count: number
   group_item?: MetaDataGroupItem[]
 }
 
@@ -38,14 +42,17 @@ export interface MetaHierarchy extends Model {
   description?: string | null
   items?: Partial<MetaHierarchyItem>[]
   items_count?: number
+  levels?: Partial<MetaHierarchyLevelInfo>[]
 }
 
 export interface MetaHierarchyItem extends Model {
   meta_hierarchy_id: number
   parent_id: number | null
   level: number
-  meta_data_id: number
-  meta_data?: Partial<MetaData> | null
+  primary_field_id: number
+  secondary_field_id: number | null
+  primary_field?: Partial<MetaData> | null
+  secondary_field?: Partial<MetaData> | null
   meta_hierarchy?: Partial<MetaHierarchy> | null
   parent?: Partial<MetaHierarchyItem> | null
   levelInfos?: Partial<MetaHierarchyLevelInfo>[]
@@ -53,6 +60,9 @@ export interface MetaHierarchyItem extends Model {
 
 export interface MetaHierarchyLevelInfo extends Model {
   level: number
-  meta_structure_id: number
-  structure: MetaStructure | null
+  primary_field_structure_id: number | null
+  secondary_field_structure_id: number
+  name: string | null
+  primary_structure: MetaStructure | null
+  secondary_structure: MetaStructure | null
 }

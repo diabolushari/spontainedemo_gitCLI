@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * Het MetaHierarchyItem List order by level and childs placed right after parent
  */
-readonly class HierarchyList
+class HierarchyList
 {
     /** @var Collection<int, MetaHierarchyItem> */
     private Collection $hierarchyItems;
@@ -18,7 +18,8 @@ readonly class HierarchyList
     {
 
         $this->hierarchyItems = MetaHierarchyItem::where('meta_hierarchy_id', $metaHierarchy->id)
-            ->with('metaData:id,name')
+            ->with('primaryField:id,name')
+            ->with('secondaryField:id,name')
             ->orderBy('level')
             ->get();
 

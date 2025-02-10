@@ -48,7 +48,9 @@ export default function MetaHierarchyTreeNode({
               tabIndex={0}
               className='tree-node-content flex grow cursor-pointer hover:text-1stop-highlight'
             >
-              <StrongText>{node.nodeName}</StrongText>
+              <StrongText>
+                {node.nodePrimaryValue} | {node.nodeSecondaryValue}
+              </StrongText>
             </div>
             <div className='flex gap-2'>
               <button
@@ -73,7 +75,7 @@ export default function MetaHierarchyTreeNode({
           url={route('meta-hierarchy-delete-item', node.nodeId)}
           setShowModal={setShowDeleteModal}
           onSuccess={onDeleteCompletion}
-          title={`Delete ${node.nodeName}`}
+          title={`Delete ${node.nodePrimaryValue}`}
           preserveState
           large
         >

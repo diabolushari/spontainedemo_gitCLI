@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Meta;
 
 use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -10,36 +11,13 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class MetaHierarchyAddItemRequest extends Data
 {
     public function __construct(
+        #[Exists('meta_hierarchies', 'id')]
         public int $metaHierarchyId,
+        #[Exists('meta_hierarchy_items', 'id')]
         public ?int $parentId,
-        public int $metaDataId,
+        #[Exists('meta_data', 'id')]
+        public int $primaryFieldId,
+        #[Exists('meta_data', 'id')]
+        public ?int $secondaryFieldId,
     ) {}
-
-    /**
-     * @return array<string, string[]>
-     */
-    public static function rules(): array
-    {
-        return [
-            'meta_data_id' => ['required', 'integer', 'exists:meta_data,id'],
-            'parent_id' => ['nullable',  'integer', 'exists:meta_hierarchy_items,id'],
-            'meta_hierarchy_id' => ['required', 'integer', 'exists:meta_hierarchies,id'],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public static function messages(): array
-    {
-
-        return [
-            'meta_data_id.exists' => 'New Node does not exist.',
-            'meta_hierarchy_id.exists' => 'Meta Hierarchy does not exist.',
-            'parent_id.exists' => 'Parent does not exist.',
-            'meta_data_id.required' => 'Meta Data Field is required.',
-            'meta_hierarchy_id.required' => 'Meta Hierarchy Field is required.',
-        ];
-
-    }
 }

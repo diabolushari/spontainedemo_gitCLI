@@ -15,7 +15,11 @@ return new class extends Migration
             $table->foreignId('parent_id')
                 ->nullable()
                 ->constrained('meta_hierarchy_items');
-            $table->foreignId('meta_data_id')
+            $table->foreignId('primary_field_id')
+                ->nullable()
+                ->constrained('meta_data');
+            $table->foreignId('secondary_field_id')
+                ->nullable()
                 ->constrained('meta_data');
             $table->unsignedBigInteger('level')
                 ->default(1);

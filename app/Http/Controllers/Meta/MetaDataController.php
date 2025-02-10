@@ -8,6 +8,7 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaData;
 use App\Models\Meta\MetaGroup;
 use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Meta\MetaStructure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,28 +38,18 @@ class MetaDataController extends Controller implements HasMiddleware
 
         $records = MetaData::with([
             'metaStructure:id,structure_name',
-            'hierarchyItem',
-            'groupItem',
         ])
             ->when($request->filled('search'), function (Builder $builder) use ($request) {
                 $searchTerm = '%'.$request->input('search').'%';
-
-                $builder->where(function ($query) use ($searchTerm, $request) {
-                    $query->where('name', 'like', $searchTerm)
-                        ->orWhereHas('groupItem.metaDataGroup', function (Builder $subQuery) use ($request) {
-                            $subQuery->where('name', 'like', '%'.$request->input('search').'%');
-                        })
-                        ->orWhereHas('hierarchyItem.metaHierarchy', function (Builder $subQuery) use ($request) {
-                            $subQuery->where('name', 'like', '%'.$request->input('search').'%');
-                        });
-                });
+                $builder->where('name', 'like', $searchTerm);
             })
             ->when($request->filled('structure'), function (Builder $builder) use ($request) {
                 $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
                     $query->where('structure_name', 'like', '%'.$request->input('structure').'%');
                 });
             })
-            ->paginate(20)
+            ->withCount('hierarchyPrimaryField', 'hierarchySecondaryField', 'groupItem')
+            ->paginate(25)
             ->withPath(route('meta-data.index'))
             ->withQueryString();
 
@@ -96,13 +87,16 @@ class MetaDataController extends Controller implements HasMiddleware
 
     public function show(MetaData $metaData, Request $request): Response
     {
-        $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
         $pageNo = $request->query('page', '1');
         $metaGroup = MetaGroup::select('id', 'name')
             ->get();
 
-        $metaHierarchy = MetaHierarchy::select('id', 'name')
+        $hierarchies = MetaHierarchyItem::where('primary_field_id', $metaData->id)
+            ->orWhere('secondary_field_id', $metaData->id)
+            ->pluck('meta_hierarchy_id');
+
+        $hierarchies = MetaHierarchy::whereIn('id', $hierarchies)
             ->get();
 
         return Inertia::render('MetaData/MetaDataShow', [
@@ -110,7 +104,7 @@ class MetaDataController extends Controller implements HasMiddleware
                 'metaStructure:id,structure_name',
             ]),
             'metaGroup' => $metaGroup,
-            'metaHierarchy' => $metaHierarchy,
+            'hierarchies' => $hierarchies,
             'pageNo' => $pageNo,
         ]);
     }

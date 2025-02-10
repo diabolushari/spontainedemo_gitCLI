@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from 'react'
 
 export interface MetaTreeNodeData {
   nodeId: number
-  nodeName: string
+  nodePrimaryValue: string
+  nodeSecondaryValue?: string
   level: number
   parentId: number | null
   expanded: boolean
@@ -88,7 +89,8 @@ export default function useMetaTree(hierarchyList: MetaHierarchyItem[]) {
 
         return {
           nodeId: hierarchyItem.id,
-          nodeName: hierarchyItem.meta_data?.name ?? '',
+          nodePrimaryValue: hierarchyItem.primary_field?.name ?? '',
+          nodeSecondaryValue: hierarchyItem.secondary_field?.name ?? '',
           level: hierarchyItem.level,
           parentId: hierarchyItem.parent_id,
           expanded,

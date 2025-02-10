@@ -62,13 +62,13 @@ class MetaHierarchyController extends Controller implements HasMiddleware
     public function edit(MetaHierarchy $metaHierarchy, Request $request): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
-        $metaHierarchy->load('levelInfos.structure');
+        $metaHierarchy->load('levels.primaryStructure:id,structure_name', 'levels.secondaryStructure:id,structure_name');
         $pageNo = $request->query('page', '1');
 
         return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
             'structures' => $structures,
             'metaHierarchy' => $metaHierarchy,
-            'levelInfos' => $metaHierarchy->levelInfos,
+            'levelInfos' => $metaHierarchy->levels,
             'page' => $pageNo,
         ]);
     }
@@ -78,19 +78,23 @@ class MetaHierarchyController extends Controller implements HasMiddleware
         Request $request,
         HierarchyList $hierarchyList
     ): Response {
-        $metaHierarchy->load('levelInfos', 'levelInfos.structure:id,structure_name');
+        $metaHierarchy->load(
+            'levels',
+            'levels.primaryStructure:id,structure_name',
+            'levels.secondaryStructure:id,structure_name',
+        );
         $pageNo = $request->query('page', '1');
 
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
             'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),
-            'levelInfos' => $metaHierarchy->levelInfos,
             'page' => $pageNo,
         ]);
     }
 
     public function store(MetaHierarchyFormRequest $request): RedirectResponse
     {
+
         $hierarchyLevels = $request->hierarchyLevelInfos;
 
         DB::beginTransaction();
@@ -103,7 +107,7 @@ class MetaHierarchyController extends Controller implements HasMiddleware
             MetaHierarchyLevelInfo::upsert(
                 $hierarchyLevels,
                 ['level', 'meta_hierarchy_id'],
-                ['meta_structure_id', 'level', 'meta_hierarchy_id'],
+                ['primary_field_structure_id', 'level', 'meta_hierarchy_id', 'secondary_field_structure_id', 'name'],
             );
         } catch (Exception $exception) {
             DB::rollBack();
@@ -152,7 +156,7 @@ class MetaHierarchyController extends Controller implements HasMiddleware
             MetaHierarchyLevelInfo::upsert(
                 $hierarchyLevels,
                 ['level', 'meta_hierarchy_id'],
-                ['meta_structure_id', 'level', 'meta_hierarchy_id'],
+                ['primary_field_structure_id', 'level', 'meta_hierarchy_id', 'secondary_field_structure_id', 'name'],
             );
         } catch (Exception $exception) {
             DB::rollBack();

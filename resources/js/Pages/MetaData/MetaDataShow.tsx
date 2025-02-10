@@ -3,14 +3,11 @@ import {
   MetaDataGroup,
   MetaDataGroupItem,
   MetaHierarchy,
-  MetaHierarchyItem,
 } from '@/interfaces/meta_interfaces'
 import { useCallback, useRef, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import Modal from '@/ui/Modal/Modal'
 import MetaGroupAddForm from './MetaGroupAddForm'
-import MetaHierarchyAddForm from './MetaHierarchyAddForm'
-import StrongText from '@/typography/StrongText'
 import NormalText from '@/typography/NormalText'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
@@ -21,16 +18,14 @@ import { router } from '@inertiajs/react'
 interface Props {
   metaData: MetaData
   metaGroup: MetaDataGroup
-  metaHierarchy: MetaHierarchy
+  hierarchies: MetaHierarchy[]
   pageNo: string
 }
 
-export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageNo }: Props) {
+export default function MetaDataShow({ metaData, metaGroup, hierarchies, pageNo }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showAddGroupModal, setShowAddGroupModal] = useState(false)
-  const [showAddHierarchyModal, setShowAddHierarchyModal] = useState(false)
   const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false)
-  const [showDeleteHierarchyModal, setShowDeleteHierarchyModal] = useState(false)
 
   const [selectedMetaDataGroupItem, setSelectedMetaDataGroupItem] =
     useState<MetaDataGroupItem | null>(null)
@@ -40,13 +35,6 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
     setShowDeleteGroupModal(true)
   }
 
-  const [selectedMetaHierarchyItem, setSelectedMetaHierarchyItem] =
-    useState<MetaHierarchyItem | null>(null)
-
-  const handleMetaHierarchyItemSelection = (metaHierarchyItem: MetaHierarchyItem) => {
-    setSelectedMetaHierarchyItem(metaHierarchyItem)
-    setShowDeleteHierarchyModal(true)
-  }
   const cardRef = useRef<HTMLDivElement>(null)
 
   const handleCardRef = useCallback(() => {
@@ -55,6 +43,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
     }
     cardRef.current.scrollIntoView({ behavior: 'smooth' })
   }, [])
+
   const breadCrumb: BreadcrumbItemLink[] = [
     {
       item: 'Meta data index',
@@ -69,7 +58,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
   const handleEditClick = (metaDataId: number, pageNo: string) => {
     router.visit(route('meta-data.edit', { metaData: metaDataId, page: pageNo }))
   }
- 
+
   return (
     <AnalyticsDashboardLayout
       type='definitions'
@@ -82,12 +71,6 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
             <div className='p-8'>
               <div className='mb-6'>
                 <h1 className='subheader-1stop text-xl'>METADATA</h1>
-                {/* <p className='small-1stop text-sm text-gray-500'>
-                  Metadata Search {'>'}{' '}
-                  <span>
-                    <b>Value Details</b>
-                  </span>
-                </p> */}
                 <BreadCrumbs breadcrumbItems={breadCrumb} />
               </div>
 
@@ -99,7 +82,6 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
                     className='size-6 cursor-pointer justify-end'
                     onClick={() => handleEditClick(metaData.id, pageNo)}
                   />
-
                   <img
                     src='/trash-icon.svg'
                     alt='Delete'
@@ -122,23 +104,14 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
                   <p className='text-md body-1stop'>{metaData.description}</p>
                 </div>
                 <div className='flex justify-end space-x-4 text-xs'>
-                  <div
+                  <button
                     onClick={() => {
                       setShowAddGroupModal(true)
                     }}
                     className='cursor-pointer text-teal-600 underline'
                   >
                     ADD TO A GROUP
-                  </div>
-
-                  <div
-                    onClick={() => {
-                      setShowAddHierarchyModal(true)
-                    }}
-                    className='cursor-pointer text-teal-600 underline'
-                  >
-                    ADD TO A HIERARCHY
-                  </div>
+                  </button>
                 </div>
               </div>
               <div className='bg-white-100 rounded-md p-6'>
@@ -173,23 +146,15 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
                 </h1>
                 <div className='p-2'>
                   <div className='flex flex-col gap-2 divide-y-2'>
-                    {metaData.hierarchy_item?.length === 0 && (
+                    {hierarchies.length === 0 && (
                       <div className='body-1stop text-underline'>No hierarchys</div>
                     )}
-                    {metaData.hierarchy_item?.map((hierarchyName) => (
+                    {hierarchies?.map((hierarchy) => (
                       <div
-                        key={hierarchyName.id}
+                        key={hierarchy.id}
                         className='flex justify-between gap-5 gap-y-2'
                       >
-                        <span className='body-1stop text-underline'>
-                          {hierarchyName.meta_hierarchy?.name}
-                        </span>
-                        <img
-                          src='/trash-icon.svg'
-                          alt='Delete'
-                          className='size-6 cursor-pointer'
-                          onClick={() => handleMetaHierarchyItemSelection(hierarchyName)}
-                        />
+                        <span className='body-1stop text-underline'>{hierarchy.name}</span>
                       </div>
                     ))}
                   </div>
@@ -218,31 +183,6 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy, pageN
                   <NormalText>
                     Are you sure you want to delete{' '}
                     {selectedMetaDataGroupItem.meta_data_group?.name}?
-                  </NormalText>
-                </DeleteModal>
-              )}
-              {showAddHierarchyModal && (
-                <Modal
-                  setShowModal={setShowAddHierarchyModal}
-                  title='Add Meta Hierarchy'
-                >
-                  <div className='p-2'>
-                    <MetaHierarchyAddForm
-                      metaDataId={metaData.id}
-                      metaHierarchy={metaHierarchy}
-                    />
-                  </div>
-                </Modal>
-              )}
-              {showDeleteHierarchyModal && selectedMetaHierarchyItem != null && (
-                <DeleteModal
-                  setShowModal={setShowDeleteHierarchyModal}
-                  title='Remove Meta Hierarchy'
-                  url={route('meta-hierarchy-delete-item', selectedMetaHierarchyItem.id)}
-                >
-                  <NormalText>
-                    Are you sure you want to delete {selectedMetaHierarchyItem.meta_hierarchy?.name}
-                    ?
                   </NormalText>
                 </DeleteModal>
               )}

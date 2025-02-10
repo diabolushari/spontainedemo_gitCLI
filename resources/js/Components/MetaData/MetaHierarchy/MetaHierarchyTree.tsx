@@ -21,6 +21,8 @@ export default function MetaHierarchyTree({
   metaHierarchy,
   levelInfos,
 }: Readonly<Props>) {
+  console.log(hierarchyList)
+
   const { tree, toggleNode } = useMetaTree(hierarchyList)
 
   const [selectedNode, setSelectedNode] = useState<MetaHierarchyItem | null>(null)
@@ -57,7 +59,7 @@ export default function MetaHierarchyTree({
           >
             <StrongText>
               <i className='las la-plus-circle'></i> Add{' '}
-              {firstLevelInfo?.structure?.structure_name ?? 'New Item'}
+              {firstLevelInfo?.primary_structure?.structure_name ?? 'New Item'}
             </StrongText>
           </div>
         )}

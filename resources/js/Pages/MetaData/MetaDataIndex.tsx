@@ -69,12 +69,15 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       actionStyle: 'gap-8',
       actions: [
         {
-          title: 'Groups ' + metaData.hierarchy_item?.length,
+          title: 'Groups ' + metaData.group_item_count,
           url: route('meta-data-group.index', { search: metaData.name }),
           textStyles: ' hover:scale-105 transition',
         },
         {
-          title: 'Hierarchies ' + metaData.hierarchy_item?.length,
+          title:
+            'Hierarchies ' +
+            ((metaData.hierarchy_primary_field_count ?? 0) +
+              (metaData.hierarchy_secondary_field_count ?? 0)),
           url: route('meta-hierarchy.index', { search: metaData.name }),
           textStyles: 'ml-auto  hover:scale-105 transition',
         },

@@ -47,6 +47,8 @@ use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaHierarchyItem;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -184,5 +186,124 @@ Route::get('subset-fields', SubsetFieldsListController::class)
 
 Route::get('static-list', StaticListController::class)
     ->name('static-list');
+
+Route::get('regions', function () {
+
+    $hierarchy = MetaHierarchy::first();
+    $regions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+        ->groupBy('region_code', 'region_name')
+        ->select('region_code', 'region_name')
+        ->get();
+
+    $fields = [];
+    foreach ($regions as $region) {
+        $fields[] = [
+            'primary_field_id' => $region->region_code,
+            'secondary_field_id' => $region->region_name,
+            'parent_id' => null,
+            'meta_hierarchy_id' => $hierarchy->id,
+            'level' => 1,
+        ];
+    }
+
+    return MetaHierarchyItem::insert($fields);
+});
+
+Route::get('circles', function () {
+
+    $hierarchy = MetaHierarchy::first();
+    $circles = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+        ->groupBy('circle_code', 'circle_name', 'region_code')
+        ->select('circle_code', 'circle_name', 'region_code')
+        ->get();
+
+    $hierarchyItems = MetaHierarchyItem::where('level', 1)
+        ->get();
+
+    $fields = [];
+    foreach ($circles as $circle) {
+        $fields[] = [
+            'primary_field_id' => $circle->circle_code,
+            'secondary_field_id' => $circle->circle_name,
+            'parent_id' => $hierarchyItems->where('primary_field_id', $circle->region_code)->first()->id,
+            'meta_hierarchy_id' => $hierarchy->id,
+            'level' => 2,
+        ];
+    }
+
+    return MetaHierarchyItem::insert($fields);
+});
+
+Route::get('divisions', function () {
+    $hierarchy = MetaHierarchy::first();
+    $divions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+        ->groupBy('division_code', 'division_name', 'circle_code')
+        ->select('division_code', 'division_name', 'circle_code')
+        ->get();
+
+    $hierarchyItems = MetaHierarchyItem::where('level', 2)
+        ->get();
+
+    $fields = [];
+    foreach ($divions as $division) {
+        $fields[] = [
+            'primary_field_id' => $division->division_code,
+            'secondary_field_id' => $division->division_name,
+            'parent_id' => $hierarchyItems->where('primary_field_id', $division->circle_code)->first()->id,
+            'meta_hierarchy_id' => $hierarchy->id,
+            'level' => 3,
+        ];
+    }
+
+    return MetaHierarchyItem::insert($fields);
+});
+
+Route::get('subdivisions', function () {
+    $hierarchy = MetaHierarchy::first();
+    $divions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+        ->groupBy('subdivision_code', 'subdivision_name', 'division_code')
+        ->select('subdivision_code', 'subdivision_name', 'division_code')
+        ->get();
+
+    $hierarchyItems = MetaHierarchyItem::where('level', 3)
+        ->get();
+
+    $fields = [];
+    foreach ($divions as $division) {
+        $fields[] = [
+            'primary_field_id' => $division->subdivision_code,
+            'secondary_field_id' => $division->subdivision_name,
+            'parent_id' => $hierarchyItems->where('primary_field_id', $division->division_code)->first()->id,
+            'meta_hierarchy_id' => $hierarchy->id,
+            'level' => 4,
+        ];
+    }
+
+    return MetaHierarchyItem::insert($fields);
+});
+
+Route::get('sections', function () {
+    $hierarchy = MetaHierarchy::first();
+    $divions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+        ->groupBy('section_code', 'section_name', 'subdivision_code')
+        ->select('section_code', 'section_name', 'subdivision_code')
+        ->get();
+
+    $hierarchyItems = MetaHierarchyItem::where('level', 4)
+        ->get();
+
+    $fields = [];
+    foreach ($divions as $division) {
+        $fields[] = [
+            'primary_field_id' => $division->section_code,
+            'secondary_field_id' => $division->section_name,
+            'parent_id' => $hierarchyItems->where('primary_field_id', $division->subdivision_code)->first()->id,
+            'meta_hierarchy_id' => $hierarchy->id,
+            'level' => 5,
+        ];
+    }
+
+    return MetaHierarchyItem::insert($fields);
+});
 
 require __DIR__.'/auth.php';

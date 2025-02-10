@@ -1,14 +1,23 @@
-import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
-import { FormItem } from '@/FormBuilder/FormBuilder'
-import FormPage from '@/FormBuilder/FormPage'
+import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { MetaHierarchy, MetaHierarchyLevelInfo, MetaStructure } from '@/interfaces/meta_interfaces'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import CardHeader from '@/ui/Card/CardHeader'
+import Card from '@/ui/Card/Card'
+import Input from '@/ui/form/Input'
 import ComboBox from '@/ui/form/ComboBox'
-import { useEffect, useMemo, useState } from 'react'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import useInertiaPost from '@/hooks/useInertiaPost'
+import Button from '@/ui/button/Button'
+import ErrorText from '@/typography/ErrorText'
 
 interface HierarchyLevelInfo {
   level: number
-  meta_structure: MetaStructure | null
+  name: string
+  primary_structure: MetaStructure | null
+  secondary_structure: MetaStructure | null
 }
 
 interface Properties {
@@ -18,14 +27,16 @@ interface Properties {
   page?: string
 }
 
-function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]) {
+function initLevelInfo(levelInfos?: MetaHierarchyLevelInfo[]): HierarchyLevelInfo[] {
   if (levelInfos == null) {
     return []
   }
   return levelInfos.map((item) => {
     return {
       level: item.level,
-      meta_structure: item.structure,
+      name: item.name ?? '',
+      primary_structure: item.primary_structure ?? null,
+      secondary_structure: item.secondary_structure ?? null,
     }
   })
 }
@@ -35,11 +46,17 @@ export default function MetaHierarchyCreate({
   levelInfos,
   page,
 }: Readonly<Properties>) {
+  const { post, errors, loading } = useInertiaPost(
+    metaHierarchy == null
+      ? route('meta-hierarchy.store')
+      : route('meta-hierarchy.update', { metaHierarchy: metaHierarchy.id })
+  )
   const { formData, setFormValue } = useCustomForm({
     name: metaHierarchy?.name ?? '',
     description: metaHierarchy?.description ?? '',
     no_of_levels: levelInfos?.length ?? 0,
   })
+
   const [hierarchyLevelInfos, setHierarchyLevelInfos] = useState<HierarchyLevelInfo[]>(
     initLevelInfo(levelInfos)
   )
@@ -54,6 +71,7 @@ export default function MetaHierarchyCreate({
       link: '',
     },
   ]
+
   useEffect(() => {
     setHierarchyLevelInfos((oldValues) => {
       const noOfLevels = Number(formData.no_of_levels)
@@ -71,7 +89,7 @@ export default function MetaHierarchyCreate({
       //if the number of levels is greater than the current length, add the rest
       const tempLength: HierarchyLevelInfo[] = []
       for (let i = oldValues.length + 1; i <= noOfLevels; i++) {
-        tempLength.push({ level: i, meta_structure: null })
+        tempLength.push({ level: i, name: '', primary_structure: null, secondary_structure: null })
       }
       return [...oldValues, ...tempLength]
     })
@@ -103,82 +121,186 @@ export default function MetaHierarchyCreate({
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 
-  const setHierarchyValue = (item: HierarchyLevelInfo, structure: MetaStructure | null) => {
+  const setPrimaryFieldValue = (item: HierarchyLevelInfo, structure: MetaStructure | null) => {
     setHierarchyLevelInfos((oldValues) => {
       return oldValues.map((tempValues) => {
         if (tempValues.level === item.level) {
-          return { ...tempValues, meta_structure: structure }
+          return { ...tempValues, primary_structure: structure }
         }
         return tempValues
       })
     })
   }
 
-  const fullFormData = useMemo(() => {
-    return {
-      ...formData,
-      hierarchy_level_infos: hierarchyLevelInfos.map((item) => {
-        return { level: item.level, meta_structure_id: item.meta_structure?.id }
-      }),
-    }
-  }, [formData, hierarchyLevelInfos])
+  const setSecondaryFieldValue = (item: HierarchyLevelInfo, structure: MetaStructure | null) => {
+    setHierarchyLevelInfos((oldValues) => {
+      return oldValues.map((tempValues) => {
+        if (tempValues.level === item.level) {
+          return { ...tempValues, secondary_structure: structure }
+        }
+        return tempValues
+      })
+    })
+  }
+
+  const setLevelName = (item: HierarchyLevelInfo, name: string) => {
+    setHierarchyLevelInfos((oldValues) => {
+      return oldValues.map((tempValues) => {
+        if (tempValues.level === item.level) {
+          return { ...tempValues, name: name }
+        }
+        return tempValues
+      })
+    })
+  }
+
+  const handleFormSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      post({
+        _method: metaHierarchy == null ? 'POST' : 'PUT',
+        ...formData,
+        hierarchy_level_infos: hierarchyLevelInfos.map((item) => {
+          return {
+            level: item.level,
+            name: item.name,
+            primary_field_structure_id: item.primary_structure?.id,
+            secondary_field_structure_id: item.secondary_structure?.id,
+          }
+        }),
+      })
+    },
+    [formData, hierarchyLevelInfos, post]
+  )
 
   return (
-    <FormPage
-      url={
-        metaHierarchy != null
-          ? route('meta-hierarchy.update', { metaHierarchy: metaHierarchy.id, page: page })
-          : route('meta-hierarchy.store')
-      }
-      formData={formData}
-      formItems={formItems}
-      title='Create Meta Hierarchy'
-      backUrl={route('meta-hierarchy.index', {
-        type: 'definitions',
-        subtype: 'hierarchies',
-        page: page,
-      })}
-      formStyles='w-1/2 md:grid-cols-1'
-      customSubmitData={fullFormData}
-      isPatchRequest={metaHierarchy != null}
+    <AnalyticsDashboardLayout
       type={'definitions'}
       subtype={'hierarchies'}
-      breadCrumbs={breadCrumb}
     >
-      {hierarchyLevelInfos.length > 0 && (
-        <>
-          <span className='small-1stop text-sm tracking-normal text-gray-800'>Select levels</span>
-          <div className='rounded-lg border-3 border-1stop-gray p-2'>
-            <a
-              className={`link small-1stop flex justify-end text-xs`}
-              href={route('meta-structure.index')}
-              target='_blank'
-              rel='noreferrer'
-            >
-              Structural blocks
-            </a>
-            {hierarchyLevelInfos.map((item) => {
-              return (
-                <div
-                  className='flex flex-col py-1'
-                  key={item.level}
-                >
-                  <ComboBox
-                    setValue={(name: MetaStructure | null) => setHierarchyValue(item, name)}
-                    dataKey='id'
-                    displayKey='structure_name'
-                    placeholder={`Level ${item.level}`}
-                    value={item.meta_structure}
-                    url={route('meta-structure-search', {
-                      search: '',
-                    })}
+      <DashboardPadding>
+        <Card>
+          <div className='flex flex-col gap-5'>
+            <CardHeader
+              title='Create Meta Hierarchy'
+              backUrl={route('meta-hierarchy.index', {
+                type: 'definitions',
+                subtype: 'hierarchies',
+                page: page,
+              })}
+              breadCrumb={breadCrumb}
+            />
+            <div className='flex flex-col gap-5 p-5'>
+              <FormBuilder
+                formData={formData}
+                onFormSubmit={handleFormSubmit}
+                formItems={formItems}
+                loading={false}
+                hideSubmitButton={true}
+                formStyles='w-1/2 md:grid-cols-1'
+              />
+              <form
+                className='flex flex-col gap-5 rounded-lg border-3 border-1stop-gray p-2'
+                onSubmit={handleFormSubmit}
+              >
+                {hierarchyLevelInfos.length > 0 && (
+                  <>
+                    <div className='flex flex-col gap-3'>
+                      <a
+                        className={`link small-1stop flex justify-end text-xs`}
+                        href={route('meta-structure.index')}
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        Structural blocks
+                      </a>
+                      {errors['hierarchy_level_infos' as keyof typeof errors] != null && (
+                        <div className=''>
+                          <ErrorText>
+                            {errors['hierarchy_level_infos' as keyof typeof errors]}
+                          </ErrorText>
+                        </div>
+                      )}
+                      {hierarchyLevelInfos.map((item, index) => {
+                        return (
+                          <div
+                            key={item.level}
+                            className='grid grid-cols-1 gap-3 md:grid-cols-3'
+                          >
+                            <div className='col-span-full text-xs'>Level {item.level}</div>
+                            <div className='flex flex-col'>
+                              <Input
+                                setValue={(value: string) => setLevelName(item, value)}
+                                value={item.name}
+                                placeholder='Level Name'
+                                error={
+                                  errors[
+                                    ('hierarchy_level_infos.' +
+                                      index +
+                                      '.name') as keyof typeof errors
+                                  ]
+                                }
+                              />
+                            </div>
+                            <div className='flex flex-col py-1'>
+                              <ComboBox
+                                setValue={(name: MetaStructure | null) =>
+                                  setPrimaryFieldValue(item, name)
+                                }
+                                dataKey='id'
+                                displayKey='structure_name'
+                                placeholder={`Primary Field`}
+                                value={item.primary_structure}
+                                url={route('meta-structure-search', {
+                                  search: '',
+                                })}
+                                error={
+                                  errors[
+                                    ('hierarchy_level_infos.' +
+                                      index +
+                                      '.primary_field_structure_id') as keyof typeof errors
+                                  ]
+                                }
+                              />
+                            </div>
+                            <div className='flex flex-col py-1'>
+                              <ComboBox
+                                setValue={(name: MetaStructure | null) =>
+                                  setSecondaryFieldValue(item, name)
+                                }
+                                dataKey='id'
+                                displayKey='structure_name'
+                                placeholder={`Secondary Field`}
+                                value={item.secondary_structure}
+                                url={route('meta-structure-search', {
+                                  search: '',
+                                })}
+                                error={
+                                  errors[
+                                    ('hierarchy_level_infos.' +
+                                      index +
+                                      '.secondary_field_structure_id') as keyof typeof errors
+                                  ]
+                                }
+                              />
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+                <div className='flex'>
+                  <Button
+                    label='Save'
+                    processing={loading}
                   />
                 </div>
-              )
-            })}
+              </form>
+            </div>
           </div>
-        </>
-      )}
-    </FormPage>
+        </Card>
+      </DashboardPadding>
+    </AnalyticsDashboardLayout>
   )
 }

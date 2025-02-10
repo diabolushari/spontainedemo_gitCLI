@@ -1,4 +1,3 @@
-import MetaHierarchyTree from '@/Components/MetaData/MetaHierarchy/MetaHierarchyTree'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import {
   MetaHierarchy,
@@ -8,21 +7,18 @@ import {
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { useMemo, useState } from 'react'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import MetaHierarchyTree from '@/Components/MetaData/MetaHierarchy/MetaHierarchyTree'
 
 interface Props {
   metaHierarchy: MetaHierarchy
   hierarchyList: MetaHierarchyItem[]
-  levelInfos: MetaHierarchyLevelInfo[]
   page: string
 }
 
-export default function MetaHierarchyShow({
-  metaHierarchy,
-  hierarchyList,
-  levelInfos,
-  page,
-}: Readonly<Props>) {
+export default function MetaHierarchyShow({ metaHierarchy, hierarchyList, page }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  console.log(metaHierarchy)
 
   const displayItems = useMemo(() => {
     let index = 1
@@ -41,14 +37,12 @@ export default function MetaHierarchyShow({
       },
     ]
 
-    records.push()
-
-    levelInfos.map((field) => {
+    metaHierarchy.levels?.forEach((level, index) => {
       records.push({
-        id: index++,
-        label: 'Level ' + field.level,
-        content: field.structure?.structure_name,
+        label: `Level ${index + 1}`,
+        content: level.name,
         type: 'text',
+        id: index++,
       })
     })
 
@@ -88,7 +82,7 @@ export default function MetaHierarchyShow({
       <MetaHierarchyTree
         metaHierarchy={metaHierarchy}
         hierarchyList={hierarchyList}
-        levelInfos={levelInfos}
+        levelInfos={metaHierarchy.levels as MetaHierarchyLevelInfo[]}
       />
 
       {showDeleteModal && (
