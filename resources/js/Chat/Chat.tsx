@@ -16,7 +16,7 @@ export default function Chat({ chatToken }: Readonly<Props>) {
 
   useEffect(() => {
     console.log(chatToken)
-    const ws = new WebSocket(`wss://xenthia.xocortx.com:8000/ws?token=${chatToken}`)
+    const ws = new WebSocket(`ws://xenthia.xocortx.com:8000/ws?token=${chatToken}`)
 
     ws.onopen = () => console.log('✅ WebSocket Connected')
 
