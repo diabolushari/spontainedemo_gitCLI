@@ -5,20 +5,9 @@ namespace App\Http\Controllers\SubsetDocumentation;
 use App\Http\Controllers\Controller;
 use App\Models\Meta\MetaData;
 use App\Models\Subset\SubsetDetail;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetDocumentationController extends Controller implements HasMiddleware
+class SubsetDocumentationController extends Controller
 {
-    /**
-     * @return string[]
-     */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
-
     public function __invoke()
     {
         $subsets = SubsetDetail::whereHas('dimensions', function ($query) {
