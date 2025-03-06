@@ -33,6 +33,7 @@ return new class extends Migration
             $table->foreignId('updated_by')
                 ->nullable()
                 ->constrained('users');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

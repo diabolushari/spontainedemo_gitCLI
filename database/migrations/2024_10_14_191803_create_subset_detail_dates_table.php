@@ -30,6 +30,7 @@ return new class extends Migration
             $table->integer('dynamic_end_offset')->nullable();
             $table->string('dynamic_end_unit')->nullable();
             $table->string('date_field_expression')->nullable();
+            $table->text('description')->nullable();
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()

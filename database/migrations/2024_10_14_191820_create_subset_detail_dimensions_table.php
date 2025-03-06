@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('column_expression')->nullable();
             $table->json('filters')->nullable();
             $table->softDeletes();
+            $table->string('description')->nullable();
             $table->foreignId('created_by')
                 ->nullable()
                 ->constrained('users');

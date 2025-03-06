@@ -45,6 +45,7 @@ use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
+use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
@@ -321,5 +322,8 @@ Route::get('fix-sections', function () {
 
 Route::get('chat', ChatController::class)
     ->name('chat');
+
+Route::get('subset-documentation', SubsetDocumentationController::class)
+    ->name('subset-documentation');
 
 require __DIR__.'/auth.php';
