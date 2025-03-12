@@ -85,6 +85,11 @@ export interface SubsetDetail extends Model {
   dimensions?: Partial<SubsetDimensionField>[]
   measures?: Partial<SubsetMeasureField>[]
   data_detail?: Partial<DataDetail> | null
+  max_rows_to_fetch: number | null
+  use_for_training_ai: 0 | 1
+  proactive_insight_instructions: string | null
+  visualization_instructions: string | null
+  type: string | null
 }
 
 export interface SubsetDateField extends Model {

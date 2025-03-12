@@ -39,6 +39,7 @@ use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetDropdownApiController;
+use App\Http\Controllers\Subset\SubsetEditController;
 use App\Http\Controllers\Subset\SubsetExportController;
 use App\Http\Controllers\Subset\SubsetFieldsListController;
 use App\Http\Controllers\Subset\SubsetListController;
@@ -47,6 +48,7 @@ use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
+use App\Http\Controllers\Subset\SubsetUpdateController;
 use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
@@ -133,6 +135,12 @@ Route::resource('finance', FinancialController::class);
 
 Route::get('subset/create/{dataDetail}', SubsetCreateController::class)
     ->name('subset.create');
+
+Route::get('subset/{subsetDetail}/edit', SubsetEditController::class)
+    ->name('subset.edit');
+
+Route::patch('subset/{subsetDetail}', SubsetUpdateController::class)
+    ->name('subset.update');
 
 Route::post('subset/{dataDetail}', SubsetStoreController::class)
     ->name('subset.store');

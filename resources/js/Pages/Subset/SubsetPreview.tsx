@@ -41,6 +41,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
       backUrl={route('data-detail.show', subset.data_detail_id)}
       items={[]}
       onDeleteClick={handleDeleteClick}
+      editUrl={route('subset.edit', subset.id)}
     >
       <div className='flex w-full flex-col md:w-1/2'>
         <SubsetFilterForm

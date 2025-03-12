@@ -10,11 +10,7 @@ class SubsetDocumentationController extends Controller
 {
     public function __invoke()
     {
-        $subsets = SubsetDetail::whereHas('dimensions', function ($query) {
-            $query->whereNotNull('description');
-        })->orWhereHas('measures', function ($query) {
-            $query->whereNotNull('description');
-        })
+        $subsets = SubsetDetail::where('use_for_training_ai', 1)
             ->with([
                 'dates',
                 'dimensions' => function ($query) {
@@ -37,6 +33,8 @@ class SubsetDocumentationController extends Controller
                 'hierarchy' => 'Office Hierarchy',
                 'data_family' => $subset->dataDetail?->name,
                 'data_family_description' => $subset->dataDetail?->description,
+                'proactive_insight_instructions' => $subset->proactive_insight_instructions,
+                'visualization_instructions' => $subset->visualization_instructions,
                 'dates' => $subset->dates->map(function ($date) {
                     return [
                         'column' => $date->subset_column,
