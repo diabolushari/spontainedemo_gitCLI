@@ -2,6 +2,7 @@ import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResour
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderAPI } from '@/interfaces/data_interfaces'
+import DataSourcePreview from '@/Components/DataLoader/DataSourcePreview/DataSourcePreview'
 
 interface Props {
   dataLoaderAPI: DataLoaderAPI
@@ -39,6 +40,7 @@ export default function MetaGroupShow({ dataLoaderAPI }: Readonly<Props>) {
       type={'loaders'}
       subtype={'json-apis'}
     >
+      <DataSourcePreview url={route('loader-query-api-data', dataLoaderAPI.id)} />
       {/**more content**/}
       {showDeleteModal && (
         <DeleteModal

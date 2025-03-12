@@ -44,6 +44,15 @@ function KeyValueList({ list, setList, errorsKey = '' }: Readonly<Props>) {
     [setList]
   )
 
+  const removeItem = useCallback(
+    (itemIndex: number) => {
+      setList((oldValues) => {
+        return oldValues.filter((_, index) => index !== itemIndex)
+      })
+    },
+    [setList]
+  )
+
   const addNewItem = () => {
     setList((oldValues) => {
       return [...oldValues, { key: '', value: '' }]
@@ -56,25 +65,34 @@ function KeyValueList({ list, setList, errorsKey = '' }: Readonly<Props>) {
     <div className='grid grid-cols-1 gap-1 p-2'>
       {list.map((item, index) => (
         <div
-          className='grid grid-cols-2 gap-1'
+          className='flex items-end gap-2'
           key={index}
         >
-          <div className='flex flex-col'>
-            <Input
-              setValue={(value) => changeKey(index, value)}
-              value={item.key}
-              label='key'
-              error={errors[`${errorsKey}.${index}.key`] ?? undefined}
-            />
+          <div className='flex-grow-1 grid grid-cols-2 gap-1'>
+            <div className='flex flex-col'>
+              <Input
+                setValue={(value) => changeKey(index, value)}
+                value={item.key}
+                label='key'
+                error={errors[`${errorsKey}.${index}.key`] ?? undefined}
+              />
+            </div>
+            <div className='flex flex-col'>
+              <Input
+                setValue={(value) => changeValue(index, value)}
+                value={item.value ?? ''}
+                label='value'
+                error={errors[`${errorsKey}.${index}.value`] ?? undefined}
+              />
+            </div>
           </div>
-          <div className='flex flex-col'>
-            <Input
-              setValue={(value) => changeValue(index, value)}
-              value={item.value ?? ''}
-              label='value'
-              error={errors[`${errorsKey}.${index}.value`] ?? undefined}
-            />
-          </div>
+          <button
+            className='flex-shrink-0 p-2 hover:bg-1stop-accent2'
+            type='button'
+            onClick={() => removeItem(index)}
+          >
+            <i className='la la-close' />
+          </button>
         </div>
       ))}
       <div className='flex'>

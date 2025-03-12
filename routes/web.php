@@ -6,6 +6,7 @@ use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataExplorer\DataExplorerController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIController;
+use App\Http\Controllers\DataLoader\DataLoaderAPIDataController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
@@ -329,5 +330,10 @@ Route::get('subset-documentation', SubsetDocumentationController::class)
 
 Route::resource('loader-apis', DataLoaderAPIController::class)
     ->parameters(['loader-apis' => 'dataLoaderAPI']);
+Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
+    ->name('loader-query-api-data');
+
+Route::get('subset-documentation-generator', \App\Http\Controllers\SubsetDocument\SubsetDocumentationController::class)
+    ->name('subset-documentation-generator');
 
 require __DIR__.'/auth.php';

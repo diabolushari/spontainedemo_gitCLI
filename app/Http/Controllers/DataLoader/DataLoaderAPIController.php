@@ -7,6 +7,7 @@ use App\Http\Requests\DataLoader\DataLoaderAPIFormRequest;
 use App\Http\Requests\DataLoader\DataLoaderAPISearchRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\DataLoader\LoaderAPI;
+use App\Services\DataLoader\FetchData\FetchJSONAPI;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
@@ -57,7 +58,7 @@ class DataLoaderAPIController extends Controller implements HasMiddleware
             ->with(['message' => 'Data added successfully.']);
     }
 
-    public function show(LoaderAPI $dataLoaderAPI): Response
+    public function show(LoaderAPI $dataLoaderAPI, FetchJSONAPI $fetchJSONAPI): Response
     {
         return Inertia::render('DataLoader/DataLoaderAPIShow', [
             'dataLoaderAPI' => $dataLoaderAPI,
