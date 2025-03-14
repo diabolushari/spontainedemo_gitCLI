@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { JSONDefinition } from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
 
 export interface JSONStructureDefinition {
-  id: number
+  lastUUID: number
   definition: JSONDefinition
 }
 
