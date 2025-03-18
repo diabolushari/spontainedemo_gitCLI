@@ -30,7 +30,7 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   ]
 
   const displayedValues = useMemo(() => {
-    return [
+    const data: ShowPageItem[] = [
       {
         id: 1,
         label: 'Name',
@@ -46,20 +46,36 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
         type: 'link',
       },
       {
-        id: 4,
-        label: 'Query',
-        content: route('loader-queries.show', dataLoaderJob.query_id),
-        contentDescription: dataLoaderJob.loader_query?.name,
-        type: 'link',
-      },
-      {
         id: 5,
         label: 'Cron Type',
         content: dataLoaderJob.cron_type,
         type: 'text',
       },
-    ] as ShowPageItem[]
-  }, [])
+    ]
+
+    if (dataLoaderJob.query_id != null) {
+      data.push({
+        id: 6,
+        label: 'Query',
+        content: route('loader-queries.show', dataLoaderJob.query_id),
+        contentDescription: dataLoaderJob.loader_query?.name,
+        type: 'link',
+      })
+    }
+
+    if (dataLoaderJob.api_id != null) {
+      data.push({
+        id: 7,
+        label: 'API',
+        content: route('loader-apis.show', dataLoaderJob.api_id),
+        contentDescription: dataLoaderJob.api?.name,
+        type: 'link',
+      })
+    }
+
+    return data
+  }, [dataLoaderJob])
+
   const showDetails = (status: JobStatuses) => {
     setShowStatusModal(true)
     setSelectedStatus(status)

@@ -18,7 +18,12 @@ class ScheduledDataLoadListener implements ShouldQueue
      */
     public function handle(ScheduledDataLoadEvent $event): void
     {
-        $event->dataLoaderJob->load('loaderQuery.loaderConnection', 'detail', 'predecessor');
+        $event->dataLoaderJob->load(
+            'loaderQuery.loaderConnection',
+            'detail',
+            'predecessor',
+            'api'
+        );
         $this->job->run($event->dataLoaderJob);
     }
 }

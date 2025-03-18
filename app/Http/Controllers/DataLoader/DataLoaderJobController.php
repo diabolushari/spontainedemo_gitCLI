@@ -94,7 +94,12 @@ class DataLoaderJobController extends Controller implements HasMiddleware
 
     public function show(DataLoaderJob $dataLoaderJob): Response
     {
-        $dataLoaderJob->load('loaderQuery:id,name', 'detail:id,name', 'statuses');
+        $dataLoaderJob->load(
+            'loaderQuery:id,name',
+            'detail:id,name',
+            'statuses',
+            'api:id,name',
+        );
 
         return Inertia::render('DataLoader/DataLoaderJobShow', [
             'dataLoaderJob' => $dataLoaderJob,

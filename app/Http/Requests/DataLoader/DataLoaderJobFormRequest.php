@@ -5,6 +5,8 @@ namespace App\Http\Requests\DataLoader;
 use App\Services\DataLoader\CronTypes;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -22,7 +24,12 @@ class DataLoaderJobFormRequest extends Data
         public ?string $monthOfYear,
         public ?int $dayOfMonth,
         public ?string $duplicateIdentificationField,
-        public int $queryId,
+        #[RequiredIf('sourceType', 'sql')]
+        public ?int $queryId,
+        #[RequiredIf('sourceType', 'api')]
+        public ?int $apiId,
+        #[In('sql', 'api')]
+        public string $sourceType,
         #[Exists('loader_jobs', 'id')]
         public ?int $predecessorJobId,
         public int $dataDetailId,
@@ -61,7 +68,6 @@ class DataLoaderJobFormRequest extends Data
                 'required_if:cronType,'.CronTypes::MONTHLY,
                 'required_if:cronType,'.CronTypes::YEARLY,
             ],
-            'query_id' => ['required', 'int', 'exists:loader_queries,id'],
             'data_detail_id' => ['required', 'int', 'exists:data_details,id'],
         ];
     }

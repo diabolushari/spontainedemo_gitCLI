@@ -9,13 +9,16 @@ use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
 use App\Services\DataLoader\CronTypes;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
+use App\Services\DataLoader\JsonStructure\GetPrimaryFieldData;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 
 readonly class RunScheduledJob
 {
     public function __construct(
         private RunLoaderQuery $runQuery,
-        private ImportToDataTable $importToDataTable
+        private ImportToDataTable $importToDataTable,
+        private GetPrimaryFieldData $getPrimaryFieldData,
     ) {}
 
     /**
@@ -28,9 +31,7 @@ readonly class RunScheduledJob
         $startTime = now();
 
         if (
-            $dataLoaderJob->loaderQuery == null
-            || $dataLoaderJob->detail == null
-            || $dataLoaderJob->loaderQuery->loaderConnection == null
+            $dataLoaderJob->detail == null
         ) {
             return OperationResult::from([
                 'error' => true,
@@ -57,11 +58,19 @@ readonly class RunScheduledJob
         }
 
         try {
-            $data = $this->runQuery->runQuery(
-                $dataLoaderJob->loaderQuery->loaderConnection,
-                $dataLoaderJob->loaderQuery,
-            );
-        } catch (Exception $exception) {
+            $data = [];
+            if ($dataLoaderJob->loaderQuery != null) {
+                $data = $this->runQuery->runQuery(
+                    $dataLoaderJob->loaderQuery->loaderConnection,
+                    $dataLoaderJob->loaderQuery,
+                );
+            }
+            if ($dataLoaderJob->api != null) {
+                $data = $this->getPrimaryFieldData->getPrimaryFieldData(
+                    $dataLoaderJob->api
+                );
+            }
+        } catch (Exception|GuzzleException $exception) {
 
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
