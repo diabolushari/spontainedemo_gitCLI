@@ -6,19 +6,19 @@ use App\Libs\ExceptionMessage;
 use App\Libs\OperationResult;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\DataLoader\DataLoaderJobStatus;
-use App\Services\DataLoader\Connection\RunLoaderQuery;
 use App\Services\DataLoader\CronTypes;
+use App\Services\DataLoader\DataSource\DataLoaderSource;
+use App\Services\DataLoader\Factory\DataLoaderFactory;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
-use App\Services\DataLoader\JsonStructure\GetPrimaryFieldData;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 
 readonly class RunScheduledJob
 {
     public function __construct(
-        private RunLoaderQuery $runQuery,
+        private DataLoaderFactory $dataLoaderFactory,
         private ImportToDataTable $importToDataTable,
-        private GetPrimaryFieldData $getPrimaryFieldData,
     ) {}
 
     /**
@@ -27,6 +27,8 @@ readonly class RunScheduledJob
     public function run(
         DataLoaderJob $dataLoaderJob
     ): OperationResult {
+
+        Log::info('Starting data loader job: '.$dataLoaderJob->name);
 
         $startTime = now();
 
@@ -58,20 +60,15 @@ readonly class RunScheduledJob
         }
 
         try {
-            $data = [];
             if ($dataLoaderJob->loaderQuery != null) {
-                $data = $this->runQuery->runQuery(
-                    $dataLoaderJob->loaderQuery->loaderConnection,
-                    $dataLoaderJob->loaderQuery,
-                );
+                $dataSource = DataLoaderSource::fromLoaderSourceModel($dataLoaderJob->loaderQuery);
             }
             if ($dataLoaderJob->api != null) {
-                $data = $this->getPrimaryFieldData->getPrimaryFieldData(
-                    $dataLoaderJob->api
-                );
+                $dataSource = DataLoaderSource::fromLoaderSourceModel($dataLoaderJob->api);
             }
+            $data = $this->dataLoaderFactory->createFetcher($dataSource->type)->fetchData($dataSource);
+            Log::info($data);
         } catch (Exception|GuzzleException $exception) {
-
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
                 'completed_at' => now(),

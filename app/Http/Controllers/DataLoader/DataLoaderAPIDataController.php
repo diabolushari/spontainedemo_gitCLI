@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Libs\ExceptionMessage;
 use App\Libs\OperationResult;
 use App\Models\DataLoader\LoaderAPI;
-use App\Services\DataLoader\JsonStructure\GetPrimaryFieldData;
+use App\Services\DataLoader\DataSource\DataLoaderSource;
+use App\Services\DataLoader\Factory\DataLoaderFactory;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
@@ -15,7 +16,7 @@ class DataLoaderAPIDataController extends Controller
 {
     public function __invoke(
         LoaderAPI $loaderAPI,
-        GetPrimaryFieldData $getPrimaryFieldData,
+        DataLoaderFactory $dataLoaderFactory,
     ): JsonResponse {
 
         $error = new OperationResult(false, '');
@@ -23,7 +24,8 @@ class DataLoaderAPIDataController extends Controller
         $data = [];
 
         try {
-            $data = $getPrimaryFieldData->getPrimaryFieldData($loaderAPI);
+            $dataSource = DataLoaderSource::fromLoaderSourceModel($loaderAPI);
+            $data = $dataLoaderFactory->createFetcher($dataSource->type)->fetchData($dataSource);
             $noOfRecords = count($data);
             $error->message = "Query executed successfully, $noOfRecords records found.";
         } catch (GuzzleException|Exception $e) {

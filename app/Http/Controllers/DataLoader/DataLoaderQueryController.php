@@ -8,7 +8,6 @@ use App\Http\Requests\DataLoader\DataLoaderQuerySearchRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderQuery;
-use App\Services\DataLoader\Connection\RunLoaderQuery;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
@@ -66,12 +65,10 @@ class DataLoaderQueryController extends Controller implements HasMiddleware
 
     public function store(DataLoaderQueryFormRequest $request): RedirectResponse
     {
-        //        $escapeCharacters = ['\n', '\r', '\t'];
         try {
             /** @var DataLoaderQuery $record */
             $record = DataLoaderQuery::create([
                 ...$request->all(),
-                //                'query' => str_replace($escapeCharacters, ' ', $request->query),
             ]);
         } catch (Exception $e) {
             return back()
@@ -85,7 +82,6 @@ class DataLoaderQueryController extends Controller implements HasMiddleware
 
     public function show(
         DataLoaderQuery $dataLoaderQuery,
-        RunLoaderQuery $runLoaderQuery
     ): Response {
         $dataLoaderQuery->load('loaderConnection');
 

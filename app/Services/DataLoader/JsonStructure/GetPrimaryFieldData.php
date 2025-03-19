@@ -2,13 +2,13 @@
 
 namespace App\Services\DataLoader\JsonStructure;
 
-use App\Models\DataLoader\LoaderAPI;
+use App\Services\DataLoader\Contracts\DataFetcherInterface;
 use App\Services\DataLoader\DataSource\DataLoaderSource;
 use App\Services\DataLoader\FetchData\FetchJSONAPI;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
-use phpDocumentor\Reflection\Exception;
 
-class GetPrimaryFieldData
+class GetPrimaryFieldData implements DataFetcherInterface
 {
     public function __construct(
         private readonly FetchJSONAPI $fetchJSONAPI,
@@ -21,13 +21,40 @@ class GetPrimaryFieldData
      * @throws GuzzleException When the API request fails
      * @throws Exception
      */
-    public function getPrimaryFieldData(LoaderAPI $loaderAPI): array
+    public function fetchData(DataLoaderSource $dataSource): array
     {
-        $responseStructure = JsonStructureDefinition::from($loaderAPI->response_structure);
+        if ($dataSource->type !== 'REST_API' || $dataSource->apiInfo === null) {
+            throw new Exception('Invalid data source type for API');
+        }
+
+        $responseStructure = JsonStructureDefinition::from($dataSource->apiInfo->response_structure);
 
         $pathToPrimary = $this->findJsonPrimaryField->findPathToPrimary($responseStructure->definition);
 
-        $data = $this->fetchJSONAPI->fetchData(DataLoaderSource::from($loaderAPI));
+        // Convert KeyValue items to associative arrays
+        $headers = [];
+        if ($dataSource->apiInfo->headers) {
+            foreach ($dataSource->apiInfo->headers as $header) {
+                $headers[$header['key']] = $header['value'];
+            }
+        }
+
+        $body = [];
+        if ($dataSource->apiInfo->body) {
+            foreach ($dataSource->apiInfo->body as $param) {
+                $body[$param['key']] = $param['value'];
+            }
+        }
+
+        // Set up the API request
+        $this->fetchJSONAPI
+            ->setUrl($dataSource->apiInfo->url)
+            ->setMethod($dataSource->apiInfo->method)
+            ->setHeaders($headers)
+            ->setBody($body);
+
+        // Fetch the data
+        $data = $this->fetchJSONAPI->getData();
 
         return $this->traverseStructure($data, $pathToPrimary);
     }
@@ -79,7 +106,6 @@ class GetPrimaryFieldData
         }
 
         if ($currentPathPosition->fieldType === 'primitive-array') {
-
             return [$currentPathPosition->fieldName => $data[$currentPathPosition->fieldName]];
         }
 
@@ -92,7 +118,6 @@ class GetPrimaryFieldData
 
     private function isSequential(array $array): bool
     {
-
         return array_keys($array) === range(0, count($array) - 1);
     }
 }
