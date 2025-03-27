@@ -1,5 +1,5 @@
-import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
+import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 
 export interface Model {
   id: number
@@ -51,6 +51,8 @@ export interface DataDetail extends Model {
   date_fields?: Partial<TableDateField>[]
   dimension_fields?: Partial<TableDimensionField>[]
   measure_fields?: Partial<TableMeasureField>[]
+  relation_fields?: Partial<DataTableRelation>[]
+  text_fields?: Partial<DataTableText>[]
   jobs?: Partial<DataLoaderJob>[]
   is_active: 0 | 1
 }
@@ -262,14 +264,6 @@ export interface DataTableItem extends Model {
   measure_6?: number | null
   measure_7?: number | null
   measure_8?: number | null
-  measure_1_unit?: string | null
-  measure_2_unit?: string | null
-  measure_3_unit?: string | null
-  measure_4_unit?: string | null
-  measure_5_unit?: string | null
-  measure_6_unit?: string | null
-  measure_7_unit?: string | null
-  measure_8_unit?: string | null
 }
 
 export interface JobStatuses extends Model {
@@ -323,4 +317,19 @@ export interface DataLoaderAPI extends Model {
   headers: KeyValue[] | null
   body: KeyValue[] | null
   response_structure: JSONStructureDefinition
+}
+
+export interface DataTableRelation extends Model {
+  data_detail_id: number
+  column: string
+  field_name: string
+  related_table_id: number
+  related_table?: Partial<DataDetail> | null
+}
+
+export interface DataTableText extends Model {
+  data_detail_id: number
+  column: string
+  field_name: string
+  is_long_text: boolean
 }

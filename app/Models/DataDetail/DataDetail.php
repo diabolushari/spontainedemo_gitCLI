@@ -6,6 +6,8 @@ use App\Models\DataLoader\DataLoaderJob;
 use App\Models\DataTable\DataTableDate;
 use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
+use App\Models\DataTable\DataTableRelation;
+use App\Models\DataTable\DataTableText;
 use App\Models\SubjectArea\SubjectArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,7 +53,23 @@ class DataDetail extends Model
     }
 
     /**
-     * @return BelongsTo<SubjectArea>
+     * @return HasMany<DataTableText>
+     */
+    public function textFields(): HasMany
+    {
+        return $this->hasMany(DataTableText::class, 'data_detail_id', 'id');
+    }
+
+    /**
+     * @return HasMany<DataTableRelation>
+     */
+    public function relationFields(): HasMany
+    {
+        return $this->hasMany(DataTableRelation::class, 'data_detail_id', 'id');
+    }
+
+    /**
+     * @return BelongsTo<SubjectArea, DataDetail>
      */
     public function subjectArea(): BelongsTo
     {

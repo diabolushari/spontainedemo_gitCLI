@@ -1,8 +1,9 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
-import { FormEvent, useMemo } from 'react'
+import { DataDetail } from '@/interfaces/data_interfaces'
 import { MetaStructure } from '@/interfaces/meta_interfaces'
 import { showError } from '@/ui/alerts'
+import { FormEvent, useMemo } from 'react'
 
 interface Props {
   selectedField: DataTableFieldInfo | null
@@ -16,12 +17,16 @@ export interface DataTableFieldInfo {
   unit_field_name?: string
   create_unit_column: boolean
   meta_structure: MetaStructure | null
+  parent_table: Pick<DataDetail, 'id' | 'name'> | null
+  is_long_text: boolean
 }
 
 const types = [
-  { id: 'date', structure_name: 'Date' },
-  { id: 'dimension', structure_name: 'Dimension' },
-  { id: 'measure', structure_name: 'Measure' },
+  { value: 'date', structure_name: 'Date' },
+  { value: 'dimension', structure_name: 'Dimension' },
+  { value: 'measure', structure_name: 'Measure' },
+  { value: 'text', structure_name: 'Text' },
+  { value: 'parent_relation', structure_name: 'Parent Relation' },
 ]
 
 export default function DataTableFieldInfoForm({
@@ -35,6 +40,8 @@ export default function DataTableFieldInfoForm({
     meta_structure: selectedField?.meta_structure ?? (null as MetaStructure | null), // only for dimension fields
     unit_field_name: selectedField?.unit_field_name ?? '', // only for measure fields
     create_unit_column: selectedField?.create_unit_column ?? false,
+    parent_table: selectedField?.parent_table ?? null, // for parent relation fields
+    is_long_text: selectedField?.is_long_text ?? false, // for text fields
   })
 
   const formItems = useMemo(<
@@ -50,7 +57,7 @@ export default function DataTableFieldInfoForm({
         label: 'Type',
         list: types,
         displayKey: 'structure_name',
-        dataKey: 'id',
+        dataKey: 'value',
         setValue: (type: string) => {
           setAll({
             type,
@@ -58,6 +65,8 @@ export default function DataTableFieldInfoForm({
             meta_structure: null,
             unit_field_name: '',
             create_unit_column: false,
+            parent_table: null,
+            is_long_text: false,
           })
         },
       },
@@ -88,8 +97,35 @@ export default function DataTableFieldInfoForm({
         setValue: setFormValue('meta_structure'),
         hidden: formData.type !== 'dimension',
       },
+      parent_table: {
+        type: 'autocomplete',
+        label: 'Parent Table',
+        autoCompleteSelection: formData.parent_table,
+        dataKey: 'id',
+        displayKey: 'name',
+        linkText: 'Data Tables',
+        redirectLink: route('data-detail.index'),
+        selectListUrl: route('data-detail.search', {
+          search: '',
+        }),
+        setValue: setFormValue('parent_table'),
+        hidden: formData.type !== 'parent_relation',
+      },
+      is_long_text: {
+        type: 'checkbox',
+        label: 'Long Text Field',
+        setValue: toggleBoolean('is_long_text'),
+        hidden: formData.type !== 'text',
+      },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, formData.type, formData.meta_structure, toggleBoolean, setAll])
+  }, [
+    setFormValue,
+    formData.type,
+    formData.meta_structure,
+    formData.parent_table,
+    toggleBoolean,
+    setAll,
+  ])
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -100,6 +136,10 @@ export default function DataTableFieldInfoForm({
     }
     if (formData.type === 'dimension' && formData.meta_structure == null) {
       showError('Structure is required')
+      return
+    }
+    if (formData.type === 'parent_relation' && formData.parent_table == null) {
+      showError('Parent Table is required')
       return
     }
     onFormSubmit(formData)

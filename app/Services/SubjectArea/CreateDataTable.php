@@ -37,6 +37,24 @@ class CreateDataTable
                 }
             }
 
+            if ($request->texts != null) {
+                foreach ($request->texts as $text) {
+                    if ($text->isLongText) {
+                        $table->longText($text->column)->nullable();
+                    } else {
+                        $table->string($text->column)->nullable();
+                    }
+                }
+            }
+
+            if ($request->relations != null) {
+                foreach ($request->relations as $relation) {
+                    $table->foreignId($relation->column)
+                        ->nullable()
+                        ->constrained('data_details');
+                }
+            }
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();

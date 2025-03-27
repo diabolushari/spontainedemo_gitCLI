@@ -6,11 +6,13 @@ readonly class ConvertToDataTable
 {
     /**
      * @param  TableColumnInfo[]  $fieldInfo
+     * @param  RelationColumnInfo[]  $relationColumnInfo
      * @param  array[]  $data
      * @return array<array<array-key, string|int|null|float>>
      */
     public function convert(
         array $fieldInfo,
+        array $relationColumnInfo,
         array $data,
         int $dataDetailId
     ): array {
@@ -26,6 +28,10 @@ readonly class ConvertToDataTable
 
             foreach ($fieldInfo as $field) {
                 $record[$field->column] = $row[$field->fieldName] ?? null;
+            }
+
+            foreach ($relationColumnInfo as $relation) {
+                $record[$relation->fieldMapping->fieldName] = $row[$relation->fieldMapping->fieldName] ?? null;
             }
 
             $records[] = $record;

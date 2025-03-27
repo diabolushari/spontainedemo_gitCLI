@@ -10,6 +10,9 @@ use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
+/**
+ * @property FieldMappingData[] $fieldMapping
+ */
 #[MapName(SnakeCaseMapper::class)]
 class DataLoaderJobFormRequest extends Data
 {
@@ -33,7 +36,8 @@ class DataLoaderJobFormRequest extends Data
         #[Exists('loader_jobs', 'id')]
         public ?int $predecessorJobId,
         public int $dataDetailId,
-        public bool $deleteExistingData
+        public bool $deleteExistingData,
+        public array $fieldMapping,
     ) {
         //
     }

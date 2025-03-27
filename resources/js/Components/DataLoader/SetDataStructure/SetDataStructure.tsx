@@ -1,7 +1,7 @@
-import { memo } from 'react'
+import Checkbox from '@/Components/Checkbox'
 import Input from '@/ui/form/Input'
 import SelectList from '@/ui/form/SelectList'
-import Checkbox from '@/Components/Checkbox'
+import { memo } from 'react'
 
 interface Props {
   definition: JSONDefinition
@@ -23,10 +23,15 @@ export interface JSONDefinition {
 }
 
 const fieldTypes = [
-  { value: 'array' },
-  { value: 'object' },
-  { value: 'primitive' },
-  { value: 'primitive-array' },
+  { value: 'array', label: 'Array Of Objects' },
+  { value: 'object', label: 'Object' },
+  { value: 'primitive', label: 'Primitive' },
+  { value: 'primitive-array', label: 'Array Of Primitives' },
+]
+
+const rootFieldTypes = [
+  { value: 'array', label: 'Array Of Objects' },
+  { value: 'object', label: 'Object' },
 ]
 
 function SetDataStructure({
@@ -59,9 +64,9 @@ function SetDataStructure({
             <SelectList
               setValue={(value) => updateJsonFieldType(definition.id, value as JSONFieldType)}
               value={definition.field_type}
-              list={fieldTypes}
+              list={definition.field_name === 'root' ? rootFieldTypes : fieldTypes}
               dataKey='value'
-              displayKey='value'
+              displayKey='label'
             />
           </div>
         </div>

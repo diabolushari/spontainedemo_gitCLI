@@ -1,6 +1,6 @@
 import { DataDetail, DataTableItem } from '@/interfaces/data_interfaces'
-import { useMemo } from 'react'
 import Table from '@/ui/Table/Table'
+import { useMemo } from 'react'
 
 interface Props {
   dataDetail: DataDetail
@@ -46,6 +46,24 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
           type: 'string',
         })
       }
+    })
+
+    // Add text fields
+    dataDetail.text_fields?.forEach((text) => {
+      cols.push({
+        name: text.field_name ?? '',
+        source: text.column ?? '',
+        type: 'string',
+      })
+    })
+
+    // Add relation fields
+    dataDetail.relation_fields?.forEach((relation) => {
+      cols.push({
+        name: relation.field_name ?? '',
+        source: relation.column ?? '',
+        type: 'string',
+      })
     })
 
     return cols

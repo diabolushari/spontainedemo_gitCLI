@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react'
 import {
   JSONDefinition,
   JSONFieldType,
 } from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
+import { useCallback, useState } from 'react'
 
 export interface JSONStructureDefinition {
   last_uuid: number
@@ -66,19 +66,30 @@ function insertNewChild(
   }
 }
 
-function removeItem(definition: JSONDefinition, idToRemove: number): JSONDefinition {
+function removeItem(
+  definition: JSONDefinition,
+  idToRemove: number
+): { definition: JSONDefinition; wasPrimary: boolean } {
   const childIndex = definition.children.findIndex((child) => child.id === idToRemove)
   if (childIndex !== -1) {
+    const removedField = definition.children[childIndex]
     return {
-      ...definition,
-      children: [...definition.children.toSpliced(childIndex, 1)],
+      definition: {
+        ...definition,
+        children: [...definition.children.toSpliced(childIndex, 1)],
+      },
+      wasPrimary: removedField.primary_field,
     }
   }
+  const result = definition.children.map((child) => {
+    return removeItem(child, idToRemove)
+  })
   return {
-    ...definition,
-    children: definition.children.map((child) => {
-      return removeItem(child, idToRemove)
-    }),
+    definition: {
+      ...definition,
+      children: result.map((r) => r.definition),
+    },
+    wasPrimary: result.some((r) => r.wasPrimary),
   }
 }
 
@@ -127,9 +138,19 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
 
   const removeFieldFromJson = useCallback((fieldIdToBeDeleted: number) => {
     setDataStructure((oldValue) => {
+      const { definition, wasPrimary } = removeItem(oldValue.definition, fieldIdToBeDeleted)
+
+      // If the removed field was primary, set root as primary
+      if (wasPrimary) {
+        return {
+          ...oldValue,
+          definition: findAndSetPrimary(definition, definition.id),
+        }
+      }
+
       return {
         ...oldValue,
-        definition: removeItem(oldValue.definition, fieldIdToBeDeleted),
+        definition,
       }
     })
   }, [])

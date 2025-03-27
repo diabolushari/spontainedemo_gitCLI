@@ -35,8 +35,11 @@ class DataLoaderJob extends Model
         'updated_by',
         'source_type',
         'api_id',
-        'created_by',
-        'updated_by',
+        'field_mapping',
+    ];
+
+    protected $casts = [
+        'field_mapping' => 'array',
     ];
 
     //relationships
@@ -91,6 +94,8 @@ class DataLoaderJob extends Model
     }
 
     /**
+     * Get the latest job status
+     *
      * @return HasOne<DataLoaderJobStatus>
      */
     public function latest(): HasOne

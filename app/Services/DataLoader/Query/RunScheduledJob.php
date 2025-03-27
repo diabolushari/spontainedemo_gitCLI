@@ -12,7 +12,6 @@ use App\Services\DataLoader\Factory\DataLoaderFactory;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Log;
 
 readonly class RunScheduledJob
 {
@@ -27,8 +26,6 @@ readonly class RunScheduledJob
     public function run(
         DataLoaderJob $dataLoaderJob
     ): OperationResult {
-
-        Log::info('Starting data loader job: '.$dataLoaderJob->name);
 
         $startTime = now();
 
@@ -67,7 +64,6 @@ readonly class RunScheduledJob
                 $dataSource = DataLoaderSource::fromLoaderSourceModel($dataLoaderJob->api);
             }
             $data = $this->dataLoaderFactory->createFetcher($dataSource->type)->fetchData($dataSource);
-            Log::info($data);
         } catch (Exception|GuzzleException $exception) {
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
@@ -89,7 +85,8 @@ readonly class RunScheduledJob
                 $dataLoaderJob->detail,
                 $data,
                 $dataLoaderJob->delete_existing_data == 1,
-                $dataLoaderJob->duplicate_identification_field
+                $dataLoaderJob->duplicate_identification_field,
+                $dataLoaderJob->field_mapping
             );
         } catch (Exception $exception) {
             $result = [

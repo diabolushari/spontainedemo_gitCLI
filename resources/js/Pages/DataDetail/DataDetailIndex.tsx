@@ -48,17 +48,10 @@ export default function DataDetailIndex({ details, types }: Readonly<Props>) {
     return details.data.map((detail) => {
       return {
         id: detail.id,
+        type: detail.subject_area,
         name: detail.name,
-        description: detail.description,
-        type: 'Subject area ' + detail.subject_area,
-        tableName: 'Table name ' + detail.table_name,
-        is_active: detail.is_active === 1 ? 'Yes' : 'No',
-        actions: [
-          // {
-          //   title: 'Show',
-          //   url: route('data-detail.show', { id: detail.id }),
-          // },
-        ],
+        tableName: detail.table_name,
+        actions: [],
       }
     })
   }, [details])
@@ -66,13 +59,13 @@ export default function DataDetailIndex({ details, types }: Readonly<Props>) {
   const keys = useMemo(() => {
     return [
       { key: 'name', label: 'Name', isCardHeader: true },
-      // { key: 'is_active', label: 'Is Active', isShownInCard: true, boxStyles: 'items-center' },
-      { key: 'description', isShownInCard: true, boxStyles: 'items-center gap-0' },
-      { key: 'type', isShownInCard: true, boxStyles: 'items-center gap-0' },
-      { key: 'tableName', isShownInCard: true, boxStyles: 'items-center gap-0' },
+      { key: 'type', isShownInCard: true, hideLabel: false },
+      { key: 'tableName', isShownInCard: true, hideLabel: false },
     ] as ListItemKeys<{
+      id: number
       name: string
-      is_active: string
+      type: string
+      tableName: string
     }>[]
   }, [])
 

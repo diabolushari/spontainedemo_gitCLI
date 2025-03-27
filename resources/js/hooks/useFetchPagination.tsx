@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
-import axios from 'axios'
 import { handleHttpErrors } from '@/ui/alerts'
 import { Paginator } from '@/ui/ui_interfaces'
+import axios from 'axios'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function useFetchPagination<T>(url: string): [Paginator<T> | null, boolean] {
   const [loading, setLoading] = useState(false)

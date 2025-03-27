@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
+use App\Http\Controllers\DataDetail\DataDetailSearchController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
+use App\Http\Controllers\DataDetail\GetAllFieldsController;
 use App\Http\Controllers\DataExplorer\DataExplorerController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIDataController;
@@ -54,9 +56,11 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Models\DataLoader\DataLoaderJob;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Subset\SubsetDetailDimension;
+use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -106,6 +110,8 @@ Route::resource('subject-area', SubjectAreaController::class)
     ->parameters(['subject-areas' => 'subjectArea']);
 Route::resource('data-detail', DataDetailController::class)
     ->parameters(['data-detail' => 'dataDetail']);
+Route::get('data-detail/{dataDetail}/fields', GetAllFieldsController::class)
+    ->name('data-detail.fields');
 
 Route::resource('loader-connections', DataLoaderConnectionController::class)
     ->parameters(['loader-connections' => 'dataLoaderConnection']);
@@ -346,5 +352,22 @@ Route::resource('loader-apis', DataLoaderAPIController::class)
 
 Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
     ->name('loader-query-api-data');
+
+//autocomplete apis
+Route::get('data-detail-search', DataDetailSearchController::class)
+    ->name('data-detail.search');
+
+Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJob $runScheduledJob) {
+
+    $loaderJob
+        ->load(
+            'loaderQuery.loaderConnection',
+            'detail',
+            'predecessor',
+            'api'
+        );
+
+    return $runScheduledJob->run($loaderJob)->toArray();
+});
 
 require __DIR__.'/auth.php';

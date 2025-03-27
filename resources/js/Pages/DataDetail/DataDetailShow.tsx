@@ -1,5 +1,6 @@
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import DataTableExcelImport from '@/Components/DataDetail/DataTableExcelImport/DataTableExcelImport'
+import DataTableFields from '@/Components/DataDetail/DataTableFields'
 import DataSetTable from '@/Components/DataExplorer/DataSetTable'
 import CardGridView from '@/Components/ListingPage/CardGridView'
 import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
@@ -33,6 +34,7 @@ interface Props {
 const tabItems = [
   { name: 'Data', value: 'data' },
   { name: 'Loader Jobs', value: 'jobs' },
+  { name: 'Fields', value: 'fields' },
   { name: 'Subset', value: 'subset' },
 ]
 
@@ -192,6 +194,7 @@ export default function DataDetailShow({
               subsets={subsets}
             />
           )}
+          {activeTab == 'fields' && <DataTableFields detail={detail} />}
         </div>
         {showDeleteModal && (
           <DeleteModal

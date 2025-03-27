@@ -63,7 +63,7 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get();
 
-        $apis = LoaderAPI::select('id', 'name')
+        $apis = LoaderAPI::select('id', 'name', 'response_structure')
             ->orderBy('name')
             ->get();
 
@@ -126,7 +126,7 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get();
 
-        $apis = LoaderAPI::select('id', 'name')
+        $apis = LoaderAPI::select('id', 'name', 'response_structure')
             ->orderBy('name')
             ->get();
 

@@ -1,0 +1,20 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Project Description
+
+ - This is a Larvel Project and it's purpose is to collect data from different data sources and store it in tables created by user.
+ - The Structure of Data is associated with: [DataDetail.php](mdc:app/Models/DataDetail/DataDetail.php), a corresponding table will be created in database when a datatable is created.
+ - The data from Datatables is accessed through groups called subset, subset performs sql operations like selecting particular fields and performing grouping and aggregations on fields in table.
+ - subets are exposed as apis to external users and they can be used to Build Dashboards or train AI etc...
+ 
+ # React Custom Componets
+
+ - [FormBuilder.tsx](mdc:resources/js/FormBuilder/FormBuilder.tsx) is used to build forms.
+ - FormBuilder is wrapped in a layout to get [FormPage.tsx](mdc:resources/js/FormBuilder/FormPage.tsx) this page can be used to create a form without worrying about layout/form's code.
+ - similarly [ListResourcePage.tsx](mdc:resources/js/Components/ListingPage/ListResourcePage.tsx) and [ShowResourcePage.tsx](mdc:resources/js/Components/ShowPage/ShowResourcePage.tsx) can be used to list, show a Laravel Model's contents.
+ - [useInertiaPost.tsx](mdc:resources/js/hooks/useInertiaPost.tsx) can be used to make post requests to backend.
+ - [useFetchList.tsx](mdc:resources/js/hooks/useFetchList.tsx), [useFetchRecord.tsx](mdc:resources/js/hooks/useFetchRecord.tsx), [useFetchPagination.tsx](mdc:resources/js/hooks/useFetchPagination.tsx) can be used to make api calls to backed,

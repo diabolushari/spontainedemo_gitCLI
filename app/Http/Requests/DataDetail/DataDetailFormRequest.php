@@ -11,6 +11,8 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
  * @property DateColumnInfo[] $dates
  * @property DimensionColumnInfo[] $dimensions
  * @property MeasureColumnInfo[] $measures
+ * @property TextColumnInfo[] $texts
+ * @property RelationColumnInfo[] $relations
  */
 #[MapName(SnakeCaseMapper::class)]
 class DataDetailFormRequest extends Data
@@ -28,5 +30,7 @@ class DataDetailFormRequest extends Data
         public ?array $dates,
         public ?array $dimensions,
         public ?array $measures,
+        public ?array $texts,
+        public ?array $relations,
     ) {}
 }

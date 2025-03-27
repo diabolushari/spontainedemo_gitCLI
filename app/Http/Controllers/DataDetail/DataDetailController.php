@@ -10,15 +10,15 @@ use App\Models\DataLoader\DataLoaderJob;
 use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
 use App\Models\Subset\SubsetDetail;
+use App\Services\DataTable\DeleteDataTable;
 use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
 use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -118,7 +118,7 @@ class DataDetailController extends Controller implements HasMiddleware
         try {
             $dataDetail->update([
                 ...$request->all(),
-                'updated_by' => auth()->id(),
+                'updated_by' => Auth::user()?->id,
             ]);
         } catch (Exception $e) {
             return back()->with([
@@ -132,7 +132,13 @@ class DataDetailController extends Controller implements HasMiddleware
 
     public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable, Request $request): RedirectResponse|Response
     {
-        $dataDetail->load('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea');
+        $dataDetail->load(
+            'dateFields',
+            'dimensionFields.structure',
+            'measureFields',
+            'relationFields.relatedTable',
+            'textFields'
+        );
 
         $dataTable = $queryDataTable->query($dataDetail)
             ->paginate(50)
@@ -152,44 +158,12 @@ class DataDetailController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function destroy(DataDetail $dataDetail): RedirectResponse
+    public function destroy(DataDetail $dataDetail, DeleteDataTable $deleteDataTable): RedirectResponse
     {
-        $dataDetail->load('dateFields', 'dimensionFields');
         try {
-            //drop indexes on dateFields and foreignIds on dimensionFields
-            Schema::table($dataDetail->table_name, function (Blueprint $table) use ($dataDetail) {
-
-                foreach ($dataDetail->dateFields as $dateField) {
-                    $table->dropIndex(
-                        $dataDetail->table_name
-                        .'_'
-                        .$dateField->column
-                        .'_index'
-                    );
-                }
-
-                foreach ($dataDetail->dimensionFields as $dimensionField) {
-                    $table->dropForeign(
-                        $dataDetail->table_name
-                        .'_'
-                        .$dimensionField->column
-                        .'_foreign'
-                    );
-                    $table->dropIndex(
-                        $dataDetail->table_name
-                        .'_'
-                        .$dimensionField->column
-                        .'_foreign'
-                    );
-                }
-
-            });
-
-            $dataDetail->delete();
-            if (Schema::hasTable($dataDetail->table_name)) {
-                Schema::rename($dataDetail->table_name, 'deleted_'.time().'_'.$dataDetail->table_name);
-            }
+            $deleteDataTable->delete($dataDetail);
         } catch (Exception $exception) {
+
             return back()->with([
                 'error' => ExceptionMessage::getMessage($exception),
             ]);

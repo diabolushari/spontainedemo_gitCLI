@@ -1,16 +1,16 @@
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import AddDataTableFields from '@/Components/DataDetail/DataTableFieldInfo/AddDataTableFields'
+import { DataTableFieldInfo } from '@/Components/DataDetail/DataTableFieldInfo/DataTableFieldInfoForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
+import useInertiaPost from '@/hooks/useInertiaPost'
 import { ReferenceData } from '@/interfaces/data_interfaces'
-import React, { FormEvent, useMemo, useState } from 'react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import AddDataTableFields from '@/Components/DataDetail/DataTableFieldInfo/AddDataTableFields'
-import CardHeader from '@/ui/Card/CardHeader'
-import useInertiaPost from '@/hooks/useInertiaPost'
-import { DataTableFieldInfo } from '@/Components/DataDetail/DataTableFieldInfo/DataTableFieldInfoForm'
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 import Button from '@/ui/button/Button'
-import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import CardHeader from '@/ui/Card/CardHeader'
+import { FormEvent, useMemo, useState } from 'react'
 
 interface Props {
   types: ReferenceData[]
@@ -118,6 +118,24 @@ export default function DataDetailCreate({ types }: Readonly<Props>) {
             field_name: field.field_name,
             unit_column: field.unit_column,
             unit_field_name: field.unit_field_name,
+          }
+        }),
+      texts: fields
+        .filter((field) => field.type === 'text')
+        .map((field) => {
+          return {
+            column: field.column,
+            field_name: field.field_name,
+            is_long_text: field.is_long_text,
+          }
+        }),
+      relations: fields
+        .filter((field) => field.type === 'parent_relation')
+        .map((field) => {
+          return {
+            column: field.column,
+            field_name: field.field_name,
+            related_table_id: field.parent_table?.id,
           }
         }),
     })

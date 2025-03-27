@@ -1,7 +1,10 @@
-import useCustomForm from '@/hooks/useCustomForm'
-import { useEffect, useMemo } from 'react'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import JsonToDataTableMapping from '@/Components/DataLoader/JsonToDataTableMapping'
+import { JSONDefinition } from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
+import { useJsonFieldMapping } from '@/Components/DataLoader/useJsonFieldMapping'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import useCustomForm from '@/hooks/useCustomForm'
 import {
   cronTypes,
   DAILY_CRON,
@@ -14,7 +17,8 @@ import {
   WEEKLY_CRON,
 } from '@/interfaces/data_interfaces'
 import { daysOfWeek, monthList } from '@/libs/dates'
-import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import Button from '@/ui/button/Button'
+import { useEffect, useMemo } from 'react'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -22,7 +26,31 @@ interface Props {
   connectionId?: number | null
   dataDetail: DataDetail
   dataDetails: DataDetail[]
-  apis: Pick<DataLoaderAPI, 'id' | 'name'>[]
+  apis: Pick<DataLoaderAPI, 'id' | 'name' | 'response_structure'>[]
+}
+
+type JSONValue = string | number | boolean | null | JSONArray | JSONObject
+type JSONArray = JSONValue[]
+type JSONObject = { [key: string]: JSONValue }
+
+interface FormData {
+  name: string
+  description: string
+  start_date: string
+  end_date: string
+  cron_type: string
+  schedule_time: string
+  day_of_week: string
+  day_of_month: string
+  month_of_year: string
+  data_detail_id: string
+  connection_id: string
+  query_id: string
+  api_id: string
+  source_type: string
+  delete_existing_data: boolean
+  duplicate_identification_field: string
+  predecessor_job_id: string
 }
 
 const sourceTypes = [
@@ -36,6 +64,20 @@ const sourceTypes = [
   },
 ]
 
+const getPrimaryField = (structure: JSONDefinition): JSONDefinition | null => {
+  if (structure.primary_field) {
+    return structure
+  }
+  let primaryFieldInChild = null
+  structure.children.forEach((child) => {
+    const primaryField = getPrimaryField(child)
+    if (primaryField != null) {
+      primaryFieldInChild = primaryField
+    }
+  })
+  return primaryFieldInChild
+}
+
 export default function DataLoaderJobCreate({
   job,
   connections,
@@ -44,7 +86,7 @@ export default function DataLoaderJobCreate({
   dataDetails,
   apis,
 }: Readonly<Props>) {
-  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean } = useCustomForm<FormData>({
     name: job?.name ?? '',
     description: job?.description ?? '',
     start_date: job?.start_date ?? '',
@@ -54,15 +96,17 @@ export default function DataLoaderJobCreate({
     day_of_week: job?.day_of_week ?? '',
     day_of_month: job?.day_of_month?.toString() ?? '',
     month_of_year: job?.month_of_year?.toString() ?? '',
-    data_detail_id: job?.data_detail_id.toString() ?? dataDetail.id.toString(),
-    connection_id: connectionId ?? '',
-    query_id: job?.query_id ?? '',
-    api_id: job?.api_id ?? '',
+    data_detail_id: job?.data_detail_id?.toString() ?? dataDetail.id.toString(),
+    connection_id: connectionId?.toString() ?? '',
+    query_id: job?.query_id?.toString() ?? '',
+    api_id: job?.api_id?.toString() ?? '',
     source_type: job?.source_type ?? 'sql',
     delete_existing_data: job?.delete_existing_data === 1,
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
-    predecessor_job_id: job?.predecessor_job_id ?? '',
+    predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
   })
+
+  const { fieldMapping, changeJsonDefinition, changeDataTableColumn } = useJsonFieldMapping()
 
   const availableJobs = useMemo(() => {
     const jobs: { id: number; name: string }[] = []
@@ -232,7 +276,9 @@ export default function DataLoaderJobCreate({
       api_id: {
         type: 'select',
         label: 'API',
-        setValue: setFormValue('api_id'),
+        setValue: (newApiId: string) => {
+          setFormValue('api_id')(newApiId)
+        },
         list: apis,
         displayKey: 'name',
         dataKey: 'id',
@@ -273,6 +319,7 @@ export default function DataLoaderJobCreate({
     dataTableFields,
     formData.delete_existing_data,
     formData.source_type,
+    apis,
   ])
 
   const backUrl = useMemo(() => {
@@ -302,6 +349,35 @@ export default function DataLoaderJobCreate({
     },
   ]
 
+  const primaryField = useMemo(() => {
+    if (formData.api_id == '') {
+      return null
+    }
+    const selectedApi = apis.find((api) => api.id.toString() === formData.api_id)
+    if (selectedApi == null || selectedApi.response_structure == null) {
+      return null
+    }
+    const responseStructure = selectedApi.response_structure
+    return getPrimaryField(responseStructure.definition)
+  }, [formData.api_id, apis])
+
+  useEffect(() => {
+    if (primaryField != null) {
+      changeJsonDefinition(primaryField)
+    }
+  }, [primaryField, changeJsonDefinition])
+
+  const customFormData = useMemo(() => {
+    return {
+      ...formData,
+      field_mapping: fieldMapping ?? [],
+    }
+  }, [formData, fieldMapping])
+
+  useEffect(() => {
+    console.log(fieldMapping)
+  }, [fieldMapping])
+
   return (
     <FormPage
       url={job == null ? route('loader-jobs.store') : route('loader-jobs.update', job.id)}
@@ -314,6 +390,20 @@ export default function DataLoaderJobCreate({
       subtype='data-tables'
       isPatchRequest={job != null}
       breadCrumbs={breadCrumb}
-    />
+      hideSubmitButton
+      customSubmitData={customFormData}
+    >
+      {primaryField != null && (
+        <JsonToDataTableMapping
+          dataDetailId={dataDetail.id}
+          fieldMapping={fieldMapping}
+          changeDataTableColumn={changeDataTableColumn}
+        />
+      )}
+
+      <div className='flex flex-col gap-2'>
+        <Button label='Create Job' />
+      </div>
+    </FormPage>
   )
 }
