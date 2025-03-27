@@ -23,6 +23,7 @@ class ChatController extends Controller implements HasMiddleware
     {
         return Inertia::render('Chat/ChatIndexPage', [
             'chatToken' => config('app.chat_token'),
+            'chatURL' => config('app.chat_url'),
         ]);
     }
 }

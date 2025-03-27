@@ -1,34 +1,35 @@
-import { FiBarChart2 } from "react-icons/fi"; // Importing an icon for insights
+import { FiBarChart2 } from 'react-icons/fi' // Importing an icon for insights
 
 export default function AIInsights() {
   return (
-    <div className="bg-white  bottom-5 p-6 rounded-2xl shadow-lg w-80"> 
-
-
+    <div className='bottom-5 w-80 rounded-2xl bg-white p-6 shadow-lg'>
       {/* Header Section */}
-      <div className="flex items-center gap-2 mb-4">
-        <span className="bg-black text-white px-2 py-1 rounded-md text-sm font-semibold">AI</span>
-        <h3 className="text-gray-900 font-bold text-lg">INSIGHTS</h3>
+      <div className='mb-4 flex items-center gap-2'>
+        <span className='rounded-md bg-black px-2 py-1 text-sm font-semibold text-white'>AI</span>
+        <h3 className='text-lg font-bold text-gray-900'>INSIGHTS</h3>
       </div>
 
       {/* Insight Cards */}
-      <div className="bg-blue-100 p-4 rounded-lg flex items-start gap-3 mb-3 shadow">
-
-        <FiBarChart2 className="text-black mt-1" size={20} />
-        <p className="text-gray-800 text-sm">
-          Arrears above ₹1,000 Cr for the first time in 3 years. 
+      <div className='mb-3 flex items-start gap-3 rounded-lg bg-blue-100 p-4 shadow'>
+        <FiBarChart2
+          className='mt-1 text-black'
+          size={20}
+        />
+        <p className='text-sm text-gray-800'>
+          Arrears above ₹1,000 Cr for the first time in 3 years.
         </p>
-
       </div>
 
-      <div className="bg-blue-100 p-4 rounded-lg flex items-start gap-3 shadow">
-        <FiBarChart2 className="text-black mt-1" size={20} />
-        <p className="text-gray-800 text-sm">
-          Significant reduction in outages in January, 2025.{" "}
-          <span className="text-purple-600 font-semibold cursor-pointer">View analytics?</span>
+      <div className='flex items-start gap-3 rounded-lg bg-blue-100 p-4 shadow'>
+        <FiBarChart2
+          className='mt-1 text-black'
+          size={20}
+        />
+        <p className='text-sm text-gray-800'>
+          Significant reduction in outages in January, 2025.{' '}
+          <span className='cursor-pointer font-semibold text-purple-600'>View analytics?</span>
         </p>
-
       </div>
     </div>
-  );
+  )
 }
