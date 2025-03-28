@@ -24,6 +24,9 @@ export default function MainArea({ chatToken, chatURL }: Props) {
   const socketRef = useRef<WebSocket | null>(null)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
+  console.log('chatToken', chatToken)
+  console.log('chatURL', chatURL)
+
   useEffect(() => {
     const ws = new WebSocket(`${chatURL}?token=${chatToken}`)
     ws.onopen = () => console.log('✅ WebSocket Connected')
@@ -55,7 +58,7 @@ export default function MainArea({ chatToken, chatURL }: Props) {
     socketRef.current = ws
 
     return () => ws.close()
-  }, [])
+  }, [chatToken, chatURL])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

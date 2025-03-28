@@ -20,6 +20,7 @@ class SubsetDocumentationController extends Controller
                 'measures',
                 'dataDetail',
             ])
+            ->whereHas('dataDetail')
             ->get();
 
         $documentation = [];
