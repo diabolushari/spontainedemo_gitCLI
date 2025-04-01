@@ -13,122 +13,210 @@ export default {
   ],
 
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-        'h1-stop': ['var(--font-h1-1stop)', ...defaultTheme.fontFamily.sans],
-        'h2-1stop': ['var(--font-h2-1stop)', ...defaultTheme.fontFamily.sans],
-        'h3-1stop': ['var(--font-h3-1stop)', ...defaultTheme.fontFamily.sans],
-        'subheader-1stop': ['var(--font-subheader-1stop)', ...defaultTheme.fontFamily.sans],
-        'body-1stop': ['var(--font-body-1stop)', ...defaultTheme.fontFamily.sans],
-        'small-1stop': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
-        'small-1stop-header': ['var(--font-small-1stop)', ...defaultTheme.fontFamily.sans],
-        'xlmetric-1stop': ['var(--font-xlmetric-1stop)', ...defaultTheme.fontFamily.sans],
-        'axial-label-1stop': ['var(--font-axial-label-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-xs-1stop': ['var(--font-data-xs-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-sm-1stop': ['var(--font-data-sm-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-md-1stop': ['var(--font-data-md-1stop)', ...defaultTheme.fontFamily.sans],
-        'data-lg-1stop': ['var(--font-data-lg-1stop)', ...defaultTheme.fontFamily.sans],
-      },
-
-      colors: {
-        primary: 'var(--colour-1stop-highlight)',
-        // one stop
-        '1stop-accent1': 'var(--colour-1stop-accent1)',
-        '1stop-dark': 'var(--colour-1stop-dark)',
-        '1stop-accent2': 'var(--colour-1stop-accent2)',
-        '1stop-highlight': 'var(--colour-1stop-highlight)',
-        '1stop-alt-highlight': 'var(--colour-1stop-alt-highlight)',
-        '1stop-highlight2': 'var(--colour-1stop-highlight2)',
-        '1stop-gray': 'var(--colour-1stop-gray)',
-        '1stop-alt-gray': 'var(--colour-1stop-alt-gray)',
-        '1stop-dark-gray': 'var(--colour-1stop-dark-gray)',
-        '1stop-white': 'var(--colour-1stop-white)',
-        '1stop-link': 'var(--colour-1stop-link)',
-        '1stop-background': 'var(--colour-1stop-background)',
-        '1stop-gradient-left': 'var(--colour-1stop-gradient-left)',
-        '1stop-gradient-right': 'var(--colour-1stop-gradient-right)',
-        '1stop-login-gradient-fr': 'var(--colour-1stop-login-gradient-fr)',
-        '1stop-login-gradient-vi': 'var(--colour-1stop-login-gradient-vi)',
-        '1stop-login-gradient-to': 'var(--colour-1stop-login-gradient-to)',
-        'header-dark': 'var(--color-header-dark)',
-        'accent-light': 'var(--color-accent-light)',
-        'accent-hover': 'var(--color-accent-hover)',
-        'accent-dark': 'var(--color-accent-dark)',
-        'panel-dark': 'var(--color-panel-dark)',
-        'highlight-light': 'var(--color-highlight-light)',
-        'highlight-alert': 'var(--color-highlight-alert)',
-        'border-dark': 'var(--color-border-dark)',
-
-        'button-base': 'var(--color-button-base)',
-        'button-muted': 'var(--color-button-muted)',
-        'button-base-hover': 'var(--color-button-base-hover)',
-        'button-muted-hover': 'var(--color-button-muted-hover)',
-        'button-accent-hover': 'var(--color-button-accent-hover)',
-
-        'button-text-base': 'var(--color-button-textbase)',
-
-        'tab-base': 'var(--color-tab-base)',
-        'tab-accent': 'var(--color-tab-accent)',
-        success: 'var(--color-success)',
-        fail: 'var(--color-fail)',
-
-        light: 'var(--color-light)',
-        dark: 'var(--color-dark)',
-        black: 'var(--color-black)',
-        'page-title': 'var(--color-title-text)',
-        'text-base': 'var(--color-text-base)',
-        'textbox-field': 'var( --color-text-textbox)',
-        'textbox-color': 'var(--color-box-textbox)',
-
-        card1: 'var(--color-card-yellow)',
-        card2: 'var(--color-card--pink)',
-        'progress-bar': 'var(--color-card--progressbar)',
-        dropdown: 'var( --color-dropdown)',
-        background: 'var(--color-background)',
-        neutral: {
-          50: '#fcfdfd',
-          100: '#f9fafb',
-          200: '#f3f5f8',
-          300: '#ecf1f4',
-          400: '#e6ecf1',
-          500: '#e0e7ed',
-          600: '#b3b9be',
-          700: '#868b8e',
-          800: '#5a5c5f',
-          900: '#2d2e2f',
-        },
-        highlight: {
-          50: '#fef3ef',
-          100: '#fde7e0',
-          200: '#fbd0c0',
-          300: '#f8b8a1',
-          400: '#f6a181',
-          500: '#f48962',
-          600: '#c36e4e',
-          700: '#92523b',
-          800: '#623727',
-          900: '#311b14',
-        },
-        alert: {
-          50: '#f6fcf8',
-          100: '#eef9f0',
-          200: '#dcf3e1',
-          300: '#cbecd2',
-          400: '#b9e6c3',
-          500: '#a8e0b4',
-          600: '#86b390',
-          700: '#65866c',
-          800: '#435a48',
-          900: '#222d24',
-        },
-      },
-      borderWidth: {
-        3: '3px',
-        5: '5px',
-        10: '10px',
-      },
-    },
+  	extend: {
+  		fontFamily: {
+  			sans: [
+  				'Figtree',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'h1-stop': [
+  				'var(--font-h1-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'h2-1stop': [
+  				'var(--font-h2-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'h3-1stop': [
+  				'var(--font-h3-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'subheader-1stop': [
+  				'var(--font-subheader-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'body-1stop': [
+  				'var(--font-body-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'small-1stop': [
+  				'var(--font-small-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'small-1stop-header': [
+  				'var(--font-small-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'xlmetric-1stop': [
+  				'var(--font-xlmetric-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'axial-label-1stop': [
+  				'var(--font-axial-label-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'data-xs-1stop': [
+  				'var(--font-data-xs-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'data-sm-1stop': [
+  				'var(--font-data-sm-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'data-md-1stop': [
+  				'var(--font-data-md-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ],
+  			'data-lg-1stop': [
+  				'var(--font-data-lg-1stop)',
+                    ...defaultTheme.fontFamily.sans
+                ]
+  		},
+  		colors: {
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary))',
+  				foreground: 'hsl(var(--primary-foreground))'
+  			},
+  			'1stop-accent1': 'var(--colour-1stop-accent1)',
+  			'1stop-dark': 'var(--colour-1stop-dark)',
+  			'1stop-accent2': 'var(--colour-1stop-accent2)',
+  			'1stop-highlight': 'var(--colour-1stop-highlight)',
+  			'1stop-alt-highlight': 'var(--colour-1stop-alt-highlight)',
+  			'1stop-highlight2': 'var(--colour-1stop-highlight2)',
+  			'1stop-gray': 'var(--colour-1stop-gray)',
+  			'1stop-alt-gray': 'var(--colour-1stop-alt-gray)',
+  			'1stop-dark-gray': 'var(--colour-1stop-dark-gray)',
+  			'1stop-white': 'var(--colour-1stop-white)',
+  			'1stop-link': 'var(--colour-1stop-link)',
+  			'1stop-background': 'var(--colour-1stop-background)',
+  			'1stop-gradient-left': 'var(--colour-1stop-gradient-left)',
+  			'1stop-gradient-right': 'var(--colour-1stop-gradient-right)',
+  			'1stop-login-gradient-fr': 'var(--colour-1stop-login-gradient-fr)',
+  			'1stop-login-gradient-vi': 'var(--colour-1stop-login-gradient-vi)',
+  			'1stop-login-gradient-to': 'var(--colour-1stop-login-gradient-to)',
+  			'header-dark': 'var(--color-header-dark)',
+  			'accent-light': 'var(--color-accent-light)',
+  			'accent-hover': 'var(--color-accent-hover)',
+  			'accent-dark': 'var(--color-accent-dark)',
+  			'panel-dark': 'var(--color-panel-dark)',
+  			'highlight-light': 'var(--color-highlight-light)',
+  			'highlight-alert': 'var(--color-highlight-alert)',
+  			'border-dark': 'var(--color-border-dark)',
+  			'button-base': 'var(--color-button-base)',
+  			'button-muted': 'var(--color-button-muted)',
+  			'button-base-hover': 'var(--color-button-base-hover)',
+  			'button-muted-hover': 'var(--color-button-muted-hover)',
+  			'button-accent-hover': 'var(--color-button-accent-hover)',
+  			'button-text-base': 'var(--color-button-textbase)',
+  			'tab-base': 'var(--color-tab-base)',
+  			'tab-accent': 'var(--color-tab-accent)',
+  			success: 'var(--color-success)',
+  			fail: 'var(--color-fail)',
+  			light: 'var(--color-light)',
+  			dark: 'var(--color-dark)',
+  			black: 'var(--color-black)',
+  			'page-title': 'var(--color-title-text)',
+  			'text-base': 'var(--color-text-base)',
+  			'textbox-field': 'var( --color-text-textbox)',
+  			'textbox-color': 'var(--color-box-textbox)',
+  			card1: 'var(--color-card-yellow)',
+  			card2: 'var(--color-card--pink)',
+  			'progress-bar': 'var(--color-card--progressbar)',
+  			dropdown: 'var( --color-dropdown)',
+  			background: 'hsl(var(--background))',
+  			neutral: {
+  				'50': '#fcfdfd',
+  				'100': '#f9fafb',
+  				'200': '#f3f5f8',
+  				'300': '#ecf1f4',
+  				'400': '#e6ecf1',
+  				'500': '#e0e7ed',
+  				'600': '#b3b9be',
+  				'700': '#868b8e',
+  				'800': '#5a5c5f',
+  				'900': '#2d2e2f'
+  			},
+  			highlight: {
+  				'50': '#fef3ef',
+  				'100': '#fde7e0',
+  				'200': '#fbd0c0',
+  				'300': '#f8b8a1',
+  				'400': '#f6a181',
+  				'500': '#f48962',
+  				'600': '#c36e4e',
+  				'700': '#92523b',
+  				'800': '#623727',
+  				'900': '#311b14'
+  			},
+  			alert: {
+  				'50': '#f6fcf8',
+  				'100': '#eef9f0',
+  				'200': '#dcf3e1',
+  				'300': '#cbecd2',
+  				'400': '#b9e6c3',
+  				'500': '#a8e0b4',
+  				'600': '#86b390',
+  				'700': '#65866c',
+  				'800': '#435a48',
+  				'900': '#222d24'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
+  			},
+  			foreground: 'hsl(var(--foreground))',
+  			card: {
+  				DEFAULT: 'hsl(var(--card))',
+  				foreground: 'hsl(var(--card-foreground))'
+  			},
+  			popover: {
+  				DEFAULT: 'hsl(var(--popover))',
+  				foreground: 'hsl(var(--popover-foreground))'
+  			},
+  			secondary: {
+  				DEFAULT: 'hsl(var(--secondary))',
+  				foreground: 'hsl(var(--secondary-foreground))'
+  			},
+  			muted: {
+  				DEFAULT: 'hsl(var(--muted))',
+  				foreground: 'hsl(var(--muted-foreground))'
+  			},
+  			accent: {
+  				DEFAULT: 'hsl(var(--accent))',
+  				foreground: 'hsl(var(--accent-foreground))'
+  			},
+  			destructive: {
+  				DEFAULT: 'hsl(var(--destructive))',
+  				foreground: 'hsl(var(--destructive-foreground))'
+  			},
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
+  			chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			}
+  		},
+  		borderWidth: {
+  			'3': '3px',
+  			'5': '5px',
+  			'10': '10px'
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	}
   },
   plugins: [forms, require('tailwindcss-animate')],
 }
