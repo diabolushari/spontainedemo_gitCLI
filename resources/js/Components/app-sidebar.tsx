@@ -19,7 +19,7 @@ export function AppSidebar(props: AppSidebarProps) {
   const isCollapsed = state === 'collapsed'
   const [expandedItems, setExpandedItems] = React.useState<string[]>([])
   const [activeLink, setActiveLink] = React.useState<string>('')
-
+  const [isProfileDropdown, setIsProfileDropdown] = React.useState(false)
   const userInfo = usePage().props.auth as unknown as { user: User | null }
   const User = React.useMemo(() => {
     if (userInfo.user) {
@@ -166,10 +166,10 @@ export function AppSidebar(props: AppSidebarProps) {
               >
                 <div className='px-2'>
                   <Collapsible.Trigger
-                    className='flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-white/20 hover:text-accent-foreground'
+                    className='flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-all duration-200 ease-in-out hover:bg-white/30 hover:text-accent-foreground hover:shadow-sm'
                     onClick={(e) => handleMainItemClick(e, item)}
                   >
-                    <div className='flex size-6 items-center justify-center rounded-sm border border-white/20 bg-white/20'>
+                    <div className='flex size-6 items-center justify-center rounded-sm border border-white/20 bg-white/20 transition-colors duration-200 group-hover:bg-white/30'>
                       {Icon && (
                         <TooltipProvider delayDuration={0}>
                           <Tooltip>
@@ -205,8 +205,10 @@ export function AppSidebar(props: AppSidebarProps) {
                         <button
                           key={link.title}
                           onClick={(e) => handleIconClick(e, link.link, item.value)}
-                          className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-white/20 hover:text-accent-foreground ${
-                            activeLink === link.link ? 'bg-white/20 text-accent-foreground' : ''
+                          className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-all duration-200 ease-in-out hover:bg-white/30 hover:text-accent-foreground hover:shadow-sm ${
+                            activeLink === link.link
+                              ? 'bg-white/30 text-accent-foreground shadow-sm'
+                              : ''
                           }`}
                         >
                           {renderIcon(link.image)}
@@ -222,17 +224,83 @@ export function AppSidebar(props: AppSidebarProps) {
         </div>
       </SidebarContent>
       <SidebarFooter className='border-t border-white/20 bg-white/20'>
-        <div className='flex items-center gap-2 px-2 py-2'>
-          <div className='flex size-8 items-center justify-center rounded-full bg-1stop-accent2 hover:cursor-pointer hover:bg-opacity-60'>
-            <span className='text-sm font-medium'>{userInitial}</span>
-          </div>
-          {!isCollapsed && (
-            <div className='flex flex-col'>
-              <span className='text-sm font-medium'>{userName}</span>
-              <span className='text-xs text-muted-foreground'>{userEmail}</span>
+        <div className='flex items-center justify-between px-2'>
+          <button
+            className='flex items-center gap-2 rounded-md transition-all duration-200 ease-in-out hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2'
+            onClick={() => isCollapsed && toggleSidebar()}
+            onKeyDown={(e) => {
+              if (isCollapsed && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault()
+                toggleSidebar()
+              }
+            }}
+          >
+            <div className='h1-stop flex h-8 w-8 items-center justify-center rounded-full bg-1stop-alt-highlight text-lg text-white transition-colors hover:text-black'>
+              {userInitial}
             </div>
+            {!isCollapsed && (
+              <div className='flex flex-col'>
+                <span className='text-sm font-medium'>{userName}</span>
+                <span className='text-xs text-muted-foreground'>{userEmail}</span>
+              </div>
+            )}
+          </button>
+          {!isCollapsed && (
+            <button
+              onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+              className='rounded-md p-1 transition-all duration-200 ease-in-out hover:bg-white/30 hover:text-accent-foreground hover:shadow-sm'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className={`h-4 w-4 transform duration-300 ${isProfileDropdown ? 'rotate-180' : ''}`}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M19.5 8.25l-7.5 7.5-7.5-7.5'
+                />
+              </svg>
+            </button>
           )}
         </div>
+        {isProfileDropdown && !isCollapsed && (
+          <div className='mt-2 border-t border-white/20 px-2 py-2'>
+            <div className='space-y-1'>
+              <div className='px-2 py-1 text-sm text-muted-foreground'>Logged in as {userName}</div>
+
+              <div className='h-px bg-white/20' />
+              <button
+                onClick={() => router.visit('/logout', { method: 'post' })}
+                className='text-black-700 small-1stop flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-all duration-200 ease-in-out hover:bg-white/30'
+              >
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='icon icon-tabler icon-tabler-logout'
+                  width={16}
+                  height={16}
+                  viewBox='0 0 24 24'
+                  strokeWidth='1.5'
+                  stroke='currentColor'
+                  fill='none'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                >
+                  <path
+                    stroke='none'
+                    d='M0 0h24v24H0z'
+                  />
+                  <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+                  <path d='M7 12h14l-3 -3m0 6l3 -3' />
+                </svg>
+                <span>Sign out</span>
+              </button>
+            </div>
+          </div>
+        )}
       </SidebarFooter>
     </Sidebar>
   )

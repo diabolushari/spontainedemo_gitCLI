@@ -1,3 +1,4 @@
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import AIInsights from './components/AiInsights'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
@@ -9,7 +10,7 @@ interface Props {
 
 export default function Chat({ chatToken, chatURL }: Props) {
   return (
-    <div className='flex h-screen bg-gradient-to-r from-purple-300 to-blue-200'>
+    <div className='flex h-screen bg-gray-50'>
       <Sidebar />
       <MainArea
         chatToken={chatToken}
