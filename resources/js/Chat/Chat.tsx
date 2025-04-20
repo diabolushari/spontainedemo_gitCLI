@@ -1,4 +1,3 @@
-import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import AIInsights from './components/AiInsights'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'

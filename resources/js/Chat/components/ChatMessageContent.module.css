@@ -1,0 +1,8 @@
+.container {
+  width: 40vw;
+}
+
+.container pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

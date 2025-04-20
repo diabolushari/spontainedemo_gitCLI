@@ -1,11 +1,11 @@
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import { solidColors } from '@/ui/ui_interfaces'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts'
+import { Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts'
 
 interface Props {
   chartData: Record<string, string | number | null>[]
   dataFieldName: string
   dataKey: string
+  color: string
 }
 
 const renderCustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
@@ -26,13 +26,18 @@ const renderCustomTooltip = ({ active, payload, label }: TooltipProps<number, st
   return null
 }
 
-export default function SimpleAreaChart({ chartData, dataKey, dataFieldName }: Readonly<Props>) {
+export default function SimpleLineChart({
+  chartData,
+  dataKey,
+  dataFieldName,
+  color,
+}: Readonly<Props>) {
   return (
     <ResponsiveContainer
       width='100%'
       height='100%'
     >
-      <AreaChart data={chartData}>
+      <LineChart data={chartData}>
         <XAxis
           dataKey={dataKey}
           style={{ fontSize: 10 }}
@@ -42,14 +47,13 @@ export default function SimpleAreaChart({ chartData, dataKey, dataFieldName }: R
           style={{ fontSize: 10 }}
         />
         <Tooltip content={renderCustomTooltip} />
-        <Area
+        <Line
           type='monotone'
           dataKey={dataFieldName}
-          stroke={solidColors[0]}
-          fill={solidColors[1]}
-          opacity={0.7}
+          stroke={color}
+          strokeWidth={2}
         />
-      </AreaChart>
+      </LineChart>
     </ResponsiveContainer>
   )
 }

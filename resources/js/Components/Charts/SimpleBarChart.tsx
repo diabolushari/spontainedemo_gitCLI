@@ -1,9 +1,8 @@
-import { Bar, BarChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import React from 'react'
+import { Bar, BarChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts'
 
 interface Props {
-  chartData: Record<string, string | number>[]
+  chartData: Record<string, string | number | null>[]
   dataFieldName: string
   dataKey: string
   color: string
@@ -35,8 +34,8 @@ export default function SimpleBarChart({
 }: Readonly<Props>) {
   return (
     <ResponsiveContainer
-      width='99%'
-      height={199}
+      width='100%'
+      height='100%'
     >
       <BarChart data={chartData}>
         <XAxis
@@ -44,7 +43,7 @@ export default function SimpleBarChart({
           style={{ fontSize: '8' }}
         />
         <YAxis
-          tickFormatter={(value) => formatNumber(value) ?? ''}
+          tickFormatter={(value) => formatNumber(value as number) ?? ''}
           style={{ fontSize: '8' }}
         />
         <Tooltip content={renderCustomTooltip} />
