@@ -126,7 +126,6 @@ export default function useChat(mode: 'chat' | 'agent') {
     ws.onmessage = (event) => {
       try {
         if (mode === 'agent') {
-          console.log(event.data)
           // Parse and push agent responses as text messages
           const newMessages = parseAndConvertAgentResponse(event.data, uuid, setIsLoading)
           setMessages((prev) => [...prev, ...newMessages])

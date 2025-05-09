@@ -36,7 +36,7 @@ function handleOutputResponse(
         messages.push({
           id: currentIdRef.current++,
           type: 'bot',
-          content: '❌ Agent response could not be parsed.',
+          content: response.output,
           contentType: 'text',
           suggestions: [],
         })
@@ -132,6 +132,7 @@ export function parseAndConvertAgentResponse(
 ): ChatMessage[] {
   try {
     const json = JSON.parse(responseString) as AgentResponse
+    console.log(json)
     // If there's output property, this is the final response, so set loading to false
     if (('output' in json || 'error' in json) && setLoading != null) {
       setLoading(false)
