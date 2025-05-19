@@ -1,5 +1,6 @@
 <?php
 
+use \App\Http\Controllers\TitleGen\TitleGen;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -377,5 +378,7 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
+
+Route::post('/title-gen', [TitleGen::class, '__invoke'])->name('__invoke');
 
 require __DIR__.'/auth.php';
