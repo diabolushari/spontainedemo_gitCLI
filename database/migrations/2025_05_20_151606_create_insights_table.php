@@ -11,7 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('insights', function (Blueprint $table) {
+            $table->string('insight_id')->primary();;
+            $table->string('title');
+            $table->text('description');
+            $table->string('risk');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('insights');
     }
 };

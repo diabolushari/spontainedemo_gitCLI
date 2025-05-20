@@ -1,6 +1,8 @@
 <?php
 
-use \App\Http\Controllers\TitleGen\TitleGen;
+use App\Http\Controllers\InsightsGen\GetInsights;
+use App\Http\Controllers\InsightsGen\InsightsGen;
+use App\Http\Controllers\TitleGen\TitleGen;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -380,5 +382,9 @@ Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::clas
     ->name('meta-hierarchies.hierarchy-items');
 
 Route::post('/title-gen', [TitleGen::class, '__invoke'])->name('__invoke');
+
+Route::get('/insight-gen', [InsightsGen::class, '__invoke'])->name('__invoke');;
+
+Route::get('/get-insights', [GetInsights::class, '__invoke'])->name('__invoke');
 
 require __DIR__.'/auth.php';
