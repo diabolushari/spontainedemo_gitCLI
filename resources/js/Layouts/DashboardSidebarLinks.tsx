@@ -106,12 +106,12 @@ const DashboardSidebarLinks = () => {
     <div className='w-full'>
       <div className='flex flex-col border-gray-300 px-2'>
         <div className='flex w-full items-center justify-between'>
-          <div className='flex w-full  items-center pt-2 pl-2 pr-2 text-white '>
+          <div className='flex w-full items-center pl-2 pr-2 pt-2 text-white'>
             <span className='ml-4 text-sm'>Logged in as : {user?.name}</span>
           </div>
         </div>
         <div className='flex w-full items-center justify-between'>
-          <div className='flex w-full  items-center pb-2 pl-2 pr-2 text-white '>
+          <div className='flex w-full items-center pb-2 pl-2 pr-2 text-white'>
             <span className='ml-4 text-sm'>{user?.role ?? ''}</span>
           </div>
         </div>

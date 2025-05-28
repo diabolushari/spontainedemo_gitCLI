@@ -7,7 +7,7 @@
   }
 }
 
-.sidebar:hover  {
-    animation-name: hoverAnimation;
-    animation-duration: 2s;
+.sidebar:hover {
+  animation-name: hoverAnimation;
+  animation-duration: 2s;
 }
