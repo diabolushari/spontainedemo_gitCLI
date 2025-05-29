@@ -1,4 +1,4 @@
 ## TODO
 
-- [ ] Fix OfficeRankingMap Prop Type definition.
-- [ ] Toogle button icon.
+- [ x] Fix OfficeRankingMap Prop Type definition.
+- [ x] Toogle button icon.
