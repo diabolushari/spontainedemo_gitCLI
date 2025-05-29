@@ -30,6 +30,7 @@ use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
 use App\Http\Controllers\OperationsController;
+use App\Http\Controllers\PageBuilder\PageBuilderController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\ServiceDeliveryController;
@@ -76,13 +77,7 @@ Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-//form sample
-Route::get('/dashboard-details/create', function () {
-    return Inertia::render('DashboardDetail/DashboardDetailCreate');
-})->name('dashboard-details.create');
-
-Route::post('/dashboard-details', [DashboardtableController::class, 'store'])
-    ->name('dashboard-details.store');
+Route::get('/builder', [BuilderController::class, 'index']);
 
 
 //reference data
@@ -389,4 +384,4 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

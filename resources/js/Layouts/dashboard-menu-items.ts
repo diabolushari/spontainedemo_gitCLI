@@ -155,6 +155,13 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         permission: 'reference-data',
         subtype: 'reference-data',
       },
+      {
+        link: '/page-builder',
+        title: 'Page Builder',
+        image: Settings,
+        permission: 'page-builder',
+        subtype: 'page-builder',
+      },
     ],
   },
 ]

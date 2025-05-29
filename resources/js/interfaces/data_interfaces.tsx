@@ -335,3 +335,11 @@ export interface DataTableText extends Model {
   field_name: string
   is_long_text: boolean
 }
+
+export interface PagesList extends Model {
+  id: number
+  title: string
+  description: string
+  url: string
+  published_at: string
+}
