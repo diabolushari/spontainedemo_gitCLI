@@ -34,6 +34,7 @@ use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\PageBuilder\PageBuilderController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
+use App\Http\Controllers\SampleChart\ChartController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\StaticListController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -79,6 +80,9 @@ Route::get('/dashboard', function () {
 // Page building
 Route::resource('page-builder', PageBuilderController::class);
 Route::resource('blocks', BlocksController::class);
+
+//chart
+Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
@@ -384,4 +388,4 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
