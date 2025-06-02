@@ -5,11 +5,9 @@ namespace App\Models\Blocks;
 use App\Models\PageBuilder\PageBuilder;
 use Illuminate\Database\Eloquent\Model;
 
-class Blocks extends Model
+class Block extends Model
 {
-
     protected $table = 'blocks';
-
 
     protected $fillable = [
         'name',
@@ -21,6 +19,7 @@ class Blocks extends Model
     protected $casts = [
         'dimensions' => 'array',
     ];
+
     public function page()
     {
         return $this->belongsTo(PageBuilder::class);

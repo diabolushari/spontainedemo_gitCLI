@@ -5,18 +5,14 @@ namespace App\Http\Controllers\Blocks;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksFormRequest;
 use App\Http\Requests\Blocks\BlocksUpdateFormRequest;
-use App\Models\Blocks\Blocks;
+use App\Models\Blocks\Block;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class BlocksController extends Controller
-
 {
-
-
     public function index(): Response {}
 
     public function create(): Response {}
@@ -25,9 +21,9 @@ class BlocksController extends Controller
     {
 
         try {
-            $maxPosition = Blocks::where('page_id', $request->page_id)->max('position');
+            $maxPosition = Block::where('page_id', $request->page_id)->max('position');
             $newPosition = $maxPosition ? $maxPosition + 1 : 1;
-            $block = Blocks::create([
+            $block = Block::create([
                 'name' => $request->name,
                 'position' => $newPosition,
                 'dimensions' => $request->dimensions,
@@ -36,6 +32,7 @@ class BlocksController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
+
         return redirect()->route('page-builder.show', $block->page_id)->with(['message' => 'Block added successfully']);
     }
 
@@ -46,17 +43,17 @@ class BlocksController extends Controller
     public function update(BlocksUpdateFormRequest $request, int $id): RedirectResponse
     {
 
-        $block = Blocks::findOrFail($id);
+        $block = Block::findOrFail($id);
         $adjacentBlock = null;
         if ($request->action) {
 
             if ($request->action === 'up') {
-                $adjacentBlock = Blocks::where('position', '<', $block->position)
+                $adjacentBlock = Block::where('position', '<', $block->position)
                     ->where('page_id', $block->page_id) // Optional: restrict by page
                     ->orderBy('position', 'desc')
                     ->first();
             } elseif ($request->action === 'down') {
-                $adjacentBlock = Blocks::where('position', '>', $block->position)
+                $adjacentBlock = Block::where('position', '>', $block->position)
                     ->where('page_id', $block->page_id)
                     ->orderBy('position', 'asc')
                     ->first();
@@ -77,11 +74,9 @@ class BlocksController extends Controller
         }
         if ($request->dimensions) {
             $block->update([
-                'dimensions' => $request->dimensions
+                'dimensions' => $request->dimensions,
             ]);
         }
-
-
 
         return redirect()->back()->with('message', 'Block updated successfully!');
     }
@@ -90,11 +85,12 @@ class BlocksController extends Controller
     {
 
         try {
-            $block = Blocks::findOrFail($id);
+            $block = Block::findOrFail($id);
             $block->delete();
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
+
         return redirect()->back()->with(['message' => 'Block deleted successfully']);
     }
 }

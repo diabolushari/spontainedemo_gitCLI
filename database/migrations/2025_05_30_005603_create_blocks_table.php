@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('blocks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('page_id');
-            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
+            $table->foreignId('page_id')
+                ->constrained('pages');
             $table->string('name');
             $table->integer('position');
             $table->json('dimensions');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
