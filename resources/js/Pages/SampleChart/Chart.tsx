@@ -1,3 +1,4 @@
+import useFetchRecord from '@/hooks/useFetchRecord'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { CustomAreaChart } from '../../Components/Charts/SampleChart/CustomAreaChart'
@@ -15,13 +16,13 @@ const chartData = [
   { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
 ]
 
-const keysToPlot = [
-  { key: 'uv', label: 'UV' },
-  { key: 'pv', label: 'PV' },
-  { key: 'amt', label: 'AMT' },
-]
+const keysToPlot = [{ key: 'requests_breaching_sla__count_', label: 'Requests Breaching SLA' }]
 
 const Chart = () => {
+  const [breachingSlaData] = useFetchRecord<{
+    data: Record<string, number | string>[]
+  }>('/subset/90')
+
   return (
     <AnalyticsDashboardLayout
       type='data'
@@ -31,20 +32,22 @@ const Chart = () => {
         <div className='rounded-2xl bg-white p-6 shadow-md'>
           <h1 className='mb-4 text-2xl font-semibold text-gray-800'>Trend of Active Connections</h1>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-            <div style={{ height: 250, border: '1px solid red' }}>
-              <CustomAreaChart
-                data={chartData}
-                dataKey='name'
-                keysToPlot={keysToPlot}
-              />
+            <div className='col-span-full'>
+              {breachingSlaData?.data != null && (
+                <CustomAreaChart
+                  data={breachingSlaData?.data}
+                  dataKey='month'
+                  keysToPlot={keysToPlot}
+                />
+              )}
             </div>
-            <div style={{ height: 250, border: '1px solid red' }}>
+            <div>
               <CustomBarChart />
             </div>
-            <div style={{ height: 250, border: '1px solid red' }}>
+            <div>
               <CustomPieChart />
             </div>
-            <div style={{ height: 250, border: '1px solid red' }}>
+            <div>
               <CustomLineChart />
             </div>
           </div>
