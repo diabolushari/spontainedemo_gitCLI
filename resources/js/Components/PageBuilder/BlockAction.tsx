@@ -1,12 +1,12 @@
+import useInertiaPost from '@/hooks/useInertiaPost'
 import { Block } from '@/interfaces/data_interfaces'
-import React, { useState } from 'react'
-import { SampleChart } from './SampleChart'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import Button from '@/ui/button/Button'
 import { router } from '@inertiajs/react'
+import React, { useState } from 'react'
 import BlockEditModal from './BlockEditModal'
-import useInertiaPost from '@/hooks/useInertiaPost'
+import { SampleChart } from './SampleChart'
 
 interface BlockActionProps {
   block: Block
@@ -36,9 +36,11 @@ export const BlockAction = ({ block }: BlockActionProps) => {
       _method: 'PUT',
     })
   }
+
   const handleEditClick = () => {
     setEditModalOpen(true)
   }
+
   return (
     <div className=''>
       <Card>

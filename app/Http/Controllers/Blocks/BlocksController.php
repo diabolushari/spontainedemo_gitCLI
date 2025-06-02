@@ -45,6 +45,7 @@ class BlocksController extends Controller
 
         $block = Block::findOrFail($id);
         $adjacentBlock = null;
+
         if ($request->action) {
 
             if ($request->action === 'up') {

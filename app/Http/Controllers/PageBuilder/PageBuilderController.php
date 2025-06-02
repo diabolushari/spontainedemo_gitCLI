@@ -12,12 +12,8 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 class PageBuilderController extends Controller
-
 {
-
-
     public function index(): Response
-
     {
         $pages = PageBuilder::paginate(10);
 
@@ -35,17 +31,18 @@ class PageBuilderController extends Controller
     public function store(PageBuilderFormRequest $request): RedirectResponse
     {
         //  $requestData = $request->toArray();
-            // validator($requestData, [
-            //     'url' => 'required|unique:pages,url',
-            // ], [
-            //     'url.unique' => 'The URL has already been taken. Please choose another.',
-            // ])->validate();
+        // validator($requestData, [
+        //     'url' => 'required|unique:pages,url',
+        // ], [
+        //     'url.unique' => 'The URL has already been taken. Please choose another.',
+        // ])->validate();
 
         try {
             $record = PageBuilder::create($request->all());
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
+
         return redirect()
             ->route('page-builder.index')
             ->with(['message' => 'Page Builder Created Successfully']);
@@ -59,15 +56,16 @@ class PageBuilderController extends Controller
 
         return Inertia::render('PageBuilder/PageShow', [
             'page' => $page,
-            'blocks' => $blocks
+            'blocks' => $blocks,
         ]);
     }
 
     public function edit(Request $request, int $id): Response
     {
         $page = PageBuilder::find($id);
+
         return Inertia::render('PageBuilder/PageCreate', [
-            'page' => $page
+            'page' => $page,
         ]);
     }
 
@@ -79,7 +77,7 @@ class PageBuilderController extends Controller
         // ], [
         //     'url.unique' => 'The URL has already been taken. Please choose another.',
         // ])->validate();
-        
+
         try {
             $record = PageBuilder::find($id);
             if ($record != null) {
@@ -88,6 +86,7 @@ class PageBuilderController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
+
         return redirect()
             ->route('page-builder.index')
             ->with(['message' => 'Page Builder Updated Successfully']);
