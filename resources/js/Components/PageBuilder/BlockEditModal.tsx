@@ -98,7 +98,11 @@ const BlockEditModal: React.FC<BlockEditModalProps> = ({ isOpen, onClose, block 
     laptop_width: '',
     desktop_width: '',
   })
-  const { post } = useInertiaPost(route('blocks.update', block.id))
+  const { post } = useInertiaPost(route('dimension.update', block.id), {
+    preserveState: true,
+    onComplete: onClose,
+    showErrorToast: true,
+  })
 
   useEffect(() => {
     setAll({

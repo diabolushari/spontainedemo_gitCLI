@@ -7,13 +7,17 @@ import { router } from '@inertiajs/react'
 import React, { useState } from 'react'
 import BlockEditModal from './BlockEditModal'
 import { SampleChart } from './SampleChart'
+import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
+import DeleteModal from '@/ui/Modal/DeleteModal'
 
 interface BlockActionProps {
   block: Block
 }
+
 interface BlockComponentProps {
   dimensions?: Record<string, string>
 }
+
 const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
   'Active connection': SampleChart,
   'New connection': SampleChart,
@@ -23,13 +27,11 @@ const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
 
 export const BlockAction = ({ block }: BlockActionProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const Component = blockComponents[block.name]
+
   const { post } = useInertiaPost(route('blocks.update', block.id))
-  const handleDelete = () => {
-    if (confirm('Are you sure to delete this block?')) {
-      router.delete(route('blocks.destroy', block.id))
-    }
-  }
+
   const handleMove = (direction: 'up' | 'down') => {
     post({
       action: direction,
@@ -42,7 +44,7 @@ export const BlockAction = ({ block }: BlockActionProps) => {
   }
 
   return (
-    <div className=''>
+    <div className='w-full'>
       <Card>
         <div className='flex justify-between'>
           <div>
@@ -50,33 +52,50 @@ export const BlockAction = ({ block }: BlockActionProps) => {
               title={block.name}
               subheading={`Block position ${block.position}`}
               onEditClick={handleEditClick}
-              onDeleteClick={handleDelete}
+              onDeleteClick={() => setDeleteModalOpen(true)}
             />
           </div>
           <div className='flex flex-row gap-2'>
             <Button
               type='button'
-              label='Up'
+              label=''
+              icon={<ArrowUpIcon />}
               onClick={() => handleMove('up')}
             />
             <Button
               type='button'
-              label='Down'
+              label=''
+              icon={<ArrowDownIcon />}
               onClick={() => handleMove('down')}
             />
           </div>
         </div>
-
-        <div className='bg-black'>
+        <div className='bg-gray-500'>
           {Component ? <Component dimensions={block.dimensions} /> : <p>Unknown block type</p>}
         </div>
       </Card>
+
       {isEditModalOpen && (
         <BlockEditModal
           isOpen={isEditModalOpen}
           onClose={() => setEditModalOpen(false)}
           block={block}
         />
+      )}
+
+      {/* Delete Modal */}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          setShowModal={setDeleteModalOpen}
+          title='Delete Block'
+          url={route('blocks.destroy', block.id)} // Your Inertia delete route
+          onSuccess={() => {
+            setDeleteModalOpen(false)
+            // Optional: add additional logic like redirect or notification
+          }}
+        >
+          <p>Are you sure you want to delete this block?</p>
+        </DeleteModal>
       )}
     </div>
   )

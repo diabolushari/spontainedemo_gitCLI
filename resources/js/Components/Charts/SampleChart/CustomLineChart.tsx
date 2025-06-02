@@ -1,17 +1,15 @@
-"use client"
+'use client'
 
-import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/Components/ui/chart"
+} from '@/Components/ui/chart'
 
-export const description = "A multiple line chart"
+export const description = 'A multiple line chart'
 
 const chartData = [
   { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
@@ -24,54 +22,55 @@ const chartData = [
 ]
 
 const chartConfig = {
-   uv: {
-    label: "UV",
-    color: "#2563eb",
+  uv: {
+    label: 'UV',
+    color: '#2563eb',
   },
   pv: {
-    label: "PV",
-    color: "#60a5fa",
+    label: 'PV',
+    color: '#60a5fa',
   },
 } satisfies ChartConfig
 
 export function CustomLineChart() {
   return (
-        <ChartContainer config={chartConfig}>
-          <LineChart
-            data={chartData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
-            >
-          
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="name"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              //tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <YAxis
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-              />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Line
-            dataKey="uv"
-            type="monotone"
-            stroke="#2563eb"
-            strokeWidth={2}
-            dot={false}
-            />
-            <Line
-            dataKey="pv"
-            type="monotone"
-            stroke="#60a5fa"
-            strokeWidth={2}
-            dot={false}
-            />
-
-          </LineChart>
-        </ChartContainer>
+    <ChartContainer config={chartConfig}>
+      <LineChart
+        data={chartData}
+        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey='name'
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          //tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent />}
+        />
+        <Line
+          dataKey='uv'
+          type='monotone'
+          stroke='#2563eb'
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          dataKey='pv'
+          type='monotone'
+          stroke='#60a5fa'
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
   )
 }
