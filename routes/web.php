@@ -67,6 +67,7 @@ use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\DashboardtableController;
+use App\Http\Controllers\SampleChart\ChartController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -77,8 +78,10 @@ Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/builder', [BuilderController::class, 'index']);
+Route::resource('page-builder', PageBuilderController::class);
 
+//chart
+Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);

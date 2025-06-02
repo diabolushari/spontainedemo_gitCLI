@@ -88,7 +88,7 @@ export default function PageCreate({ page }: Readonly<Props>) {
                 label='URL'
                 value={formData.url}
                 setValue={setFormValue('url')}
-                error={errors?.title}
+                error={errors?.url}
                 disabled={true}
               />
             </div>

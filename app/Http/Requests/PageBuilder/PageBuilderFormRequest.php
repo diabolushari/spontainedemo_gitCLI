@@ -5,6 +5,7 @@ namespace App\Http\Requests\PageBuilder;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Unique;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -15,9 +16,10 @@ class PageBuilderFormRequest extends Data
         #[Max(255)]
         public string $title,
         #[Max(1000)]
-        public string $description,
+        public ?string $description,
         #[Date]
-        public string $publishedAt,
+        public ?string $publishedAt,
+        #[Unique('pages', 'url')]
         public string $url
     ) {}
 }
