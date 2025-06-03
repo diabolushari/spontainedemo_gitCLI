@@ -335,3 +335,13 @@ export interface DataTableText extends Model {
   field_name: string
   is_long_text: boolean
 }
+
+export interface OfficeCoordinates {
+  level: string
+  circle: string
+  office_id: number
+  office_code: string
+  office_name: string
+  latitude: number
+  longitude: number
+}
