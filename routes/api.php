@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ChartData\ChartDataController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/data-details', [ChartDataController::class, 'getDataDetails']);
+Route::get('/subsets/{dataDetailId}', [ChartDataController::class, 'getSubsetsByDataDetail']);
+// Route::get('/test-api', function () {
+//     return response()->json(['message' => 'API working']);
+// });

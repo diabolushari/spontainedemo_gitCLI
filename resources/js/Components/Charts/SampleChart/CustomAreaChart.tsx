@@ -35,7 +35,7 @@ export function CustomAreaChart({ data, dataKey, keysToPlot }: Props) {
     <ChartContainer config={chartConfig}>
       <ResponsiveContainer
         width='100%'
-        height={300}
+        height={200}
       >
         <AreaChart
           data={data}
