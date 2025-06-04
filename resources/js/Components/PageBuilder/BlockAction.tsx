@@ -9,6 +9,8 @@ import BlockEditModal from './BlockEditModal'
 import { SampleChart } from './SampleChart'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+import ArrowUpButton from '@/ui/button/ArrowUpButton'
+import ArrowDownButton from '@/ui/button/ArrowDownButton'
 
 interface BlockActionProps {
   block: Block
@@ -56,21 +58,11 @@ export const BlockAction = ({ block }: BlockActionProps) => {
             />
           </div>
           <div className='flex flex-row gap-2'>
-            <Button
-              type='button'
-              label=''
-              icon={<ArrowUpIcon />}
-              onClick={() => handleMove('up')}
-            />
-            <Button
-              type='button'
-              label=''
-              icon={<ArrowDownIcon />}
-              onClick={() => handleMove('down')}
-            />
+            <ArrowUpButton onClick={() => handleMove('up')} />
+            <ArrowDownButton onClick={() => handleMove('down')} />
           </div>
         </div>
-        <div className='bg-gray-500'>
+        <div className='grid bg-gray-500'>
           {Component ? <Component dimensions={block.dimensions} /> : <p>Unknown block type</p>}
         </div>
       </Card>
@@ -82,16 +74,13 @@ export const BlockAction = ({ block }: BlockActionProps) => {
           block={block}
         />
       )}
-
-      {/* Delete Modal */}
       {isDeleteModalOpen && (
         <DeleteModal
           setShowModal={setDeleteModalOpen}
           title='Delete Block'
-          url={route('blocks.destroy', block.id)} // Your Inertia delete route
+          url={route('blocks.destroy', block.id)}
           onSuccess={() => {
             setDeleteModalOpen(false)
-            // Optional: add additional logic like redirect or notification
           }}
         >
           <p>Are you sure you want to delete this block?</p>

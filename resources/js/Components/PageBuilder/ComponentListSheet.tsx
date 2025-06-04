@@ -33,7 +33,7 @@ export function ComponentListSheet({ onChartClick }: ComponentListSheetProps) {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
+          <SheetTitle>Component list</SheetTitle>
           <SheetDescription>Here you can select component to add to your page</SheetDescription>
         </SheetHeader>
 

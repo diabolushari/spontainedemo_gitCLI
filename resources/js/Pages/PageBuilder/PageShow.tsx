@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { Block, PagesList } from '@/interfaces/data_interfaces'
-import { CustomScrollArea } from '@/Components/PageBuilder/CustomScrollArea'
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { BlockAction } from '@/Components/PageBuilder/BlockAction'
@@ -83,19 +82,20 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
           <div className='flex justify-center py-5'>
             <ComponentListSheet onChartClick={handleClick} />
           </div>
-          <div className='bg-gray-100 p-5'>
+          <div className='grid'>
             {blocks.length === 0 ? (
               <p>No blocks available.</p>
             ) : (
-              <ul className='flex flex-col gap-4'>
+              <div className='grid grid-cols-4 gap-8'>
                 {blocks.map((block) => (
-                  <li key={block.id}>
-                    <div className=''>
-                      <BlockAction block={block} />
-                    </div>
-                  </li>
+                  <div
+                    key={block.id}
+                    className={block.dimensions.desktop_width}
+                  >
+                    <BlockAction block={block} />
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
         </Card>
