@@ -8,26 +8,31 @@ import {
   FiCpu,
   FiBarChart2,
 } from 'react-icons/fi'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible'
 import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import { router } from '@inertiajs/react'
 
 interface ChatHistoryItem {
-  id: string
+  id: number
   title: string
   timestamp: string
 }
 
-export default function Sidebar() {
+interface ChatProps {
+  chatHistory: ChatHistoryItem[]
+  onSessionChange: (sessionId: number) => void
+}
+
+export default function Sidebar({ chatHistory, onSessionChange }: ChatProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(true)
   const [isRecentChatsOpen, setIsRecentChatsOpen] = useState(false)
-  const [chatHistory] = useState<ChatHistoryItem[]>([
-    { id: '1', title: 'Revenue Analysis Q1 2024', timestamp: '2 hours ago' },
-    { id: '2', title: 'Customer Satisfaction Metrics', timestamp: '5 hours ago' },
-    { id: '3', title: 'Service Quality Report', timestamp: '1 day ago' },
-  ])
+  const [history, setHistory] = useState<ChatHistoryItem[]>()
+
+  useEffect(() => {
+    setHistory(chatHistory)
+  }, [])
 
   const handleNavigation = (value: string) => {
     if (value === 'dashboard') {
@@ -116,10 +121,11 @@ export default function Sidebar() {
           )}
         </CollapsibleTrigger>
         <CollapsibleContent className='mt-2 space-y-2'>
-          {chatHistory.map((chat) => (
+          {history?.map((chat) => (
             <button
               key={chat.id}
               className='group w-full rounded-lg px-4 py-2 text-left transition-colors hover:bg-gray-50'
+              onClick={() => onSessionChange(chat.id)}
             >
               <div className='flex items-center justify-between'>
                 <div className='flex items-center'>
@@ -128,7 +134,7 @@ export default function Sidebar() {
                 </div>
                 <FiClock className='text-xs text-gray-400' />
               </div>
-              <div className='mt-1 text-xs text-gray-500'>{chat.timestamp}</div>
+              {/*<div className='mt-1 text-xs text-gray-500'>{chat.timestamp}</div>*/}
             </button>
           ))}
         </CollapsibleContent>

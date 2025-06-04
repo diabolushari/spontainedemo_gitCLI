@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatHistory\ChatHistoryController;
 use App\Http\Controllers\InsightsGen\GetInsights;
 use App\Http\Controllers\InsightsGen\InsightsGen;
 use App\Http\Controllers\TitleGen\TitleGen;
@@ -392,5 +393,7 @@ Route::post('/title-gen', [TitleGen::class, '__invoke'])->name('__invoke');
 Route::get('/insight-gen', [InsightsGen::class, '__invoke'])->name('__invoke');;
 
 Route::get('/get-insights', [GetInsights::class, '__invoke'])->name('__invoke');
+
+Route::apiResource('/chat-history', ChatHistoryController::class);
 
 require __DIR__.'/auth.php';

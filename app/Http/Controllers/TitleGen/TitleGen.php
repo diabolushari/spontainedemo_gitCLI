@@ -3,19 +3,17 @@
 namespace App\Http\Controllers\TitleGen;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class TitleGen extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request):JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'history' => 'required|array',
-            'history.*.role' => 'required|string',
-            'history.*.content' => 'required|string',
-            'history.*.timestamp' => 'required|string',
+            'history' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -46,12 +44,12 @@ class TitleGen extends Controller
             ]);
             if ($response->successful()) {
                 $data = $response['candidates'][0]['content']['parts'][0]['text'];
-                return response()->json(['title' => $data]);
+                return response()->json(['title' => $data, 'history' => $history]);
             }
 
         } catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()]);
         }
-
+        return response()->json(['error' => 'No title generated']);
     }
 }

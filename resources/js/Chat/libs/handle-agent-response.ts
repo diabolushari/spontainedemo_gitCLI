@@ -35,7 +35,7 @@ function handleOutputResponse(
       if (extractedJSON == null) {
         messages.push({
           id: currentIdRef.current++,
-          type: 'bot',
+          type: 'assistant',
           content: response.output,
           contentType: 'text',
           suggestions: [],
@@ -47,7 +47,7 @@ function handleOutputResponse(
       if (parsedOutput.output != null) {
         messages.push({
           id: currentIdRef.current++,
-          type: 'bot',
+          type: 'assistant',
           content: parsedOutput.output,
           contentType: 'text',
           suggestions: [],
@@ -57,7 +57,7 @@ function handleOutputResponse(
       if (parsedOutput.visualization != null) {
         messages.push({
           id: currentIdRef.current++,
-          type: 'bot',
+          type: 'assistant',
           content: JSON.stringify(parsedOutput.visualization),
           contentType: 'chart',
           suggestions: [],
@@ -67,7 +67,7 @@ function handleOutputResponse(
       // If parsing fails, use the original output string
       messages.push({
         id: currentIdRef.current++,
-        type: 'bot',
+        type: 'assistant',
         content: response.output ?? '',
         contentType: 'text',
         suggestions: [],

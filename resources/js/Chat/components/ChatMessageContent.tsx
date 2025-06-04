@@ -30,7 +30,7 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
       {message.contentType === 'text' && (
         <div>
           {/* Display action messages with description in an accordion */}
-          {message.type === 'action' && (
+          {message.role === 'action' && (
             <Accordion
               type='single'
               collapsible
@@ -42,7 +42,7 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
               </AccordionItem>
             </Accordion>
           )}
-          {message.type !== 'action' && (
+          {message.role !== 'action' && (
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}
