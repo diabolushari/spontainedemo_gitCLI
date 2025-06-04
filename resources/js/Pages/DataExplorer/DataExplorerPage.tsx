@@ -28,6 +28,7 @@ import Modal from '@/ui/Modal/Modal'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
 import DataExplorerTrend from '@/Components/DataExplorer/DataExplorerTrend/DataExplorerTrend'
+import DataExplorerMap from '@/Components/DataExplorer/DataExplorerMap/DataExplorerMap'
 
 interface Props {
   subsetGroup: SubsetGroup
@@ -86,6 +87,7 @@ export default function DataExplorerPage({
   offices,
 }: Readonly<Props>) {
   const [showSearchModal, setShowSearchModal] = useState(false)
+  const [showMap, setShowMap] = useState<boolean>(false)
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
   const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
@@ -247,6 +249,16 @@ export default function DataExplorerPage({
             higher organization level.
           </span>
         </div>
+        <div className='flex items-end justify-end text-1stop-highlight'>
+          <button
+            onClick={() => setShowMap(!showMap)}
+            className='axial-label-1stop uppercase'
+          >
+            {showMap ? 'Hide Map' : 'Show Map'}
+          </button>
+          {/* <div>{showMap && <OfficeRankingMap mapData={selectedSubset} />}</div> */}
+        </div>
+
         <SelectedOfficeContext.Provider
           value={{
             region: selectedRegion,
@@ -264,6 +276,18 @@ export default function DataExplorerPage({
               activeTab={activeTab}
               setActiveTab={changeTab}
             />
+            {showMap && selectedSubset != null && (
+              <DataExplorerMap
+                subset={selectedSubset}
+                officeLevel={activeTab}
+                oldFilters={oldFilters}
+                setActiveTab={setActiveTab}
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+              />
+            )}
             {selectedSubset != null && (
               <OfficeLevelExplorerTable
                 subset={selectedSubset}

@@ -1,12 +1,11 @@
 import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
-import { TableColName } from '@/Components/DataExplorer/DataSetTable'
-import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
-import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
-import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
+import useOfficeLevelSelection from '../useOfficeLevelSelection'
 import { dateToYearMonth, yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import { TableColName } from '../DataSetTable'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
+import OfficeRankingMap from '../OfficeRanking/Map/OfficeRankingMap'
 
 interface Props {
   subset: SubsetDetail
@@ -19,16 +18,14 @@ interface Props {
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
-export default function OfficeLevelExplorerTable({
+const DataExplorerMap = ({
   subset,
   officeLevel,
   oldFilters,
-  setActiveTab,
   searchParams,
   selectedMonth,
   setSelectedMonth,
-}: Readonly<Props>) {
-  console.log(subset)
+}: Props) => {
   const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
 
   const { prevLevelOffice, selectedOffice } = useOfficeLevelSelection(
@@ -145,23 +142,21 @@ export default function OfficeLevelExplorerTable({
     return cols
   }, [subset])
 
+  const mapData = useMemo(() => {
+    return (
+      dataTable?.data.map((item) => ({
+        office_name: item.office_name ?? '',
+        office_code: item.office_code ?? '',
+        [tableCols[3].name]: item[tableCols[3].source as keyof DataTableItem] ?? 0,
+      })) ?? []
+    )
+  }, [dataTable?.data, tableCols])
+
   return (
-    <FullSpinnerWrapper processing={loading}>
-      <OfficeLevelSubsetTable
-        officeLevel={officeLevel}
-        tableCols={tableCols}
-        prevLevel={prevLevelOffice}
-        selectedOffice={selectedOffice}
-        tableData={dataTable?.data}
-        setOfficeLevel={setActiveTab}
-        exportUrl={route('subset-export', {
-          ...searchParams,
-          subsetDetail: subset.id,
-          level: officeLevel,
-          office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
-          excludeNonMeasurements: false,
-        })}
-      />
-    </FullSpinnerWrapper>
+    <div>
+      <OfficeRankingMap mapData={mapData} />
+    </div>
   )
 }
+
+export default DataExplorerMap
