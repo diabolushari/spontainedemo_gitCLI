@@ -80,7 +80,7 @@ export default function MainArea({
             <div
               className={`max-w-[60vw] overflow-auto rounded-2xl p-3 ${
                 message.role === 'user' && 'rounded-br-none bg-blue-600 text-white'
-              } ${message.role === 'assistant' && 'rounded-bl-none bg-white text-gray-800 shadow-sm'} ${
+              } ${message.role === 'assistant' ? 'rounded-bl-none bg-white text-gray-800 shadow-sm' : null} ${
                 message.role === 'action' && 'rounded-bl-none bg-gray-200 text-gray-800 shadow-sm'
               } ${message.role === 'error' && 'rounded-bl-none bg-red-100 text-red-800 shadow-sm'}`}
             >
