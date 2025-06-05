@@ -9,10 +9,19 @@ use Illuminate\Http\Request;
 
 class ChatHistoryController extends Controller
 {
+    public function index(Request $request): JsonResponse
+    {
+        $perPage = $request->input('per_page', 7);
+
+        $chatHistories = ChatHistory::select(['id', 'title'])
+            ->paginate($perPage);
+
+        return response()->json($chatHistories);
+    }
+
     public function show(Request $request, ChatHistory $chatHistory): JsonResponse
     {
         return response()->json($chatHistory);
-
     }
 
     public function update(Request $request, ChatHistory $chatHistory): JsonResponse

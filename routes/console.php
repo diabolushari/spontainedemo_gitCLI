@@ -6,3 +6,5 @@ Schedule::call(function () {
     $runScheduleQuery = new StartScheduledJobs;
     $runScheduleQuery->run();
 })->everyMinute();
+
+Schedule::command('app:generate-title-command')->everyTenMinutes();

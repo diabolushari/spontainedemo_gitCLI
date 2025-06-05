@@ -18,6 +18,7 @@ interface ChatHistory {
   title: string
   messages: ChatMessage[]
   id: number
+  timestamp: string
 }
 
 interface ChatProps {
@@ -44,6 +45,7 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
     <div className='flex h-screen bg-gray-50'>
       <Sidebar
         chatHistory={chatHistory}
+        sessionId={_currentSession.id}
         onSessionChange={handleChatHistory}
       />
       <MainArea

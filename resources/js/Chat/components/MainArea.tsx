@@ -37,14 +37,11 @@ export default function MainArea({
   setInput,
   mode,
   onModeChange,
-}: MainAreaProps) {
+}: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // useEffect(() => {
-  //   setMessageFromHistory(currentSession.messages)
-  // }, [currentSession.id])
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current
     if (!textarea) return
@@ -70,33 +67,6 @@ export default function MainArea({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isLoading])
-
-  // useEffect(() => {
-  //   if (messages.length == 6) {
-  //     axios
-  //       .post('/title-gen', {
-  //         history: JSON.stringify(messages),
-  //       })
-  //       .then((res) => {
-  //         currentSession.title = res.data.title
-  //       })
-  //       .catch((err) => {
-  //         console.log(err)
-  //       })
-  //   }
-  //
-  //   axios
-  //     .patch(`/chat-history/${currentSession.id}`, {
-  //       messages: messages,
-  //       title: currentSession.title,
-  //     })
-  //     .then((res) => {
-  //       console.log(res.data)
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //     })
-  // }, [messages])
 
   return (
     <main className='flex flex-1 flex-col bg-gradient-to-r from-1stop-gradient-left to-1stop-gradient-right'>

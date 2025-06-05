@@ -22,14 +22,16 @@ class ChatController extends Controller implements HasMiddleware
 
     public function __invoke(): Response
     {
-        $userId =  auth()->id();
-        $chatHistory = ChatHistory::where('user_id', $userId)->select('id', 'title', 'created_at')->orderBy('created_at', 'desc')->take(7)->get();
+        $userId = auth()->id();
         $currentSession = ChatHistory::create([
             'user_id' => $userId,
             'title' => 'Chat',
             'messages' => [],
         ]);
-
+        $chatHistory = ChatHistory::where('user_id', $userId)->select('id', 'title', 'created_at')->orderBy('created_at', 'desc')->take(10)->get();
+        foreach ($chatHistory as $chat) {
+            $chat->timestamp = $chat->created_at->diffForHumans();
+        }
 
         return Inertia::render('Chat/ChatIndexPage', [
             'chatHistory' => $chatHistory,

@@ -1,14 +1,14 @@
 import {
-  FiSearch,
-  FiCompass,
-  FiClock,
-  FiMessageSquare,
+  FiBarChart2,
   FiChevronDown,
   FiChevronRight,
+  FiClock,
+  FiCompass,
   FiCpu,
-  FiBarChart2,
+  FiMessageSquare,
+  FiSearch,
 } from 'react-icons/fi'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible'
 import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import { router } from '@inertiajs/react'
@@ -21,18 +21,15 @@ interface ChatHistoryItem {
 
 interface ChatProps {
   chatHistory: ChatHistoryItem[]
+  sessionId: number
   onSessionChange: (sessionId: number) => void
 }
 
-export default function Sidebar({ chatHistory, onSessionChange }: ChatProps) {
+export default function Sidebar({ chatHistory, sessionId, onSessionChange }: ChatProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(true)
-  const [isRecentChatsOpen, setIsRecentChatsOpen] = useState(false)
-  const [history, setHistory] = useState<ChatHistoryItem[]>()
-
-  useEffect(() => {
-    setHistory(chatHistory)
-  }, [])
+  const [isRecentChatsOpen, setIsRecentChatsOpen] = useState(true)
+  const [history, setHistory] = useState<ChatHistoryItem[]>(chatHistory)
 
   const handleNavigation = (value: string) => {
     if (value === 'dashboard') {
@@ -120,11 +117,11 @@ export default function Sidebar({ chatHistory, onSessionChange }: ChatProps) {
             <FiChevronRight className='h-4 w-4' />
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent className='mt-2 space-y-2'>
+        <CollapsibleContent className='mt-2 max-h-[500px] space-y-2 overflow-y-auto'>
           {history?.map((chat) => (
             <button
               key={chat.id}
-              className='group w-full rounded-lg px-4 py-2 text-left transition-colors hover:bg-gray-50'
+              className={`group w-full overflow-hidden rounded-lg px-4 py-2 text-left transition-colors hover:bg-gray-50 ${sessionId == chat.id ? 'bg-blue-300' : null}`}
               onClick={() => onSessionChange(chat.id)}
             >
               <div className='flex items-center justify-between'>
@@ -134,7 +131,7 @@ export default function Sidebar({ chatHistory, onSessionChange }: ChatProps) {
                 </div>
                 <FiClock className='text-xs text-gray-400' />
               </div>
-              {/*<div className='mt-1 text-xs text-gray-500'>{chat.timestamp}</div>*/}
+              <div className='mt-1 text-xs text-gray-500'>{chat.timestamp}</div>
             </button>
           ))}
         </CollapsibleContent>
