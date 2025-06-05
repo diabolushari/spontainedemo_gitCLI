@@ -7,6 +7,7 @@ import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { dateToYearMonth, yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
+import OfficeClusterMap from './OfficeRanking/Map/OfficeClusterMap'
 
 interface Props {
   subset: SubsetDetail
@@ -17,6 +18,7 @@ interface Props {
   setSearchParams: Dispatch<SetStateAction<Record<string, string>>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+  mapField: string | null
 }
 
 export default function OfficeLevelExplorerTable({
@@ -27,8 +29,10 @@ export default function OfficeLevelExplorerTable({
   searchParams,
   selectedMonth,
   setSelectedMonth,
+  mapField,
 }: Readonly<Props>) {
   console.log(subset)
+  const [showMap, setShowMap] = useState<boolean>(false)
   const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
 
   const { prevLevelOffice, selectedOffice } = useOfficeLevelSelection(
@@ -65,8 +69,6 @@ export default function OfficeLevelExplorerTable({
     data: DataTableItem[]
     latest: string | null | number
   }>(url)
-
-  console.log(dataTable)
 
   useEffect(() => {
     if (dataTable?.latest != null && selectedMonth == null) {
@@ -147,8 +149,36 @@ export default function OfficeLevelExplorerTable({
     return cols
   }, [subset])
 
+  const mapData = useMemo(() => {
+    if (dataTable?.data == null) {
+      return null
+    }
+    return dataTable.data.map((row) => {
+      const mapCol = tableCols.find((col) => col.source === mapField)
+      return {
+        office_code: row.office_code,
+        office_name: row.office_name,
+        [mapCol?.name ?? '']: row[mapCol?.source as keyof DataTableItem] ?? 0,
+      }
+    })
+  }, [dataTable?.data, tableCols, mapField])
+
   return (
     <FullSpinnerWrapper processing={loading}>
+      {selectedMonth != null && mapField != null && (
+        <div className='flex items-end justify-end text-1stop-highlight'>
+          <button
+            onClick={() => setShowMap(!showMap)}
+            className='axial-label-1stop uppercase'
+          >
+            {showMap ? 'Hide Map' : 'Show Map'}
+          </button>
+        </div>
+      )}
+
+      {showMap && selectedMonth != null && mapField != null && (
+        <OfficeClusterMap mapData={mapData ?? []} />
+      )}
       <OfficeLevelSubsetTable
         officeLevel={officeLevel}
         tableCols={tableCols}

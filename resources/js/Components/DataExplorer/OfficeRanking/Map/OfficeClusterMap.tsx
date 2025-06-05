@@ -7,14 +7,14 @@ import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
 interface MapDataItem {
   [key: string]: string | number | null | undefined
-  office_name: string
+  office_name: string | null | undefined
   office_code: string | null | undefined
 }
 interface Props {
   mapData: MapDataItem[]
 }
 
-const OfficeRankingMap = ({ mapData }: Props) => {
+const OfficeClusterMap = ({ mapData }: Props) => {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
@@ -114,4 +114,4 @@ const OfficeRankingMap = ({ mapData }: Props) => {
   )
 }
 
-export default OfficeRankingMap
+export default OfficeClusterMap

@@ -17,7 +17,7 @@ import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSel
 import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
 import { CustomTooltip } from '../../CustomTooltip'
 import SecondarySort from '@/Components/DataExplorer/OfficeRanking/SecondarySort'
-import OfficeRankingMap from './Map/OfficeRankingMap'
+import OfficeClusterMap from './Map/OfficeClusterMap'
 
 interface Props {
   subset: SubsetDetail
@@ -243,7 +243,7 @@ export default function OfficeRanking({
             <i className='las la-map'></i>
           </div>
           {viewOnMap ? (
-            <OfficeRankingMap mapData={chartData} />
+            <OfficeClusterMap mapData={chartData} />
           ) : (
             <ResponsiveContainer
               width='100%'
