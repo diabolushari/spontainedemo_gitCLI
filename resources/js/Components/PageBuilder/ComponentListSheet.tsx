@@ -13,14 +13,7 @@ import { SampleChart } from './SampleChart'
 type ComponentListSheetProps = {
   onChartClick: (id: number, name: string) => void
 }
-const pageBuilderCharts = [
-  { id: 1, name: 'Active connection', component: <SampleChart /> },
-  { id: 2, name: 'New connection', component: <SampleChart /> },
-  { id: 3, name: 'Old', component: <SampleChart /> },
-  { id: 4, name: 'New ', component: <SampleChart /> },
-  { id: 5, name: 'another 1', component: <SampleChart /> },
-  { id: 6, name: 'another two', component: <SampleChart /> },
-]
+const pageBuilderCharts = [{ id: 1, name: 'Sample Card', component: <SampleChart /> }]
 
 export function ComponentListSheet({ onChartClick }: ComponentListSheetProps) {
   return (

@@ -14,10 +14,12 @@ class Block extends Model
         'position',
         'dimensions',
         'page_id',
+        'data'
     ];
 
     protected $casts = [
         'dimensions' => 'array',
+        'data' => 'array'
     ];
 
     public function page()

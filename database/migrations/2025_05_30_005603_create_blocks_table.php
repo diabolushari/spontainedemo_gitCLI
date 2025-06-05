@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('position');
             $table->json('dimensions');
+            $table->json('data')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

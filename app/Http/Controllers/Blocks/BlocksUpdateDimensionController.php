@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Blocks;
 use App\Http\Controllers\Controller;
 use App\Models\Blocks\Block;
 use App\Models\DataDetail\DataDetail;
+use App\Services\DataTable\QueryDataTable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,14 @@ class BlocksUpdateDimensionController extends Controller implements HasMiddlewar
     {
 
         $block = Block::findOrFail($id);
+        $dataDetailId = $request->data_detail_id;
+
+        if ($dataDetailId) {
+            $dataDetail = DataDetail::findOrFail($dataDetailId);
+            $block->data = $dataDetail->toArray();
+            $block->save();
+        }
+
         if ($request->dimensions) {
             $block->update([
                 'dimensions' => $request->dimensions,

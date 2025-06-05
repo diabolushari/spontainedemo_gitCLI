@@ -111,6 +111,14 @@ export default function DashboardTrendGraph({
           selectedValue={selectedMonthValue}
           setSelectedValue={setSelectedMonthValue}
         />
+        {filterListFetchURL != null && filterFieldName != null && filterListKey != null && (
+          <FieldUniqueValueDropdown
+            listFetchURL={filterListFetchURL}
+            selectedValue={filterValue}
+            setSelectedValue={setFilterValue}
+            dataKey={filterListKey}
+          />
+        )}
       </div>
       <div className='w-full'>
         {isLoading && (

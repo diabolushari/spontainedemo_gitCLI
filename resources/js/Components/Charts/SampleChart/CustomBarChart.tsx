@@ -59,7 +59,6 @@ export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            // tickFormatter={(value) => value.slice(0, 3)}
           />
           <YAxis
             tickLine={false}

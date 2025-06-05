@@ -359,4 +359,5 @@ export interface Block extends Model {
     laptop_width: string
     desktop_width: string
   }
+  data: JSON
 }
