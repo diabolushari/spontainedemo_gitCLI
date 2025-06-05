@@ -163,8 +163,6 @@ export default function OfficeLevelExplorerTable({
     })
   }, [dataTable?.data, tableCols, mapField])
 
-  console.log(mapField)
-  console.log(tableCols)
   return (
     <FullSpinnerWrapper processing={loading}>
       {selectedMonth != null && mapField != null && (
