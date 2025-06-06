@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\ChartData;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
+use App\Models\DataDetail\DataDetail;
 
 class DataDetailListController extends Controller
 {
-    public function getDataDetails()
+    public function __invoke()
     {
-        return DB::table('data_details')
-            ->select('id', 'name')
+        return DataDetail::select('id', 'name')
             ->where('is_active', 1)
             ->get();
     }
