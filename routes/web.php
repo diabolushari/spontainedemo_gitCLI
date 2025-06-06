@@ -71,6 +71,9 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\SubsetDetailListController;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -87,6 +90,15 @@ Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::cla
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
+
+//subset detail
+Route::get('/data-detail-list', [DataDetailListController::class, 'getDataDetails']);
+Route::get('/subset-list/{dataDetailId}', [SubsetDetailListController::class, 'getSubsetsByDataDetail']);
+
+//testing
+Route::get('/test', function () {
+    return Inertia::render('TestPage');
+});
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);

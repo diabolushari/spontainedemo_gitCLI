@@ -9,12 +9,18 @@ use App\Models\Subset\SubsetDetail;
 use App\Models\SubsetGroup\SubsetGroup;
 
 
-class ChartDataController extends Controller
+class SubsetDetailListController extends Controller
 {
     public function getDataDetails()
     {
-        $data = DataDetail::select('id', 'name')
-            ->where('is_active', 1)
+        return DB::table('data_details')->select('id', 'name')->where('is_active', 1)->get();
+    }
+
+    public function getSubsetsByDataDetail($dataDetailId)
+    {
+        return DB::table('subset_details')
+            ->select('id', 'name', 'description')
+            ->where('data_detail_id', $dataDetailId)
             ->get();
 
         return response()->json($data);
