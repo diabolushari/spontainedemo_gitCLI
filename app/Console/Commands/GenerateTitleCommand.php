@@ -29,7 +29,7 @@ class GenerateTitleCommand extends Command
      */
     public function handle(): int
     {
-        $GeminiApiKey = env('GEMINI_API_KEY');
+        $GeminiApiKey = config('app.gemini_api_key');
         $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
         $systemPrompt = "For the given history array generate a title for the history. Only give the title nothing else.\nHistory: ";
 

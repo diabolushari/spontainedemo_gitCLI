@@ -17,6 +17,9 @@ return [
     'chat_token' => env('CHAT_TOKEN', ''),
     'chat_url' => env('CHAT_URL', null),
     'agent_url' => env('AGENT_URL', null),
+
+    'gemini_api_key' => env('GEMINI_API_KEY', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
