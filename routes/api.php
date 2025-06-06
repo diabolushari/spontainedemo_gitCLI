@@ -18,10 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/data-details', [ChartDataController::class, 'getDataDetails']);
-Route::get('/subsets/{dataDetailId}', [ChartDataController::class, 'getSubsetsByDataDetail']);
-Route::get('/subset-groups', [ChartDataController::class, 'getSubsetsGroups']);
-Route::get('/subset-group/{subsetId}', [ChartDataController::class, 'getSubsetGroup']);
+
 // Route::get('/test-api', function () {
 //     return response()->json(['message' => 'API working']);
 // });

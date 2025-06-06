@@ -3,7 +3,9 @@
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
 use App\Http\Controllers\ChartData\DataDetailListController;
-use App\Http\Controllers\ChartData\SubsetDetailListController;
+use App\Http\Controllers\ChartData\SubsetFieldsController;
+use App\Http\Controllers\ChartData\SubsetGroupListController;
+use App\Http\Controllers\ChartData\SubsetGroupSingleItemController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -70,6 +72,7 @@ use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
+use App\Services\Subset\SubsetFieldOrderInfo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -92,8 +95,10 @@ Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::cla
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
 //subset detail
-Route::get('/data-detail-list', [DataDetailListController::class, 'getDataDetails']);
-Route::get('/subset-list/{dataDetailId}', [SubsetDetailListController::class, 'getSubsetsByDataDetail']);
+Route::get('/data-details-list', DataDetailListController::class);
+Route::get('/block/subsets/{dataDetailId}', SubsetFieldsController::class);
+Route::get('/block/subset-group', SubsetGroupListController::class);
+Route::get('/block/subset-group/{subsetGroupId}', SubsetGroupSingleItemController::class);
 
 //testing
 Route::get('/test', function () {
@@ -409,4 +414,4 @@ Route::get('office-coordinates', OfficeCoordinateListController::class)
     ->name('office-coordinates')
     ->middleware('auth');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

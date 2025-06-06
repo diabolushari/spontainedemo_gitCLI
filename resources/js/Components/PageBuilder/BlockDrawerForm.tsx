@@ -37,13 +37,13 @@ export default function BlockDrawerForm({ initialData, onSubmit }: BlockFormProp
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
   const [selectedSubSetId, setSelectedSubSetId] = useState<string | null>(null)
 
-  const subsetUrl = selectedGroupId ? `/api/subset-group/${selectedGroupId}/` : ''
-  const subsetFieldUrl = selectedSubSetId ? `/api/subsets/${selectedSubSetId}` : ''
+  const subsetUrl = selectedGroupId ? `/block/subset-group/${selectedGroupId}/` : ''
+  const subsetFieldUrl = selectedSubSetId ? `/block/subsets/${selectedSubSetId}` : ''
 
   const [groupItems, groupItemsLoading] = useFetchRecord<DataRow[]>(subsetUrl)
   const [subSetItems, subSetItemsLoading] = useFetchRecord<fields[]>(subsetFieldUrl)
-  const [data] = useFetchRecord<[]>('/api/data-details')
-  const [subSetGroups] = useFetchRecord<DataRow[]>('/api/subset-groups')
+  const [data] = useFetchRecord<DataRow[]>('/data-details-list')
+  const [subSetGroups] = useFetchRecord<DataRow[]>('/block/subset-group')
 
   const { formData, setFormValue } = useCustomForm<formBlockConfig>({
     title: initialData?.title ?? '',
