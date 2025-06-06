@@ -3,9 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\ChatHistory\ChatHistory;
-use Exception;
+use App\Services\GeminiService\GeminiService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class GenerateTitleCommand extends Command
@@ -24,14 +23,9 @@ class GenerateTitleCommand extends Command
      */
     protected $description = 'Generate a title for chat history';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
-        $GeminiApiKey = config('app.gemini_api_key');
-        $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
-        $systemPrompt = "For the given history array generate a title for the history. Only give the title nothing else.\nHistory: ";
+        $geminiService = new GeminiService;
 
         $chatHistoriesToUpdate = ChatHistory::where('title', 'Chat')->get();
         if ($chatHistoriesToUpdate->isEmpty()) {
@@ -44,36 +38,22 @@ class GenerateTitleCommand extends Command
         $failedCount = 0;
 
         foreach ($chatHistoriesToUpdate as $chatHistory) {
-            $historyString = json_encode($chatHistory->messages);
+            $result = $geminiService->generateTitle($chatHistory->messages);
 
-            try {
-                $response = Http::withHeaders([
-                    'Content-Type' => 'application/json',
-                ])->post($apiUrl.$GeminiApiKey, [
-                    'contents' => [
-                        [
-                            'parts' => [
-                                ['text' => $systemPrompt.$historyString],
-                            ],
-                        ],
-                    ],
+            if ($result['success']) {
+                $chatHistory->update([
+                    'title' => $result['text'],
                 ]);
-                if ($response->successful()) {
-                    $title = $response['candidates'][0]['content']['parts'][0]['text'];
-                    $chatHistory->update([
-                        'title' => $title,
-                    ]);
-                    $updatedCount++;
-                } else {
-                    $failedCount++;
-                }
-
-            } catch (Exception $e) {
-                $this->error("An error occurred while processing ChatHistory ID: {$chatHistory->id}: ".$e->getMessage());
-                Log::error("GenerateTitleCommand: Exception for ChatHistory ID: {$chatHistory->id}: ".$e->getMessage());
+                $updatedCount++;
+                $this->info("Updated ChatHistory ID: $chatHistory->id");
+            } else {
+                $this->error("Failed to update ChatHistory ID: $chatHistory->id: {$result['error']}");
+                Log::error("GenerateTitleCommand: Failed for ChatHistory ID: $chatHistory->id: {$result['error']}");
                 $failedCount++;
             }
         }
+
+        $this->info("Updated: $updatedCount, Failed: {$failedCount}");
 
         return Command::SUCCESS;
     }

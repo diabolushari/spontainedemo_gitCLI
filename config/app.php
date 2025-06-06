@@ -19,6 +19,8 @@ return [
     'agent_url' => env('AGENT_URL', null),
 
     'gemini_api_key' => env('GEMINI_API_KEY', null),
+    'gemini_base_url' => env('GEMINI_BASE_URL', null),
+    'gemini_model' => env('GEMINI_MODEL', null),
 
     /*
     |--------------------------------------------------------------------------
