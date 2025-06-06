@@ -113,11 +113,10 @@ readonly class SubsetQueryBuilder
         }
 
         foreach ($orderColumns as $order) {
-            $query->orderByRaw($order->column.' '.$order->sortOrder);
+            $query->orderByRaw($order->column . ' ' . $order->sortOrder);
         }
 
         return $query->selectRaw($selectStatement);
-
     }
 
     /**
@@ -147,10 +146,10 @@ readonly class SubsetQueryBuilder
             if ($date->date_field_expression != null) {
                 $column = $date->date_field_expression;
             } else {
-                $column = '`'.$date->info->column.'`';
+                $column = '`' . $date->info->column . '`';
             }
             $groupingColumns[] = $column;
-            $selectColumns[] = $column.' as `'.$date->subset_column.'`';
+            $selectColumns[] = $column . ' as `' . $date->subset_column . '`';
             if ($date->sort_order != null) {
                 $sortOrder = $date->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
@@ -195,7 +194,7 @@ readonly class SubsetQueryBuilder
             }
             if ($dimension->column_expression != null) {
                 $groupingColumns[] = $dimension->column_expression;
-                $selectColumns[] = $dimension->column_expression.' as `'.$dimension->subset_column.'`';
+                $selectColumns[] = $dimension->column_expression . ' as `' . $dimension->subset_column . '`';
                 if ($dimension->sort_order != null) {
                     $orderColumns[] = new SubsetFieldOrderInfo($dimension->column_expression, $dimension->sort_order);
                 }
@@ -203,13 +202,13 @@ readonly class SubsetQueryBuilder
                 return;
             }
 
-            $groupingColumns[] = '`'.$dimension->info->column.'`';
-            $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->subset_column.'`';
+            $groupingColumns[] = '`' . $dimension->info->column . '`';
+            $selectColumns[] = $dimension->info->column . '_record.name as `' . $dimension->subset_column . '`';
 
             if ($dimension->sort_order != null) {
                 $sortOrder = $dimension->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
-                    $dimension->info->column.'_record.name',
+                    $dimension->info->column . '_record.name',
                     strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
                 );
             }
@@ -233,10 +232,10 @@ readonly class SubsetQueryBuilder
                 return;
             }
             if ($measure->info->unit_column != null) {
-                $measureColumns[] = '`'.$measure->info->unit_column.'` as `'.$measure->subset_column.'`';
-                $groupingColumns[] = '`'.$measure->info->unit_column.'`';
+                $measureColumns[] = '`' . $measure->info->unit_column . '` as `' . $measure->subset_column . '`';
+                $groupingColumns[] = '`' . $measure->info->unit_column . '`';
             }
-            $column = '`'.$measure->info->column.'`';
+            $column = '`' . $measure->info->column . '`';
             if ($measure->expression != null) {
                 $column = $measure->expression;
             } elseif ($measure->aggregation != null) {
@@ -245,14 +244,14 @@ readonly class SubsetQueryBuilder
                     if ($measure->weightInfo == null) {
                         return;
                     }
-                    $column = 'SUM('.$measure->info->column.' * '.$measure->weightInfo->column.') / SUM('
-                        .$measure->weightInfo->column.')';
+                    $column = 'SUM(' . $measure->info->column . ' * ' . $measure->weightInfo->column . ') / SUM('
+                        . $measure->weightInfo->column . ')';
                 } else {
-                    $column = $measure->aggregation.'('.$measure->info->column.')';
+                    $column = $measure->aggregation . '(' . $measure->info->column . ')';
                 }
             }
 
-            $measureColumns[] = $column.' as `'.$measure->subset_column.'`';
+            $measureColumns[] = $column . ' as `' . $measure->subset_column . '`';
             if ($measure->sort_order != null) {
                 $sortOrder = $measure->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
@@ -260,7 +259,6 @@ readonly class SubsetQueryBuilder
                     strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
                 );
             }
-
         });
     }
 
@@ -371,7 +369,8 @@ readonly class SubsetQueryBuilder
                         '=',
                         "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
-                });
+                }
+            );
         } else {
             $query->joinSub(
                 $hierarchySubQuery,
@@ -382,7 +381,8 @@ readonly class SubsetQueryBuilder
                         '=',
                         "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
-                });
+                }
+            );
         }
 
         $query->leftJoin(
@@ -409,6 +409,5 @@ readonly class SubsetQueryBuilder
                 $groupingColumns[] = 'secondary_field_record.name';
             }
         }
-
     }
 }
