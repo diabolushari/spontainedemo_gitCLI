@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import { Block, Page } from '@/interfaces/data_interfaces'
+import { Block, BlockDimension, Page } from '@/interfaces/data_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import { BlockEditor } from '@/Components/PageBuilder/BlockEditor'
 import CardHeader from '@/ui/Card/CardHeader'
@@ -18,16 +18,7 @@ export type blockForm = {
   name: string
   position: number
   page_id: number
-  dimensions: {
-    padding_top: string
-    padding_bottom: string
-    margin_top: string
-    margin_bottom: string
-    mobile_width: string
-    tablet_width: string
-    laptop_width: string
-    desktop_width: string
-  }
+  dimensions: BlockDimension
 }
 
 const defaultBlockConfiguration = {

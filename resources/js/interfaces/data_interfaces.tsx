@@ -344,26 +344,37 @@ export interface Page extends Model {
   published_at: string
 }
 
+export interface BlockDimension {
+  padding_top: string
+  padding_bottom: string
+  margin_top: string
+  margin_bottom: string
+  mobile_width: string
+  tablet_width: string
+  laptop_width: string
+  desktop_width: string
+}
+
 export interface Block extends Model {
   id: number
   page_id: number
   name: string
   position: number
-  dimensions: {
-    padding_top: string
-    padding_bottom: string
-    margin_top: string
-    margin_bottom: string
-    mobile_width: string
-    tablet_width: string
-    laptop_width: string
-    desktop_width: string
-  }
+  dimensions: BlockDimension
   data: {
     title: string
     data_table_id: string
-    set_group: string
-    sub_set: string
+    subset_group_id: string
+    subset_id: string
+    trend: {
+      subset_id: number
+      title: string
+      data_field: string
+    }
+    ranking: {
+      subset_id: number
+      title: string
+    }
     config: {
       x_axis?: {
         field: string
