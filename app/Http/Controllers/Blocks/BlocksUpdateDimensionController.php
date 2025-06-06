@@ -25,19 +25,18 @@ class BlocksUpdateDimensionController extends Controller implements HasMiddlewar
     {
 
         $block = Block::findOrFail($id);
+        $inputData = $request->except(['_method']);
+
+        $block->data = $inputData;
         $dataDetailId = $request->data_detail_id;
 
-        if ($dataDetailId) {
-            $dataDetail = DataDetail::findOrFail($dataDetailId);
-            $block->data = $dataDetail->toArray();
-            $block->save();
-        }
 
         if ($request->dimensions) {
             $block->update([
                 'dimensions' => $request->dimensions,
             ]);
         }
+        $block->save();
 
         return redirect()->back()->with('message', 'Block updated successfully!');
     }

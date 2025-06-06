@@ -359,5 +359,20 @@ export interface Block extends Model {
     laptop_width: string
     desktop_width: string
   }
-  data: JSON
+  data: {
+    title: string
+    data_table_id: string
+    set_group: string
+    sub_set: string
+    config: {
+      x_axis?: {
+        field: string
+        label: string
+      }
+      y_axis?: {
+        field: string
+        label: string
+      }
+    }
+  }
 }

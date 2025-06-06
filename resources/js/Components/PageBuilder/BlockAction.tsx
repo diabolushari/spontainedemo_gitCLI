@@ -1,17 +1,15 @@
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { Block, PagesList } from '@/interfaces/data_interfaces'
+import { Block } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import BlockEditModal from './BlockEditModal'
 import { SampleChart } from './SampleChart'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import ArrowUpButton from '@/ui/button/ArrowUpButton'
 import ArrowDownButton from '@/ui/button/ArrowDownButton'
 import { BlockDataDrawer } from './BlockDataDrawer'
-import CardGridView from '../ListingPage/CardGridView'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import { ListItemKeys } from '../ListingPage/ListResourcePage'
+import BlockDrawerForm from './BlockDrawerForm'
 
 interface BlockActionProps {
   block: Block
@@ -21,56 +19,39 @@ interface BlockComponentProps {
   dimensions?: Record<string, string>
   block: Block
 }
+type AxisConfig = {
+  field: string
+  label: string
+}
 
+type ConfigType = {
+  x_axis?: AxisConfig
+  y_axis?: AxisConfig
+}
+
+type formBlockConfig = {
+  title: string
+  data_table_id: string
+  set_group: string
+  sub_set: string
+  config: ConfigType
+}
 const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
   'Sample Card': SampleChart,
-}
-type DataRow = {
-  id: number
-  name: string
-}
-
-type FormattedRow = DataRow & {
-  actions: {
-    url: string
-    title: string
-    boxStyles?: string
-    textStyles?: string
-  }[]
 }
 
 export const BlockAction = ({ block }: BlockActionProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
-  const Component = blockComponents[block.name]
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-
-  const [data] = useFetchRecord<DataRow[]>('/api/data-details')
-
-  const formattedRows: FormattedRow[] = useMemo(() => {
-    return (data ?? []).map((row) => ({
-      ...row,
-      actions: [],
-    }))
-  }, [data])
-
-  const keys = useMemo(() => {
-    return [
-      {
-        key: 'id',
-        label: 'id',
-        isCardHeader: false,
-      },
-      {
-        key: 'name',
-        label: 'name',
-        isCardHeader: true,
-      },
-    ] satisfies ListItemKeys<Partial<PagesList>>[]
-  }, [])
-  const { post } = useInertiaPost(route('dimension.update', block.id), {
-    showErrorToast: true,
-  })
+  const Component = blockComponents[block.name]
+  console.log(block)
+  const { post } = useInertiaPost<formBlockConfig & { _method: string }>(
+    route('dimension.update', block.id),
+    {
+      showErrorToast: true,
+    }
+  )
 
   const handleMove = (direction: 'up' | 'down') => {
     post({
@@ -79,16 +60,9 @@ export const BlockAction = ({ block }: BlockActionProps) => {
     })
   }
 
-  const handleClick = useCallback(
-    (id: number | string) => {
-      post({
-        data_detail_id: id,
-        _method: 'PUT',
-      })
-      setIsDrawerOpen(false)
-    },
-    [post]
-  )
+  const handleClick = (formData: formBlockConfig) => {
+    post({ ...formData, _method: 'PUT' })
+  }
 
   const handleEditClick = () => {
     setEditModalOpen(true)
@@ -100,7 +74,7 @@ export const BlockAction = ({ block }: BlockActionProps) => {
         <div className='flex justify-between'>
           <div>
             <CardHeader
-              title={block.name}
+              title={block.data?.title}
               subheading={`Block position ${block.position}`}
               onEditClick={handleEditClick}
               onDeleteClick={() => setDeleteModalOpen(true)}
@@ -126,15 +100,12 @@ export const BlockAction = ({ block }: BlockActionProps) => {
             open={isDrawerOpen}
             setOpen={setIsDrawerOpen}
           >
-            <CardGridView
-              rows={formattedRows ?? []}
-              keys={keys}
-              onCardClick={handleClick}
-              primaryKey='id'
-              cardStyles='p-4'
-              layoutStyles='mt-4'
-              isAddButton={false}
-            />
+            <div className='p-4'>
+              <BlockDrawerForm
+                initialData={block.data}
+                onSubmit={handleClick}
+              />
+            </div>
           </BlockDataDrawer>
         </div>
       </Card>
