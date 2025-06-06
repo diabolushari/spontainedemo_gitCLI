@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/react'
 import { cn } from '@/utils'
 
 interface Properties {
+  icon?: React.ReactNode
   label: string
   onClick?: (e: React.FormEvent<HTMLButtonElement>) => void
   variant?: string
@@ -53,6 +54,7 @@ export const chooseButtonColor = (type: string): [string, string] => {
 }
 
 export default function Button({
+  icon,
   label,
   onClick,
   variant = 'primary',
@@ -90,6 +92,7 @@ export default function Button({
           type={type}
         >
           {label}
+          {icon && <span className='mr-2'>{icon}</span>}
         </button>
       )}
       {processing && <Spinner svgStyle={svgStyle} />}

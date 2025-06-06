@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 import { Pie, PieChart, Label } from 'recharts'
 
@@ -8,34 +10,27 @@ import {
   ChartTooltipContent,
 } from '@/Components/ui/chart'
 
-const chartColors = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
+const chartData = [
+  { name: 'Page A', uv: 4000, fill: 'hsl(var(--chart-1))' },
+  { name: 'Page B', uv: 3000, fill: 'hsl(var(--chart-2))' },
+  { name: 'Page C', uv: 2000, fill: 'hsl(var(--chart-3))' },
+  { name: 'Page D', uv: 2780, fill: 'hsl(var(--chart-4))' },
+  { name: 'Page E', uv: 1890, fill: 'hsl(var(--chart-5))' },
+  { name: 'Page F', uv: 2390, fill: 'hsl(var(--chart-6))' },
+  { name: 'Page G', uv: 3490, fill: 'hsl(var(--chart-7))' },
 ]
 
-interface Props {
-  data: Record<string, number | string>[]
-  dataKey: string
-  keysToPlot: {
-    key: string
-  }[]
-}
+const chartConfig = {
+  uv: {
+    label: 'UV',
+    color: 'hsl(var(--chart-1))',
+  },
+} satisfies ChartConfig
 
-export function CustomPieChart({ data, dataKey, keysToPlot }: Props) {
-  const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
-    acc[plotKey.key] = {
-      label: plotKey.key,
-      color: chartColors[index % chartColors.length],
-    }
-    return acc
-  }, {} as ChartConfig)
-
-  const total = React.useMemo(() => {
-    return data.reduce((acc, curr) => acc + (Number(curr[dataKey]) || 0), 0)
-  }, [data, dataKey])
+export function CustomPieChart() {
+  const totalVisitors = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.uv, 0)
+  }, [])
 
   return (
     <ChartContainer
@@ -48,8 +43,8 @@ export function CustomPieChart({ data, dataKey, keysToPlot }: Props) {
           content={<ChartTooltipContent hideLabel />}
         />
         <Pie
-          data={data}
-          dataKey={dataKey}
+          data={chartData}
+          dataKey='uv'
           nameKey='name'
           innerRadius={60}
           strokeWidth={5}
@@ -68,9 +63,7 @@ export function CustomPieChart({ data, dataKey, keysToPlot }: Props) {
                       x={viewBox.cx}
                       y={viewBox.cy}
                       className='fill-foreground text-3xl font-bold'
-                    >
-                      {total.toLocaleString()}
-                    </tspan>
+                    ></tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 24}

@@ -9,18 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
-{
-    Schema::create('dashboardtables', function (Blueprint $table) {
-        $table->id();
-        $table->string('title');
-        $table->string('url');
-        $table->text('description');
-        $table->timestamp('published_at');
-        $table->timestamps();
-        $table->SoftDelete();
-    });
-}
+    public function up()
+    {
+        Schema::create('dashboardtables', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('url');
+            $table->text('description');
+            $table->timestamp('published_at');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
 
 
     /**

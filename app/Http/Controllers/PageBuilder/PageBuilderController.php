@@ -30,15 +30,10 @@ class PageBuilderController extends Controller
 
     public function store(PageBuilderFormRequest $request): RedirectResponse
     {
-        //  $requestData = $request->toArray();
-        // validator($requestData, [
-        //     'url' => 'required|unique:pages,url',
-        // ], [
-        //     'url.unique' => 'The URL has already been taken. Please choose another.',
-        // ])->validate();
+        $validated = $request->toArray();
 
         try {
-            $record = PageBuilder::create($request->all());
+            $record = PageBuilder::create($validated);
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
@@ -71,17 +66,12 @@ class PageBuilderController extends Controller
 
     public function update(PageBuilderFormRequest $request, int $id): RedirectResponse
     {
-        // $requestData = $request->toArray();
-        // validator($requestData, [
-        //     'url' => 'required|unique:pages,url,' . $id,
-        // ], [
-        //     'url.unique' => 'The URL has already been taken. Please choose another.',
-        // ])->validate();
 
+        $validated = $request->toArray();
         try {
             $record = PageBuilder::find($id);
             if ($record != null) {
-                $record->update([...$request->all()]);
+                $record->update($validated);
             }
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);

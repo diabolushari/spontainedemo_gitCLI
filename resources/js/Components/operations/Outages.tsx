@@ -3,8 +3,6 @@ import MoreButton from '../MoreButton'
 import { Link } from '@inertiajs/react'
 import Card from '@/ui/Card/Card'
 import useFetchList from '@/hooks/useFetchList'
-import Skeleton from 'react-loading-skeleton'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Properties {
   section_code?: string

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Blocks\BlocksController;
+use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -61,6 +62,7 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Http\Requests\Blocks\BlocksUpdateFormRequest;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
@@ -83,6 +85,7 @@ Route::get('/dashboard', function () {
 // Page building
 Route::resource('page-builder', PageBuilderController::class);
 Route::resource('blocks', BlocksController::class);
+Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)->name('dimension.update');
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');

@@ -65,7 +65,6 @@ export function CustomAreaChart({ data, dataKey, keysToPlot }: Props) {
               fill={chartColors[index % chartColors.length]}
               fillOpacity={0.4}
               stroke={chartColors[index % chartColors.length]}
-              // stackId="a"
             />
           ))}
         </AreaChart>

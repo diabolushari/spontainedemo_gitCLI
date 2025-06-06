@@ -9,6 +9,7 @@ use App\Models\Blocks\Block;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 
 class BlocksController extends Controller
@@ -45,12 +46,11 @@ class BlocksController extends Controller
 
         $block = Block::findOrFail($id);
         $adjacentBlock = null;
-
         if ($request->action) {
 
             if ($request->action === 'up') {
                 $adjacentBlock = Block::where('position', '<', $block->position)
-                    ->where('page_id', $block->page_id) // Optional: restrict by page
+                    ->where('page_id', $block->page_id)
                     ->orderBy('position', 'desc')
                     ->first();
             } elseif ($request->action === 'down') {
@@ -61,22 +61,22 @@ class BlocksController extends Controller
             }
 
             if ($adjacentBlock) {
-                $tempPosition = $block->position;
-                $block->position = $adjacentBlock->position;
-                $adjacentBlock->position = $tempPosition;
+                DB::beginTransaction();
+                try {
+                    $tempPosition = $block->position;
+                    $block->position = $adjacentBlock->position;
+                    $adjacentBlock->position = $tempPosition;
 
-                $block->save();
-                $adjacentBlock->save();
+                    $block->save();
+                    $adjacentBlock->save();
 
-                return redirect()->back()->with('message', "Block moved {$request->action} successfully!");
-            } else {
-                return redirect()->back()->with('error', "Cannot move {$request->action}. No adjacent block found.");
+                    DB::commit();
+                    return redirect()->back()->with('message', "Block moved {$request->action} successfully!");
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', "An error occurred while moving block: " . $e->getMessage());
+                }
             }
-        }
-        if ($request->dimensions) {
-            $block->update([
-                'dimensions' => $request->dimensions,
-            ]);
         }
 
         return redirect()->back()->with('message', 'Block updated successfully!');

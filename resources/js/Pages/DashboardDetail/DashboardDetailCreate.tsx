@@ -27,14 +27,20 @@ export default function DashboardDetailCreate() {
   }
 
   return (
-    <AnalyticsDashboardLayout type='data' subtype='data-tables'>
+    <AnalyticsDashboardLayout
+      type='data'
+      subtype='data-tables'
+    >
       <DashboardPadding>
         <CardHeader
           title='Create Dashboard Detail'
           backUrl={route('dashboard-details.store')}
         />
 
-        <form onSubmit={handleFormSubmit} className="space-y-6 mt-6">
+        <form
+          onSubmit={handleFormSubmit}
+          className='mt-6 space-y-6'
+        >
           <div className='grid grid-cols-2 gap-4'>
             <div className='flex flex-col'>
               <Input
@@ -44,7 +50,6 @@ export default function DashboardDetailCreate() {
                 setValue={(value) => {
                   setFormValue('title')(value)
 
-                 
                   const slug = value
                     .toLowerCase()
                     .trim()
@@ -55,7 +60,6 @@ export default function DashboardDetailCreate() {
                   setFormValue('url')(slug)
                 }}
               />
-
             </div>
             <div className='flex flex-col'>
               <Input
@@ -80,9 +84,9 @@ export default function DashboardDetailCreate() {
               />
             </div>
             <button
-              type="submit"
+              type='submit'
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+              className='rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50'
             >
               {loading ? 'Saving...' : 'Submit'}
             </button>

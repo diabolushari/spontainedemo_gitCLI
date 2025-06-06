@@ -94,7 +94,7 @@ export default function DashboardCardLayout({
           {children}
         </div>
       </div>
-      {/*Footer:if no title then Justify end else  justify between  */}
+
       <div
         className={`mt-auto flex min-h-[4.2rem] flex-shrink-0 items-center gap-4 justify-self-end ${title == null ? 'justify-end' : 'justify-between'} rounded-b-2xl bg-1stop-alt-gray px-4 pl-12`}
       >
