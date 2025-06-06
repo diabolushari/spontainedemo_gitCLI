@@ -19,13 +19,16 @@ class ChartDataController extends Controller
 
         return response()->json($data);
     }
-
     public function getSubsetsByDataDetail($dataDetailId)
     {
-
         $subset = SubsetDetail::with(['dates', 'dimensions', 'measures'])->find($dataDetailId);
 
+        if (!$subset) {
+            return response()->json(['error' => 'Subset not found'], 404);
+        }
+
         $dateFields = $subset->dates->pluck('subset_field_name');
+
         $dimensionFields = $subset->dimensions->pluck('subset_field_name');
         $measureFields = $subset->measures->pluck('subset_field_name');
 
