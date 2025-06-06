@@ -2,7 +2,7 @@ import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import useNameUrl from '@/hooks/UseNameUrl'
-import { PagesList } from '@/interfaces/data_interfaces'
+import { Page } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Button from '@/ui/button/Button'
@@ -13,7 +13,7 @@ import TextArea from '@/ui/form/TextArea'
 import { useEffect } from 'react'
 
 interface Props {
-  page?: PagesList
+  page?: Page
 }
 
 type pageBuilderForm = {

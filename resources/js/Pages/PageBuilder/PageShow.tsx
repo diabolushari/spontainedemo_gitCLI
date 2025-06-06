@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import { Block, PagesList } from '@/interfaces/data_interfaces'
+import { Block, Page } from '@/interfaces/data_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
-import useInertiaPost from '@/hooks/useInertiaPost'
-import { BlockAction } from '@/Components/PageBuilder/BlockAction'
+import { BlockEditor } from '@/Components/PageBuilder/BlockEditor'
 import CardHeader from '@/ui/Card/CardHeader'
-import { ComponentListSheet } from '@/Components/PageBuilder/ComponentListSheet'
+import { AddPageBlock } from '@/Components/PageBuilder/AddPageBlock'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 
 interface Props {
-  page: PagesList
+  page: Page
   blocks: Block[]
 }
+
 export type blockForm = {
   name: string
   position: number
@@ -29,29 +29,29 @@ export type blockForm = {
     desktop_width: string
   }
 }
+
+const defaultBlockConfiguration = {
+  padding_top: '',
+  padding_bottom: '',
+  margin_top: '',
+  margin_bottom: '',
+  mobile_width: '',
+  tablet_width: '',
+  laptop_width: '',
+  desktop_width: '',
+}
+
 export default function PageShow({ page, blocks }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const { formData, setFormValue } = useCustomForm<blockForm>({
     name: '',
     position: 0,
     dimensions: {
-      padding_top: '',
-      padding_bottom: '',
-      margin_top: '',
-      margin_bottom: '',
-      mobile_width: '',
-      tablet_width: '',
-      laptop_width: '',
-      desktop_width: '',
+      ...defaultBlockConfiguration,
     },
     page_id: page.id,
   })
-  const { post } = useInertiaPost<blockForm>('/blocks')
-  const handleClick = (id: number, name: string) => {
-    const updatedFormData = { ...formData, name }
-    setFormValue('name')(name)
-    post(updatedFormData)
-  }
+
   return (
     <AnalyticsDashboardLayout
       type='data'
@@ -68,7 +68,6 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
             }}
             subheading={page.title}
           />
-
           {showDeleteModal && (
             <DeleteModal
               setShowModal={setShowDeleteModal}
@@ -78,27 +77,26 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
               <p>Are you sure you want to delete this page?</p>
             </DeleteModal>
           )}
-
-          <div className='flex justify-center py-5'>
-            <ComponentListSheet onChartClick={handleClick} />
-          </div>
-          <div className='grid'>
-            {blocks.length === 0 ? (
-              <p>No blocks available.</p>
-            ) : (
-              <div className='grid grid-cols-4 gap-8'>
-                {blocks.map((block) => (
-                  <div
-                    key={block.id}
-                    className={block.dimensions.desktop_width}
-                  >
-                    <BlockAction block={block} />
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className='flex justify-end py-5'>
+            <AddPageBlock page={page} />
           </div>
         </Card>
+        <div className='grid'>
+          {blocks.length === 0 ? (
+            <p>No blocks available.</p>
+          ) : (
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+              {blocks.map((block) => (
+                <div
+                  key={block.id}
+                  className={block.dimensions.desktop_width}
+                >
+                  <BlockEditor block={block} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

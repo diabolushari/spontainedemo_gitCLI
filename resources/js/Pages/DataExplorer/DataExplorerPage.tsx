@@ -247,6 +247,7 @@ export default function DataExplorerPage({
             higher organization level.
           </span>
         </div>
+
         <SelectedOfficeContext.Provider
           value={{
             region: selectedRegion,
@@ -264,6 +265,7 @@ export default function DataExplorerPage({
               activeTab={activeTab}
               setActiveTab={changeTab}
             />
+
             {selectedSubset != null && (
               <OfficeLevelExplorerTable
                 subset={selectedSubset}
@@ -274,6 +276,7 @@ export default function DataExplorerPage({
                 setSearchParams={setSearchParams}
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
+                mapField={selectedSubsetItem?.trend_field}
               />
             )}
           </Card>

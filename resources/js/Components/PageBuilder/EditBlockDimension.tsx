@@ -87,7 +87,7 @@ const desktopColSpanOptions = [
   { value: 'xl:col-span-1', label: '1/4' },
 ]
 
-const BlockEditModal: React.FC<BlockEditModalProps> = ({ isOpen, onClose, block }) => {
+const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, block }) => {
   const { formData, setFormValue, setAll } = useCustomForm({
     padding_top: '',
     padding_bottom: '',
@@ -229,4 +229,4 @@ const BlockEditModal: React.FC<BlockEditModalProps> = ({ isOpen, onClose, block 
   )
 }
 
-export default BlockEditModal
+export default EditBlockDimension

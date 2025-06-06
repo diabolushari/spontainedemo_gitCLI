@@ -336,7 +336,7 @@ export interface DataTableText extends Model {
   is_long_text: boolean
 }
 
-export interface PagesList extends Model {
+export interface Page extends Model {
   id: number
   title: string
   description: string
@@ -375,4 +375,14 @@ export interface Block extends Model {
       }
     }
   }
+}
+
+export interface OfficeCoordinates {
+  level: string
+  circle: string
+  office_id: number
+  office_code: string
+  office_name: string
+  latitude: number
+  longitude: number
 }

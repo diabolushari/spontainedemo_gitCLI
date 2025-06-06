@@ -1,0 +1,1438 @@
+Level,Circle,Office Id,Office Code,Office Name,Latitude,Longitude
+Corporate Office,Deputy Chief Engineer (HRM) II,3461,4000,Director (Distribution &amp; SCM),8.516541,76.939104
+Chief Office,Chief Engineer (Distribution North Malabar) Kannur,3575,6002,Chief Engineer (Distribution North Malabar) Kannur,11.876818,75.374179
+Chief Office,Deputy Chief Engineer (HRM) II,3965,1166,Central Project Monitoring Cell,8.516541,76.939104
+Chief Office,Ernakulam Electrical Circle,1071,5001,Chief Engineer (Distribution Central) Ernakulam,9.96771776,76.281126
+Chief Office,Kozhikode Electrical Circle,1435,6001,Chief Engineer (Distribution North) Kozhikode,11.263842,75.769264
+Chief Office,Thiruvananthapuram Electrical Circle(Urban),796,4001,Chief Engineer (Distribution South) Tvpm,8.4861,76.94976
+Circle,Alappuzha Electrical Circle,1073,5021,Alappuzha Electrical Circle,9.500399,76.328781
+Circle,CGRF Kottarakkara,2397,4091,CGRF Kottarakkara,8.998531,76.769956
+Circle,Ernakulam Electrical Circle,1081,5022,Ernakulam Electrical Circle,9.99158876,76.279018
+Circle,Harippad Electrical Circle,3502,5028,Harippad Electrical Circle,9.281619,76.454507
+Circle,Irinjalakuda Electrical Circle,1100,5026,Irinjalakuda Electrical Circle,10.345995,76.207046
+Circle,Kalpetta Electrical Circle,1448,6023,Kalpetta Electrical Circle,11.61656,76.08321
+Circle,Kannur Electrical Circle,1462,6025,Kannur Electrical Circle,11.876818,75.374179
+Circle,Kasaragod Electrical Circle,3824,6154,Kasaragod Project Management Unit,12.52308264,75.01417812
+Circle,Kasaragod Electrical Circle,1469,6026,Kasaragod Electrical Circle,12.52308264,75.01417812
+Circle,Kattakada Electrical Circle (Rural),803,4022,Kattakada Electrical Circle (Rural),8.508135,77.083779
+Circle,Kollam Electrical Circle,808,4023,Kollam Electrical Circle,8.88281,76.593555
+Circle,Kottarakkara Electrical Circle,812,4024,Kottarakkara Electrical Circle,8.998531,76.769956
+Circle,Kottayam Electrical Circle,823,4026,Kottayam Electrical Circle,9.535497,76.512485
+Circle,Kozhikode CGRF,1456,6091,Kozhikode CGRF,11.263842,75.769264
+Circle,Kozhikode Electrical Circle,1454,6024,Kozhikode Electrical Circle,11.263842,75.769264
+Circle,Manjeri Electrical Circle,1443,6022,Manjeri Electrical Circle,11.1207781,76.1135149
+Circle,Nilambur Electrical Circle,3501,6031,Nilambur Electrical Circle,11.267007,76.218335
+Circle,Pala Electrical Circle,1097,5025,Pala Electrical Circle,9.716144,76.682914
+Circle,Palakkad Electrical Circle,1438,6021,Palakkad Electrical Circle,10.772684,76.653114
+Circle,Pathanamthitta Electrical Circle,816,4025,Pathanamthitta Electrical Circle,9.2549546,76.7834025
+Circle,Perumbavoor Electrical Circle,1086,5023,Perumbavoor Electrical Circle,10.117796,76.480425
+Circle,Perumbavoor Electrical Circle,1854,5091,Ernakulam CGRF,10.05379,76.33044
+Circle,Shoranur Electrical Circle,1479,6029,Shoranur Electrical Circle,10.776626,76.293039
+Circle,Sreekandapuram Electrical Circle,1482,6030,Sreekandapuram Electrical Circle,12.04391739,75.50388941
+Circle,Thiruvananthapuram Electrical Circle(Urban),800,4021,Thiruvananthapuram Electrical Circle(Urban),8.4861,76.94976
+Circle,Thodupuzha Electrical Circle,1093,5024,Thodupuzha Electrical Circle,9.891834,76.708817
+Circle,Thrissur Electrical Circle,3030,5920,Nodal Office for 100% Electrication,10.527936,76.205381
+Circle,Thrissur Electrical Circle,1108,5027,Thrissur Electrical Circle,10.527936,76.205381
+Circle,Tirur Electrical Circle,1473,6027,Tirur Electrical Circle,10.915905,75.91822
+Circle,Vadakara Electrical Circle,1476,6028,Vadakara Electrical Circle,11.608749,75.603056
+Division,Alappuzha Electrical Circle,4084,5127,"ACRIP, ALAPPUZHA",9.500399,76.328781
+Division,Alappuzha Electrical Circle,1127,5102,Cherthala Electrical Division,9.691474,76.341557
+Division,Alappuzha Electrical Circle,1111,5101,Alappuzha Electrical Division,9.500399,76.328781
+Division,Alappuzha Electrical Circle,3814,5150,Alappuzha Project Management Unit,9.500399,76.328781
+Division,Ernakulam Electrical Circle,1174,5105,Ernakulam Electrical Division,9.99158876,76.279018
+Division,Ernakulam Electrical Circle,89,1122,Aluva Regional Store,10.09884,76.35821
+Division,Ernakulam Electrical Circle,3815,5151,Ernakulam Project Management Unit,9.99158876,76.279018
+Division,Ernakulam Electrical Circle,1203,5107,Mattancherry Electrical Division,9.935757,76.254855
+Division,Ernakulam Electrical Circle,4085,5128,Dyuthi Project Monitoring Division,9.99158876,76.279018
+Division,Ernakulam Electrical Circle,1855,5953,Ernakulam APDRP Division,9.94745,76.299502
+Division,Ernakulam Electrical Circle,1268,5111,North Paravur Electrical Division,10.178369,76.225196
+Division,Ernakulam Electrical Circle,1187,5106,Tripunithura Electrical Division,9.944683,76.343109
+Division,Harippad Electrical Circle,1163,5104,Chengannoor Electrical Division,9.31871,76.60964
+Division,Harippad Electrical Circle,3828,5156,Harippad Project Management Unit,9.239004,76.538694
+Division,Harippad Electrical Circle,1145,5103,Mavelikkara Electrical Division,9.239298,76.538882
+Division,Harippad Electrical Circle,3212,5125,Haripad Electrical Division,9.281619,76.454507
+Division,Irinjalakuda Electrical Circle,3818,5154,Irinjalakuda Project Management Unit,10.345995,76.207046
+Division,Irinjalakuda Electrical Circle,1349,5118,Kodungallur Electrical Division,10.227125,76.213344
+Division,Irinjalakuda Electrical Circle,1332,5117,Chalakudy Electrical Division,10.306712,76.333368
+Division,Irinjalakuda Electrical Circle,1318,5116,Irinjalakuda Electrical Division,10.345995,76.207046
+Division,Kalpetta Electrical Circle,1838,6124,Mananthavady Electrical Division,11.7941134,76.0044315
+Division,Kalpetta Electrical Circle,3822,6152,Kalpetta Project Management Unit,11.61656,76.08321
+Division,Kalpetta Electrical Circle,1593,6108,Kalpetta Electrical Division,11.60778,76.08341
+Division,Kannur Electrical Circle,3829,6158,Kannur Project Management Unit,11.876818,75.374179
+Division,Kannur Electrical Circle,1690,6114,Kannur Electrical Division,11.876818,75.374179
+Division,Kannur Electrical Circle,1712,6115,Thalassery Electrical Division,11.75044,75.48722
+Division,Kannur Electrical Circle,3446,6191,Kannur TMR Division,11.985358,75.379527
+Division,Kasaragod Electrical Circle,1734,6116,Kasaragod Electrical Division,12.49971098,74.99523933
+Division,Kasaragod Electrical Circle,1750,6117,Kanhangad Electrical Division,12.31408,75.09047
+Division,Kattakada Electrical Circle (Rural),3506,4118,Kattakada Electrical Division,8.506223,77.088693
+Division,Kattakada Electrical Circle (Rural),3831,4151,Kattakada Project Management Unit,8.5110683333,77.0723466667
+Division,Kattakada Electrical Circle (Rural),881,4104,Neyyattinkara Electrical Division,8.40723,77.08293
+Division,Kattakada Electrical Circle (Rural),901,4105,Nedumangad Electrical Division,8.607616,77.005795
+Division,Kollam Electrical Circle,3810,4152,Kollam Project Management Unit,8.88281,76.593555
+Division,Kollam Electrical Circle,934,4107,Karunagappally Electrical Division,9.0594653,76.5338426
+Division,Kollam Electrical Circle,947,4108,Chathannoor Electrical Division,8.86279,76.70799
+Division,Kollam Electrical Circle,920,4106,Kollam Electrical Division,8.883256,76.593074
+Division,Kottarakkara Electrical Circle,975,4111,Punalur Electrical Division,9.013141,76.928889
+Division,Kottarakkara Electrical Circle,966,4110,Kottarakkara Electrical Division,8.998531,76.769956
+Division,Kottarakkara Electrical Circle,956,4109,Kundara Electrical Division,8.957369,76.673036
+Division,Kottarakkara Electrical Circle,3811,4153,Kottarakkara Project Management Unit,8.998531,76.769956
+Division,Kottarakkara Electrical Circle,88,1121,Kundara Regional Store,8.957986,76.671711
+Division,Kottayam Electrical Circle,1045,4116,Changanacherry Electrical Division,9.44301,76.54387
+Division,Kottayam Electrical Circle,3813,4155,Kottayam Project Management Unit,9.535497,76.512485
+Division,Kottayam Electrical Circle,1056,4117,Vaikom Electrical Division,9.747147,76.392244
+Division,Kottayam Electrical Circle,1029,4115,Pallom Electrical Division,9.543696,76.519176
+Division,Kottayam Electrical Circle,824,4191,Pallom TMR Division,9.535497,76.512485
+Division,Kozhikode Electrical Circle,1460,6951,Construction Division Kozhikode APDRP,11.263842,75.769264
+Division,Kozhikode Electrical Circle,1621,6110,Balussery Electrical Division,11.44614,75.82961
+Division,Kozhikode Electrical Circle,1654,6112,Feroke Electrical Division,11.208787,75.808133
+Division,Kozhikode Electrical Circle,1603,6109,Kozhikode Electrical Division,11.263842,75.769264
+Division,Kozhikode Electrical Circle,90,1123,Kallai Regional Store,11.229584,75.78934
+Division,Kozhikode Electrical Circle,3823,6153,Kozhikode Project Management Unit,11.263842,75.769264
+Division,Manjeri Electrical Circle,1537,6104,Manjeri Electrical Division,11.1207781,76.1135149
+Division,Manjeri Electrical Circle,3503,6125,Kondotty Electrical Division,11.14683,75.971665
+Division,Manjeri Electrical Circle,1555,6105,Perinthalmanna Electrical Division,10.978675,76.224387
+Division,Manjeri Electrical Circle,3821,6151,Manjeri Project Management Unit,11.1207781,76.1135149
+Division,Nilambur Electrical Circle,3827,6157,Nilambur Project Management Unit,11.267007,76.218335
+Division,Nilambur Electrical Circle,3504,6126,Wandoor Electrical Division,11.1891661,76.2608809
+Division,Nilambur Electrical Circle,1775,6119,Nilambur Electrical Division,11.267007,76.218335
+Division,Pala Electrical Circle,1308,5115,Ponkunnam Electrical Division,9.56566,76.76363
+Division,Pala Electrical Circle,3832,5157,Pala Project Management Unit,9.716144,76.682914
+Division,Pala Electrical Circle,1295,5114,Pala Electrical Division,9.716144,76.682914
+Division,Palakkad Electrical Circle,1806,6122,Alathur Electrical Division,10.645339,76.547363
+Division,Palakkad Electrical Circle,1484,6101,Chittur Electrical Division,10.700427,76.752808
+Division,Palakkad Electrical Circle,3820,6150,Palakkad Project Management Unit,10.772684,76.653114
+Division,Palakkad Electrical Circle,1497,6102,Palakkad Electrical Division,10.772684,76.653114
+Division,Pathanamthitta Electrical Circle,989,4112,Pathanamthitta Electrical Division,9.2549546,76.7834025
+Division,Pathanamthitta Electrical Circle,3812,4154,Pathanamthitta Project Management Unit,9.2549546,76.7834025
+Division,Pathanamthitta Electrical Circle,1017,4114,Thiruvalla Electrical Division,9.386963,76.575759
+Division,Pathanamthitta Electrical Circle,1004,4113,Adoor Electrical Division,9.1624088,76.7207103
+Division,Perumbavoor Electrical Circle,1087,5190,Angamaly TMR Division,10.177409,76.377625
+Division,Perumbavoor Electrical Circle,1215,5108,Aluva Town Electrical Division,10.09884,76.358214
+Division,Perumbavoor Electrical Circle,3583,5126,Angamaly Electrical Division,10.177409,76.377625
+Division,Perumbavoor Electrical Circle,1251,5110,Moovattupuzha Electrical Division,9.9846444,76.580231
+Division,Perumbavoor Electrical Circle,3816,5152,Perumbavoor Project Management Unit,10.117796,76.480425
+Division,Perumbavoor Electrical Circle,1229,5109,Perumbavoor Electrical Division,10.117796,76.480425
+Division,Shoranur Electrical Circle,3826,6156,Shoranur Project Management Unit,10.776626,76.293039
+Division,Shoranur Electrical Circle,1767,6118,Mannarkkad Electrical Division,10.99934,76.470749
+Division,Shoranur Electrical Circle,1480,6190,Shoranur TMR Division,10.781294,76.283191
+Division,Shoranur Electrical Circle,3505,6127,Pattambi Electrical Division,10.8033729,76.1853022
+Division,Shoranur Electrical Circle,1516,6103,Shoranur Electrical Division,10.781294,76.283191
+Division,Sreekandapuram Electrical Circle,1787,6120,Iritty Electrical Division,11.98999274,75.67874043
+Division,Sreekandapuram Electrical Circle,1667,6113,Payyannur Electrical Division,12.105735,75.210181
+Division,Sreekandapuram Electrical Circle,3830,6159,Sreekandapuram Project Management Unit,12.04391739,75.50388941
+Division,Thiruvananthapuram Electrical Circle(Urban),3809,4150,Thiruvananthapuram Project Management Unit,8.4861,76.94976
+Division,Thiruvananthapuram Electrical Circle(Urban),862,4103,Attingal Electrical Division,8.69857,76.814371
+Division,Thiruvananthapuram Electrical Circle(Urban),2461,4303,Thiruvananthapuram APDRP Construction Division,8.4861,76.94976
+Division,Thiruvananthapuram Electrical Circle(Urban),828,4101,Thiruvananthapuram Electrical Division,8.4861,76.94976
+Division,Thiruvananthapuram Electrical Circle(Urban),845,4102,Kazhakkuttom Electrical Division,8.5648,76.877129
+Division,Thiruvananthapuram Electrical Circle(Urban),804,4190,Thirumala TMR Division,8.49294,76.99385
+Division,Thodupuzha Electrical Circle,1414,5123,Peerumade Electrical Division,9.581399,76.970501
+Division,Thodupuzha Electrical Circle,1287,5113,Thodupuzha Electrical Division,9.891834,76.708817
+Division,Thodupuzha Electrical Circle,3817,5153,Thodupuzha Project Management Unit,9.891834,76.708817
+Division,Thodupuzha Electrical Circle,1279,5112,Kattappana Electrical Division,9.756427,77.11495
+Division,Thodupuzha Electrical Circle,1407,5122,Adimaly Electrical Division,9.981048,76.993167
+Division,Thrissur Electrical Circle,3819,5155,Thrissur Project Management Unit,10.527936,76.205381
+Division,Thrissur Electrical Circle,1420,5124,Wadakkancherry Electrical Division,10.66191536,76.24500991
+Division,Thrissur Electrical Circle,1379,5120,Thrissur (West) Electrical Division,10.527989,76.205641
+Division,Thrissur Electrical Circle,1363,5119,Thrissur(East) Electrical Division,10.527936,76.205381
+Division,Thrissur Electrical Circle,1392,5121,Kunnamkulam Electrical Division,10.633028,76.085861
+Division,Tirur Electrical Circle,1567,6106,Tirur Electrical Division,10.915905,75.91822
+Division,Tirur Electrical Circle,1584,6107,Ponnani Electrical Division,10.78192,75.931566
+Division,Tirur Electrical Circle,3825,6155,Tirur Project Management Unit,10.915905,75.91822
+Division,Tirur Electrical Circle,1790,6121,Tirurangadi Electrical Division,11.036494,75.937747
+Division,Vadakara Electrical Circle,1822,6123,Nadapuram Electrical Division,11.689551,75.67625
+Division,Vadakara Electrical Circle,3833,6160,Vadakara Project Management Unit,11.608749,75.603056
+Division,Vadakara Electrical Circle,1637,6111,Vadakara Electrical Division,11.608749,75.603056
+Sub Division,Alappuzha Electrical Circle,1113,5202,Ambalappuzha Electrical Sub Division,9.382536,76.355173
+Sub Division,Alappuzha Electrical Circle,1114,5203,Edathua Electrical Sub Division,9.366124,76.475452
+Sub Division,Alappuzha Electrical Circle,1115,5204,Mancombu Electrical Sub Division,9.437792,76.426331
+Sub Division,Alappuzha Electrical Circle,1129,5206,Poochakkal Electrical Sub Division,9.795406,76.357555
+Sub Division,Alappuzha Electrical Circle,1130,5207,Pattanakkad Electrical Sub Division,9.71852,76.318603
+Sub Division,Alappuzha Electrical Circle,1131,5208,SLPuram Electrical Sub Division,9.605059,76.329127
+Sub Division,Alappuzha Electrical Circle,1128,5205,Cherthala Electrical Sub Division,9.691474,76.341557
+Sub Division,Alappuzha Electrical Circle,1074,5401,Alappuzha Sub Regional Store,9.500399,76.328781
+Sub Division,Alappuzha Electrical Circle,1112,5201,Alappuzha (North) Electrical Sub Division,9.500399,76.328781
+Sub Division,Ernakulam Electrical Circle,1190,5221,Puthencruz Electrical Sub Division,9.931277,76.389473
+Sub Division,Ernakulam Electrical Circle,4160,1574,Ernakulam RMU Maintenance SubDivision,9.94745,76.299502
+Sub Division,Ernakulam Electrical Circle,1082,5402,Ernakulam Sub Regional Store,9.99158876,76.279018
+Sub Division,Ernakulam Electrical Circle,1175,5216,College Ernakulam Electrical Sub Division,9.96958676,76.284597
+Sub Division,Ernakulam Electrical Circle,1176,5217,Palarivattom Electrical Sub Division,10.00528,76.304981
+Sub Division,Ernakulam Electrical Circle,1177,5218,Central Ernakulam Electrical Sub Division,9.99158876,76.279018
+Sub Division,Ernakulam Electrical Circle,1178,5482,Ernakulam Control Room,9.99158876,76.279018
+Sub Division,Ernakulam Electrical Circle,4157,1571,"Ernakulam, SCADA Controll Room",10.04351,76.32848
+Sub Division,Ernakulam Electrical Circle,1191,5222,Vyttila Electrical Sub Division,9.962391,76.319038
+Sub Division,Ernakulam Electrical Circle,1189,5220,Chottanikkara Electrical Sub Division,9.931277,76.389473
+Sub Division,Ernakulam Electrical Circle,1206,5225,Vypeen Electrical Sub Division,10.019235,76.225715
+Sub Division,Ernakulam Electrical Circle,1205,5224,Thoppumpady Electrical Sub Division,9.935163,76.254456
+Sub Division,Ernakulam Electrical Circle,1188,5219,Tripunithura Electrical Sub Division,9.944683,76.343109
+Sub Division,Ernakulam Electrical Circle,1204,5223,Palluruthy Electrical Sub Division,9.918571,76.278859
+Sub Division,Harippad Electrical Circle,1166,5215,Kollakadavu Electrical Sub Division,9.24364,76.58583
+Sub Division,Harippad Electrical Circle,3553,5408,Haripad Sub Regional Store,9.277632,76.45959
+Sub Division,Harippad Electrical Circle,1164,5213,Chengannoor Electrical Sub Division,9.31824,76.61287
+Sub Division,Harippad Electrical Circle,1146,5209,Mavelikkara Electrical Sub Division,9.239298,76.538882
+Sub Division,Harippad Electrical Circle,1149,5212,Kayamkulam Electrical Sub Division,9.174802,76.502513
+Sub Division,Harippad Electrical Circle,1148,5211,Charummood Electrical Sub Division,9.170516,76.611352
+Sub Division,Harippad Electrical Circle,1147,5210,Haripad Electrical Sub Division,9.281102,76.461381
+Sub Division,Irinjalakuda Electrical Circle,1319,5253,Karuvannur Electrical Sub Division,10.394799,76.221118
+Sub Division,Irinjalakuda Electrical Circle,1352,5262,Triprayar Electrical Sub Division,10.401123,76.112938
+Sub Division,Irinjalakuda Electrical Circle,1351,5261,Kodungallur Electrical Sub Division,10.227125,76.213344
+Sub Division,Irinjalakuda Electrical Circle,1350,5260,Perinjanam Electrical Sub Division,10.319179,76.148932
+Sub Division,Irinjalakuda Electrical Circle,1320,5254,Kattoor Electrical Sub Division,10.371505,76.167089
+Sub Division,Irinjalakuda Electrical Circle,1321,5255,Vellangallur Electrical Sub Division,10.301312,76.219453
+Sub Division,Irinjalakuda Electrical Circle,1333,5256,Koratty Electrical Sub Division,10.26367,76.355554
+Sub Division,Irinjalakuda Electrical Circle,1334,5257,Chalakudy Electrical Sub Division,10.306712,76.333368
+Sub Division,Irinjalakuda Electrical Circle,1336,5259,Mala Electrical Sub Division,10.240409,76.263703
+Sub Division,Irinjalakuda Electrical Circle,1101,5406,Irinjalakuda Sub Regional Store,10.376232,76.177064
+Sub Division,Irinjalakuda Electrical Circle,1335,5258,Kodakara Electrical Sub Division,10.372329,76.302689
+Sub Division,Kalpetta Electrical Circle,2558,6953,Padinharethara Sub Regional Store,11.6734401,75.9581784
+Sub Division,Kalpetta Electrical Circle,1840,6278,Panamaram Electrical Sub Division,11.7358995,76.0728533
+Sub Division,Kalpetta Electrical Circle,1594,6234,Kalpetta Electrical Sub Division,11.60485,76.08245
+Sub Division,Kalpetta Electrical Circle,1839,6235,Mananthavady Electrical Sub Division,11.7941134,76.0044315
+Sub Division,Kalpetta Electrical Circle,1595,6236,Sulthan Bathery Electrical Sub Division,11.66566,76.2624
+Sub Division,Kannur Electrical Circle,1713,6262,Thalassery Electrical Sub Division,11.75044,75.48722
+Sub Division,Kannur Electrical Circle,1463,6405,Kannur Sub Regional  Store,11.876818,75.374179
+Sub Division,Kannur Electrical Circle,1715,6265,Pinarayi Electrical Sub Division,11.80922,75.49447
+Sub Division,Kannur Electrical Circle,1464,6451,Kannur TMR Meter Sub Division,11.985358,75.379527
+Sub Division,Kannur Electrical Circle,1691,6257,Kannur Electrical Sub Division,11.877032,75.374219
+Sub Division,Kannur Electrical Circle,1692,6258,Chovva Electrical Sub Division,11.868241,75.403306
+Sub Division,Kannur Electrical Circle,1693,6259,Eachur Electrical Sub Division,11.905053,75.449776
+Sub Division,Kannur Electrical Circle,1694,6260,Pappinisseri Electrical Sub Division,11.941519,75.344658
+Sub Division,Kannur Electrical Circle,1714,6263,Panoor Electrical Sub Division,11.76144,75.57689
+Sub Division,Kannur Electrical Circle,1695,6261,Valapattanam Electrical Sub Division,11.918428,75.351196
+Sub Division,Kannur Electrical Circle,4185,6286,Kannur TMR Transformer Sub Division,11.894037,75.406564
+Sub Division,Kannur Electrical Circle,1716,6266,Kuthuparamb Electrical Sub Division,11.83064,75.56543
+Sub Division,Kasaragod Electrical Circle,1736,6268,Kasaragod Electrical Sub Division,12.50583917,74.99047014
+Sub Division,Kasaragod Electrical Circle,1737,6269,Cherkala Electrical Sub Division,12.50825023,75.05640131
+Sub Division,Kasaragod Electrical Circle,1470,6406,Kasaragod Sub Regional Store ,12.52308264,75.01417812
+Sub Division,Kasaragod Electrical Circle,1735,6267,Uppala Electrical Sub Division,12.67126497,74.91201006
+Sub Division,Kasaragod Electrical Circle,1753,6273,Pilicode Electrical Sub Division,12.19241,75.16732
+Sub Division,Kasaragod Electrical Circle,1754,6274,Mavungal Electrical Sub Division,12.34142,75.11207
+Sub Division,Kasaragod Electrical Circle,1752,6272,Nileshwar Electrical Sub Division,12.25556,75.13247
+Sub Division,Kasaragod Electrical Circle,1738,6270,Udma Electrical Sub Division,12.43927577,75.02457792
+Sub Division,Kasaragod Electrical Circle,1751,6271,Kanhangad Electrical Sub Division,12.31408,75.09047
+Sub Division,Kattakada Electrical Circle (Rural),904,4220,Kattakada Electrical Sub Division,8.5081333333,77.0834283333
+Sub Division,Kattakada Electrical Circle (Rural),882,4214,Neyyattinkara Electrical Sub Division,8.40723,77.08293
+Sub Division,Kattakada Electrical Circle (Rural),4096,4259,Palode Electrical Sub Division,8.698006,77.027268
+Sub Division,Kattakada Electrical Circle (Rural),885,4217,Vizhinjam Electrical Sub Division,8.39642,77.00029
+Sub Division,Kattakada Electrical Circle (Rural),883,4215,Parassala Electrical Sub Division,8.34804,77.14933
+Sub Division,Kattakada Electrical Circle (Rural),905,4221,Venjarammoodu Electrical Sub Division,8.666453,76.911133
+Sub Division,Kattakada Electrical Circle (Rural),903,4219,Peyad Electrical Sub Division,8.5194183333,77.0175883333
+Sub Division,Kattakada Electrical Circle (Rural),805,4402,Kattakada Sub Regional Store,8.51059,77.0802316667
+Sub Division,Kattakada Electrical Circle (Rural),902,4218,Nedumangad Electrical Sub Division,8.609641,77.002511
+Sub Division,Kattakada Electrical Circle (Rural),884,4216,Balaramapuram Electrical Sub Division,8.42582,77.04803
+Sub Division,Kollam Electrical Circle,809,4403,Kollam Sub Regional Store,8.957369,76.673036
+Sub Division,Kollam Electrical Circle,935,4226,Oachira Electrical Sub Division,9.139345,76.511698
+Sub Division,Kollam Electrical Circle,923,4224,Perinad Electrical Sub Division,8.930193,76.6018
+Sub Division,Kollam Electrical Circle,937,4228,Sasthamkotta Electrical Sub Division,9.0466908,76.6223508
+Sub Division,Kollam Electrical Circle,936,4227,Karunagappally Electrical Sub Division,9.0594653,76.5338426
+Sub Division,Kollam Electrical Circle,924,4225,Pallimukku Electrical Sub Division,8.872668,76.616231
+Sub Division,Kollam Electrical Circle,2588,1152,TCMS KOLLAM,8.88281,76.593555
+Sub Division,Kollam Electrical Circle,948,4229,Chathannoor Electrical Sub Division,8.86279,76.70799
+Sub Division,Kollam Electrical Circle,949,4230,Kottiyam Electrical Sub Division,8.85848,76.67448
+Sub Division,Kollam Electrical Circle,921,4222,Kollam Electrical Sub Division,8.883256,76.593074
+Sub Division,Kollam Electrical Circle,922,4223,Sakthikulangara Electrical Sub Division,8.914109,76.557823
+Sub Division,Kottarakkara Electrical Circle,979,4238,Kadakkal Electrical Sub Division,8.821829,76.927536
+Sub Division,Kottarakkara Electrical Circle,968,4234,Ayoor Electrical Sub Division,8.895517,76.859257
+Sub Division,Kottarakkara Electrical Circle,958,4232,Veliyam Electrical Sub Division,8.915322,76.765076
+Sub Division,Kottarakkara Electrical Circle,978,4237,Anchal Electrical Sub Division,8.928126,76.91365
+Sub Division,Kottarakkara Electrical Circle,977,4236,Pathanapuram Electrical Sub Division,9.088865,76.856269
+Sub Division,Kottarakkara Electrical Circle,967,4233,Kottarakkara Electrical Sub Division,8.998531,76.769956
+Sub Division,Kottarakkara Electrical Circle,813,4404,Kottarakkara Sub Regional Store,8.998531,76.769956
+Sub Division,Kottarakkara Electrical Circle,957,4231,Kundara Electrical Sub Division,8.957986,76.671711
+Sub Division,Kottarakkara Electrical Circle,976,4235,Punalur Electrical Sub Division,9.013141,76.928889
+Sub Division,Kottayam Electrical Circle,1031,4249,Gandhinagar Electrical Sub Division,9.633175,76.52478
+Sub Division,Kottayam Electrical Circle,1030,4248,Pallom Electrical Sub Division,9.543696,76.519176
+Sub Division,Kottayam Electrical Circle,1057,4255,Vaikom Electrical Sub Division,9.747147,76.392244
+Sub Division,Kottayam Electrical Circle,1032,4250,Manarcadu Electrical Sub Division,9.59123,76.584046
+Sub Division,Kottayam Electrical Circle,825,4406,Pallom Sub Regional Store,9.5433696,76.5191176
+Sub Division,Kottayam Electrical Circle,1033,4251,Kottayam Electrical  Sub Division,9.58538,76.520456
+Sub Division,Kottayam Electrical Circle,4082,4911,Pallom TMR Meter Sub Division,9.541807,76.516226
+Sub Division,Kottayam Electrical Circle,1048,4254,Karukachal Electrical Sub Division,9.50054,76.63681
+Sub Division,Kottayam Electrical Circle,1058,4256,Ettumanoor Electrical Sub Division,9.669396,76.551601
+Sub Division,Kottayam Electrical Circle,1059,4257,Kurvilangad Electrical Sub Division,9.76475,76.564709
+Sub Division,Kottayam Electrical Circle,4184,4262,Pallom TMR Transformer Sub Division,9.5425228,76.5142021
+Sub Division,Kottayam Electrical Circle,1046,4252,Changanacherry Electrical Sub Division,9.44539,76.54156
+Sub Division,Kottayam Electrical Circle,1047,4253,Thengana Electrical Sub Division,9.477826,76.58374
+Sub Division,Kozhikode Electrical Circle,4098,6281,Thiruvampady Electrical Sub Division,11.36329,76.01034
+Sub Division,Kozhikode Electrical Circle,1606,6239,Nadakkavu Electrical Sub Division,11.262851,75.768794
+Sub Division,Kozhikode Electrical Circle,1604,6237,Kovoor Electrical Sub Division,11.274975,75.837285
+Sub Division,Kozhikode Electrical Circle,1622,6241,Kunnamangalam Electrical Sub Division,11.30444,75.87872
+Sub Division,Kozhikode Electrical Circle,4140,6958,Kozhikode RMU and Cable Sub Division,11.263842,75.769264
+Sub Division,Kozhikode Electrical Circle,1455,6071,Kozhikode TCMS,11.253487,75.790339
+Sub Division,Kozhikode Electrical Circle,1457,6404,Kozhikode Sub Regional Store,11.262851,75.768794
+Sub Division,Kozhikode Electrical Circle,1657,6251,Mankavu Electrical  Sub Division,11.238177,75.799984
+Sub Division,Kozhikode Electrical Circle,1458,6484,Kozhikode Control Room,11.263842,75.769264
+Sub Division,Kozhikode Electrical Circle,4132,6283,Kakkodi Electrical Sub Division,11.319892,75.798929
+Sub Division,Kozhikode Electrical Circle,1624,6243,Balussery Electrical  Sub Division,11.44706,75.83001
+Sub Division,Kozhikode Electrical Circle,1623,6242,Thamarassery Electrical  Sub Division,11.42388,75.93826
+Sub Division,Kozhikode Electrical Circle,1655,6249,Feroke Electrical  Sub Division,11.187639,75.831561
+Sub Division,Kozhikode Electrical Circle,1656,6250,Kallai Electrical Sub Division,11.229584,75.78934
+Sub Division,Kozhikode Electrical Circle,1607,6240,Westhill Electrical Sub Division,11.3025036,75.7616024
+Sub Division,Manjeri Electrical Circle,1538,6218,Manjeri (South) Electrical Sub Division,11.1207781,76.1135149
+Sub Division,Manjeri Electrical Circle,1541,6221,Malappuram Electrical Sub Division,11.042847,76.075407
+Sub Division,Manjeri Electrical Circle,1557,6225,Makkaraparambu Electrical Sub Division,11.017954,76.123404
+Sub Division,Manjeri Electrical Circle,1540,6220,Kondotty Electrical Sub Division,11.14683,75.971665
+Sub Division,Manjeri Electrical Circle,1539,6219,Areacode Electrical Sub Division,11.233002,76.053522
+Sub Division,Manjeri Electrical Circle,1444,6402,Manjeri Sub Regional Store,11.2261597,76.0388191
+Sub Division,Manjeri Electrical Circle,1556,6224,Perinthalmanna Electrical Sub Division,10.978675,76.224387
+Sub Division,Nilambur Electrical Circle,1777,6223,Wandoor Electrical Sub Division,11.1942259,76.2411582
+Sub Division,Nilambur Electrical Circle,3558,4407,Nilambur Sub Regional Store,11.257423,76.287465
+Sub Division,Nilambur Electrical Circle,3507,6280,Kalikavu Electrical Sub Division,11.174058,76.322602
+Sub Division,Nilambur Electrical Circle,1778,6275,Edakkara Electrical Sub Division,11.359981,76.310013
+Sub Division,Nilambur Electrical Circle,1776,6217,Nilamboor Electrical Sub Division,11.267007,76.218335
+Sub Division,Pala Electrical Circle,1298,5250,Erattupetta Electrical Sub Division,9.687588,76.778568
+Sub Division,Pala Electrical Circle,1309,5251,Ponkunnam Electrical Sub Division,9.56566,76.76363
+Sub Division,Pala Electrical Circle,1310,5252,Kanjirappally Electrical Sub Division,9.55729,76.79056
+Sub Division,Pala Electrical Circle,1296,5248,Pala Electrical Sub Division,9.716144,76.682914
+Sub Division,Pala Electrical Circle,1297,5249,Ramapuram Electrical Sub Division,9.79995,76.659914
+Sub Division,Pala Electrical Circle,1098,5405,Pala Sub Regional Store,9.712424,76.691922
+Sub Division,Palakkad Electrical Circle,1499,6209,Kongad Electrical Sub Division,10.85385,76.522935
+Sub Division,Palakkad Electrical Circle,1486,6202,Koduvayur Electrical Sub Division,10.688127,76.65668
+Sub Division,Palakkad Electrical Circle,1501,6211,Kanjikode Electrical Sub Division,10.791509,76.739383
+Sub Division,Palakkad Electrical Circle,1500,6210,Parli Electrical Sub Division,10.798847,76.563378
+Sub Division,Palakkad Electrical Circle,1439,6401,Palakkad Sub Regional Store,10.772684,76.653114
+Sub Division,Palakkad Electrical Circle,1485,6201,Chittur Electrical Sub Division,10.700531,76.749001
+Sub Division,Palakkad Electrical Circle,1807,6203,Alathur Electrical Sub Division,10.645526,76.547321
+Sub Division,Palakkad Electrical Circle,1487,6204,Kollengode Electrical Sub Division,10.613407,76.699828
+Sub Division,Palakkad Electrical Circle,1808,6205,Vadakkumcherry Electrical Sub Division,10.597989,76.479745
+Sub Division,Palakkad Electrical Circle,1809,6276,Kuzhalmannam Electrical Sub Division,10.721639,76.602419
+Sub Division,Palakkad Electrical Circle,1498,6207,Sulthanpet Electrical Sub Division,10.772684,76.653114
+Sub Division,Palakkad Electrical Circle,1502,6212,Kalpathy Electrical Sub Division,10.795549,76.639167
+Sub Division,Pathanamthitta Electrical Circle,1020,4247,Mallappally Electrical Sub Division,9.447889,76.653605
+Sub Division,Pathanamthitta Electrical Circle,993,4258,Kozhencherry Electrical Sub Division,9.33249198,76.70914737
+Sub Division,Pathanamthitta Electrical Circle,992,4241,Ranny Electrical Sub Division,9.38207487,76.78126844
+Sub Division,Pathanamthitta Electrical Circle,991,4240,Vadasserikkara Electrical Sub Division,9.34217151,76.83198129
+Sub Division,Pathanamthitta Electrical Circle,990,4239,Pathanamthitta Electrical Sub Division,9.267325,76.785631
+Sub Division,Pathanamthitta Electrical Circle,1019,4246,Manippuzha Electrical Sub Division,9.377515,76.55845
+Sub Division,Pathanamthitta Electrical Circle,1005,4242,Adoor Electrical Sub Division,9.1624088,76.7207103
+Sub Division,Pathanamthitta Electrical Circle,1006,4243,Ezhamkulam Electrical Sub Division,9.1448895,76.768554
+Sub Division,Pathanamthitta Electrical Circle,1018,4245,Thiruvalla Electrical Sub Division,9.386963,76.575759
+Sub Division,Pathanamthitta Electrical Circle,1007,4244,Pandalam Electrical Sub Division,9.2249961,76.677032
+Sub Division,Pathanamthitta Electrical Circle,817,4405,Pathanamthiltta Sub Regional Store,9.25580547,76.78214539
+Sub Division,Perumbavoor Electrical Circle,2414,5280,Angamaly TMR Transformer Sub Division,10.177409,76.377625
+Sub Division,Perumbavoor Electrical Circle,1270,5239,NParavur Electrical Sub Division,10.148457,76.231047
+Sub Division,Perumbavoor Electrical Circle,1269,5238,Varapuzha Electrical Sub Division,10.074775,76.271054
+Sub Division,Perumbavoor Electrical Circle,1230,5229,Kalady Electrical Sub Division,10.169991,76.445702
+Sub Division,Perumbavoor Electrical Circle,1253,5235,Velloorkunnam Electrical Sub Division,9.990267,76.5735667
+Sub Division,Perumbavoor Electrical Circle,4072,5286,Angamaly TMR Meter(Indoor) Sub Division,10.177409,76.377625
+Sub Division,Perumbavoor Electrical Circle,1252,5234,Moovattupuzha Electrical Sub Division,9.9853207,76.5779009
+Sub Division,Perumbavoor Electrical Circle,1088,5403,Perumbavoor Sub Regional Store,10.09884,76.35821
+Sub Division,Perumbavoor Electrical Circle,1271,5240,Chennamangalam Electrical Sub Division,10.178369,76.225196
+Sub Division,Perumbavoor Electrical Circle,1231,5230,Angamaly Electrical Sub Division,10.196157,76.390271
+Sub Division,Perumbavoor Electrical Circle,1216,5226,Aluva Town Electrical Sub Division,10.09884,76.358214
+Sub Division,Perumbavoor Electrical Circle,1217,5227,Chengamanad Electrical Sub Division,10.151988,76.338506
+Sub Division,Perumbavoor Electrical Circle,1234,5233,Kuruppampady Electrical Sub Division,10.111142,76.518819
+Sub Division,Perumbavoor Electrical Circle,1218,5228,Kalamassery Electrical Sub Division,10.053792,76.330436
+Sub Division,Perumbavoor Electrical Circle,1255,5237,Kothamangalam Electrical Sub Division,10.0635717,76.6280942
+Sub Division,Perumbavoor Electrical Circle,1233,5232,Kizhakkambalam Electrical Sub Division,10.037493,76.410853
+Sub Division,Perumbavoor Electrical Circle,1254,5236,Piravom Electrical Sub Division,9.8776163,76.4847055
+Sub Division,Perumbavoor Electrical Circle,1232,5231,Perumbavoor Electrical Sub Division,10.117796,76.480425
+Sub Division,Perumbavoor Electrical Circle,2412,5281,Angamaly TMR Meter(Outdoor) Sub Division,10.177409,76.377625
+Sub Division,Shoranur Electrical Circle,4180,6284,Shoranur TMR Meter Sub Division,10.781294,76.283191
+Sub Division,Shoranur Electrical Circle,1518,6214,Pattambi Electrical Sub Division,10.8033729,76.1853022
+Sub Division,Shoranur Electrical Circle,4092,6161,Shoranur Civil Subdivision,10.779952,76.284889
+Sub Division,Shoranur Electrical Circle,1520,6216,Cherplassery Electrical Sub Division,10.882119,76.317051
+Sub Division,Shoranur Electrical Circle,1481,6409,Shoranur Sub Regional Store,10.773236,76.398682
+Sub Division,Shoranur Electrical Circle,1517,6213,Shoranur Electrical Sub Division,10.781294,76.283191
+Sub Division,Shoranur Electrical Circle,1769,6208,Mannarkkad Electrical Sub Division,10.99934,76.470749
+Sub Division,Shoranur Electrical Circle,4181,6285,Shoranur TMR Transformer Sub Division,10.781294,76.283191
+Sub Division,Shoranur Electrical Circle,1768,6206,Agali Electrical Sub Division,11.101646,76.648976
+Sub Division,Shoranur Electrical Circle,1519,6215,Thrithala Electrical Sub Division,10.73823518,76.12802346
+Sub Division,Sreekandapuram Electrical Circle,1789,6264,Iritty Electrical Sub Division,11.98479119,75.6756387
+Sub Division,Sreekandapuram Electrical Circle,1483,6410,Sreekandapuram Sub Regional Store,12.04391739,75.50388941
+Sub Division,Sreekandapuram Electrical Circle,4099,6282,Alakode Electrical Sub Division,12.19013153,75.4654215
+Sub Division,Sreekandapuram Electrical Circle,1668,6252,Payyannur Electrical Sub Division,12.10209,75.20977
+Sub Division,Sreekandapuram Electrical Circle,1669,6253,Pazhayangadi Electrical Sub Division,12.032025,75.267632
+Sub Division,Sreekandapuram Electrical Circle,1670,6254,Taliparambu Electrical Sub Division,12.037158,75.3594205
+Sub Division,Sreekandapuram Electrical Circle,1671,6256,Vellur Electrical Sub Division,12.129506,75.216013
+Sub Division,Sreekandapuram Electrical Circle,4095,6279,Sivapuram Electrical Sub Division,11.90943606,75.60725846
+Sub Division,Sreekandapuram Electrical Circle,1788,6255,Sreekandapuram Electrical Sub Division,12.04464828,75.50480276
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),2460,4302,Thiruvananthapuram 11 KV CONTROL ROOM,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),847,4206,Kesavadasapuram Electrical Sub Division,8.515727,76.937924
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),2459,4304,Thiruvananthapuram TCMS,8.4862,76.94942
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),2462,4300,"DAMSD, Thiruvananthapuram ",8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),830,4202,Puthenchanthai Trivandrum Electrical Sub Division,8.49399,76.95067
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3851,4313,Thiruvananthapuram APDRP Construction Section-4,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3850,4312,Thiruvananthapuram APDRP Construction Section-3,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),4163,4260,Thirumala TMR Transformer Sub Division,8.49294,76.99385
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),832,4204,Poojappura Electrical Sub Division,8.49161,76.97184
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3804,4305,Thiruvananthapuram APDRP Cons Sub Division I,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3805,4306,Thiruvananthapuram APDRP Cons Sub Division II,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3848,4310,Thiruvananthapuram APDRP Construction Section-1,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),2574,4891,Thiruvananthapuram Master Plan Subdivision,8.48617,76.94936
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3849,4311,Thiruvananthapuram APDRP Construction Section-2,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),831,4203,Vellayambalam Electrical Sub Division,8.50684,76.9618
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),865,4211,Attingal Electrical Sub Division,8.69857,76.814371
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),866,4212,Kallambalam Electrical Sub Division,8.760618,76.791636
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),867,4213,Kilimanoor Electrical Sub Division,8.765839,76.873145
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),801,4401,Trivandrum (Urban) Sub Regional Strore,8.605289,76.877923
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),3806,4307,Thiruvananthapuram APDRP SRC Sub Division,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),829,4201,Fort Trivandrum Electrical Sub Division,8.4861,76.94976
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),864,4210,Kadakkavur Electrical Sub Division,8.672152,76.767522
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),4164,4261,Thirumala TMR Meter Sub Division,8.49294,76.99385
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),863,4209,Varkala Electrical Sub Division,8.739065,76.723758
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),849,4208,Kaniyapuram Electrical Sub Division,8.588857,76.854837
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),848,4207,Kazhakkuttam Electrical Sub Division,8.564545,76.873918
+Sub Division,Thiruvananthapuram Electrical Circle(Urban),846,4205,Beach Trivandrum Electrical Sub Division,8.488664,76.918802
+Sub Division,Thodupuzha Electrical Circle,2026,5245,Thodupuzha Electrical Sub Division,9.891834,76.708817
+Sub Division,Thodupuzha Electrical Circle,1281,5247,Vazhathoppe Electrical Sub Division,9.861971,76.961095
+Sub Division,Thodupuzha Electrical Circle,1280,5241,Kattappana Electrical Sub Division,9.756427,77.11495
+Sub Division,Thodupuzha Electrical Circle,4097,5277,Nedumkandam Electrical Sub Division,9.82501,77.15462
+Sub Division,Thodupuzha Electrical Circle,2090,5404,Vazhathope Sub Regional Store,9.86211,76.96189
+Sub Division,Thodupuzha Electrical Circle,1289,5246,Thodupuzha East Electrical Sub Division,9.891834,76.708817
+Sub Division,Thodupuzha Electrical Circle,1408,5243,Chithirapuram Electrical Sub Division,10.03385,77.039489
+Sub Division,Thodupuzha Electrical Circle,1415,5242,Vandiperiyar Electrical Sub Division,9.574475,77.093277
+Sub Division,Thrissur Electrical Circle,1422,5271,Chelakkara Electrical Sub Division,10.69357711,76.33844812
+Sub Division,Thrissur Electrical Circle,1423,5276,Kundannur Electrical Sub Division,10.68471633,76.21677621
+Sub Division,Thrissur Electrical Circle,1393,5272,Kechery Electrical Sub Division,10.618785,76.120593
+Sub Division,Thrissur Electrical Circle,1394,5273,Guruvayur Electrical Sub Division,10.599773,76.058343
+Sub Division,Thrissur Electrical Circle,1395,5274,Kunnamkulam Electrical Sub Division,10.633028,76.085861
+Sub Division,Thrissur Electrical Circle,1396,5275,Punnayurkulam Electrical Sub Division,10.671981,75.995976
+Sub Division,Thrissur Electrical Circle,1109,5407,Thrissur Sub Regional Store,10.527936,76.205381
+Sub Division,Thrissur Electrical Circle,1421,5268,Wadakkanchery Electrical Sub Division,10.66191536,76.24500991
+Sub Division,Thrissur Electrical Circle,1364,5263,Koorkenchery Electrical Sub Division,10.491151,76.213375
+Sub Division,Thrissur Electrical Circle,1365,5264,Ollur Electrical Sub Division,10.466883,76.24531
+Sub Division,Thrissur Electrical Circle,1367,5266,Ayyanthole Electrical Sub Division,10.516658,76.177965
+Sub Division,Thrissur Electrical Circle,1380,5267,Viyyur Electrical Sub Division,10.480118,76.108961
+Sub Division,Thrissur Electrical Circle,1381,5269,Muduvara Electrical Sub Division,10.480118,76.108961
+Sub Division,Thrissur Electrical Circle,3301,5265,Mannuthy Electrical Sub Division (Madakkathara),10.562365,76.267627
+Sub Division,Thrissur Electrical Circle,1382,5270,Kandassankadvu Electrical Sub Division,10.480118,76.108961
+Sub Division,Tirur Electrical Circle,1568,6226,Valancherry Electrical Sub Division,10.90069,76.078376
+Sub Division,Tirur Electrical Circle,1792,6230,Parappanangadi Electrical Sub Division,11.047382,75.859229
+Sub Division,Tirur Electrical Circle,1571,6229,Alathiyoor Electrical Sub Division,10.861707,75.936613
+Sub Division,Tirur Electrical Circle,1791,6222,Kottakkal Electrical Sub Division,11.004172,76.005521
+Sub Division,Tirur Electrical Circle,1793,6231,Tirurangadi Electrical Sub Division,11.042457,75.9128
+Sub Division,Tirur Electrical Circle,1570,6228,Puthenathani Electrical Sub Division,10.935025,76.007524
+Sub Division,Tirur Electrical Circle,1474,6407,Tirur Sub Regional Store,10.915905,75.91822
+Sub Division,Tirur Electrical Circle,1585,6232,Ponnani Electrical Sub Division,10.78192,75.931566
+Sub Division,Tirur Electrical Circle,1586,6233,Edappal Electrical Sub Division,10.779762,76.008577
+Sub Division,Tirur Electrical Circle,1569,6227,Tirur (East) Electrical Sub Division,10.915905,75.91822
+Sub Division,Vadakara Electrical Circle,1823,6244,Perambra Electrical  Sub Division,11.556192,75.76095
+Sub Division,Vadakara Electrical Circle,1825,6277,Kuttiady Electrical Sub Division,11.652939,75.754773
+Sub Division,Vadakara Electrical Circle,1477,6408,Vadakara Sub Regional Store,11.608749,75.603056
+Sub Division,Vadakara Electrical Circle,1638,6245,Koyilandy North Electrical  Sub Division,11.449919,75.701626
+Sub Division,Vadakara Electrical Circle,1824,6248,Nadapuram Electrical  Sub Division,11.652939,75.754773
+Sub Division,Vadakara Electrical Circle,1640,6247,Muttungal Electrical  Sub Division,11.629979,75.575528
+Sub Division,Vadakara Electrical Circle,1639,6246,Vadakara - South Electrical  Sub Division,11.608749,75.603056
+Section Office,Alappuzha Electrical Circle,2699,5726,Kalavoor Electrical Section,9.560778,76.328713
+Section Office,Alappuzha Electrical Circle,1136,5516,Kuthiyathodu Electrical Section,9.794342,76.316312
+Section Office,Alappuzha Electrical Circle,1120,5505,Ambalappuzha Electrical Section,9.382536,76.355173
+Section Office,Alappuzha Electrical Circle,1137,5517,Pattanakkad Electrical Section,9.71852,76.318603
+Section Office,Alappuzha Electrical Circle,1121,5506,Thakazhy Electrical Section,9.371792,76.411697
+Section Office,Alappuzha Electrical Circle,1122,5507,Edathua Electrical Section,9.366124,76.475452
+Section Office,Alappuzha Electrical Circle,1123,5508,Champakulam Electrical Section,9.406894,76.411578
+Section Office,Alappuzha Electrical Circle,1124,5509,Mancombu Electrical Section,9.437792,76.426331
+Section Office,Alappuzha Electrical Circle,1139,5519,Muhamma Electrical Section,9.60676,76.352459
+Section Office,Alappuzha Electrical Circle,1138,5518,Arthunkal Electrical Section,9.652784,76.317929
+Section Office,Alappuzha Electrical Circle,1140,5520,SLPuram Electrical Section,9.605059,76.329127
+Section Office,Alappuzha Electrical Circle,1125,5510,Kidangara Electrical Section,9.42369,76.458789
+Section Office,Alappuzha Electrical Circle,1132,5512,Cherthala Electrical Section,9.691474,76.341557
+Section Office,Alappuzha Electrical Circle,1116,5501,Alappuzha ( North) Electrical Section,9.500399,76.328781
+Section Office,Alappuzha Electrical Circle,1076,5901,Alappuzha Meter Testing Unit,9.500399,76.328781
+Section Office,Alappuzha Electrical Circle,1133,5513,Thannermukkom Electrical Section,9.677104,76.392913
+Section Office,Alappuzha Electrical Circle,1118,5503,Alappuzha(South) Electrical Section,9.479556,76.337913
+Section Office,Alappuzha Electrical Circle,1117,5502,Alappuzha (Town) Electrical Section,9.500399,76.328781
+Section Office,Alappuzha Electrical Circle,1126,5511,Kainakary Electrical Section,9.482119,76.386609
+Section Office,Alappuzha Electrical Circle,3737,3444,Alappuzha Transformer Field Repair Unit,9.500399,76.328781
+Section Office,Alappuzha Electrical Circle,1134,5514,Poochakkal Electrical Section,9.795406,76.357555
+Section Office,Alappuzha Electrical Circle,1135,5515,Aroor Electrical Section,9.882779,76.300952
+Section Office,Alappuzha Electrical Circle,1143,5705,Arookutty Electrical Section,9.850393,76.327686
+Section Office,Alappuzha Electrical Circle,1142,5704,Cherthala East Electrical Section,9.682717,76.34205
+Section Office,Alappuzha Electrical Circle,1119,5504,Punnapra Electrical Section,9.475103,76.356886
+Section Office,Alappuzha Electrical Circle,1141,5521,Pathirappally Electrical Section,9.528028,76.328301
+Section Office,Ernakulam Electrical Circle,1192,5548,Tripunithura Electrical Section,9.944683,76.343109
+Section Office,Ernakulam Electrical Circle,1208,5560,Kannamali Electrical Section,9.874505,76.264618
+Section Office,Ernakulam Electrical Circle,1207,5559,Palluruthy Electrical Section,9.918571,76.278859
+Section Office,Ernakulam Electrical Circle,3431,5739,Cheranalloor Electrical Section,10.042164,76.287464
+Section Office,Ernakulam Electrical Circle,3440,5733,Eroor Electrical Section,9.971603,76.336884
+Section Office,Ernakulam Electrical Circle,3455,5734,Thiruvaniyoor Electrical Section,9.944919,76.416472
+Section Office,Ernakulam Electrical Circle,1211,5563,Mattancherry Electrical Section,9.957718,76.253875
+Section Office,Ernakulam Electrical Circle,3483,5732,Vennala Electrical Section,9.997967,76.325126
+Section Office,Ernakulam Electrical Circle,1210,5562,Thoppumpady Electrical Section,9.935163,76.254456
+Section Office,Ernakulam Electrical Circle,1185,5546,Ernakulam Central Electrical Section,9.99158876,76.279018
+Section Office,Ernakulam Electrical Circle,3573,5748,Mulanthuruthy Electrical Section,9.8864979,76.4318068
+Section Office,Ernakulam Electrical Circle,1181,5542,Girinagar Electrical Section,9.965035,76.299032
+Section Office,Ernakulam Electrical Circle,1180,5541,Thevara Electrical Section,9.942074,76.296477
+Section Office,Ernakulam Electrical Circle,1209,5561,Kumbalangi Electrical Section,9.883608,76.287126
+Section Office,Ernakulam Electrical Circle,3740,3447,Ernakulam Transformer Field Repair Unit,10.177409,76.377625
+Section Office,Ernakulam Electrical Circle,4158,1572,Ernakulam RMU Maintenance Section,9.94745,76.299502
+Section Office,Ernakulam Electrical Circle,4161,1575,Ernakulam Cable Maintenance Section,9.94745,76.299502
+Section Office,Ernakulam Electrical Circle,1184,5545,Kaloor Electrical Section,9.997679,76.29976
+Section Office,Ernakulam Electrical Circle,1183,5544,Edappally Electrical Section,10.019038,76.304946
+Section Office,Ernakulam Electrical Circle,1182,5543,Palarivattom Electrical Section,10.00528,76.304981
+Section Office,Ernakulam Electrical Circle,1193,5549,Udayamperoor Electrical Section,9.8978518,76.366008
+Section Office,Ernakulam Electrical Circle,1200,5556,Vyttila Electrical Section,9.962391,76.319038
+Section Office,Ernakulam Electrical Circle,1199,5555,Puthencruz Electrical Section,9.9718079,76.4272787
+Section Office,Ernakulam Electrical Circle,1194,5550,Maradu Electrical Section,9.938129,76.3265415
+Section Office,Ernakulam Electrical Circle,1195,5551,Chottanikkara Electrical Section,9.931277,76.389473
+Section Office,Ernakulam Electrical Circle,1198,5554,Kolencherry Electrical Section,9.9799678,76.47108822
+Section Office,Ernakulam Electrical Circle,3429,5735,Panangad Electrical Section,9.939291,76.32043
+Section Office,Ernakulam Electrical Circle,3430,5731,Thrikkakara West Electrical Section,10.027642,76.337135
+Section Office,Ernakulam Electrical Circle,1197,5553,Arakkunnam Electrical Section,9.8865139,76.4300555
+Section Office,Ernakulam Electrical Circle,1196,5552,Amballoor Electrical Section,9.865404,76.39827
+Section Office,Ernakulam Electrical Circle,1186,5547,Vaduthala Electrical Section,10.019639,76.274573
+Section Office,Ernakulam Electrical Circle,1214,5566,Njarakkal Electrical Section,10.043746,76.218131
+Section Office,Ernakulam Electrical Circle,1179,5540,College Ernakulam Electrical Section,9.96958676,76.284597
+Section Office,Ernakulam Electrical Circle,1213,5565,Vypeen Electrical Section,10.019235,76.225715
+Section Office,Ernakulam Electrical Circle,1201,5557,Thrikkakara Electrical Section,10.024979,76.346107
+Section Office,Ernakulam Electrical Circle,1212,5564,Fort Kochi Electrical Section,9.964204,76.246531
+Section Office,Harippad Electrical Circle,1173,5539,Mannar Electrical Section,9.31633,76.54109
+Section Office,Harippad Electrical Circle,1157,5529,Nooranadu Electrical Section,9.174628,76.639742
+Section Office,Harippad Electrical Circle,2308,5833,Arattupuzha Electrical Section,9.219904,76.425636
+Section Office,Harippad Electrical Circle,1156,5528,Kattanam Electrical Section,9.177246,76.561136
+Section Office,Harippad Electrical Circle,1144,4568,Krishnapuram Electrical Section,9.152007,76.52699
+Section Office,Harippad Electrical Circle,1168,5534,Kallisserry Electrical Section,9.33724,76.60215
+Section Office,Harippad Electrical Circle,3621,5754,Vallikunnam Electrical Section,9.139188,76.553249
+Section Office,Harippad Electrical Circle,1152,5524,Haripad Electrical Section,9.281102,76.461381
+Section Office,Harippad Electrical Circle,1151,5523,Thattarambalam Electrical Section,9.252434,76.522279
+Section Office,Harippad Electrical Circle,1150,5522,Mavelikkara Electrical Section,9.239298,76.538882
+Section Office,Harippad Electrical Circle,1955,5824,Venmony Electrical Section,9.24794,76.61533
+Section Office,Harippad Electrical Circle,1160,5532,Kayamkulam West Electrical Section,9.185832,76.500253
+Section Office,Harippad Electrical Circle,1153,5525,Karuvatta Electrical Section,9.314706,76.427711
+Section Office,Harippad Electrical Circle,2307,5725,Pallippad Electrical Section,9.258218,76.479637
+Section Office,Harippad Electrical Circle,1159,5531,Kayamkulam East Electrical Section,9.174802,76.502513
+Section Office,Harippad Electrical Circle,1154,5526,Karthikappally Electrical Section,9.258308,76.446893
+Section Office,Harippad Electrical Circle,1171,5537,Kollakadavu Electrical Section,9.24364,76.58583
+Section Office,Harippad Electrical Circle,1155,5527,Charummood Electrical Section,9.170516,76.611352
+Section Office,Harippad Electrical Circle,1158,5530,Chepad Electrical Section,9.213393,76.480733
+Section Office,Harippad Electrical Circle,1167,5533,Chengannoor Electrical Section,9.31824,76.61287
+Section Office,Harippad Electrical Circle,1170,5536,Mulakkuzha Electrical Section,9.29343,76.643932
+Section Office,Harippad Electrical Circle,3437,5741,Muthukulam Electrical Section,9.202162,76.464699
+Section Office,Harippad Electrical Circle,1172,5538,Chennithala Electrical Section,9.28197,76.52171
+Section Office,Irinjalakuda Electrical Circle,1338,5649,Koratty Electrical Section,10.26367,76.355554
+Section Office,Irinjalakuda Electrical Circle,2407,5728,Puthenchira Electrical Section,10.267757,76.239641
+Section Office,Irinjalakuda Electrical Circle,1325,5642,Chirakkal Electrical Section,10.425279,76.158468
+Section Office,Irinjalakuda Electrical Circle,1326,5643,Kattoor Electrical Section,10.371505,76.167089
+Section Office,Irinjalakuda Electrical Circle,1344,5655,Pudukkad Electrical Section,10.432841,76.2715665
+Section Office,Irinjalakuda Electrical Circle,1342,5653,Vellikulangara Electrical Section,10.357388,76.414438
+Section Office,Irinjalakuda Electrical Circle,1341,5652,Pariyaram(Chalakkudy) Electrical Section,10.313679,76.388678
+Section Office,Irinjalakuda Electrical Circle,1362,5716,Thalikulam Electrical Section,10.441071,76.094113
+Section Office,Irinjalakuda Electrical Circle,1322,5639,Cherpu Electrical Section,10.435627,76.207176
+Section Office,Irinjalakuda Electrical Circle,1323,5640,Karuvannur Electrical Section,10.394799,76.221118
+Section Office,Irinjalakuda Electrical Circle,1324,5641,Parappukkara Electrical Section,10.400478,76.25212
+Section Office,Irinjalakuda Electrical Circle,1340,5651,Chalakudy Electrical Section,10.306712,76.333368
+Section Office,Irinjalakuda Electrical Circle,1339,5650,Meloor Electrical Section,10.297203,76.361384
+Section Office,Irinjalakuda Electrical Circle,1345,5656,Varandarappilly Electrical Section,10.421897,76.33333
+Section Office,Irinjalakuda Electrical Circle,1356,5663,Kodungallur  NoI Electrical Section,10.215736,76.197937
+Section Office,Irinjalakuda Electrical Circle,1337,5648,Annamanada Electrical Section,10.239755,76.323352
+Section Office,Irinjalakuda Electrical Circle,1343,5654,Kodakara Electrical Section,10.372329,76.302689
+Section Office,Irinjalakuda Electrical Circle,1327,5644,Irinjalakuda NoI Electrical Section,10.345995,76.207046
+Section Office,Irinjalakuda Electrical Circle,1328,5645,Kombodinjamakkal Electrical Section,10.315583,76.280794
+Section Office,Irinjalakuda Electrical Circle,1354,5661,Mathilakam Electrical Section,10.276044,76.172759
+Section Office,Irinjalakuda Electrical Circle,1353,5660,Kaipamangalam Electrical Section,10.332739,76.126002
+Section Office,Irinjalakuda Electrical Circle,1347,5658,Mala Electrical Section,10.240409,76.263703
+Section Office,Irinjalakuda Electrical Circle,1329,5646,Vellangallur Electrical Section,10.301312,76.219453
+Section Office,Irinjalakuda Electrical Circle,1360,5667,Triprayar Electrical Section,10.401123,76.112938
+Section Office,Irinjalakuda Electrical Circle,1330,5647,Irinjalakuda NoII Electrical Section,10.348399,76.224426
+Section Office,Irinjalakuda Electrical Circle,1346,5657,Kuzhur Electrical Section,10.210075,76.296169
+Section Office,Irinjalakuda Electrical Circle,1361,5668,Valappad Electrical Section,10.380479,76.118377
+Section Office,Irinjalakuda Electrical Circle,3188,5729,Kuttichira Electrical Section,10.334234,76.42076
+Section Office,Irinjalakuda Electrical Circle,1359,5666,Peringottukara Electrical Section,10.439535,76.126863
+Section Office,Irinjalakuda Electrical Circle,1358,5665,Eriyad Electrical Section,10.225558,76.165455
+Section Office,Irinjalakuda Electrical Circle,1357,5664,Kodungallur NoII Electrical Section,10.227125,76.213344
+Section Office,Irinjalakuda Electrical Circle,1355,5662,Perinjanam Electrical Section,10.319179,76.148932
+Section Office,Irinjalakuda Electrical Circle,1348,5659,Puthenvelikkara Electrical Section,10.1840242,76.2480106
+Section Office,Kalpetta Electrical Circle,1844,6594,Pulpally Electrical Section,11.7869931,76.1660955
+Section Office,Kalpetta Electrical Circle,1841,6589,Mananthavady Electrical Section,11.7941134,76.0044315
+Section Office,Kalpetta Electrical Circle,1602,6720,Sulthan Batheri West Electrical Section,11.66125,76.25066
+Section Office,Kalpetta Electrical Circle,1598,6588,Meppadi Electrical Section,11.55363,76.13578
+Section Office,Kalpetta Electrical Circle,3434,6792,Muttil Electrical Section,11.64274,76.08321
+Section Office,Kalpetta Electrical Circle,3171,6783,Kattikulam Electrical Section,11.8463264,76.0627719
+Section Office,Kalpetta Electrical Circle,1601,6718,Kambalakkad Electrical Section,11.67737,76.07427
+Section Office,Kalpetta Electrical Circle,1600,6593,Meenangady Electrical Section,11.66365,76.16042
+Section Office,Kalpetta Electrical Circle,1845,6719,Thavinhal Electrical Section,11.8397952,75.9448839
+Section Office,Kalpetta Electrical Circle,3500,6811,Padichira Electrical Section,11.8394816,76.1791581
+Section Office,Kalpetta Electrical Circle,2559,6952,Padinharethara Meter Testing Unit,11.6734401,75.9581784
+Section Office,Kalpetta Electrical Circle,1843,6591,Vellamunda Electrical Section,11.7341899,75.9576318
+Section Office,Kalpetta Electrical Circle,1842,6590,Panamaram Electrical Section,11.7358995,76.0728533
+Section Office,Kalpetta Electrical Circle,3781,3903,Wayanad Transformer Field Repair Unit,11.61656,76.08321
+Section Office,Kalpetta Electrical Circle,3622,6806,Korom Electrical Section,11.7439339,75.8807182
+Section Office,Kalpetta Electrical Circle,3172,6782,Padinjarethara Electrical Section,11.6819472,75.974725
+Section Office,Kalpetta Electrical Circle,2246,6762,Ambalavayal Electrical Section,11.62098,76.21181
+Section Office,Kalpetta Electrical Circle,1599,6592,Sulthan Bathery Electrical Section,11.66566,76.2624
+Section Office,Kalpetta Electrical Circle,1596,6586,Kalpetta Electrical Section,11.60485,76.08245
+Section Office,Kalpetta Electrical Circle,1597,6587,Vythiri Electrical Section,11.54588,76.03949
+Section Office,Kannur Electrical Circle,1731,6682,Kathirur Electrical Section,11.78518,75.53193
+Section Office,Kannur Electrical Circle,1730,6681,Patiam Electrical Section,11.79885,75.56302
+Section Office,Kannur Electrical Circle,1729,6680,Kuthuparamb Electrical Section,11.83064,75.56543
+Section Office,Kannur Electrical Circle,2330,6758,Kolayad Electrical Section,11.85314,75.695
+Section Office,Kannur Electrical Circle,3189,6790,Peralasseri Electrical Section,11.832252,75.479669
+Section Office,Kannur Electrical Circle,4065,6957,Kozhikode TMR HT Meter Testing(Outdoor) Section,11.263842,75.769264
+Section Office,Kannur Electrical Circle,1717,6668,Thalassery South Electrical Section,11.74859,75.5004
+Section Office,Kannur Electrical Circle,3744,3491,Kannur Transformer Field Repair Unit,11.985358,75.379527
+Section Office,Kannur Electrical Circle,1697,6654,Kannur Electrical Section,11.877032,75.374219
+Section Office,Kannur Electrical Circle,4155,6863,Muzhappilangad Sub Center,11.7985276871,75.4558591685
+Section Office,Kannur Electrical Circle,1698,6655,Burnassery Electrical Section,11.865135,75.365021
+Section Office,Kannur Electrical Circle,1699,6656,Thayyil Electrical Section,11.856138,75.388286
+Section Office,Kannur Electrical Circle,1700,6657,Chovva Electrical Section,11.868241,75.403306
+Section Office,Kannur Electrical Circle,1701,6658,Kadachira Electrical Section,11.833756,75.454132
+Section Office,Kannur Electrical Circle,1702,6659,Eachur Electrical Section,11.905053,75.449776
+Section Office,Kannur Electrical Circle,3627,6817,Peringathur Electrical Section,11.71415,75.58383
+Section Office,Kannur Electrical Circle,1703,6660,Chakkarakkal Electrical Section,11.889185,75.470953
+Section Office,Kannur Electrical Circle,1704,6661,Chalode Electrical Section,11.929651,75.502946
+Section Office,Kannur Electrical Circle,1705,6662,Azhikode Electrical Section,11.91306,75.340598
+Section Office,Kannur Electrical Circle,1709,6666,Kolachery Electrical Section,11.970507,75.402911
+Section Office,Kannur Electrical Circle,1718,6669,Thalassery North Electrical Section,11.75044,75.48722
+Section Office,Kannur Electrical Circle,1706,6663,Pappinissery Electrical Section,11.941519,75.344658
+Section Office,Kannur Electrical Circle,1707,6664,Cherukunnu Electrical Section,11.987898,75.310507
+Section Office,Kannur Electrical Circle,1710,6667,Mayyil Electrical Section,11.995263,75.447457
+Section Office,Kannur Electrical Circle,1720,6671,Chokly Electrical Section,11.72263,75.56299
+Section Office,Kannur Electrical Circle,1708,6665,Valapattanam Electrical Section,11.918428,75.351196
+Section Office,Kannur Electrical Circle,1721,6672,Panoor Electrical Section,11.76144,75.57689
+Section Office,Kannur Electrical Circle,1466,6905,Kannur TMR Meter Testing Section,11.865135,75.365021
+Section Office,Kannur Electrical Circle,4186,6490,Kannur TMR Transformer Section,11.894037,75.406564
+Section Office,Kannur Electrical Circle,1719,6670,Kodiyeri Electrical Section,11.73626,75.52181
+Section Office,Kannur Electrical Circle,1728,6679,Pinarayi Electrical Section,11.80922,75.49447
+Section Office,Kannur Electrical Circle,1727,6678,Vengad Electrical Section,11.87646,75.53661
+Section Office,Kannur Electrical Circle,1726,6677,Dharmadam Electrical Section,11.77284,75.46968
+Section Office,Kannur Electrical Circle,1722,6673,Parad Electrical Section,11.75202,75.61784
+Section Office,Kannur Electrical Circle,1933,6954,Kannur TMR HT Meter Testing(Outdoor) Section,11.86519,75.3645139
+Section Office,Kannur Electrical Circle,1696,6653,Pallikkunnu Electrical Section,11.889818,75.373856
+Section Office,Kasaragod Electrical Circle,1765,6749,Nallompuzha Electrical Section,12.3011,75.36581
+Section Office,Kasaragod Electrical Circle,1739,6683,Uppala Electrical Section,12.67126497,74.91201006
+Section Office,Kasaragod Electrical Circle,1740,6684,Manjeshwaram Electrical Section,12.71470604,74.88940483
+Section Office,Kasaragod Electrical Circle,1744,6688,Kasaragod Electrical Section,12.52308264,75.01417812
+Section Office,Kasaragod Electrical Circle,1745,6689,Cherkala Electrical Section,12.50825023,75.05640131
+Section Office,Kasaragod Electrical Circle,1746,6690,Badiadkka Electrical Section,12.582985,75.0782633
+Section Office,Kasaragod Electrical Circle,1749,6693,Kuttikkole Electrical Section,12.47622446,75.21113333
+Section Office,Kasaragod Electrical Circle,1471,6906,Kasaragod Meter Testing Unit,12.52324428,75.0415123
+Section Office,Kasaragod Electrical Circle,1741,6685,Vorkady Electrical Section,12.753525,74.95222818
+Section Office,Kasaragod Electrical Circle,1742,6686,Nellikunnu Electrical Section,12.5031324,74.982652
+Section Office,Kasaragod Electrical Circle,1743,6687,Kumbala Electrical Section,12.59542757,74.94322546
+Section Office,Kasaragod Electrical Circle,1747,6691,Mulleriya Electrical Section,12.55108393,75.16389904
+Section Office,Kasaragod Electrical Circle,1756,6695,Chittari Electrical Section,12.36031,75.0644
+Section Office,Kasaragod Electrical Circle,1759,6698,Pilicode Electrical Section,12.19241,75.16732
+Section Office,Kasaragod Electrical Circle,1760,6699,Kayyur Electrical Section,12.26737,75.18933
+Section Office,Kasaragod Electrical Circle,1761,6700,Trikaripur Electrical Section,12.1438,75.18087
+Section Office,Kasaragod Electrical Circle,1762,6701,Mavungal Electrical Section,12.34142,75.11207
+Section Office,Kasaragod Electrical Circle,1763,6702,Rajapuram Electrical Section,12.42338,75.24644
+Section Office,Kasaragod Electrical Circle,1764,6723,Padanna Electrical Section,12.17676,75.1486
+Section Office,Kasaragod Electrical Circle,1766,6750,Choyamkode Electrical Section,12.28735,75.19101
+Section Office,Kasaragod Electrical Circle,1748,6692,Udma Electrical Section,12.43927577,75.02457792
+Section Office,Kasaragod Electrical Circle,2695,6757,Paivalika Electrical Section,12.68709876,74.98544437
+Section Office,Kasaragod Electrical Circle,3174,6774,Periya Bazar Electrical Section,12.4103,75.093633
+Section Office,Kasaragod Electrical Circle,3175,6773,Balamthode Electrical Section,12.45936,75.32128
+Section Office,Kasaragod Electrical Circle,3745,3492,Kasargode Transformer Field Repair Unit,12.52308264,75.01417812
+Section Office,Kasaragod Electrical Circle,1757,6696,Nileshwar Electrical Section,12.25556,75.13247
+Section Office,Kasaragod Electrical Circle,1758,6697,Bheemanady Electrical Section,12.31817,75.2831
+Section Office,Kasaragod Electrical Circle,1755,6694,Kanhangad Electrical Section,12.31408,75.09047
+Section Office,Kasaragod Electrical Circle,3307,6772,Chattenchal Electrical Section,12.48456397,75.056752
+Section Office,Kasaragod Electrical Circle,3442,6800,Perla Electrical Section,12.6467646,75.10846282
+Section Office,Kasaragod Electrical Circle,3494,6804,Padannakkad Electrical Section,12.2701,75.11267
+Section Office,Kasaragod Electrical Circle,3726,6818,Seethangoli Electrical Section,12.58950941,75.00019025
+Section Office,Kattakada Electrical Circle (Rural),911,4552,Kattakada Electrical Section,8.5082166,77.0832032
+Section Office,Kattakada Electrical Circle (Rural),908,4549,Vithura Electrical Section,8.668744,77.083985
+Section Office,Kattakada Electrical Circle (Rural),892,4543,Nemom Electrical Section,8.45338,77.00452
+Section Office,Kattakada Electrical Circle (Rural),894,4545,Poovar Electrical Section,8.33568,77.059731
+Section Office,Kattakada Electrical Circle (Rural),3208,4673,Uzhamalakkal Electrical Section,8.592911,77.042981
+Section Office,Kattakada Electrical Circle (Rural),907,4548,Palode Electrical Section,8.698006,77.027268
+Section Office,Kattakada Electrical Circle (Rural),906,4547,Nedumangad Electrical Section,8.609641,77.002511
+Section Office,Kattakada Electrical Circle (Rural),3207,4674,Peringamala Electrical Section,8.73032,77.048335
+Section Office,Kattakada Electrical Circle (Rural),2464,4868,Kamukinkode Electrical Section,8.39264,77.06923
+Section Office,Kattakada Electrical Circle (Rural),2471,4675,Kalliyoor Electrical Section,8.43139,77.02217
+Section Office,Kattakada Electrical Circle (Rural),898,4657,Kottukal Electrical Section,8.39474,77.02421
+Section Office,Kattakada Electrical Circle (Rural),896,4655,Uchakkada Electrical Section,8.31353,77.10267
+Section Office,Kattakada Electrical Circle (Rural),899,4667,Kunnathukal Electrical Section,8.39984,77.16515
+Section Office,Kattakada Electrical Circle (Rural),887,4538,Udiyankulangara Electrical Section,8.37968,77.12054
+Section Office,Kattakada Electrical Circle (Rural),912,4553,Maranalloor Electrical Section,8.46811,77.0759033333
+Section Office,Kattakada Electrical Circle (Rural),895,4546,Vizhinjam Electrical Section,8.39642,77.00029
+Section Office,Kattakada Electrical Circle (Rural),913,4554,Ottasekharamangalam Electrical Section,8.4802816667,77.1362416667
+Section Office,Kattakada Electrical Circle (Rural),886,4537,Neyyattinkara Electrical Section,8.40723,77.08293
+Section Office,Kattakada Electrical Circle (Rural),891,4542,Balaramapuram Electrical Section,8.42582,77.04803
+Section Office,Kattakada Electrical Circle (Rural),3566,4688,Poozhikunnu Electrical Section,8.34511,77.10479
+Section Office,Kattakada Electrical Circle (Rural),889,4540,Parassala Electrical Section,8.34804,77.14933
+Section Office,Kattakada Electrical Circle (Rural),914,4555,Venjarammoodu Electrical Section,8.666453,76.911133
+Section Office,Kattakada Electrical Circle (Rural),915,4556,Kanyakulangara Electrical Section,8.628398,76.937537
+Section Office,Kattakada Electrical Circle (Rural),916,4557,Kallara Electrical Section,8.750471,76.940177
+Section Office,Kattakada Electrical Circle (Rural),917,4652,Aryanad Electrical Section,8.57883112,77.08492784
+Section Office,Kattakada Electrical Circle (Rural),910,4551,Vellanadu Electrical Section,8.5633683333,77.0546766667
+Section Office,Kattakada Electrical Circle (Rural),919,4666,Malayinkeezh Electrical Section,8.4899983333,77.039505
+Section Office,Kattakada Electrical Circle (Rural),909,4550,Peyad Electrical Section,8.5194183333,77.0175883333
+Section Office,Kattakada Electrical Circle (Rural),893,4544,Kanjiramkulam Electrical Section,8.35955,77.05741
+Section Office,Kattakada Electrical Circle (Rural),2332,4821,Vamanapuram Electrical Section,8.722494,76.901708
+Section Office,Kattakada Electrical Circle (Rural),918,4653,Chullimanoor Electrical Section,8.643277,77.022774
+Section Office,Kattakada Electrical Circle (Rural),1947,4864,Poovachal Electrical Section,8.5373683333,77.0852516667
+Section Office,Kattakada Electrical Circle (Rural),897,4656,Amboori Electrical Section,8.5051716667,77.18805
+Section Office,Kattakada Electrical Circle (Rural),888,4539,Marayamuttom Electrical Section,8.41829,77.10962
+Section Office,Kattakada Electrical Circle (Rural),890,4541,Vellarada Electrical Section,8.44445,77.19395
+Section Office,Kattakada Electrical Circle (Rural),1938,4681,Tholicode Electrical Section,8.64552,77.054513
+Section Office,Kollam Electrical Circle,955,4580,Mayyanad Electrical Section,8.84324,76.64637
+Section Office,Kollam Electrical Circle,3465,4682,Panmana Electrical Section,9.012945,76.534976
+Section Office,Kollam Electrical Circle,3736,3443,Kollam Transformer Field Repair Unit,8.88281,76.593555
+Section Office,Kollam Electrical Circle,930,4563,Perinad Electrical Section,8.930193,76.6018
+Section Office,Kollam Electrical Circle,940,4570,Karunagappally(S) Electrical Section,9.0594653,76.5338426
+Section Office,Kollam Electrical Circle,946,4659,Mynagapally Electrical Section,9.0425666,76.5849259
+Section Office,Kollam Electrical Circle,945,4658,Manapally Electrical Section,9.106948,76.570962
+Section Office,Kollam Electrical Circle,944,4574,Sooranadu Electrical Section,9.1025172,76.6209584
+Section Office,Kollam Electrical Circle,951,4576,Paravoor Electrical Section,8.814027,76.67069
+Section Office,Kollam Electrical Circle,950,4575,Chathannoor Electrical Section,8.86279,76.70799
+Section Office,Kollam Electrical Circle,938,4567,Oachira Electrical Section,9.139345,76.511698
+Section Office,Kollam Electrical Circle,939,4569,Karunagappally(N) Electrical Section,9.0756405,76.5329417
+Section Office,Kollam Electrical Circle,941,4571,Chavara Electrical Section,8.9869336,76.5340823
+Section Office,Kollam Electrical Circle,933,4566,Pallimukku Electrical Section,8.872668,76.616231
+Section Office,Kollam Electrical Circle,929,4562,Thangasseri Electrical Section,8.897919,76.568133
+Section Office,Kollam Electrical Circle,2551,4671,Poothakulam Electrical Section,8.80254,76.69918
+Section Office,Kollam Electrical Circle,932,4565,Ayathil Electrical Section,8.889382,76.620719
+Section Office,Kollam Electrical Circle,2583,4670,Kanjiramkuzhy Electrical Section,8.942646,76.607881
+Section Office,Kollam Electrical Circle,927,4560,Olai Electrical Section,8.892862,76.579446
+Section Office,Kollam Electrical Circle,931,4564,Kilikolloor Electrical Section,8.910638,76.625452
+Section Office,Kollam Electrical Circle,943,4573,Sasthamkotta Electrical Section,9.0466908,76.6223508
+Section Office,Kollam Electrical Circle,942,4572,Thevalakkara Electrical Section,9.015368,76.573843
+Section Office,Kollam Electrical Circle,2552,4826,Poothakkulam Sub Engineer Office,8.805133,76.699434
+Section Office,Kollam Electrical Circle,810,4903,Kollam Meter Testing Unit,8.88281,76.593555
+Section Office,Kollam Electrical Circle,952,4577,Parippally Electrical Section,8.81391,76.77234
+Section Office,Kollam Electrical Circle,953,4578,Kottiyam Electrical Section,8.85848,76.67448
+Section Office,Kollam Electrical Circle,954,4579,Kannanalloor Electrical Section,8.89168,76.68113
+Section Office,Kollam Electrical Circle,928,4561,Sakthikulangara Electrical Section,8.914109,76.557823
+Section Office,Kollam Electrical Circle,926,4559,Kadappakkada Electrical Section,8.896592,76.59696
+Section Office,Kollam Electrical Circle,925,4558,Cantonment Kollam Electrical Section,8.883256,76.593074
+Section Office,Kottarakkara Electrical Circle,3405,4683,Kottarakkara East Electrical Section,8.998531,76.769956
+Section Office,Kottarakkara Electrical Circle,3406,4685,Pattazhy Electrical Section,9.0736408,76.8000984
+Section Office,Kottarakkara Electrical Circle,3187,4672,Chadayamangalam Electrical Section,8.876193,76.868296
+Section Office,Kottarakkara Electrical Circle,971,4589,Puthoor Electrical Section,9.043124,76.71112
+Section Office,Kottarakkara Electrical Circle,964,4586,Nallila Electrical Section,8.928419,76.709299
+Section Office,Kottarakkara Electrical Circle,987,4661,Karukon Electrical Section,8.903355,76.932552
+Section Office,Kottarakkara Electrical Circle,2700,4669,Anchal (West) Electrical Section,8.927661,76.908951
+Section Office,Kottarakkara Electrical Circle,970,4588,Kulakkada Electrical Section,9.069967,76.755033
+Section Office,Kottarakkara Electrical Circle,974,4592,Valakom Electrical Section,8.963673488,76.8349027634
+Section Office,Kottarakkara Electrical Circle,981,4594,Thenmala Electrical Section,8.963733,77.063653
+Section Office,Kottarakkara Electrical Circle,969,4587,Kottarakkara Electrical Section,8.998531,76.769956
+Section Office,Kottarakkara Electrical Circle,982,4595,Pathanapuram Electrical Section,9.088865,76.856269
+Section Office,Kottarakkara Electrical Circle,972,4590,Chengamanad Electrical Section,9.0130194,76.8244077
+Section Office,Kottarakkara Electrical Circle,973,4591,Ayoor Electrical Section,8.895517,76.859257
+Section Office,Kottarakkara Electrical Circle,986,4599,Kadakkal Electrical Section,8.821829,76.927536
+Section Office,Kottarakkara Electrical Circle,985,4598,Kulathupuzha Electrical Section,8.906125,77.057314
+Section Office,Kottarakkara Electrical Circle,959,4581,Kundara Electrical Section,8.957986,76.671711
+Section Office,Kottarakkara Electrical Circle,984,4597,Anchal Electrical Section,8.928126,76.91365
+Section Office,Kottarakkara Electrical Circle,983,4596,Vilakkudy Electrical Section,9.029703,76.866056
+Section Office,Kottarakkara Electrical Circle,3191,4677,Karavaloor Electrical Section,8.984682,76.925577
+Section Office,Kottarakkara Electrical Circle,960,4582,Ezhukone Electrical Section,9.016166,76.658449
+Section Office,Kottarakkara Electrical Circle,961,4583,East kallada Electrical Section,9.016166,76.658449
+Section Office,Kottarakkara Electrical Circle,963,4585,Perumbuzha Electrical Section,8.957986,76.671711
+Section Office,Kottarakkara Electrical Circle,980,4593,Punalur Electrical Section,9.013141,76.928889
+Section Office,Kottarakkara Electrical Circle,962,4584,Veliyam Electrical Section,8.915322,76.765076
+Section Office,Kottarakkara Electrical Circle,988,4662,Chithara Electrical Section,8.814415,76.973876
+Section Office,Kottarakkara Electrical Circle,1961,4668,Piravanthur Electrical Section,9.05586,76.915468
+Section Office,Kottarakkara Electrical Circle,965,4660,Oyoor Electrical Section,8.871903,76.77325
+Section Office,Kottayam Electrical Circle,1038,4629,Aymanam Electrical Section,9.611609,76.496683
+Section Office,Kottayam Electrical Circle,1053,4640,Thrikodithanam Electrical Section,9.43901,76.57091
+Section Office,Kottayam Electrical Circle,1054,4641,Karukachal Electrical Section,9.50054,76.63681
+Section Office,Kottayam Electrical Circle,1055,4642,Manimala Electrical Section,9.48539,76.76199
+Section Office,Kottayam Electrical Circle,1044,4635,Kottayam (E ) Electrical Section,9.611609,76.526053
+Section Office,Kottayam Electrical Circle,1066,4649,Kuravilangad Electrical Section,9.76475,76.564709
+Section Office,Kottayam Electrical Circle,1067,4650,Thalayolaparambu Electrical Section,9.784447,76.443437
+Section Office,Kottayam Electrical Circle,1068,4651,Kaduthuruthy Electrical Section,9.764377,76.487903
+Section Office,Kottayam Electrical Circle,1069,4664,Athirampuzha Electrical Section,9.668463,76.53601
+Section Office,Kottayam Electrical Circle,1034,4625,Pallom Electrical Section,9.543696,76.519176
+Section Office,Kottayam Electrical Circle,1035,4626,Punja Pallom Electrical Section,9.534611,76.511964
+Section Office,Kottayam Electrical Circle,1036,4627,Nattakom Electrical Section,9.550271,76.528571
+Section Office,Kottayam Electrical Circle,1039,4630,Kumarakom Electrical Section,9.5911362,76.457231
+Section Office,Kottayam Electrical Circle,1052,4639,Vakathanam Electrical Section,9.52328,76.57186
+Section Office,Kottayam Electrical Circle,1037,4628,Gandhi Nagar Electrical Section,9.633175,76.52478
+Section Office,Kottayam Electrical Circle,4081,4910,Pallom TMR Meter Testing (Outdoor) Section-2,9.541807,76.516226
+Section Office,Kottayam Electrical Circle,4080,4909,Pallom TMR Meter Testing(Outdoor) Section-1,9.541807,76.516226
+Section Office,Kottayam Electrical Circle,1065,4648,Neendoor Electrical Section,9.679066,76.507996
+Section Office,Kottayam Electrical Circle,1064,4647,Kurupanthara Electrical Section,9.741258,76.51531
+Section Office,Kottayam Electrical Circle,1063,4646,Ettumanoor Electrical Section,9.669396,76.551601
+Section Office,Kottayam Electrical Circle,1062,4645,Thalayazham Electrical Section,9.712952,76.417708
+Section Office,Kottayam Electrical Circle,1061,4644,Chempu Electrical Section,9.810386,76.396137
+Section Office,Kottayam Electrical Circle,1060,4643,Vaikom Electrical Section,9.747147,76.392244
+Section Office,Kottayam Electrical Circle,4078,4907,Pallom TMR Transformer Repairing Section,9.541807,76.516226
+Section Office,Kottayam Electrical Circle,4079,4908,Pallom TMR Meter Testing Lab Section,9.541807,76.516226
+Section Office,Kottayam Electrical Circle,3738,3445,Kottayam Transformer Field Repair Unit,9.535497,76.512485
+Section Office,Kottayam Electrical Circle,3569,4689,Meenadom Electrical Section,9.54977,76.608777
+Section Office,Kottayam Electrical Circle,3484,4686,Peruva Electrical Section,9.830418,76.501042
+Section Office,Kottayam Electrical Circle,3466,4684,Pathanadu Electrical Section,9.51332,76.70984
+Section Office,Kottayam Electrical Circle,1042,4633,Puthuppally Electrical Section,9.556619,76.573563
+Section Office,Kottayam Electrical Circle,1040,4631,Manarcadu Electrical Section,9.59123,76.584046
+Section Office,Kottayam Electrical Circle,1043,4634,Kottayam (C ) Electrical Section,9.58538,76.520456
+Section Office,Kottayam Electrical Circle,1041,4632,Ayarkunnam Electrical Section,9.638448,76.606768
+Section Office,Kottayam Electrical Circle,1050,4637,Kurichy Electrical Section,9.49487,76.52755
+Section Office,Kottayam Electrical Circle,1049,4636,Changanacherry Electrical Section,9.44539,76.54156
+Section Office,Kottayam Electrical Circle,1051,4638,Thengana Electrical Section,9.477826,76.58374
+Section Office,Kozhikode Electrical Circle,1635,6747,Kattangal Electrical Section,11.31841,75.94048
+Section Office,Kozhikode Electrical Circle,1633,6615,Atholy Electrical Section,11.38834,75.75864
+Section Office,Kozhikode Electrical Circle,1626,6608,Mukkam Electrical Section,11.32138,75.99366
+Section Office,Kozhikode Electrical Circle,1611,6598,Karaparamba Electrical Section,11.296577,75.792385
+Section Office,Kozhikode Electrical Circle,3495,6805,Koombara Electrical Section,11.32586,76.07469
+Section Office,Kozhikode Electrical Circle,1628,6610,Thamarassery Electrical Section,11.42388,75.93826
+Section Office,Kozhikode Electrical Circle,3240,6777,Pannikode Electrical Section,11.27099,76.00558
+Section Office,Kozhikode Electrical Circle,3411,6789,Areekkad Electrical Section,11.208787,75.808133
+Section Office,Kozhikode Electrical Circle,1620,6744,Chelannur Electrical Section,11.3555734,75.8078025
+Section Office,Kozhikode Electrical Circle,1618,6605,Vellimadukunnu Electrical Section,11.295016,75.829449
+Section Office,Kozhikode Electrical Circle,1619,6606,Eranhikkal Electrical Section,11.3111072,75.7588541
+Section Office,Kozhikode Electrical Circle,3865,6956,Kozhikode RMU Maintenance Section,11.263842,75.769264
+Section Office,Kozhikode Electrical Circle,1610,6597,Pottammal Electrical Section,11.258802,75.804878
+Section Office,Kozhikode Electrical Circle,1665,6734,Perumanna Electrical Section,11.239579,75.878926
+Section Office,Kozhikode Electrical Circle,1459,6904,Kozhikode Meter Testing Unit,11.2643635,75.76626
+Section Office,Kozhikode Electrical Circle,1614,6601,Nadakkavu Electrical Section,11.262851,75.768794
+Section Office,Kozhikode Electrical Circle,1615,6602,Central  Kozhikode Electrical Section,11.263202,75.768271
+Section Office,Kozhikode Electrical Circle,1664,6637,Pantheerankavu Electrical Section,11.2304,75.849128
+Section Office,Kozhikode Electrical Circle,3743,3490,Kozhikode Transformer Field Repair Unit,11.208787,75.808133
+Section Office,Kozhikode Electrical Circle,1663,6636,Mankavu Electrical Section,11.238177,75.799984
+Section Office,Kozhikode Electrical Circle,1662,6635,Beypore Electrical Section,11.176541,75.807243
+Section Office,Kozhikode Electrical Circle,1661,6634,Kallai Electrical Section,11.229584,75.78934
+Section Office,Kozhikode Electrical Circle,1660,6633,Ramanattukara Electrical Section,11.177928,75.85782
+Section Office,Kozhikode Electrical Circle,1659,6632,Kadalundi Electrical Section,11.155161,75.845319
+Section Office,Kozhikode Electrical Circle,1658,6631,Feroke Electrical Section,11.187639,75.831561
+Section Office,Kozhikode Electrical Circle,1634,6732,Puthuppady Electrical Section,11.46724,75.96973
+Section Office,Kozhikode Electrical Circle,1949,6765,Koottalida Electrical Section ,11.45732,75.81947
+Section Office,Kozhikode Electrical Circle,1951,6764,Kakkur Electrical Section ,11.38557,75.82324
+Section Office,Kozhikode Electrical Circle,1625,6607,Kunnamangalam Electrical Section,11.30444,75.87872
+Section Office,Kozhikode Electrical Circle,1630,6612,Kodenchery Electrical Section,11.43101,76.00499
+Section Office,Kozhikode Electrical Circle,1609,6596,Mavoor Electrical Section,11.261025,75.954083
+Section Office,Kozhikode Electrical Circle,1954,6763,Koorachundu Electrical Section ,11.54007,75.84255
+Section Office,Kozhikode Electrical Circle,1629,6611,Koduvally Electrical Section,11.35972,75.91017
+Section Office,Kozhikode Electrical Circle,1627,6609,Thiruvambady Electrical Section,11.36329,76.01034
+Section Office,Kozhikode Electrical Circle,1608,6595,Kovoor Electrical Section,11.274975,75.837285
+Section Office,Kozhikode Electrical Circle,4141,6959,Kozhikode Cable Fault Location Section,11.263842,75.769264
+Section Office,Kozhikode Electrical Circle,1632,6614,Unnikulam Electrical Section,11.44298,75.88091
+Section Office,Kozhikode Electrical Circle,1617,6604,Westhill Electrical Section,11.3025036,75.7616024
+Section Office,Kozhikode Electrical Circle,1616,6603,Beach Kozhikode Electrical Section,11.256758,75.772563
+Section Office,Kozhikode Electrical Circle,1631,6613,Balussery Electrical Section,11.44706,75.83001
+Section Office,Kozhikode Electrical Circle,1612,6599,Kakkody Electrical Section,11.319892,75.798929
+Section Office,Kozhikode Electrical Circle,1636,6751,Omassery Electrical Section,11.36352,75.96766
+Section Office,Kozhikode Electrical Circle,1613,6600,Narikkuni Electrical Section,11.372624,75.855125
+Section Office,Manjeri Electrical Circle,3496,6807,Moothedam Electrical Section,11.325551,76.330039
+Section Office,Manjeri Electrical Circle,3802,6820,Puzhakkattiri Electrical Section,10.9822711,76.1346212
+Section Office,Manjeri Electrical Circle,1551,6706,Thrikkalangode Electrical Section,11.151862,76.123235
+Section Office,Manjeri Electrical Circle,1550,6555,Malappuram East Electrical Section,11.042847,76.075407
+Section Office,Manjeri Electrical Circle,3782,3904,Malappuram Transformer Field Repair Unit,11.1207781,76.1135149
+Section Office,Manjeri Electrical Circle,1549,6554,Velluvambrom (P) Electrical Section,11.13024,76.040599
+Section Office,Manjeri Electrical Circle,1548,6553,Pulikkal (P) Electrical Section,11.171862,75.923352
+Section Office,Manjeri Electrical Circle,1547,6552,Kondotty Electrical Section,11.14683,75.971665
+Section Office,Manjeri Electrical Circle,1562,6565,Makkaraparambu Electrical Section,11.017954,76.123404
+Section Office,Manjeri Electrical Circle,1563,6567,Kolathur (P) Electrical Section,10.945592,76.138274
+Section Office,Manjeri Electrical Circle,1564,6710,Thazhecode Electrical Section,10.956285,76.302034
+Section Office,Manjeri Electrical Circle,1565,6711,Mankada Electrical Section,11.019527,76.177074
+Section Office,Manjeri Electrical Circle,2445,6779,Pattikkad Chungam Electrical Section,11.016251,76.229435
+Section Office,Manjeri Electrical Circle,3169,6780,Malappuram West Electrical Section,11.051766,76.064018
+Section Office,Manjeri Electrical Circle,1543,6547,Manjeri (North) Electrical Section,11.1207781,76.1135149
+Section Office,Manjeri Electrical Circle,1542,6546,Manjeri (South) Electrical Section,11.1207781,76.1135149
+Section Office,Manjeri Electrical Circle,1559,6562,Perinthalmanna Electrical Section,10.978675,76.224387
+Section Office,Manjeri Electrical Circle,1966,6768,Karad Electrical Section,11.205724,75.878821
+Section Office,Manjeri Electrical Circle,1445,6902,Manjeri Meter Testing Unit,11.1207781,76.1135149
+Section Office,Manjeri Electrical Circle,1566,6748,Angadipuram Electrical Section,10.98043,76.192124
+Section Office,Manjeri Electrical Circle,1546,6551,Kizhissery Electrical Section,11.179672,75.998274
+Section Office,Manjeri Electrical Circle,1552,6707,Keezhuparamba Electrical Section,11.246432,76.04732
+Section Office,Manjeri Electrical Circle,1553,6708,Chattiparamba Electrical Section,10.998316,76.090613
+Section Office,Manjeri Electrical Circle,1554,6756,Anakkayam Electrical Section,11.081948,76.124933
+Section Office,Manjeri Electrical Circle,1545,6550,Edavannappara Electrical Section,11.246917,75.978044
+Section Office,Manjeri Electrical Circle,1544,6549,Areacode Electrical Section,11.233002,76.053522
+Section Office,Manjeri Electrical Circle,4106,6823,Mundakkulam Electrical Section,11.1872006,75.9676205
+Section Office,Manjeri Electrical Circle,1561,6564,Pulamanthol Electrical Section,10.916801,76.210399
+Section Office,Nilambur Electrical Circle,2723,6770,Thiruvali Electrical Section,11.199755,76.177882
+Section Office,Nilambur Electrical Circle,3476,6795,Karulai Electrical Section,11.284019,76.296339
+Section Office,Nilambur Electrical Circle,3473,6793,Vaniyambalam Electrical Section,11.193962,76.261834
+Section Office,Nilambur Electrical Circle,1785,6713,Chungathara Electrical Section,11.335014,76.27588
+Section Office,Nilambur Electrical Circle,1779,6543,Nilamboor Electrical Section,11.267007,76.218335
+Section Office,Nilambur Electrical Circle,1780,6544,Edakkara Electrical Section,11.359981,76.310013
+Section Office,Nilambur Electrical Circle,1786,6714,Vazhikadavu Electrical Section,11.370181,76.328885
+Section Office,Nilambur Electrical Circle,1560,6563,Melattur Electrical Section,11.060731,76.274991
+Section Office,Nilambur Electrical Circle,1783,6559,Wandoor Electrical Section,11.1942259,76.2411582
+Section Office,Nilambur Electrical Circle,3475,6796,Akampadam Electrical Section,11.309672,76.206844
+Section Office,Nilambur Electrical Circle,1782,6548,Edavana Electrical Section,11.216142,76.140407
+Section Office,Nilambur Electrical Circle,1784,6560,Kalikavu (P) Electrical Section,11.174058,76.322602
+Section Office,Nilambur Electrical Circle,3582,6815,Tuvvur Electrical Section,11.114745,76.288637
+Section Office,Nilambur Electrical Circle,1904,6310,Pothukallu Electrical Section,11.405291,76.251086
+Section Office,Nilambur Electrical Circle,3581,6814,Mampad Electrical Section,11.241903,76.177823
+Section Office,Nilambur Electrical Circle,3474,6794,Karuvarakundu Electrical Section,11.116597,76.33077
+Section Office,Nilambur Electrical Circle,1558,6561,Pandikkad (P) Electrical Section,11.092737,76.223475
+Section Office,Nilambur Electrical Circle,1781,6545,Pookkattumpadam (P) Electrical Section,11.243242,76.30557
+Section Office,Pala Electrical Circle,1306,5631,Poonjar Electrical Section,9.670617,76.814995
+Section Office,Pala Electrical Circle,1299,5624,Pala Electrical Section,9.716144,76.682914
+Section Office,Pala Electrical Circle,1300,5625,Kidangoor Electrical Section,9.684686,76.610357
+Section Office,Pala Electrical Circle,2644,5721,Kootickal Electrical Section,9.58463,76.887003
+Section Office,Pala Electrical Circle,1302,5627,Bharananganam Electrical Section,9.699682,76.725626
+Section Office,Pala Electrical Circle,1301,5626,Paika Electrical Section,9.659424,76.7193
+Section Office,Pala Electrical Circle,1311,5633,Ponkunnam Electrical Section,9.56566,76.76363
+Section Office,Pala Electrical Circle,3576,5749,Kooroppada Electrical Section,9.59759,76.64703
+Section Office,Pala Electrical Circle,1314,5636,Kanjirappally Electrical Section,9.55729,76.79056
+Section Office,Pala Electrical Circle,1313,5635,Pampady Electrical section,9.57042,76.64023
+Section Office,Pala Electrical Circle,1312,5634,Vazhoor Electrical Section,9.56328,76.70037
+Section Office,Pala Electrical Circle,1307,5632,Pinnakkanadu Electrical Section,9.616893,76.77758
+Section Office,Pala Electrical Circle,1315,5637,Erumely Electrical Section,9.47809,76.84466
+Section Office,Pala Electrical Circle,1316,5638,Mundakkayam Electrical Section,9.53675,76.884601
+Section Office,Pala Electrical Circle,1317,5707,Pallikkathodu Electrical Section,9.60333,76.67964
+Section Office,Pala Electrical Circle,1304,5629,Ramapuram Electrical Section,9.79995,76.659914
+Section Office,Pala Electrical Circle,1303,5628,Marangattupilly Electrical Section,9.737741,76.659914
+Section Office,Pala Electrical Circle,1305,5630,Erattupetta Electrical Section,9.687588,76.778568
+Section Office,Pala Electrical Circle,3449,5745,Parathode Electrical Section,9.57311,76.82673
+Section Office,Pala Electrical Circle,3438,5744,Teekoy Electrical Section,9.70283,76.811546
+Section Office,Pala Electrical Circle,3468,5740,Kollappally Electrical Section,9.764551,76.699593
+Section Office,Palakkad Electrical Circle,1503,6517,Sulthanpet Electrical Section,10.772684,76.653114
+Section Office,Palakkad Electrical Circle,1512,6532,Olavakkode Electrical Section,10.804013,76.629772
+Section Office,Palakkad Electrical Circle,1514,6729,Pathiripala Electrical Section,10.78649,76.474543
+Section Office,Palakkad Electrical Circle,1488,6501,Chittur Electrical Section,10.700531,76.749001
+Section Office,Palakkad Electrical Circle,1816,6525,Kuzhalmannam Electrical Section,10.721639,76.602419
+Section Office,Palakkad Electrical Circle,1508,6528,Kanjikode Electrical Section,10.791435,76.739411
+Section Office,Palakkad Electrical Circle,1491,6504,Thathamangalam Electrical Section,10.68305,76.708491
+Section Office,Palakkad Electrical Circle,1489,6502,Kozhinjampara Electrical Section,10.737966,76.816953
+Section Office,Palakkad Electrical Circle,1817,6526,Kottayi Electrical Section,10.765917,76.543625
+Section Office,Palakkad Electrical Circle,1496,6512,Nelliampathy(P) Electrical Section,10.532487,76.679571
+Section Office,Palakkad Electrical Circle,1495,6511,Muthalamada Electrical Section,10.607726,76.751182
+Section Office,Palakkad Electrical Circle,1494,6510,Kollengode Electrical Section,10.613407,76.699828
+Section Office,Palakkad Electrical Circle,1493,6506,Pudunagaram Electrical Section,10.680662,76.686082
+Section Office,Palakkad Electrical Circle,1513,6725,Malampuzha Electrical Section,10.822286,76.669011
+Section Office,Palakkad Electrical Circle,3727,6819,Walayar Electrical Section,10.814725,76.810938
+Section Office,Palakkad Electrical Circle,3498,6809,Vandithavalam Electrical Section,10.645419,76.771468
+Section Office,Palakkad Electrical Circle,1818,6726,Kunnissery Electrical Section,10.636357,76.597023
+Section Office,Palakkad Electrical Circle,1811,6508,Pudukode Electrical Section,10.626891,76.450626
+Section Office,Palakkad Electrical Circle,1810,6507,Padoor Electrical Section,10.656845,76.500553
+Section Office,Palakkad Electrical Circle,4104,6822,Kayaradi Electrical Section,10.588852,76.513719
+Section Office,Palakkad Electrical Circle,1820,6728,Kuthannur Electrical Section,10.733263,76.544223
+Section Office,Palakkad Electrical Circle,1821,6754,Kizhakkancherry Electrical Section,10.575507,76.493247
+Section Office,Palakkad Electrical Circle,1490,6503,Velanthavalam Electrical Section,10.807137,76.846721
+Section Office,Palakkad Electrical Circle,3499,6810,Vadavannur Electrical Section,10.650418,76.687214
+Section Office,Palakkad Electrical Circle,3742,3449,Palakkad Transformer Field Repair Unit,10.772684,76.653114
+Section Office,Palakkad Electrical Circle,1505,6519,Melamuri Electrical Section,10.761229,76.632934
+Section Office,Palakkad Electrical Circle,1492,6505,Koduvayoor Electrical Section,10.688127,76.65668
+Section Office,Palakkad Electrical Circle,1441,6901,Palakkad Meter Testing Unit,10.772684,76.653114
+Section Office,Palakkad Electrical Circle,1812,6509,Alathur Electrical Section,10.645526,76.547321
+Section Office,Palakkad Electrical Circle,1813,6513,Nenmara Electrical Section,10.594145,76.583342
+Section Office,Palakkad Electrical Circle,1814,6514,Mudappallur Electrical Section,10.588852,76.513719
+Section Office,Palakkad Electrical Circle,1504,6518,Bigbazar Electrical Section,10.772684,76.653114
+Section Office,Palakkad Electrical Circle,1509,6529,Marutha Road Electrical Section,10.787073,76.670515
+Section Office,Palakkad Electrical Circle,3164,6786,Kadampazhipuram Electrical Section,10.87252,76.446754
+Section Office,Palakkad Electrical Circle,1511,6531,Kalpathy Electrical Section,10.795549,76.639167
+Section Office,Palakkad Electrical Circle,1510,6530,Elappully Electrical Section,10.757404,76.746034
+Section Office,Palakkad Electrical Circle,1506,6523,Kongad Electrical Section,10.85385,76.522935
+Section Office,Palakkad Electrical Circle,1507,6527,Parli Electrical Section,10.798847,76.563378
+Section Office,Palakkad Electrical Circle,1819,6727,Peringottukurissi Electrical Section,10.756271,76.496745
+Section Office,Palakkad Electrical Circle,1515,6740,Mundur Electrical Section,10.839468,76.580916
+Section Office,Palakkad Electrical Circle,1815,6515,Vadakkumcherry Electrical Section,10.597989,76.479745
+Section Office,Pathanamthitta Electrical Circle,994,4600,Pathanamthitta Electrical Section,9.267325,76.785631
+Section Office,Pathanamthitta Electrical Circle,1000,4606,Ranny(S) Electrical Section,9.38207487,76.78126844
+Section Office,Pathanamthitta Electrical Circle,3739,3446,Pathanamthitta Transformer Field Repair Unit,9.25580547,76.78214539
+Section Office,Pathanamthitta Electrical Circle,1010,4611,Ezhamkulam Electrical Section,9.1448895,76.768554
+Section Office,Pathanamthitta Electrical Circle,1027,4623,Mallappally Electrical Section,9.447889,76.653605
+Section Office,Pathanamthitta Electrical Circle,3491,4687,Vakayar Electrical Section,9.186954,76.858244
+Section Office,Pathanamthitta Electrical Circle,997,4603,Vadasserikkara Electrical Section,9.34217151,76.83198129
+Section Office,Pathanamthitta Electrical Circle,1023,4619,Kumbanad Electrical Section,9.367292,76.658739
+Section Office,Pathanamthitta Electrical Circle,1022,4618,Thottabhagam Electrical Section,9.384937,76.616624
+Section Office,Pathanamthitta Electrical Circle,1014,4615,Kulanada Electrical Section,9.2445036,76.6735992
+Section Office,Pathanamthitta Electrical Circle,995,4601,Kumbazha Electrical Section,9.266449,76.807404
+Section Office,Pathanamthitta Electrical Circle,1024,4620,Manippuzha Electrical Section,9.377515,76.55845
+Section Office,Pathanamthitta Electrical Circle,1025,4621,Kadapra Electrical Section,9.341449,76.52543
+Section Office,Pathanamthitta Electrical Circle,1028,4624,Vaipur Electrical Section,9.448383,76.711553
+Section Office,Pathanamthitta Electrical Circle,4091,4692,Pandalam Thekkekkara Electrical Section,9.195803,76.735403
+Section Office,Pathanamthitta Electrical Circle,998,4604,Kakkad Electrical Section,9.32620656,76.971112351
+Section Office,Pathanamthitta Electrical Circle,996,4602,Konni Electrical Section,9.23173,76.843236
+Section Office,Pathanamthitta Electrical Circle,1001,4607,Ranny(N) Electrical Section,9.383288,76.788029
+Section Office,Pathanamthitta Electrical Circle,1003,4665,Vechoochira Electrical Section,9.442323,76.853334
+Section Office,Pathanamthitta Electrical Circle,1016,4663,Thengamom-Pallickal Electrical Section,9.130287,76.665261
+Section Office,Pathanamthitta Electrical Circle,2281,4806,Enathu Electrical Section,9.0912764,76.7555273
+Section Office,Pathanamthitta Electrical Circle,1976,4876,Transformer Field Repair Unit,9.25580547,76.78214539
+Section Office,Pathanamthitta Electrical Circle,1013,4614,Pandalam Electrical Section,9.2249961,76.677032
+Section Office,Pathanamthitta Electrical Circle,1009,4610,Kaippattoor Electrical Section,9.235465,76.754679
+Section Office,Pathanamthitta Electrical Circle,1015,4616,Elavumthitta Electrical Section,9.274029,76.711358
+Section Office,Pathanamthitta Electrical Circle,1021,4617,Thiruvalla Electrical Section,9.386963,76.575759
+Section Office,Pathanamthitta Electrical Circle,1008,4609,Adoor Electrical Section,9.1624088,76.7207103
+Section Office,Pathanamthitta Electrical Circle,1002,4608,Ayroor Kathakali Gramam Electrical Section,9.35271266,76.72396874
+Section Office,Pathanamthitta Electrical Circle,3620,4690,Ranny Perunad Electrical Section,9.36772,76.85497
+Section Office,Pathanamthitta Electrical Circle,1012,4613,Kadampanad Electrical Section,9.091704,76.688985
+Section Office,Pathanamthitta Electrical Circle,1011,4612,Kalanjoor Electrical Section,9.120356,76.851839
+Section Office,Pathanamthitta Electrical Circle,999,4605,Kozhencherry Electrical Section,9.33249198,76.70914737
+Section Office,Pathanamthitta Electrical Circle,1026,4622,Vennikulam Electrical Section,9.40024,76.660841
+Section Office,Pathanamthitta Electrical Circle,1169,5535,Aranmula Electrical Section,9.326708,76.681157
+Section Office,Perumbavoor Electrical Circle,3448,5738,Okkal Electrical Section,10.148241,76.456006
+Section Office,Perumbavoor Electrical Circle,1263,5598,Koothattukulam Electrical Section,9.8569581,76.5967816
+Section Office,Perumbavoor Electrical Circle,4070,5284,Angamaly TMR Meter(Indoor) Section i,10.177409,76.377625
+Section Office,Perumbavoor Electrical Circle,1272,5602,Varapuzha Electrical Section,10.074775,76.271054
+Section Office,Perumbavoor Electrical Circle,1275,5605,Cherai Electrical Section,10.138625,76.193793
+Section Office,Perumbavoor Electrical Circle,1219,5567,Aluva Town Electrical Section,10.09884,76.358214
+Section Office,Perumbavoor Electrical Circle,1235,5576,Kalady Electrical Section,10.169991,76.445702
+Section Office,Perumbavoor Electrical Circle,1236,5577,Thuravoor Electrical Section,10.203482,76.417131
+Section Office,Perumbavoor Electrical Circle,1237,5578,Manjapra Electrical Section,10.204741,76.452436
+Section Office,Perumbavoor Electrical Circle,1238,5579,Angamaly Electrical Section,10.196157,76.390271
+Section Office,Perumbavoor Electrical Circle,1239,5580,Parakadavu Electrical Section,10.194504,76.342402
+Section Office,Perumbavoor Electrical Circle,1274,5604,NParavur Electrical Section,10.148457,76.231047
+Section Office,Perumbavoor Electrical Circle,1273,5603,Ezhikkara Electrical Section,10.131339,76.221561
+Section Office,Perumbavoor Electrical Circle,1257,5592,Pothanicad Electrical Section,10.0045269,76.6890939
+Section Office,Perumbavoor Electrical Circle,1256,5591,Moovattupuzha I Electrical Section,9.9853207,76.5779009
+Section Office,Perumbavoor Electrical Circle,1248,5589,Vengoor Electrical Section,10.140185,76.536723
+Section Office,Perumbavoor Electrical Circle,1247,5588,Kuruppampady Electrical Section,10.111142,76.518819
+Section Office,Perumbavoor Electrical Circle,1246,5587,Pattimattom Electrical Section,10.0223,76.449517
+Section Office,Perumbavoor Electrical Circle,1249,5590,Koovapady Electrical Section,10.168038,76.49098
+Section Office,Perumbavoor Electrical Circle,1250,5715,Malayattoor Electrical Section,10.186776,76.491884
+Section Office,Perumbavoor Electrical Circle,1228,5712,Edayar Electrical Section,10.091281,76.317583
+Section Office,Perumbavoor Electrical Circle,1227,5575,Kunnukara Electrical Section,10.155609,76.295192
+Section Office,Perumbavoor Electrical Circle,1226,5574,Eloor Electrical Section,10.072486,76.302784
+Section Office,Perumbavoor Electrical Circle,1245,5586,Kizhakkambalam Electrical Section,10.037493,76.410853
+Section Office,Perumbavoor Electrical Circle,1244,5585,Vengola Electrical Section,10.080954,76.46676
+Section Office,Perumbavoor Electrical Circle,1243,5584,Vazhakkulam Electrical Section,10.116379,76.443032
+Section Office,Perumbavoor Electrical Circle,1242,5583,Perumbavoor Electrical Section,10.117796,76.480425
+Section Office,Perumbavoor Electrical Circle,1241,5582,Mookkannur Electrical Section,10.217237,76.411546
+Section Office,Perumbavoor Electrical Circle,1225,5573,Kalamassery Electrical Section,10.053792,76.330436
+Section Office,Perumbavoor Electrical Circle,1224,5572,Athani Electrical Section,10.154112,76.35021
+Section Office,Perumbavoor Electrical Circle,1223,5571,Chengamanad Electrical Section,10.151988,76.338506
+Section Office,Perumbavoor Electrical Circle,1221,5569,Aluva West Electrical Section,10.115858,76.348437
+Section Office,Perumbavoor Electrical Circle,1220,5568,Aluva North Electrical Section,10.10791,76.354694
+Section Office,Perumbavoor Electrical Circle,1262,5597,Piravam Electrical Section,9.8774464,76.4846843
+Section Office,Perumbavoor Electrical Circle,1222,5570,Chowara Electrical Section,10.125712,76.385461
+Section Office,Perumbavoor Electrical Circle,1240,5581,Karukutty Electrical Section,10.224786,76.375711
+Section Office,Perumbavoor Electrical Circle,1202,5558,Thevakkal Electrical Section,10.034734,76.35692
+Section Office,Perumbavoor Electrical Circle,1264,5599,Pampakuda Electrical Section,9.9150476,76.5214329
+Section Office,Perumbavoor Electrical Circle,1265,5600,Kothamangalam I Electrical Section,10.0621915,76.6194291
+Section Office,Perumbavoor Electrical Circle,1266,5601,Kothamangalam II Electrical Section,10.0635717,76.6280942
+Section Office,Perumbavoor Electrical Circle,1267,5713,Keerampara Electrical Section,10.1011585,76.6502576
+Section Office,Perumbavoor Electrical Circle,1278,5608,Moothakunnam Electrical Section,10.185842,76.203315
+Section Office,Perumbavoor Electrical Circle,1277,5607,Vadakkekara Electrical Section,10.158844,76.211813
+Section Office,Perumbavoor Electrical Circle,1276,5606,Chennamangalam Electrical Section,10.178369,76.225196
+Section Office,Perumbavoor Electrical Circle,3427,5736,Mannam Electrical Section,10.145811,76.253861
+Section Office,Perumbavoor Electrical Circle,3482,5737,Alangad Electrical Section,10.122412,76.298191
+Section Office,Perumbavoor Electrical Circle,3493,5747,Kanjoor Electrical Section,10.135785,76.429664
+Section Office,Perumbavoor Electrical Circle,3584,5750,Edathala Electrical Section,10.070913,76.383234
+Section Office,Perumbavoor Electrical Circle,3619,5752,Manjalloor Electrical Section,9.9435684,76.6392168
+Section Office,Perumbavoor Electrical Circle,4071,5285,Angamaly TMR Meter(Outdoor) Section,10.177409,76.377625
+Section Office,Perumbavoor Electrical Circle,4189,5287,Angamaly TMR Meter(Indoor) Section II,10.177409,76.377625
+Section Office,Perumbavoor Electrical Circle,3618,5751,Nellikuzhy Electrical Section,10.0738945,76.5963194
+Section Office,Perumbavoor Electrical Circle,1258,5593,Kalloorkad Electrical Section,9.9691239,76.6753806
+Section Office,Perumbavoor Electrical Circle,1259,5594,Moovattupuzha II Electrical Section,9.9898932,76.5811514
+Section Office,Perumbavoor Electrical Circle,1260,5595,Velloorkunnam Electrical Section,9.990267,76.5735667
+Section Office,Perumbavoor Electrical Circle,1261,5596,Valayanchirangara Electrical Section,10.0656564,76.4958883
+Section Office,Perumbavoor Electrical Circle,4069,5283,Angamaly Transformer Repairing Section,10.177409,76.377625
+Section Office,Shoranur Electrical Circle,3452,6801,Ongallur Electrical Section,10.8018957,76.2202096
+Section Office,Shoranur Electrical Circle,4182,6487,Shoranur TMR Meter Testing Lab,10.781294,76.283191
+Section Office,Shoranur Electrical Circle,1525,6536,Pattambi Electrical Section,10.8033729,76.1853022
+Section Office,Shoranur Electrical Circle,3568,6812,Kumbidi Electrical Section,10.83052575,76.05030031
+Section Office,Shoranur Electrical Circle,4089,6821,VILAYUR ELECTRICAL SECTION,10.872006,76.1882547
+Section Office,Shoranur Electrical Circle,1774,6742,Kumaramputhur Electrical Section,10.986784,76.432136
+Section Office,Shoranur Electrical Circle,1773,6522,Thachampara Electrical Section,10.959243,76.507101
+Section Office,Shoranur Electrical Circle,1772,6521,Alanellur Electrical Section,11.016174,76.343124
+Section Office,Shoranur Electrical Circle,1770,6516,Agali Electrical Section,11.101646,76.648976
+Section Office,Shoranur Electrical Circle,3803,6486,Shornur TMR Meter Testing(Outdoor) Section,10.789185,76.776115
+Section Office,Shoranur Electrical Circle,1900,6771,Kanjirapuzha Electrical Section,11.004083,76.51337
+Section Office,Shoranur Electrical Circle,1527,6538,Chalissery Electrical Section,10.7374218,76.0878984
+Section Office,Shoranur Electrical Circle,1528,6539,Thrithala Electrical Section,10.73823518,76.12802346
+Section Office,Shoranur Electrical Circle,3186,6784,Pengattiri Electrical Section,10.86337,76.278447
+Section Office,Shoranur Electrical Circle,3734,3441,Kanjikode Meter Testing(Outdoor) Section,10.789185,76.776115
+Section Office,Shoranur Electrical Circle,1530,6541,Cherplassery Electrical Section,10.882119,76.317051
+Section Office,Shoranur Electrical Circle,1535,6733,Vaniyamkulam Electrical Section,10.781446,76.330051
+Section Office,Shoranur Electrical Circle,1534,6705,Peringode Electrical Section,10.7380844,76.1281053
+Section Office,Shoranur Electrical Circle,1533,6704,Muthuthala Electrical Section,10.8362741,76.1582663
+Section Office,Shoranur Electrical Circle,1532,6703,Vallapuzha Electrical Section,10.8370582,76.2469148
+Section Office,Shoranur Electrical Circle,1531,6542,Kothakkurussi Electrical Section,10.825594,76.348173
+Section Office,Shoranur Electrical Circle,1523,6534,Ambalappara Electrical Section,10.831672,76.412378
+Section Office,Shoranur Electrical Circle,1524,6535,Shoranur Electrical Section,10.781294,76.283191
+Section Office,Shoranur Electrical Circle,1529,6540,Padinjarangadi Electrical Section,10.79143933,76.05900378
+Section Office,Shoranur Electrical Circle,1522,6533,Ottappalam Electrical Section,10.772947,76.38235
+Section Office,Shoranur Electrical Circle,4183,6488,Shoranur TMR Transformer Section,10.781294,76.283191
+Section Office,Shoranur Electrical Circle,1526,6537,Koppam Electrical Section,10.872006,76.1882547
+Section Office,Shoranur Electrical Circle,3190,6785,Kottathara Electrical Section,11.135966,76.693751
+Section Office,Shoranur Electrical Circle,4118,6824,Lakkidi Electrical Section,10.7742547782,76.4312884514
+Section Office,Shoranur Electrical Circle,1771,6520,Mannarkkad Electrical Section,10.99934,76.470749
+Section Office,Shoranur Electrical Circle,1521,6524,Sreekrishnapuram Electrical Section,10.909504,76.416733
+Section Office,Shoranur Electrical Circle,1536,6753,Thiruvegapura Electrical Section,10.8764072,76.1193813
+Section Office,Shoranur Electrical Circle,3451,6791,Koottupatha Electrical Section,10.7776895,76.1644257
+Section Office,Sreekandapuram Electrical Circle,1673,6639,Kunhimangalam Electrical Section,12.079244,75.239926
+Section Office,Sreekandapuram Electrical Circle,1683,6649,Irikkur Electrical Section,11.98283476,75.55556
+Section Office,Sreekandapuram Electrical Circle,1732,6722,Edoor Electrical Section,11.997414,75.725525
+Section Office,Sreekandapuram Electrical Circle,1724,6675,Mattannur Electrical Section,11.93322643,75.58345436
+Section Office,Sreekandapuram Electrical Circle,1681,6647,Sreekandapuram Electrical Section,12.04464828,75.50480276
+Section Office,Sreekandapuram Electrical Circle,2339,6761,Ulikkal Electrical Section,12.04135247,75.62415269
+Section Office,Sreekandapuram Electrical Circle,1680,6646,Dharmasala Electrical Section,11.985296,75.379601
+Section Office,Sreekandapuram Electrical Circle,3177,6787,Kakkayangad Electrical Section,11.93879157,75.70424857
+Section Office,Sreekandapuram Electrical Circle,1679,6645,Karimbam Electrical Section,12.04719819,75.36919775
+Section Office,Sreekandapuram Electrical Circle,3179,6776,Sivapuram Electrical Section,11.90943606,75.60725846
+Section Office,Sreekandapuram Electrical Circle,1686,6652,Padiyottuchal Electrical Section,12.25244,75.33588
+Section Office,Sreekandapuram Electrical Circle,1678,6644,Taliparamba Electrical Section,12.037158,75.3594205
+Section Office,Sreekandapuram Electrical Circle,2369,6759,Kelakam Electrical Section,11.89673274,75.81108437
+Section Office,Sreekandapuram Electrical Circle,1677,6643,Madayi Electrical Section,12.015843,75.250148
+Section Office,Sreekandapuram Electrical Circle,1684,6650,Vellur Electrical Section,12.129506,75.216013
+Section Office,Sreekandapuram Electrical Circle,1687,6721,Chemperi Electrical Section,12.09990628,75.55054251
+Section Office,Sreekandapuram Electrical Circle,1685,6651,Karivellur Electrical Section,12.17877,75.18947
+Section Office,Sreekandapuram Electrical Circle,1723,6674,Iritty Electrical Section,11.98479119,75.6756387
+Section Office,Sreekandapuram Electrical Circle,3178,6775,Payyavur Electrical Section,12.06110405,75.57947959
+Section Office,Sreekandapuram Electrical Circle,3456,6799,Karthikapuram Electrical Section,12.22879045,75.48290033
+Section Office,Sreekandapuram Electrical Circle,3571,6813,Vallithode Electrical Section,12.03520668,75.71156021
+Section Office,Sreekandapuram Electrical Circle,3617,6816,Cherupuzha Electrical Section,12.27116,75.362501
+Section Office,Sreekandapuram Electrical Circle,1725,6676,Thondiyil Electrical Section,11.89635828,75.74166229
+Section Office,Sreekandapuram Electrical Circle,1676,6642,Pazhayangadi Electrical Section,12.032025,75.267632
+Section Office,Sreekandapuram Electrical Circle,1675,6641,Mathamangalam Electrical Section,12.13368,75.30006
+Section Office,Sreekandapuram Electrical Circle,1674,6640,Ramanthali Electrical Section,12.06026,75.18994
+Section Office,Sreekandapuram Electrical Circle,1672,6638,Payyanur Electrical Section,12.10209,75.20977
+Section Office,Sreekandapuram Electrical Circle,1688,6745,Chapparappadavu Electrical Section,12.11459056,75.41432225
+Section Office,Sreekandapuram Electrical Circle,2241,6760,Pariyaram Electrical Section,12.06076,75.33684
+Section Office,Sreekandapuram Electrical Circle,1682,6648,Alakode Electrical Section,12.19013153,75.4654215
+Section Office,Thiruvananthapuram Electrical Circle(Urban),875,4532,Avanavanchery Electrical Section,8.69112,76.848443
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3214,4676,Kudappanakunnu Electrical Section,8.54561,76.95942
+Section Office,Thiruvananthapuram Electrical Circle(Urban),836,4504,Puthenchantha Electrical Section,8.49399,76.95067
+Section Office,Thiruvananthapuram Electrical Circle(Urban),879,4536,Madavoor Electrical Section,8.811605,76.8209
+Section Office,Thiruvananthapuram Electrical Circle(Urban),877,4534,Palachira Electrical Section,8.73411,76.744282
+Section Office,Thiruvananthapuram Electrical Circle(Urban),869,4526,Edava Electrical Section,8.762693,76.701451
+Section Office,Thiruvananthapuram Electrical Circle(Urban),854,4517,Ulloor Electrical Section,8.522527,76.926893
+Section Office,Thiruvananthapuram Electrical Circle(Urban),855,4518,Nalanchira Electrical Section,8.565702,76.944362
+Section Office,Thiruvananthapuram Electrical Circle(Urban),837,4505,Thycaud Electrical Section,8.49505,76.96363
+Section Office,Thiruvananthapuram Electrical Circle(Urban),833,4501,Manacaud Electrical Section,8.45297,76.95098
+Section Office,Thiruvananthapuram Electrical Circle(Urban),838,4506,Cantonment Electrical Section,8.50942,76.94917
+Section Office,Thiruvananthapuram Electrical Circle(Urban),876,4533,Kallambalam Electrical Section,8.760618,76.791636
+Section Office,Thiruvananthapuram Electrical Circle(Urban),4166,4913,Thirumala TMR Meter Testing Lab,8.49294,76.99385
+Section Office,Thiruvananthapuram Electrical Circle(Urban),856,4519,Sreekariam Electrical Section,8.570201,76.923171
+Section Office,Thiruvananthapuram Electrical Circle(Urban),852,4515,Sreevaraham Electrical Section,8.477028,76.936095
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3170,4678,Vattappara Electrical Section,8.595659,76.9472
+Section Office,Thiruvananthapuram Electrical Circle(Urban),841,4509,Vattiyoorkavu Electrical Section,8.52301,76.99434
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3808,4309,Thiruvananthapuram SCADA and RMU Maintenance Section,8.4861,76.94976
+Section Office,Thiruvananthapuram Electrical Circle(Urban),857,4520,Kulathur Electrical Section,8.542263,76.884079
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3457,4680,Pallickal Electrical Section,8.82622,76.811223
+Section Office,Thiruvananthapuram Electrical Circle(Urban),858,4521,Kazhakkuttam Electrical Section,8.564545,76.873918
+Section Office,Thiruvananthapuram Electrical Circle(Urban),853,4516,Kesavadasapuram Electrical Section,8.515727,76.937924
+Section Office,Thiruvananthapuram Electrical Circle(Urban),4167,4914,Thirumla TMR Meter Testing(Outdoor) Section,8.49294,76.99385
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3807,4308,Thiruvananthapuram APDRP Cable Testing Unit,8.4861,76.94976
+Section Office,Thiruvananthapuram Electrical Circle(Urban),859,4522,Kaniyapuram Electrical Section,8.588857,76.854837
+Section Office,Thiruvananthapuram Electrical Circle(Urban),839,4507,Vellayambalam Electrical Section,8.50684,76.9618
+Section Office,Thiruvananthapuram Electrical Circle(Urban),870,4527,Kedakulam Electrical Section,8.79823,76.718822
+Section Office,Thiruvananthapuram Electrical Circle(Urban),834,4502,Thiruvallam Electrical Section,8.42495,76.96699
+Section Office,Thiruvananthapuram Electrical Circle(Urban),842,4510,Karamana Electrical Section,8.48955,76.96468
+Section Office,Thiruvananthapuram Electrical Circle(Urban),871,4528,Kadakkavoor Electrical Section,8.672152,76.767522
+Section Office,Thiruvananthapuram Electrical Circle(Urban),835,4503,Fort Trivandrum Electrical Section,8.4861,76.94976
+Section Office,Thiruvananthapuram Electrical Circle(Urban),843,4511,Thirumala Electrical Section,8.49255,76.99282
+Section Office,Thiruvananthapuram Electrical Circle(Urban),4165,4912,Thirumal TMR Transformer Workshop,8.49294,76.99385
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3784,4691,Kachani Electrical Section,8.553128,76.994034
+Section Office,Thiruvananthapuram Electrical Circle(Urban),872,4529,Chirayinkeezhu Electrical Section,8.662725,76.790528
+Section Office,Thiruvananthapuram Electrical Circle(Urban),874,4531,Attingal Electrical Section,8.69857,76.814371
+Section Office,Thiruvananthapuram Electrical Circle(Urban),860,4523,Mangalapuram Electrical Section,8.624898,76.849351
+Section Office,Thiruvananthapuram Electrical Circle(Urban),850,4513,Beach Trivandrum Electrical Section,8.488664,76.918802
+Section Office,Thiruvananthapuram Electrical Circle(Urban),851,4514,Pettah Electrical Section,8.496989,76.936687
+Section Office,Thiruvananthapuram Electrical Circle(Urban),873,4530,Vakkom Electrical Section,8.68791,76.763837
+Section Office,Thiruvananthapuram Electrical Circle(Urban),844,4512,Poojappura Electrical Section,8.49161,76.97184
+Section Office,Thiruvananthapuram Electrical Circle(Urban),861,4524,Pothencode Electrical Section,8.619158,76.898017
+Section Office,Thiruvananthapuram Electrical Circle(Urban),868,4525,Varkala Electrical Section,8.739065,76.723758
+Section Office,Thiruvananthapuram Electrical Circle(Urban),840,4508,Peroorkada Electrical Section,8.53926,76.96819
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3209,4679,Poonthura Electrical Section,8.44479,76.94503
+Section Office,Thiruvananthapuram Electrical Circle(Urban),3735,3442,Thiruvananthapuram Transformer Field Repair Unit,8.49294,76.99385
+Section Office,Thiruvananthapuram Electrical Circle(Urban),878,4535,Kilimanoor Electrical Section,8.765839,76.873145
+Section Office,Thiruvananthapuram Electrical Circle(Urban),880,4654,Nagaroor Electrical Section,8.73236,76.847446
+Section Office,Thodupuzha Electrical Circle,3783,3905,Idukki Transformer Field Repair Unit,9.891834,76.708817
+Section Office,Thodupuzha Electrical Circle,1416,5612,Peermade Electrical Section,9.592849,76.974139
+Section Office,Thodupuzha Electrical Circle,1417,5613,Upputhara Electrical Section,9.7011078,77.0215845
+Section Office,Thodupuzha Electrical Circle,4142,5898,Thankamony Electrical Sub Centre,9.84004,77.03468
+Section Office,Thodupuzha Electrical Circle,1282,5609,Kattappana Electrical Section,9.756427,77.11495
+Section Office,Thodupuzha Electrical Circle,3650,5755,Udumbanchola Electrical Section,9.90206,77.17693
+Section Office,Thodupuzha Electrical Circle,1290,5618,NoI Thodupuzha Electrical Section,9.891834,76.708817
+Section Office,Thodupuzha Electrical Circle,1291,5619,Moolamattom Electrical Section,9.788771,76.852875
+Section Office,Thodupuzha Electrical Circle,1292,5620,NoII Thodupuzha Electrical Section,9.891834,76.708817
+Section Office,Thodupuzha Electrical Circle,1412,5709,Rajakumari Electrical Section,9.96868,77.15264
+Section Office,Thodupuzha Electrical Circle,1293,5621,Karimannoor Electrical Section,9.91583,76.78576
+Section Office,Thodupuzha Electrical Circle,1294,5622,Vannappuram Electrical Section,9.97473,76.77985
+Section Office,Thodupuzha Electrical Circle,3206,5730,Rajakkad Electrical Section,9.962561,77.09831
+Section Office,Thodupuzha Electrical Circle,1285,5623,Painavu Electrical Section,9.861971,76.961095
+Section Office,Thodupuzha Electrical Circle,1286,5711,Murikkassery Electrical Section,9.910361,77.009085
+Section Office,Thodupuzha Electrical Circle,1409,5615,Chithirapuram Electrical Section,10.03385,77.039489
+Section Office,Thodupuzha Electrical Circle,3628,5753,Alakode Thodupuzha Electrical Section,9.881428,76.767081
+Section Office,Thodupuzha Electrical Circle,2639,5723,Thookkupalam Electrical Section,9.81377,77.20151
+Section Office,Thodupuzha Electrical Circle,2642,5722,Kanjikkuzhy Electrical Section,9.95237,76.93352
+Section Office,Thodupuzha Electrical Circle,1410,5616,Marayoor Electrical Section,10.277995,77.1701708
+Section Office,Thodupuzha Electrical Circle,1284,5611,Vandenmedu Electrical Section,9.69787,77.16244
+Section Office,Thodupuzha Electrical Circle,1283,5610,Nedumkandom Electrical Section,9.82501,77.15462
+Section Office,Thodupuzha Electrical Circle,2698,5720,Peruvanathanam Electrical Section,9.555968,76.927203
+Section Office,Thodupuzha Electrical Circle,3428,5743,Purappuzha Electrical Section,9.866411,76.667801
+Section Office,Thodupuzha Electrical Circle,1411,5617,Adimali Electrical Section,10.01294,76.95692
+Section Office,Thodupuzha Electrical Circle,1413,5710,Kambilikandom Electrical Section,9.94439,77.015695
+Section Office,Thodupuzha Electrical Circle,3478,5742,Anakkara Electrical Section,9.65753,77.1589306
+Section Office,Thodupuzha Electrical Circle,3492,5746,Kanchiyar Electrical Section,9.73719,77.06169
+Section Office,Thodupuzha Electrical Circle,1419,5708,Kumily Electrical Section,9.606289,77.1658699
+Section Office,Thodupuzha Electrical Circle,2640,5724,Erattayar Electrical Section,9.80986,77.10463
+Section Office,Thodupuzha Electrical Circle,1418,5614,Vandiperiyar Electrical Section,9.572685,77.082686
+Section Office,Thrissur Electrical Circle,1369,5670,Ammadam Electrical Section,10.457488,76.192013
+Section Office,Thrissur Electrical Circle,1377,5678,Ayyanthole Electrical Section,10.516658,76.177965
+Section Office,Thrissur Electrical Circle,1378,5679,Arimboor Electrical Section,10.497684,76.160147
+Section Office,Thrissur Electrical Circle,1399,5696,Koonamoochy Electrical Section,10.615107,76.088645
+Section Office,Thrissur Electrical Circle,1432,5719,Pazhayannur Electrical Section,10.69537701,76.42267911
+Section Office,Thrissur Electrical Circle,1431,5718,Punnamparambu Electrical Section,10.63336112,76.27401811
+Section Office,Thrissur Electrical Circle,1425,5684,Kundannur Electrical Section,10.68471633,76.21677621
+Section Office,Thrissur Electrical Circle,1424,5683,Wadakkanchery Electrical Section,10.66191536,76.24500991
+Section Office,Thrissur Electrical Circle,1400,5697,Guruvayur Electrical Section,10.599773,76.058343
+Section Office,Thrissur Electrical Circle,1401,5698,Chavakkad Electrical Section,10.592573,76.027724
+Section Office,Thrissur Electrical Circle,1428,5693,Thiruvilwamala Electrical Section,10.73388581,76.42926441
+Section Office,Thrissur Electrical Circle,3071,5727,Perumbilavu Electrical Section,10.694585,76.087759
+Section Office,Thrissur Electrical Circle,1386,5685,Muduvara Electrical Section,10.552756,76.156295
+Section Office,Thrissur Electrical Circle,1384,5681,Ramavarmapuram Electrical Section,10.555616,76.241097
+Section Office,Thrissur Electrical Circle,3302,5675,Mannuthy Electrical Section (Madakkathara),10.562365,76.267627
+Section Office,Thrissur Electrical Circle,1376,5677,Nadathara Electrical Section,10.513461,76.267545
+Section Office,Thrissur Electrical Circle,1375,5676,Pattikkad Electrical Section,10.562245,76.270376
+Section Office,Thrissur Electrical Circle,1373,5674,Puthur Electrical Section,10.480722,76.2855
+Section Office,Thrissur Electrical Circle,1371,5672,Ollur Electrical Section,10.466883,76.24531
+Section Office,Thrissur Electrical Circle,1406,5703,Punnayurkulam Electrical Section,10.671981,75.995976
+Section Office,Thrissur Electrical Circle,1405,5702,Big Bazar Electrical Section,10.649377,76.065906
+Section Office,Thrissur Electrical Circle,1372,5673,Marathakkara Electrical Section,10.479926,76.251166
+Section Office,Thrissur Electrical Circle,1404,5701,Pazhanji Electrical Section,10.688156,76.057018
+Section Office,Thrissur Electrical Circle,1403,5700,Kunnamkulam Electrical Section,10.633028,76.085861
+Section Office,Thrissur Electrical Circle,1402,5699,Beach Chavakkad Electrical Section,10.580539,76.017671
+Section Office,Thrissur Electrical Circle,1387,5686,Parappur Electrical Section,10.563272,76.122138
+Section Office,Thrissur Electrical Circle,1397,5694,Kechery Electrical Section,10.618785,76.120593
+Section Office,Thrissur Electrical Circle,3741,3448,Thrissur Transformer Field Repair Unit,10.527936,76.205381
+Section Office,Thrissur Electrical Circle,1429,5714,Medical College(P)  Electrical Section,10.60401131,76.19375092
+Section Office,Thrissur Electrical Circle,1110,5907,Thrissur Meter Testing Unit,10.527936,76.205381
+Section Office,Thrissur Electrical Circle,1426,5691,Chelakkara Electrical Section,10.69357711,76.33844812
+Section Office,Thrissur Electrical Circle,1430,5717,Desamangalam Electrical Section,10.75568661,76.23206121
+Section Office,Thrissur Electrical Circle,1383,5680,Viyyur Electrical Section,10.560039,76.217445
+Section Office,Thrissur Electrical Circle,1370,5671,Kuriachira Electrical Section,10.501971,76.227874
+Section Office,Thrissur Electrical Circle,1368,5669,Koorkenchery Electrical Section,10.491151,76.213375
+Section Office,Thrissur Electrical Circle,1398,5695,Mundur Electrical Section,10.608948,76.139427
+Section Office,Thrissur Electrical Circle,1391,5690,Venkitangu Electrical Section,10.527226,76.088487
+Section Office,Thrissur Electrical Circle,1390,5689,Kandasankadavu Electrical Section,10.480118,76.108961
+Section Office,Thrissur Electrical Circle,1389,5688,Vadanappilly Electrical Section,10.490134,76.068845
+Section Office,Thrissur Electrical Circle,1388,5687,Pavarty Electrical Section,10.565394,76.060607
+Section Office,Thrissur Electrical Circle,1385,5682,Mulamkunnathukavu Electrical Section,10.586112,76.212367
+Section Office,Thrissur Electrical Circle,1427,5692,Cheruthuruthy Electrical Section,10.75010609,76.27488069
+Section Office,Tirur Electrical Circle,1591,6585,Changaramkulam Electrical Section,10.733664,76.026213
+Section Office,Tirur Electrical Circle,1580,6712,Kuttipuram Electrical Section,10.843868,76.030211
+Section Office,Tirur Electrical Circle,1581,6730,Vettom Electrical Section,10.891028,75.905836
+Section Office,Tirur Electrical Circle,3454,6803,Perumpadappu Electrical Section,10.701239,75.981514
+Section Office,Tirur Electrical Circle,1582,6736,Thanalur Electrical Section,10.95166,75.911381
+Section Office,Tirur Electrical Circle,1592,6755,Kandanakam Electrical Section,10.812134,76.011179
+Section Office,Tirur Electrical Circle,1583,6741,Kadungathukundu Electrical Section,10.939952,75.979173
+Section Office,Tirur Electrical Circle,1794,6556,Vengara Electrical Section,11.051196,75.976546
+Section Office,Tirur Electrical Circle,1863,6576,Thanoor Electrical Section ,10.974743,75.87707
+Section Office,Tirur Electrical Circle,1802,6580,Thalappara (P) Electrical Section,11.072983,75.903408
+Section Office,Tirur Electrical Circle,2619,6769,Edayur Electrical Section,10.904388,76.098083
+Section Office,Tirur Electrical Circle,1573,6568,Tirur (East) Electrical Section,10.915905,75.91822
+Section Office,Tirur Electrical Circle,1797,6575,Parappanangadi Electrical Section,11.047382,75.859229
+Section Office,Tirur Electrical Circle,1587,6581,Ponnani Electrical Section,10.78192,75.931566
+Section Office,Tirur Electrical Circle,3486,6798,Tanur East Electrical Section,10.985873,75.89545
+Section Office,Tirur Electrical Circle,1804,6715,Vallikunnu Electrical Section,11.111539,75.835474
+Section Office,Tirur Electrical Circle,1799,6577,Chelari Electrical Section,11.135792,75.894996
+Section Office,Tirur Electrical Circle,1800,6578,Tirurangadi Electrical Section,11.042457,75.9128
+Section Office,Tirur Electrical Circle,1801,6579,Venniyoor Electrical Section,11.020069,75.947753
+Section Office,Tirur Electrical Circle,1589,6583,Purang Electrical Section,10.749107,75.968611
+Section Office,Tirur Electrical Circle,1590,6584,Edappal Electrical Section,10.779762,76.008577
+Section Office,Tirur Electrical Circle,1796,6558,Edarikode Electrical Section,10.993965,75.980426
+Section Office,Tirur Electrical Circle,1805,6739,Kunnumpuram (AR Nagar) Electrical Section,11.085666,75.953788
+Section Office,Tirur Electrical Circle,1572,6566,Valancherry Electrical Section,10.90069,76.078376
+Section Office,Tirur Electrical Circle,3453,6802,Ezhuvathiruthy Electrical Section,10.78647,75.9513
+Section Office,Tirur Electrical Circle,1795,6557,Kottakkal Electrical Section,11.004172,76.005521
+Section Office,Tirur Electrical Circle,1803,6709,Othukungal Electrical Section,11.028353,76.034391
+Section Office,Tirur Electrical Circle,1588,6582,Thavannur Electrical Section,10.851622,75.988473
+Section Office,Tirur Electrical Circle,1577,6572,Kadampuzha Electrical Section,10.9395,76.038414
+Section Office,Tirur Electrical Circle,1574,6569,Tirur (West) Electrical Section,10.915905,75.91822
+Section Office,Tirur Electrical Circle,3497,6808,Oorakam Electrical Section,11.062362,76.032943
+Section Office,Tirur Electrical Circle,1575,6570,Ponmundam (P) (Vylathur) Electrical Section,10.956608,75.947266
+Section Office,Tirur Electrical Circle,1576,6571,Puthenathani Electrical Section,10.935025,76.007524
+Section Office,Tirur Electrical Circle,3183,6781,Purathur Electrical Section,10.816656,75.922374
+Section Office,Tirur Electrical Circle,3485,6797,Thuvvakkad Electrical Section,10.910184,75.969698
+Section Office,Tirur Electrical Circle,1578,6573,Thirunavaya (P) Electrical Section,10.871537,75.983446
+Section Office,Tirur Electrical Circle,1579,6574,Alathiyoor Electrical Section,10.861707,75.936613
+Section Office,Vadakara Electrical Circle,1647,6625,Muttungal Electrical Section,11.629979,75.575528
+Section Office,Vadakara Electrical Circle,1826,6616,Perambra (South) Electrical Section,11.556192,75.76095
+Section Office,Vadakara Electrical Circle,1827,6617,Meppayoor Electrical Section,11.530263,75.709442
+Section Office,Vadakara Electrical Circle,1830,6628,Nadapuram Electrical Section,11.689551,75.6762507
+Section Office,Vadakara Electrical Circle,1648,6626,Orkettery Electrical Section,11.665915,75.598687
+Section Office,Vadakara Electrical Circle,1646,6624,Ayenchery Electrical Section,11.627915,75.673873
+Section Office,Vadakara Electrical Circle,1645,6623,Vadakara - North Electrical Section,11.608749,75.603056
+Section Office,Vadakara Electrical Circle,2696,6767,Areekkulam Electrical Section,11.485413,75.713979
+Section Office,Vadakara Electrical Circle,2697,6766,Moodadi Electrical Section,11.469237,75.656335
+Section Office,Vadakara Electrical Circle,1653,6746,Thikkody Electrical Section,11.487654,75.629072
+Section Office,Vadakara Electrical Circle,1652,6743,Azhiyoor Electrical Section,11.669939,75.557949
+Section Office,Vadakara Electrical Circle,3173,6778,Perambra (North) Electrical Section,11.562652,75.7613
+Section Office,Vadakara Electrical Circle,1651,6738,Thiruvallur Electrical Section,11.588258,75.67334
+Section Office,Vadakara Electrical Circle,1650,6737,Vadakara Beach Electrical Section,11.595902,75.582192
+Section Office,Vadakara Electrical Circle,1649,6717,Maniyoor Electrical Section,11.563627,75.646447
+Section Office,Vadakara Electrical Circle,1831,6629,Kutiady Electrical Section,11.652939,75.754773
+Section Office,Vadakara Electrical Circle,1828,6618,Naduvannoor Electrical Section,11.483311,75.773358
+Section Office,Vadakara Electrical Circle,1829,6627,Edechery Electrical Section,11.6627336,75.618459
+Section Office,Vadakara Electrical Circle,1833,6716,Chakkittapara Electrical Section,11.5754406,75.8144888
+Section Office,Vadakara Electrical Circle,1834,6724,Parakkadavu Electrical Section,11.708868,75.634605
+Section Office,Vadakara Electrical Circle,1835,6731,Thuneri Electrical Section,11.7094604,75.6329819
+Section Office,Vadakara Electrical Circle,1641,6619,Koyilandy North Electrical Section,11.449919,75.701626
+Section Office,Vadakara Electrical Circle,1642,6620,Melady Electrical Section,11.515233,75.621724
+Section Office,Vadakara Electrical Circle,1836,6735,Kakkattil Electrical Section,11.6542778,75.75736847
+Section Office,Vadakara Electrical Circle,1837,6752,Parappupara Electrical Section,11.72893,75.705968
+Section Office,Vadakara Electrical Circle,1832,6630,Thottil palam Electrical Section,11.6776877,75.7798328
+Section Office,Vadakara Electrical Circle,1643,6621,Koyilandy South Electrical Section,11.396033,75.727809
+Section Office,Vadakara Electrical Circle,1644,6622,Vadakara South Electrical Section,11.594812,75.593458
+Sub Engineer Office,Alappuzha Electrical Circle,2457,5815,Kavalam Sub Engineer Office ,9.476864,76.456982
+Sub Engineer Office,Alappuzha Electrical Circle,3786,5954,Aroor RAPDRP Construction Section,9.882779,76.300952
+Sub Engineer Office,Alappuzha Electrical Circle,2456,5816,Pulinkunnu Sub Engineer Office ,9.45005,76.44078
+Sub Engineer Office,Alappuzha Electrical Circle,1957,5822,Kidangannur Sub Engineer Office,9.31824,76.61287
+Sub Engineer Office,Alappuzha Electrical Circle,2458,5817,Valady Sub Engineer Office ,9.466605,76.496498
+Sub Engineer Office,Ernakulam Electrical Circle,2145,6304,Cheranallur Sub Engineer Office,10.042164,76.287464
+Sub Engineer Office,Harippad Electrical Circle,1952,5823,Pandanad Sub Engineer Office,9.32566,76.5802
+Sub Engineer Office,Harippad Electrical Circle,2311,5838,Muthukulam Sub Engineer Office,9.202162,76.464699
+Sub Engineer Office,Harippad Electrical Circle,2313,5835,Choonad Sub Engineer Office,9.139188,76.553249
+Sub Engineer Office,Harippad Electrical Circle,1950,5821,Ala Sub Engineer Office,9.2987,76.6024
+Sub Engineer Office,Harippad Electrical Circle,2314,5834,Chettikulangara Sub Engineer Office,9.227542,76.517242
+Sub Engineer Office,Harippad Electrical Circle,2312,5836,Kandalloor Sub Engineer Office,9.175527,76.473165
+Sub Engineer Office,Harippad Electrical Circle,2310,5837,Kareelakulangara Sub Engineer Office,9.201057,76.484571
+Sub Engineer Office,Irinjalakuda Electrical Circle,2481,5808,Pazhukkara Sub Engineer Office,10.280566,76.29081
+Sub Engineer Office,Irinjalakuda Electrical Circle,2483,5809,Poyya Sub Engineer Office,10.2154899,76.2384542
+Sub Engineer Office,Irinjalakuda Electrical Circle,2482,5806,Kallettumkara Sub Engineer Office,10.341483,76.281597
+Sub Engineer Office,Irinjalakuda Electrical Circle,2484,5805,Chengaloor Sub Engineer Office,10.405637,76.30592
+Sub Engineer Office,Irinjalakuda Electrical Circle,2406,6305,Aripalam Sub Engineer Office,10.299593,76.191849
+Sub Engineer Office,Irinjalakuda Electrical Circle,2485,5804,Athirappilly Sub Engineer Office,10.290333,76.513573
+Sub Engineer Office,Kannur Electrical Circle,2131,6307,Mundayad Sub Engineer Office,11.891081,75.405854
+Sub Engineer Office,Kattakada Electrical Circle (Rural),1925,4867,Uzhamalackal Sub Engineer Office,8.592911,77.042981
+Sub Engineer Office,Kattakada Electrical Circle (Rural),1943,4856,Aruvikkara Sub Engineer Office,8.569265,77.0150866667
+Sub Engineer Office,Kattakada Electrical Circle (Rural),1926,4865,Poovathoor Sub Engineer Office,8.616139,76.967828
+Sub Engineer Office,Kattakada Electrical Circle (Rural),1939,4862,Peringamamla Sub Engineer Office,8.73032,77.048335
+Sub Engineer Office,Kattakada Electrical Circle (Rural),2465,4872,Nellivila Sub Engineer Office,8.41151,77.011767
+Sub Engineer Office,Kattakada Electrical Circle (Rural),1946,4859,Kallikadu Sub Engineer Office,8.52967,77.1239666667
+Sub Engineer Office,Kattakada Electrical Circle (Rural),2466,4874,Pulinkudy Sub Engineer Office,8.36521,77.01365
+Sub Engineer Office,Kattakada Electrical Circle (Rural),2472,4870,Naruvamoodu Sub Engineer Office,8.44908,77.03443
+Sub Engineer Office,Kattakada Electrical Circle (Rural),1937,4861,Panavoor Sub Engineer Office,8.667705,76.988381
+Sub Engineer Office,Kollam Electrical Circle,2566,4835,Patharam Sub Engineer Office,9.0742139,76.603514
+Sub Engineer Office,Kollam Electrical Circle,2553,4828,Kalluvathukal Sub engineer office,8.83357,76.74431
+Sub Engineer Office,Kollam Electrical Circle,2538,4827,Alummoodu Sub Engineer Office,8.9192242,76.667878
+Sub Engineer Office,Kollam Electrical Circle,2565,4836,Veluthamanal Sub Engineer Office,9.0688901,76.5546045
+Sub Engineer Office,Kollam Electrical Circle,2582,4842,Pattathanam Sub Engineer Office,8.887545,76.611234
+Sub Engineer Office,Kollam Electrical Circle,2585,4843,Peroor Sub Engineer Office,8.906313,76.636495
+Sub Engineer Office,Kollam Electrical Circle,2571,4829,Cheriyazheekkal Sub Engineer Office,9.0507737,76.5032932
+Sub Engineer Office,Kollam Electrical Circle,2570,4831,Neendakara Sub Engineer Office,8.95573,76.5338198
+Sub Engineer Office,Kollam Electrical Circle,2576,4830,Karalimukku Sub Engineer Office,9.0236174,76.6056785
+Sub Engineer Office,Kottarakkara Electrical Circle,2447,4849,Pattazhy Sub Engineer Office,9.094013,76.800153
+Sub Engineer Office,Kottarakkara Electrical Circle,2417,4852,Kuzhimathicadu Sub Engineer Office,8.953438,76.705122
+Sub Engineer Office,Kottarakkara Electrical Circle,2444,4848,Nellikkunnam Sub Engineer Office,8.974132,76.77648
+Sub Engineer Office,Kottarakkara Electrical Circle,2416,4854,Munrothuruthu Sub Engineer Office,8.981628,76.609048
+Sub Engineer Office,Kottarakkara Electrical Circle,2418,4850,Edakkidam Sub Engineer Office,8.966322,76.730994
+Sub Engineer Office,Kottarakkara Electrical Circle,2415,4853,Mulavana Sub Engineer Office,8.999195,76.675081
+Sub Engineer Office,Kottayam Electrical Circle,2257,5869,Thiruvarppu Sub Engineer Office,9.5799072,76.5056988
+Sub Engineer Office,Kottayam Electrical Circle,2348,5890,Kallara Sub Engineer Office,9.720805,76.476664
+Sub Engineer Office,Kottayam Electrical Circle,2349,5893,Vayala Sub Engineer Office,9.727004,76.575073
+Sub Engineer Office,Kottayam Electrical Circle,2254,5867,S H Mount Sub Engineer Office,9.6114768,76.5342781
+Sub Engineer Office,Kottayam Electrical Circle,2351,5892,Peruva Sub Engineer Office,9.830418,76.501042
+Sub Engineer Office,Kottayam Electrical Circle,2255,5868,Thiruvanchoor Sub Engineer Office,9.6228144,76.5764362
+Sub Engineer Office,Kottayam Electrical Circle,2256,5870,Thiruvathukkal Sub Engineer Office,9.576747,76.549622
+Sub Engineer Office,Kottayam Electrical Circle,2259,5864,Eara Sub Engineer Office,9.490995,76.49818
+Sub Engineer Office,Kottayam Electrical Circle,2260,5871,Thottakad Sub Engineer Office,9.535079,76.598634
+Sub Engineer Office,Kottayam Electrical Circle,2118,5813,Pathanadu Sub Engineer Office,9.5103318,76.6943165
+Sub Engineer Office,Kottayam Electrical Circle,2258,5865,Maniyaparambu Sub Engineer Office,9.638705,76.4882065
+Sub Engineer Office,Manjeri Electrical Circle,2443,6312,Elamkulam Sub Engineer Office,10.908698,76.232288
+Sub Engineer Office,Manjeri Electrical Circle,1902,6309,Karuvarakundu Sub Engineer Office,11.116597,76.33077
+Sub Engineer Office,Pala Electrical Circle,2138,5858,Kozhuvanal Sub Engineer Office,9.65648,76.663649
+Sub Engineer Office,Pala Electrical Circle,2140,5861,Neeloor Sub Engineer Office,9.799114,76.729323
+Sub Engineer Office,Pala Electrical Circle,2142,5857,Kollappilly Sub Engineer Office,9.764551,76.698593
+Sub Engineer Office,Pala Electrical Circle,2114,5859,Melukavu Sub Engineer Office,9.806929,76.75428
+Sub Engineer Office,Pala Electrical Circle,2115,5860,Moonnilavu Sub Engineer Office,9.748542,76.784592
+Sub Engineer Office,Pala Electrical Circle,2109,5855,Cherpunkal Sub Engineer Office,9.689725,76.635006
+Sub Engineer Office,Pala Electrical Circle,2107,5856,Kadaplamattam Sub Engineer Office,9.721708,76.607821
+Sub Engineer Office,Pala Electrical Circle,2141,5863,Valavoor Sub Engineer Office,9.760782,76.63389
+Sub Engineer Office,Pala Electrical Circle,2112,5862,Uzhavoor Sub Engineer Office,9.792168,76.610989
+Sub Engineer Office,Palakkad Electrical Circle,2549,6301,Moongilmada Sub Engineer Office,10.737966,76.816953
+Sub Engineer Office,Palakkad Electrical Circle,2545,6302,Pattancherry Sub Engineer Office,10.68305,76.708491
+Sub Engineer Office,Palakkad Electrical Circle,4145,6861,RVP Pudur Sub Centre,10.731039,76.874345
+Sub Engineer Office,Palakkad Electrical Circle,2547,6303,R V P Pudur Sub Engineer Office,10.731039,76.874345
+Sub Engineer Office,Pathanamthitta Electrical Circle,2336,5875,Kunnamthanam Sub Engineer Office,9.434895,76.616055
+Sub Engineer Office,Pathanamthitta Electrical Circle,2280,4804,Chandanappally Sub Engineer Office,9.212351,76.768774
+Sub Engineer Office,Pathanamthitta Electrical Circle,2337,5873,Eraviperoor Sub Engineer Office,9.3810527,76.642808
+Sub Engineer Office,Pathanamthitta Electrical Circle,2335,5877,Puthussery Sub Engineer Office,9.420591,76.640227
+Sub Engineer Office,Pathanamthitta Electrical Circle,2403,4886,Pampa  (Seasonal) Sub Engineer Office,9.412703,77.07038
+Sub Engineer Office,Pathanamthitta Electrical Circle,2325,4888,Sabarimala Sub Engineer Office,9.4327368,77.082446
+Sub Engineer Office,Pathanamthitta Electrical Circle,2292,4889,Thannithodu Sub Engineer Office,9.270576,76.927861
+Sub Engineer Office,Pathanamthitta Electrical Circle,2287,4805,Elanthoor Sub Engineer Office,9.295287,76.72758
+Sub Engineer Office,Pathanamthitta Electrical Circle,2404,4883,Mallassery Sub Engineer Office,9.240371,76.807452
+Sub Engineer Office,Pathanamthitta Electrical Circle,2334,5872,Chathenkari Sub Engineer Office,9.384913,76.5282072
+Sub Engineer Office,Pathanamthitta Electrical Circle,2317,4884,Maramon Sub Engineer Office,9.338359,76.698583
+Sub Engineer Office,Pathanamthitta Electrical Circle,2400,4885,Nilackal  (Seasonal) Sub Engineer Office,9.390284,77.013058
+Sub Engineer Office,Pathanamthitta Electrical Circle,2288,4807,Parappetty Sub Engineer Office,9.202511,76.752349
+Sub Engineer Office,Pathanamthitta Electrical Circle,2338,5874,Keezhvaipur Sub Engineer Office,9.431731,76.766713
+Sub Engineer Office,Pathanamthitta Electrical Circle,2333,5876,PAIPPAD,9.420995,76.583895
+Sub Engineer Office,Perumbavoor Electrical Circle,1928,5848,Mulavoor Sub Engineer Office,10.028493,76.59403
+Sub Engineer Office,Perumbavoor Electrical Circle,1929,5849,Pandappilly Sub Engineer Office,9.9101168,76.6085712
+Sub Engineer Office,Perumbavoor Electrical Circle,2045,5847,Mannoor Sub Engineer Office,10.0459589,76.5320236
+Sub Engineer Office,Perumbavoor Electrical Circle,1964,5850,Ramamangalam Sub Engineer Office,9.9384272,76.4760031
+Sub Engineer Office,Perumbavoor Electrical Circle,1965,5846,Mannathoor Sub Engineer Office,9.9077381,76.5568931
+Sub Engineer Office,Perumbavoor Electrical Circle,1968,5851,Thrikkalathoor Sub Engineer Office,10.0286688,76.5493829
+Sub Engineer Office,Perumbavoor Electrical Circle,2120,5852,Varappetty Sub Engineer Office,10.0112038,76.626289
+Sub Engineer Office,Perumbavoor Electrical Circle,2463,6311,Alangad Sub Engineer Office,10.122412,76.298191
+Sub Engineer Office,Shoranur Electrical Circle,4146,6862,Kottappuram Sub Centre,10.93544,76.41652
+Sub Engineer Office,Sreekandapuram Electrical Circle,2398,6306,Payyavoor Sub Engineer Office,12.06110405,75.57947959
+Sub Engineer Office,Sreekandapuram Electrical Circle,4144,6860,Pilathara Sub Centre,12.071471,75.259733
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2244,4839,Puthukurichy Sub Engineer Office,8.610887,76.806559
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2247,4838,Perunguzhi Sub Engineer Office,8.632878,76.811876
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2342,4812,Kavalayoor Sub Engineer Office,8.715033,76.779225
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2370,4809,Chempooru Sub Engineer Office,8.683027,76.877524
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2374,4820,28TH MILE Sub Engineer Office,8.720301,76.812754
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2376,4814,Mudapuram Sub Engineer Office,8.660906,76.812829
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2379,4818,Palayamkunnu Sub Engineer Office,8.770804,76.73589
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2573,4890,Karakulam Sub Engineer Office,8.56063,76.98077
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2245,4841,Vengode Sub Engineer Office,8.654687,76.863299
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2380,4815,Nedunganda Sub Engineer Office,8.705278,76.739566
+Sub Engineer Office,Thiruvananthapuram Electrical Circle(Urban),2243,4840,Vattappara Sub Engineer Office,8.595659,76.9472
+Sub Engineer Office,Thodupuzha Electrical Circle,2318,5800,Rajakad Sub Engineer Office,9.96256,77.09831
+Sub Engineer Office,Thrissur Electrical Circle,2475,5825,Anchangadi Sub Engineer Office,10.537811,76.027706
+Sub Engineer Office,Thrissur Electrical Circle,2708,5882,Chittattukara Sub Engineer Office,10.573921,76.076287
+Sub Engineer Office,Thrissur Electrical Circle,2043,5886,Mullurkkara Sub Engineer Office,10.70527909,76.27021959
+Sub Engineer Office,Thrissur Electrical Circle,2479,5832,Vattempadam Sub Engineer Office,10.651906,76.041226
+Sub Engineer Office,Thrissur Electrical Circle,2476,5826,Anjoor Sub Engineer Office,10.639841,76.031233
+Sub Engineer Office,Thrissur Electrical Circle,2474,5830,Sub Engineers Office Velur,10.639306,76.153913
+Sub Engineer Office,Thrissur Electrical Circle,2020,5884,Elanad Sub Engineer Office,10.61909291,76.39174498
+Sub Engineer Office,Thrissur Electrical Circle,2038,5885,Kariyannoor Sub Engineer Office,10.68003731,76.15231849
+Sub Engineer Office,Thrissur Electrical Circle,2478,5828,Marathamcode Sub Engineer Office,10.6689,76.109421
+Sub Engineer Office,Thrissur Electrical Circle,2048,5888,Thali Sub Engineer Office,10.73654412,76.20179921
+Sub Engineer Office,Thrissur Electrical Circle,2707,5883,Engandiyoor Sub Engineer Office,10.573921,76.076287
+Sub Engineer Office,Tirur Electrical Circle,2575,6317,Eramangalam Sub Engineer Office,10.701239,75.981514
+Overseer Office,Alappuzha Electrical Circle,2455,5814,Thottappally Overseer Office ,9.319034,76.380521
+Overseer Office,Harippad Electrical Circle,2345,5839,Olakettiambalam Overseer Office,9.201257,76.534839
+Overseer Office,Harippad Electrical Circle,2316,5842,Thrikkunnappuzha Overseer Office,9.259225,76.410052
+Overseer Office,Harippad Electrical Circle,2315,5840,Padanilam Overseer Office,9.19305,76.636077
+Overseer Office,Harippad Electrical Circle,2343,5841,Thamarakkulam Overseer Office,9.145371,76.614764
+Overseer Office,Harippad Electrical Circle,1969,5819,Ennakkad Overseer Office,9.29185,76.55354
+Overseer Office,Harippad Electrical Circle,1956,5818,Cheriyanadu Overseer Office,9.24364,76.58583
+Overseer Office,Harippad Electrical Circle,1953,5820,Othera Overseer Office,9.33724,76.60215
+Overseer Office,Kattakada Electrical Circle (Rural),2469,4873,Olathanni Overseer Office,8.36047,77.0802
+Overseer Office,Kattakada Electrical Circle (Rural),1944,4857,Azhikode Overseer Office,8.5728416667,76.99612
+Overseer Office,Kattakada Electrical Circle (Rural),2467,4871,Nellimoodu Overseer Office,8.37721,77.04673
+Overseer Office,Kattakada Electrical Circle (Rural),2470,4875,Thirupuram Overseer Office,8.36037,77.08019
+Overseer Office,Kattakada Electrical Circle (Rural),2468,4869,Karumkulam Overseer Office,8.32851,77.05499
+Overseer Office,Kattakada Electrical Circle (Rural),1942,4863,Pirappanacode Overseer Office,8.6499974,76.916663
+Overseer Office,Kattakada Electrical Circle (Rural),1940,4858,Bharathannoor Overseer Office,8.761804,76.986229
+Overseer Office,Kattakada Electrical Circle (Rural),1941,4866,Thembamood Overseer Office,8.67987,76.9427
+Overseer Office,Kattakada Electrical Circle (Rural),1945,4860,Kuttichal Overseer Office,8.5689883333,77.1043033333
+Overseer Office,Kollam Electrical Circle,2539,4824,Pallimon Overseer Office,8.89992,76.715008
+Overseer Office,Kollam Electrical Circle,2555,4823,Chirakkara Overseer office,8.82733,76.715177
+Overseer Office,Kollam Electrical Circle,2556,4822,Adichanaloor Overseer Office,8.879807,76.714967
+Overseer Office,Kollam Electrical Circle,2562,4834,Thottathil Mukku Overseer Office,9.1052123,76.4975312
+Overseer Office,Kollam Electrical Circle,2564,4833,Thekkumbhagom Overseer Office,8.9700086,76.5637898
+Overseer Office,Kollam Electrical Circle,2567,4832,Kambaladi Overseer Office,9.0808358,76.6496345
+Overseer Office,Kollam Electrical Circle,2554,4825,Vilavoorkonam Overseer office ,8.82156,76.76294
+Overseer Office,Kottarakkara Electrical Circle,2446,4847,Neduvathur Overseer Office,8.992779,76.744222
+Overseer Office,Kottarakkara Electrical Circle,2448,4845,Inchakkadu Overseer Office,9.043535,76.773984
+Overseer Office,Kottarakkara Electrical Circle,2421,4855,Perayam Overseer Office,8.992772,76.677455
+Overseer Office,Kottarakkara Electrical Circle,2419,4851,Karingannoor Overseer Office,8.867911,76.793
+Overseer Office,Kottarakkara Electrical Circle,2449,4846,Iverkala Overseer Office,8.994787,76.8669082
+Overseer Office,Kottarakkara Electrical Circle,2442,4844,Chakkuvarackal Overseer Office,8.994787,76.8669082
+Overseer Office,Kottayam Electrical Circle,2353,5894,Vechoor Overseer Office,9.66348,76.424174
+Overseer Office,Kottayam Electrical Circle,1910,5812,Vadakara Overseer Office,9.4668122,76.7163568
+Overseer Office,Kottayam Electrical Circle,2360,5889,Kallampara Overseer Office,9.691275,76.519852
+Overseer Office,Kottayam Electrical Circle,2356,5895,Veloor Overseer Office,9.829984,76.452145
+Overseer Office,Kottayam Electrical Circle,1908,5810,Nedumkunnam Overseer Office,9.5089719,76.6644212
+Overseer Office,Kottayam Electrical Circle,2261,5866,Meenadom Overseer Office,9.54977,76.608777
+Overseer Office,Kottayam Electrical Circle,2358,5891,Njeezhoor Overseer Office,9.79191,76.528648
+Overseer Office,Kottayam Electrical Circle,1906,5811,Santhipuram Overseer Office,9.4723403,76.6289731
+Overseer Office,Pala Electrical Circle,2113,5854,Monippally Overseer Office,9.80824,76.575966
+Overseer Office,Pala Electrical Circle,2139,5853,OVERSEER OFFICE (KSEB),9.716144,76.682914
+Overseer Office,Palakkad Electrical Circle,2548,6300,Meenakshipuram Overseer Office,10.645419,76.771468
+Overseer Office,Pathanamthitta Electrical Circle,2402,4878,Athikkayam Overseer Office,9.382945,76.84646
+Overseer Office,Pathanamthitta Electrical Circle,2306,4882,Kottanad Overseer Office,9.402479,76.743254
+Overseer Office,Pathanamthitta Electrical Circle,2283,4801,Kodumon Overseer Office,9.191335,76.771249
+Overseer Office,Pathanamthitta Electrical Circle,2324,4881,Kollamula Overseer Office,9.433356,76.881
+Overseer Office,Pathanamthitta Electrical Circle,2405,4880,Kadammanitta Overseer Office,9.305602,76.77328
+Overseer Office,Pathanamthitta Electrical Circle,2401,4887,Perunad Overseer Office,9.34863198,76.83432831
+Overseer Office,Pathanamthitta Electrical Circle,2284,4802,Kunnathoor Overseer Office,9.059342,76.672421
+Overseer Office,Pathanamthitta Electrical Circle,2293,4877,Aruvappulam Overseer Office,9.204469,76.878652
+Overseer Office,Pathanamthitta Electrical Circle,2297,4879,Chittar Overseer Office,9.330522,76.928184
+Overseer Office,Pathanamthitta Electrical Circle,2286,4800,Elamannoor Overseer Office,9.137463,76.821951
+Overseer Office,Pathanamthitta Electrical Circle,2285,4803,Murinjakal Overseer Office,9.169968,76.855515
+Overseer Office,Perumbavoor Electrical Circle,2044,5843,Oonnukal Overseer Office,10.0506457,76.7159266
+Overseer Office,Perumbavoor Electrical Circle,2047,5844,Pulluvazhi Overseer Office,10.0844421,76.503839
+Overseer Office,Perumbavoor Electrical Circle,1967,5845,Vazhakulam Overseer Office,9.9435684,76.6392168
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2372,4816,Alamcode Overseer Office,8.720301,76.812754
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2373,4808,Angengo Overseer Office,8.67246,76.756754
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2375,4811,Karavaram Overseer Office,8.756561,76.808925
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2382,4819,Ponganadu Overseer Office,8.782827,76.843837
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2377,4810,Karate Overseer Office,8.750924,76.907031
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2384,4817,Pakalkkury Overseer Office,8.850925,76.792815
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2371,4813,Korani Overseer Office,8.782827,76.843837
+Overseer Office,Thiruvananthapuram Electrical Circle(Urban),2248,4837,Murukkumpuzha Overseer Office,8.613764,76.83036
+Overseer Office,Thodupuzha Electrical Circle,2025,5880,Vazhithala Overseer Office,9.883032,76.6424041
+Overseer Office,Thodupuzha Electrical Circle,2021,5879,Muttom Overseer Office,9.831592,76.744293
+Overseer Office,Thodupuzha Electrical Circle,2084,5919,Vazhathope Transformer Field Repair Unit,9.86211,76.96189
+Overseer Office,Thodupuzha Electrical Circle,2023,5878,Karimkunnam Overseer Office,9.850047,76.685124
+Remote Collection Centre,Irinjalakuda Electrical Circle,2534,5801,Malakkappara Collection Centre,10.277629,76.854812
+Remote Collection Centre,Irinjalakuda Electrical Circle,2540,5802,Mattathur Collection Centre,10.380025,76.318907
+Remote Collection Centre,Irinjalakuda Electrical Circle,2535,5807,Nandipulam Sub Engineer Office,10.403847,76.328692
+Remote Collection Centre,Irinjalakuda Electrical Circle,2533,5803,Pariyaram Society Collection Centre,10.319966,76.3714
+Remote Collection Centre,Nilambur Electrical Circle,1903,6308,Karulai Collection Centre,11.284019,76.296339
+Remote Collection Centre,Thrissur Electrical Circle,1924,5881,Puthur Collection centre ,10.491013,76.276246
+Remote Collection Centre,Thrissur Electrical Circle,2031,5887,PARAMELPADY COLLECTION CENTRE,10.72625589,76.3966881
+Remote Collection Centre,Thrissur Electrical Circle,2477,5827,Akkikavu Kadavallur Collection Centre,10.694585,76.087759

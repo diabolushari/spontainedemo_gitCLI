@@ -8,38 +8,32 @@ use App\Http\Requests\Blocks\BlocksUpdateFormRequest;
 use App\Models\Blocks\Block;
 use Exception;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Inertia\Response;
 
 class BlocksController extends Controller
 {
-    public function index(): Response {}
-
-    public function create(): Response {}
-
     public function store(BlocksFormRequest $request): RedirectResponse
     {
-
         try {
-            $maxPosition = Block::where('page_id', $request->page_id)->max('position');
+            $maxPosition = Block::where('page_id', $request->pageId)
+                ->max('position');
             $newPosition = $maxPosition ? $maxPosition + 1 : 1;
             $block = Block::create([
                 'name' => $request->name,
                 'position' => $newPosition,
                 'dimensions' => $request->dimensions,
-                'page_id' => $request->page_id,
+                'page_id' => $request->pageId,
             ]);
         } catch (Exception $e) {
-            return redirect()->back()->with(['error' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with(['error' => $e->getMessage()]);
         }
 
-        return redirect()->route('page-builder.show', $block->page_id)->with(['message' => 'Block added successfully']);
+        return redirect()
+            ->route('page-builder.show', $block->page_id)
+            ->with(['message' => 'Block added successfully']);
     }
-
-    public function show(Request $request, int $id): Response {}
-
-    public function edit(Request $request, int $id): Response {}
 
     public function update(BlocksUpdateFormRequest $request, int $id): RedirectResponse
     {
@@ -71,10 +65,12 @@ class BlocksController extends Controller
                     $adjacentBlock->save();
 
                     DB::commit();
+
                     return redirect()->back()->with('message', "Block moved {$request->action} successfully!");
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     DB::rollBack();
-                    return redirect()->back()->with('error', "An error occurred while moving block: " . $e->getMessage());
+
+                    return redirect()->back()->with('error', 'An error occurred while moving block: '.$e->getMessage());
                 }
             }
         }

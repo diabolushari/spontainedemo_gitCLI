@@ -1,11 +1,11 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
-import { PagesList } from '@/interfaces/data_interfaces'
+import { Page } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import { useCallback, useMemo } from 'react'
 
 interface Props {
-  page_list: Paginator<PagesList>
+  page_list: Paginator<Page>
 }
 
 export default function PageIndex({ page_list }: Props) {
@@ -50,7 +50,7 @@ export default function PageIndex({ page_list }: Props) {
         isShownInCard: true,
         boxStyles: 'items-center gap-0',
       },
-    ] as ListItemKeys<Partial<PagesList>>[]
+    ] as ListItemKeys<Partial<Page>>[]
   }, [])
 
   const onCardClick = useCallback((id: string | number) => {

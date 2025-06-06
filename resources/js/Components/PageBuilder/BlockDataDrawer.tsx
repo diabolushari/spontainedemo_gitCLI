@@ -12,6 +12,7 @@ import {
   DrawerTrigger,
 } from '@/Components/ui/drawer'
 import { ReactNode } from 'react'
+import { Edit } from 'lucide-react'
 
 interface BlockDataDrawerProps {
   children: ReactNode
@@ -26,11 +27,8 @@ export function BlockDataDrawer({ children, open, setOpen }: BlockDataDrawerProp
       onOpenChange={setOpen}
     >
       <DrawerTrigger asChild>
-        <Button
-          variant='outline'
-          className='bg-blue-500 p-4 hover:bg-blue-700 hover:text-white'
-        >
-          Open Drawer
+        <Button className='absolute bottom-0 right-0 z-10 bg-blue-500 p-4 hover:bg-blue-700'>
+          <Edit />
         </Button>
       </DrawerTrigger>
       <DrawerContent>

@@ -1,15 +1,14 @@
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { Block } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
-import CardHeader from '@/ui/Card/CardHeader'
 import React, { useState } from 'react'
-import BlockEditModal from './BlockEditModal'
-import { SampleChart } from './SampleChart'
+import EditBlockDimension from './EditBlockDimension'
+import { EmptyCardBlock } from './EmptyCardBlock'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import ArrowUpButton from '@/ui/button/ArrowUpButton'
-import ArrowDownButton from '@/ui/button/ArrowDownButton'
 import { BlockDataDrawer } from './BlockDataDrawer'
 import BlockDrawerForm from './BlockDrawerForm'
+import ButtonBorderIcon from '@/ui/button/ButtonBorderIcon'
+import { ArrowDown, ArrowUp, CogIcon, XIcon } from 'lucide-react'
 
 interface BlockActionProps {
   block: Block
@@ -19,6 +18,7 @@ interface BlockComponentProps {
   dimensions?: Record<string, string>
   block: Block
 }
+
 type AxisConfig = {
   field: string
   label: string
@@ -37,10 +37,10 @@ type formBlockConfig = {
   config: ConfigType
 }
 const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
-  'Sample Card': SampleChart,
+  'Sample Card': EmptyCardBlock,
 }
 
-export const BlockAction = ({ block }: BlockActionProps) => {
+export const BlockEditor = ({ block }: BlockActionProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -69,21 +69,24 @@ export const BlockAction = ({ block }: BlockActionProps) => {
   }
 
   return (
-    <div className='w-full'>
-      <Card>
-        <div className='flex justify-between'>
-          <div>
-            <CardHeader
-              title={block.data?.title}
-              subheading={`Block position ${block.position}`}
-              onEditClick={handleEditClick}
-              onDeleteClick={() => setDeleteModalOpen(true)}
-            />
-          </div>
-          <div className='flex flex-row gap-2'>
-            <ArrowUpButton onClick={() => handleMove('up')} />
-            <ArrowDownButton onClick={() => handleMove('down')} />
-          </div>
+    <>
+      <Card className='relative'>
+        <div className='absolute right-0 top-0 z-10 flex flex-row gap-2'>
+          <ButtonBorderIcon onClick={handleEditClick}>
+            <CogIcon className='h-4 w-4' />
+          </ButtonBorderIcon>
+          <ButtonBorderIcon>
+            <ArrowUp className='h-4 w-4' />
+          </ButtonBorderIcon>
+          <ButtonBorderIcon onClick={() => handleMove('down')}>
+            <ArrowDown className='h-4 w-4' />
+          </ButtonBorderIcon>
+          <ButtonBorderIcon
+            onClick={() => setDeleteModalOpen(true)}
+            type='danger'
+          >
+            <XIcon className='h-4 w-4' />
+          </ButtonBorderIcon>
         </div>
         <div className='grid bg-gray-500'>
           {Component ? (
@@ -109,9 +112,8 @@ export const BlockAction = ({ block }: BlockActionProps) => {
           </BlockDataDrawer>
         </div>
       </Card>
-
       {isEditModalOpen && (
-        <BlockEditModal
+        <EditBlockDimension
           isOpen={isEditModalOpen}
           onClose={() => setEditModalOpen(false)}
           block={block}
@@ -129,6 +131,6 @@ export const BlockAction = ({ block }: BlockActionProps) => {
           <p>Are you sure you want to delete this block?</p>
         </DeleteModal>
       )}
-    </div>
+    </>
   )
 }

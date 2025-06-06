@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
+use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\SubsetDetailListController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\Map\OfficeCoordinateListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -62,7 +65,6 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use App\Http\Requests\Blocks\BlocksUpdateFormRequest;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
@@ -70,6 +72,7 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -82,10 +85,20 @@ Route::get('/dashboard', function () {
 // Page building
 Route::resource('page-builder', PageBuilderController::class);
 Route::resource('blocks', BlocksController::class);
-Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)->name('dimension.update');
+Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)
+    ->name('dimension.update');
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
+
+//subset detail
+Route::get('/data-detail-list', [DataDetailListController::class, 'getDataDetails']);
+Route::get('/subset-list/{dataDetailId}', [SubsetDetailListController::class, 'getSubsetsByDataDetail']);
+
+//testing
+Route::get('/test', function () {
+    return Inertia::render('TestPage');
+});
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
@@ -391,4 +404,9 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
 
-require __DIR__ . '/auth.php';
+//map
+Route::get('office-coordinates', OfficeCoordinateListController::class)
+    ->name('office-coordinates')
+    ->middleware('auth');
+
+require __DIR__.'/auth.php';

@@ -17,6 +17,7 @@ import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSel
 import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
 import { CustomTooltip } from '../../CustomTooltip'
 import SecondarySort from '@/Components/DataExplorer/OfficeRanking/SecondarySort'
+import OfficeClusterMap from './Map/OfficeClusterMap'
 
 interface Props {
   subset: SubsetDetail
@@ -79,6 +80,8 @@ export default function OfficeRanking({
     setCircle,
     setDivision,
   } = useContext(SelectedOfficeContext)
+
+  const [viewOnMap, setViewOnMap] = useState<boolean>(false)
 
   const { selectedOffice, prevLevelOffice } = useOfficeLevelSelection(
     officeLevel,
@@ -225,33 +228,51 @@ export default function OfficeRanking({
     <FullSpinnerWrapper processing={loading}>
       <div className='ml-1 space-y-2 rounded-lg bg-1stop-white p-4 md:ml-0'>
         <div className='rounded-lg bg-white'>
-          <ResponsiveContainer
-            width='100%'
-            height={200}
-          >
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          <div className='flex justify-end text-2xl text-blue-700'>
+            <i className='las la-chart-bar'></i>
+            <button
+              className='flex justify-end'
+              onClick={() => setViewOnMap(!viewOnMap)}
             >
-              <XAxis
-                dataKey='office_name'
-                tick={<CustomTick />}
-                height={80}
-                interval={0}
-              />
-              <Tooltip
-                formatter={(value: number) => `${formatNumber(value)}`}
-                content={<CustomTooltip />}
-                cursor={{ fill: 'var(--colour-1stop-accent2)' }}
-              />
-              <Bar
-                dataKey={selectedSortField?.subset_field_name ?? 'Value'}
-                fill={solidColors[0]}
-                barSize={30}
-                onClick={handleTooltipClick}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+              {viewOnMap ? (
+                <i className='las la-toggle-on'></i>
+              ) : (
+                <i className='las la-toggle-off'></i>
+              )}
+            </button>
+            <i className='las la-map'></i>
+          </div>
+          {viewOnMap ? (
+            <OfficeClusterMap mapData={chartData} />
+          ) : (
+            <ResponsiveContainer
+              width='100%'
+              height={200}
+            >
+              <BarChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <XAxis
+                  dataKey='office_name'
+                  tick={<CustomTick />}
+                  height={80}
+                  interval={0}
+                />
+                <Tooltip
+                  formatter={(value: number) => `${formatNumber(value)}`}
+                  content={<CustomTooltip />}
+                  cursor={{ fill: 'var(--colour-1stop-accent2)' }}
+                />
+                <Bar
+                  dataKey={selectedSortField?.subset_field_name ?? 'Value'}
+                  fill={solidColors[0]}
+                  barSize={30}
+                  onClick={handleTooltipClick}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
         <SecondarySort
           subset={subset}

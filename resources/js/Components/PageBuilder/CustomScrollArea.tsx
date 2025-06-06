@@ -1,16 +1,18 @@
 import * as React from 'react'
 
 import { ScrollArea } from '@/Components/ui/scroll-area'
-import { SampleChart } from './SampleChart'
+import { EmptyCardBlock } from './EmptyCardBlock'
+
 type CustomScrollAreaProps = {
   onChartClick: (id: number, name: string) => void
 }
 const pageBuilderCharts = [
-  { id: 1, name: 'Active connection', component: <SampleChart /> },
-  { id: 2, name: 'New connection', component: <SampleChart /> },
-  { id: 3, name: 'Old', component: <SampleChart /> },
-  { id: 4, name: 'New ', component: <SampleChart /> },
+  { id: 1, name: 'Active connection', component: <EmptyCardBlock /> },
+  { id: 2, name: 'New connection', component: <EmptyCardBlock /> },
+  { id: 3, name: 'Old', component: <EmptyCardBlock /> },
+  { id: 4, name: 'New ', component: <EmptyCardBlock /> },
 ]
+
 export function CustomScrollArea({ onChartClick }: CustomScrollAreaProps) {
   return (
     <ScrollArea className='h-48 w-[50%] rounded-md border'>

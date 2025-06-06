@@ -1,13 +1,13 @@
 import { Label } from '@/Components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/Components/ui/radio-group'
 
-export function BlockHeader({
+export function BlockRadioGroup({
   selectedView,
   setSelectedView,
-}: {
+}: Readonly<{
   selectedView: string
   setSelectedView: (value: string) => void
-}) {
+}>) {
   return (
     <RadioGroup
       value={selectedView}
