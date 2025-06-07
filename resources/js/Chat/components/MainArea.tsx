@@ -1,4 +1,3 @@
-import useChat from '@/Chat/components/useChat'
 import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import React, { useEffect, useRef, useState } from 'react'
 import { FiLoader, FiSend } from 'react-icons/fi'
@@ -6,19 +5,42 @@ import ChatMessageContent from './ChatMessageContent'
 
 export interface ChatMessage {
   id: number
-  type: 'user' | 'bot' | 'action' | 'error'
+  role: 'user' | 'assistant' | 'action' | 'error'
   content: string
   description?: string
   contentType: 'text' | 'table' | 'chart'
   suggestions?: string[]
 }
 
-export default function MainArea() {
+interface ChatHistory {
+  title: string
+  messages: ChatMessage[]
+  id: number
+}
+
+interface MainAreaProps {
+  currentSession: ChatHistory
+  messages: ChatMessage[]
+  handleSendMessage: (messageContent: string) => void
+  isLoading: boolean
+  input: string
+  setInput: (input: string) => void
+  mode: 'chat' | 'agent'
+  onModeChange: (newMode: 'chat' | 'agent') => void
+}
+
+export default function MainArea({
+  messages,
+  handleSendMessage,
+  isLoading,
+  input,
+  setInput,
+  mode,
+  onModeChange,
+}: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
-  const [mode, setMode] = useState<'chat' | 'agent'>('chat')
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { messages, handleSendMessage, isLoading, input, setInput } = useChat(mode)
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current
@@ -38,7 +60,7 @@ export default function MainArea() {
   }
 
   const handleModeChange = (value: string) => {
-    setMode(value as 'chat' | 'agent')
+    onModeChange(value as 'chat' | 'agent')
     setInput('') // Clear input when switching modes
   }
 
@@ -53,14 +75,14 @@ export default function MainArea() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
               className={`max-w-[60vw] overflow-auto rounded-2xl p-3 ${
-                message.type === 'user' && 'rounded-br-none bg-blue-600 text-white'
-              } ${message.type === 'bot' && 'rounded-bl-none bg-white text-gray-800 shadow-sm'} ${
-                message.type === 'action' && 'rounded-bl-none bg-gray-200 text-gray-800 shadow-sm'
-              } ${message.type === 'error' && 'rounded-bl-none bg-red-100 text-red-800 shadow-sm'}`}
+                message.role === 'user' && 'rounded-br-none bg-blue-600 text-white'
+              } ${message.role === 'assistant' ? 'rounded-bl-none bg-white text-gray-800 shadow-sm' : null} ${
+                message.role === 'action' && 'rounded-bl-none bg-gray-200 text-gray-800 shadow-sm'
+              } ${message.role === 'error' && 'rounded-bl-none bg-red-100 text-red-800 shadow-sm'}`}
             >
               <ChatMessageContent message={message} />
               {message.suggestions && message.suggestions.length > 0 && (
@@ -69,7 +91,7 @@ export default function MainArea() {
                     <button
                       key={idx}
                       className={`group relative w-full overflow-hidden rounded-lg px-3 py-1.5 text-left text-sm transition-all duration-300 ease-in-out ${
-                        message.type === 'user'
+                        message.role === 'user'
                           ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:scale-[1.02] hover:shadow-lg'
                           : 'bg-1stop-gray from-1stop-gray to-1stop-accent2 text-gray-700 hover:scale-[1.02] hover:bg-gradient-to-r hover:shadow-lg'
                       }`}
@@ -78,7 +100,7 @@ export default function MainArea() {
                       <span className='relative z-10'>{suggestion}</span>
                       <div
                         className={`absolute inset-0 -z-10 opacity-0 transition-opacity duration-300 ease-in-out ${
-                          message.type === 'user'
+                          message.role === 'user'
                             ? 'bg-gradient-to-r from-blue-400/30 to-blue-500/30 group-hover:opacity-100'
                             : 'from-1stop-accent1/30 to-1stop-accent2/30 bg-gradient-to-r group-hover:opacity-100'
                         }`}

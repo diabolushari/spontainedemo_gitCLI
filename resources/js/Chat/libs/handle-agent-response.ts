@@ -35,7 +35,7 @@ function handleOutputResponse(
       if (extractedJSON == null) {
         messages.push({
           id: currentIdRef.current++,
-          type: 'bot',
+          role: 'assistant',
           content: response.output,
           contentType: 'text',
           suggestions: [],
@@ -47,7 +47,7 @@ function handleOutputResponse(
       if (parsedOutput.output != null) {
         messages.push({
           id: currentIdRef.current++,
-          type: 'bot',
+          role: 'assistant',
           content: parsedOutput.output,
           contentType: 'text',
           suggestions: [],
@@ -57,7 +57,7 @@ function handleOutputResponse(
       if (parsedOutput.visualization != null) {
         messages.push({
           id: currentIdRef.current++,
-          type: 'bot',
+          role: 'assistant',
           content: JSON.stringify(parsedOutput.visualization),
           contentType: 'chart',
           suggestions: [],
@@ -67,7 +67,7 @@ function handleOutputResponse(
       // If parsing fails, use the original output string
       messages.push({
         id: currentIdRef.current++,
-        type: 'bot',
+        role: 'assistant',
         content: response.output ?? '',
         contentType: 'text',
         suggestions: [],
@@ -95,7 +95,7 @@ function agentResponseToChatMessages(
     response.actions.forEach((action) => {
       messages.push({
         id: currentIdRef.current++,
-        type: 'action',
+        role: 'action',
         content: action.tool,
         description: action.tool_input,
         contentType: 'text',
@@ -111,7 +111,7 @@ function agentResponseToChatMessages(
   if ('error' in response) {
     messages.push({
       id: currentIdRef.current++,
-      type: 'error',
+      role: 'error',
       content: response.error,
       contentType: 'text',
       suggestions: [],
@@ -147,7 +147,7 @@ export function parseAndConvertAgentResponse(
     return [
       {
         id: currentIdRef.current++,
-        type: 'error',
+        role: 'error',
         content: '❌ Agent response could not be parsed.',
         contentType: 'text',
         suggestions: [],

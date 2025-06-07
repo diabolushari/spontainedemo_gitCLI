@@ -1,12 +1,12 @@
 import {
-  FiSearch,
-  FiCompass,
-  FiClock,
-  FiMessageSquare,
+  FiBarChart2,
   FiChevronDown,
   FiChevronRight,
+  FiClock,
+  FiCompass,
   FiCpu,
-  FiBarChart2,
+  FiMessageSquare,
+  FiSearch,
 } from 'react-icons/fi'
 import { useState } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible'
@@ -14,20 +14,22 @@ import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import { router } from '@inertiajs/react'
 
 interface ChatHistoryItem {
-  id: string
+  id: number
   title: string
   timestamp: string
 }
 
-export default function Sidebar() {
+interface ChatProps {
+  chatHistory: ChatHistoryItem[]
+  sessionId: number
+  onSessionChange: (sessionId: number) => void
+}
+
+export default function Sidebar({ chatHistory, sessionId, onSessionChange }: ChatProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(true)
-  const [isRecentChatsOpen, setIsRecentChatsOpen] = useState(false)
-  const [chatHistory] = useState<ChatHistoryItem[]>([
-    { id: '1', title: 'Revenue Analysis Q1 2024', timestamp: '2 hours ago' },
-    { id: '2', title: 'Customer Satisfaction Metrics', timestamp: '5 hours ago' },
-    { id: '3', title: 'Service Quality Report', timestamp: '1 day ago' },
-  ])
+  const [isRecentChatsOpen, setIsRecentChatsOpen] = useState(true)
+  const [history, setHistory] = useState<ChatHistoryItem[]>(chatHistory)
 
   const handleNavigation = (value: string) => {
     if (value === 'dashboard') {
@@ -115,11 +117,12 @@ export default function Sidebar() {
             <FiChevronRight className='h-4 w-4' />
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent className='mt-2 space-y-2'>
-          {chatHistory.map((chat) => (
+        <CollapsibleContent className='mt-2 max-h-[500px] space-y-2 overflow-y-auto'>
+          {history?.map((chat) => (
             <button
               key={chat.id}
-              className='group w-full rounded-lg px-4 py-2 text-left transition-colors hover:bg-gray-50'
+              className={`group w-full overflow-hidden rounded-lg px-4 py-2 text-left transition-colors hover:bg-gray-50 ${sessionId == chat.id ? 'bg-blue-300' : null}`}
+              onClick={() => onSessionChange(chat.id)}
             >
               <div className='flex items-center justify-between'>
                 <div className='flex items-center'>
