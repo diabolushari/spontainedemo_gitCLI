@@ -1,12 +1,13 @@
-import React, { useState, useMemo, useCallback } from 'react'
-import SelectList from '@/ui/form/SelectList'
-import Input from '@/ui/form/Input'
-import Button from '@/ui/button/Button'
 import useCustomForm from '@/hooks/useCustomForm'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { Config, Axis, Block } from '@/interfaces/data_interfaces'
+import { Axis, Block, Config } from '@/interfaces/data_interfaces'
+import Button from '@/ui/button/Button'
 import CheckBox from '@/ui/form/CheckBox'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import Input from '@/ui/form/Input'
+import SelectList from '@/ui/form/SelectList'
+import React, { useCallback, useMemo, useState } from 'react'
 
 interface SubsetField {
   subset_column: string
@@ -82,7 +83,7 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
     selectedTrendSubsetId ? `/api/subset/${selectedTrendSubsetId}` : ''
   )
 
-  const [data] = useFetchRecord<DataRow[]>('/api/data-detail')
+  const [data] = useFetchRecord<DataRow[]>('')
   const [subSetGroups] = useFetchRecord<DataRow[]>('/api/subset-group')
 
   const { post, errors } = useInertiaPost<Config>(route('config.update', block.id), {
@@ -201,9 +202,9 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
               />
             </div>
             <div className='flex flex-col'>
-              <SelectList
+              <DynamicSelectList
                 label='Select a date for data'
-                list={data ?? []}
+                url='/api/data-detail'
                 dataKey='id'
                 displayKey='name'
                 value={formData.data_table_id}
@@ -214,7 +215,7 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
             <div className='flex flex-col'>
               <SelectList
                 label='Select group'
-                list={subSetGroups || []}
+                list={subSetGroups ?? []}
                 dataKey='id'
                 displayKey='name'
                 value={selectedSubsetGroupId}

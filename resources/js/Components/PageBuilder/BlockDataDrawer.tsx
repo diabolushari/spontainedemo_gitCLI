@@ -11,8 +11,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/Components/ui/drawer'
-import { ReactNode } from 'react'
 import { Edit } from 'lucide-react'
+import { ReactNode } from 'react'
 
 interface BlockDataDrawerProps {
   children: ReactNode
@@ -37,9 +37,7 @@ export function BlockDataDrawer({ children, open, setOpen }: BlockDataDrawerProp
             <DrawerTitle>Data Tables</DrawerTitle>
             <DrawerDescription>Select one data table here.</DrawerDescription>
           </DrawerHeader>
-
           <div className='flex overflow-y-auto'>{children}</div>
-
           <DrawerFooter>
             <DrawerClose asChild>
               <Button variant='outline'>Cancel</Button>

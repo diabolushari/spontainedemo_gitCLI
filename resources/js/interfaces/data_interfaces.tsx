@@ -80,6 +80,23 @@ export interface TableMeasureField extends Model {
   unit_field_name: string | null
 }
 
+/**
+ * The data structure for a subset detail, which is used to configure the output of a subset.
+ *
+ * @property {string} name - The name of the subset detail.
+ * @property {string | null} description - The description of the subset detail.
+ * @property {0 | 1} group_data - Indicates whether the subset detail should group data.
+ * @property {number} data_detail_id - The ID of the data detail that the subset detail belongs to.
+ * @property {Partial<SubsetDateField>[]} [dates] - The date fields of the subset detail.
+ * @property {Partial<SubsetDimensionField>[]} [dimensions] - The dimension fields of the subset detail.
+ * @property {Partial<SubsetMeasureField>[]} [measures] - The measure fields of the subset detail.
+ * @property {Partial<DataDetail> | null} [data_detail] - The data detail that the subset detail belongs to.
+ * @property {number | null} max_rows_to_fetch - The maximum number of rows to fetch for the subset detail.
+ * @property {0 | 1} use_for_training_ai - Indicates whether the subset detail should be used for training AI.
+ * @property {string | null} proactive_insight_instructions - The proactive insights instructions for the subset detail.
+ * @property {string | null} visualization_instructions - The visualization instructions for the subset detail.
+ * @property {string | null} type - The type of the subset detail.
+ */
 export interface SubsetDetail extends Model {
   name: string
   description: string | null

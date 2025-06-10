@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react'
+import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
+import TrendGraph from '@/Components/Dashboard/SampleDashboard/TrendGraph'
+import { Block, BlockDimension } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
-import { Block, BlockDimension } from '@/interfaces/data_interfaces'
+import { useMemo, useState } from 'react'
 import { BlockRadioGroup } from './BlockRadioGroup'
-import TrendGraph from '@/Components/Dashboard/SampleDashboard/TrendGraph'
-import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
 
 function dateToYearMonth(date?: Date | null) {
   if (!date) return ''

@@ -5,8 +5,8 @@ use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
 use App\Http\Controllers\ChartData\DataDetailListController;
 use App\Http\Controllers\ChartData\SubsetFieldsController;
+use App\Http\Controllers\ChartData\SubsetGroupItemsController;
 use App\Http\Controllers\ChartData\SubsetGroupListController;
-use App\Http\Controllers\ChartData\SubsetGroupSingleItemController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -68,12 +68,13 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
-use App\Services\Subset\SubsetFieldOrderInfo;
+use App\Services\DataTable\JoinDataTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -101,7 +102,7 @@ Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->nam
 Route::get('/api/data-detail', DataDetailListController::class);
 Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
-Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupSingleItemController::class);
+Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
 
 //testing
 Route::get('/test', function () {
@@ -417,4 +418,12 @@ Route::get('office-coordinates', OfficeCoordinateListController::class)
     ->name('office-coordinates')
     ->middleware('auth');
 
-require __DIR__ . '/auth.php';
+Route::get('test', function (JoinDataTable $joinDataTable) {
+    $dataDetail = DataDetail::where('id', 42)->first();
+
+    return $joinDataTable->join($dataDetail)
+        ->selectRaw('MAX(month_year_record.name) as month_year')
+        ->first();
+});
+
+require __DIR__.'/auth.php';

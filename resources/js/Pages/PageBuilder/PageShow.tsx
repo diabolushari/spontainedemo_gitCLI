@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import DeleteModal from '@/ui/Modal/DeleteModal'
-import { Block, BlockDimension, Page } from '@/interfaces/data_interfaces'
-import useCustomForm from '@/hooks/useCustomForm'
-import { BlockEditor } from '@/Components/PageBuilder/BlockEditor'
-import CardHeader from '@/ui/Card/CardHeader'
 import { AddPageBlock } from '@/Components/PageBuilder/AddPageBlock'
+import { BlockEditor } from '@/Components/PageBuilder/BlockEditor'
+import useCustomForm from '@/hooks/useCustomForm'
+import { Block, BlockDimension, Page } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
+import CardHeader from '@/ui/Card/CardHeader'
+import DeleteModal from '@/ui/Modal/DeleteModal'
+import { useState } from 'react'
 
 interface Props {
   page: Page
