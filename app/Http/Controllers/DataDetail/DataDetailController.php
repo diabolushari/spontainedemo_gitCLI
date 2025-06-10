@@ -36,7 +36,7 @@ class DataDetailController extends Controller implements HasMiddleware
     {
 
         $details = DataDetail::when($request->filled('search'), function (Builder $builder) use ($request) {
-            $builder->where('name', 'like', '%'.$request->input('search').'%');
+            $builder->where('name', 'like', '%' . $request->input('search') . '%');
         })->when($request->filled('type'), function (Builder $builder) use ($request) {
             $builder->where('subject_area', $request->type);
         })
@@ -139,7 +139,6 @@ class DataDetailController extends Controller implements HasMiddleware
             'relationFields.relatedTable',
             'textFields'
         );
-
         $dataTable = $queryDataTable->query($dataDetail)
             ->paginate(50)
             ->withPath(route('data-detail.show', $dataDetail->id))

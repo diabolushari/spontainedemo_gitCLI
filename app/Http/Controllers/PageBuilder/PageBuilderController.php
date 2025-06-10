@@ -48,7 +48,6 @@ class PageBuilderController extends Controller
 
         $page = PageBuilder::findOrFail($id);
         $blocks = $page->blocks()->orderBy('position')->get();
-
         return Inertia::render('PageBuilder/PageShow', [
             'page' => $page,
             'blocks' => $blocks,

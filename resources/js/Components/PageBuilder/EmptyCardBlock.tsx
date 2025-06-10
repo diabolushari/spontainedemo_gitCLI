@@ -33,30 +33,30 @@ export function EmptyCardBlock({
   return (
     <div className={classNames}>
       <Card className='min-h-24 rounded-md'>
-        <CardHeader title={block ? block.data?.title : 'Sample'} />
-        <div className=''>{JSON.stringify(block?.data?.title)}</div>
+        <CardHeader title={block?.name ?? ''} />
         <BlockRadioGroup
           selectedView={selectedView}
           setSelectedView={setSelectedView}
+          block={block}
         />
         <div className='mt-4'>
-          {selectedView === 'trend' && (
+          {selectedView === 'trend' && block?.data?.trend && (
             <TrendGraph
-              cardTitle='Consumer Trend'
+              cardTitle={block.data.trend.title}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
-              subsetId={315}
-              dataField='total_consumers__count_'
-              dataFieldName='Consumer Count'
+              subsetId={block.data?.trend.subset_id}
+              dataField={block.data.trend.data_field.y_axis.value}
+              dataFieldName={block.data.trend.data_field.y_axis.label}
               chartType='area'
             />
           )}
-          {selectedView === 'rank' && selectedMonth != null && (
+          {selectedView === 'rank' && selectedMonth != null && block?.data?.ranking && (
             <RankedList
-              subsetId={198}
-              cardTitle='Ranked by Consumer Count'
-              dataField='total_consumers__count_'
-              dataFieldName='Consumer Count'
+              subsetId={block.data.ranking.subset_id}
+              cardTitle={block.data.ranking.title}
+              dataField={block.data.ranking.data_field.label}
+              dataFieldName={block.data.ranking.data_field.value}
               rankingPageUrl={`/sample-ranking-page?month=${monthYear}&route=${route('service-delivery.index')}`}
               timePeriod={monthYear}
               timePeriodFieldName='month'

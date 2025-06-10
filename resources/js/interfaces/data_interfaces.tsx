@@ -355,37 +355,45 @@ export interface BlockDimension {
   desktop_width: string
 }
 
+export interface Ranking {
+  subset_id: number
+  title: string
+  data_field: {
+    label: string
+    value: string
+    is_label: boolean
+  }
+}
+
+export interface Axis {
+  label: string
+  value: string
+  is_label: boolean
+}
+export interface Trend {
+  subset_id: number
+  title: string
+  data_field: {
+    x_axis: Axis
+    y_axis: Axis
+  }
+}
+export interface Config {
+  title: string
+  data_table_id: string
+  default_date?: string
+  subset_group_id: string
+  trend: Trend
+  ranking: Ranking
+}
+
 export interface Block extends Model {
   id: number
   page_id: number
   name: string
   position: number
   dimensions: BlockDimension
-  data: {
-    title: string
-    data_table_id: string
-    subset_group_id: string
-    subset_id: string
-    trend: {
-      subset_id: number
-      title: string
-      data_field: string
-    }
-    ranking: {
-      subset_id: number
-      title: string
-    }
-    config: {
-      x_axis?: {
-        field: string
-        label: string
-      }
-      y_axis?: {
-        field: string
-        label: string
-      }
-    }
-  }
+  data: Config
 }
 
 export interface OfficeCoordinates {

@@ -1,5 +1,5 @@
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { Block } from '@/interfaces/data_interfaces'
+import { Block, BlockDimension } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import React, { useState } from 'react'
 import EditBlockDimension from './EditBlockDimension'
@@ -15,27 +15,10 @@ interface BlockActionProps {
 }
 
 interface BlockComponentProps {
-  dimensions?: Record<string, string>
-  block: Block
+  dimensions?: BlockDimension
+  block?: Block
 }
 
-type AxisConfig = {
-  field: string
-  label: string
-}
-
-type ConfigType = {
-  x_axis?: AxisConfig
-  y_axis?: AxisConfig
-}
-
-type formBlockConfig = {
-  title: string
-  data_table_id: string
-  set_group: string
-  sub_set: string
-  config: ConfigType
-}
 const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
   'Sample Card': EmptyCardBlock,
 }
@@ -45,9 +28,8 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const Component = blockComponents[block.name]
-  console.log(block)
-  const { post } = useInertiaPost<formBlockConfig & { _method: string }>(
-    route('dimension.update', block.id),
+  const { post } = useInertiaPost<{ _method: string; action: 'up' | 'down' }>(
+    route('blocks.update', block.id),
     {
       showErrorToast: true,
     }
@@ -58,10 +40,6 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
       action: direction,
       _method: 'PUT',
     })
-  }
-
-  const handleClick = (formData: formBlockConfig) => {
-    post({ ...formData, _method: 'PUT' })
   }
 
   const handleEditClick = () => {
@@ -75,7 +53,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
           <ButtonBorderIcon onClick={handleEditClick}>
             <CogIcon className='h-4 w-4' />
           </ButtonBorderIcon>
-          <ButtonBorderIcon>
+          <ButtonBorderIcon onClick={() => handleMove('up')}>
             <ArrowUp className='h-4 w-4' />
           </ButtonBorderIcon>
           <ButtonBorderIcon onClick={() => handleMove('down')}>
@@ -91,26 +69,28 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
         <div className='grid bg-gray-500'>
           {Component ? (
             <Component
-              dimensions={block.dimensions}
+              dimensions={block?.dimensions}
               block={block}
             />
           ) : (
             <p>Unknown block type</p>
           )}
         </div>
-        <div>
-          <BlockDataDrawer
-            open={isDrawerOpen}
-            setOpen={setIsDrawerOpen}
-          >
-            <div className='p-4'>
-              <BlockDrawerForm
-                initialData={block.data}
-                onSubmit={handleClick}
-              />
-            </div>
-          </BlockDataDrawer>
-        </div>
+        {isDrawerOpen && (
+          <div className='fixed inset-0 z-40 bg-gray-900/60 backdrop-blur-sm transition-opacity duration-300' />
+        )}
+
+        <BlockDataDrawer
+          open={isDrawerOpen}
+          setOpen={setIsDrawerOpen}
+        >
+          <div className='md:p-4'>
+            <BlockDrawerForm
+              initialData={block.data}
+              block={block}
+            />
+          </div>
+        </BlockDataDrawer>
       </Card>
       {isEditModalOpen && (
         <EditBlockDimension

@@ -32,13 +32,13 @@ export function BlockDataDrawer({ children, open, setOpen }: BlockDataDrawerProp
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className='mx-auto flex max-h-[60vh] w-full max-w-3xl flex-col'>
+        <div className='mx-auto flex w-full max-w-3xl flex-col md:max-h-[80vh]'>
           <DrawerHeader>
             <DrawerTitle>Data Tables</DrawerTitle>
             <DrawerDescription>Select one data table here.</DrawerDescription>
           </DrawerHeader>
 
-          <div className='flex-1 overflow-y-auto px-4'>{children}</div>
+          <div className='flex overflow-y-auto'>{children}</div>
 
           <DrawerFooter>
             <DrawerClose asChild>

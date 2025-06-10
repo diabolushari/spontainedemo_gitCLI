@@ -44,9 +44,6 @@ export default function TrendGraph({
     const params: Record<string, string | number> = {
       subsetDetail: subsetId,
     }
-    // const params: Record<string, string | number> = {
-    //   subsetDetail: 200,
-    // }
 
     if (selectedMonth == null && setSelectedMonth != null) {
       params['latest'] = 'month'
@@ -97,8 +94,6 @@ export default function TrendGraph({
       })
       .reverse()
   }, [dataFieldName, dataField, graphValues?.data, selectedMonthValue, selectedMonth])
-  // console.log('fetchUrl:', fetchUrl)
-  // console.log('graphValues:', graphValues)
 
   return (
     <div className='flex w-full flex-col pr-4'>

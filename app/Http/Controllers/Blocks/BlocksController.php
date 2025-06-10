@@ -58,8 +58,9 @@ class BlocksController extends Controller
                 DB::beginTransaction();
                 try {
                     $tempPosition = $block->position;
-                    $block->position = $adjacentBlock->position;
-                    $adjacentBlock->position = $tempPosition;
+                    $block->update(['position' => $adjacentBlock->position]);
+                    $adjacentBlock->update(['position' => $tempPosition]);
+
 
                     $block->save();
                     $adjacentBlock->save();
@@ -70,7 +71,7 @@ class BlocksController extends Controller
                 } catch (Exception $e) {
                     DB::rollBack();
 
-                    return redirect()->back()->with('error', 'An error occurred while moving block: '.$e->getMessage());
+                    return redirect()->back()->with('error', 'An error occurred while moving block: ' . $e->getMessage());
                 }
             }
         }

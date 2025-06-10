@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Blocks\BlocksController;
+use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
 use App\Http\Controllers\ChartData\DataDetailListController;
 use App\Http\Controllers\ChartData\SubsetFieldsController;
@@ -90,15 +91,17 @@ Route::resource('page-builder', PageBuilderController::class);
 Route::resource('blocks', BlocksController::class);
 Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)
     ->name('dimension.update');
+Route::put('builder/config/update/{id}', BlocksUpdateConfigController::class)
+    ->name('config.update');
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
 //subset detail
-Route::get('/data-details-list', DataDetailListController::class);
-Route::get('/block/subsets/{dataDetailId}', SubsetFieldsController::class);
-Route::get('/block/subset-group', SubsetGroupListController::class);
-Route::get('/block/subset-group/{subsetGroupId}', SubsetGroupSingleItemController::class);
+Route::get('/api/data-detail', DataDetailListController::class);
+Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
+Route::get('/api/subset-group', SubsetGroupListController::class);
+Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupSingleItemController::class);
 
 //testing
 Route::get('/test', function () {

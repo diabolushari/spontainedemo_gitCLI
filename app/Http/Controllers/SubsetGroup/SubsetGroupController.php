@@ -76,6 +76,7 @@ class SubsetGroupController extends Controller implements HasMiddleware
 
     public function update(SubsetGroupFormRequest $request, SubsetGroup $subsetGroup): RedirectResponse
     {
+
         try {
             $subsetGroup->update($request->all());
         } catch (Exception $e) {
