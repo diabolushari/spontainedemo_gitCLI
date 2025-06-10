@@ -55,8 +55,8 @@ export function EmptyCardBlock({
             <RankedList
               subsetId={block.data.ranking.subset_id}
               cardTitle={block.data.ranking.title}
-              dataField={block.data.ranking.data_field.label}
-              dataFieldName={block.data.ranking.data_field.value}
+              dataField={block.data.ranking.data_field.value}
+              dataFieldName={block.data.ranking.data_field.label}
               rankingPageUrl={`/sample-ranking-page?month=${monthYear}&route=${route('service-delivery.index')}`}
               timePeriod={monthYear}
               timePeriodFieldName='month'

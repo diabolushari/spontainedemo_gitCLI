@@ -44,8 +44,8 @@ export function CustomAreaChart({ data, dataKey, keysToPlot }: Props) {
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey={dataKey}
-            tickLine={false}
-            axisLine={false}
+            tickLine={true}
+            axisLine={true}
             tickMargin={8}
           />
           <YAxis

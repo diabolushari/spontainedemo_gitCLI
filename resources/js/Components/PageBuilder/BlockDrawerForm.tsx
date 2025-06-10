@@ -6,6 +6,7 @@ import useCustomForm from '@/hooks/useCustomForm'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { Config, Axis, Block } from '@/interfaces/data_interfaces'
+import CheckBox from '@/ui/form/CheckBox'
 
 interface SubsetField {
   subset_column: string
@@ -254,7 +255,7 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
           {/* Step 3 */}
           <div className='min-w-full'>
             {!trendFieldsLoading && (
-              <div className='grid md:grid-cols-2 md:gap-4'>
+              <div className='grid md:grid-cols-3 md:gap-4'>
                 <div className='flex flex-col'>
                   <SelectList
                     label='Select X Axis Field'
@@ -284,6 +285,18 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
                   />
                 </div>
                 <div className='flex flex-col'>
+                  <CheckBox
+                    label='Is Label for X-Axis'
+                    value={formData.trend.data_field.x_axis.is_label}
+                    toggleValue={() =>
+                      setAxis('x_axis', {
+                        ...formData.trend.data_field.x_axis,
+                        is_label: !formData.trend.data_field.x_axis.is_label,
+                      })
+                    }
+                  />
+                </div>
+                <div className='flex flex-col'>
                   <SelectList
                     label='Select Y Axis Field'
                     list={trendFields}
@@ -299,6 +312,7 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
                     }
                   />
                 </div>
+
                 <div className='flex flex-col'>
                   <Input
                     label='Y Axis Label'
@@ -307,6 +321,18 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
                       setAxis('y_axis', {
                         ...formData.trend.data_field.y_axis,
                         label: val,
+                      })
+                    }
+                  />
+                </div>
+                <div className='flex flex-col'>
+                  <CheckBox
+                    label='Is Label for Y-Axis'
+                    value={formData.trend.data_field.y_axis.is_label}
+                    toggleValue={() =>
+                      setAxis('y_axis', {
+                        ...formData.trend.data_field.y_axis,
+                        is_label: !formData.trend.data_field.y_axis.is_label,
                       })
                     }
                   />
