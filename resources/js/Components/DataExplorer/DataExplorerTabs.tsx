@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
 import { SubsetDetail, SubsetGroupItem } from '@/interfaces/data_interfaces'
-import OfficeLevelExplorerTable from './OfficeLevelExplorerTable'
-import DataExplorerTrend from './DataExplorerTrend/DataExplorerTrend'
-import SelectList from '@/ui/form/SelectList'
 import MonthPicker from '@/ui/form/MonthPicker'
+import SelectList from '@/ui/form/SelectList'
+import React, { useState } from 'react'
+import DataExplorerTrend from './DataExplorerTrend/DataExplorerTrend'
+import OfficeLevelExplorerTable from './OfficeLevelExplorerTable'
 
 interface Props {
   selectedSubset: SubsetDetail | null | undefined
@@ -128,7 +128,7 @@ export default function DataExplorerTabs({
         </div>
       </div>
 
-      {activeViewTab === 'map' && (
+      {activeViewTab === 'map' && hasTrendField && (
         <OfficeLevelExplorerTable
           subset={selectedSubset}
           officeLevel={activeTab}
@@ -141,6 +141,14 @@ export default function DataExplorerTabs({
           mapField={selectedSubsetItem.trend_field}
           showMapOnly
         />
+      )}
+
+      {activeViewTab === 'map' && !hasTrendField && (
+        <div className='flex items-center justify-center'>
+          <span className='text-1stop-dark-gray'>
+            -- A default visualization is not available for this dataset--
+          </span>
+        </div>
       )}
 
       {activeViewTab === 'table' && (

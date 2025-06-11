@@ -1,12 +1,12 @@
-import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
-import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { dateToYearMonth, yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import OfficeClusterMap, { MapDataItem } from './OfficeRanking/Map/OfficeClusterMap'
 
 interface Props {
@@ -35,7 +35,6 @@ export default function OfficeLevelExplorerTable({
   showMapOnly = false,
   hideMap = false,
 }: Readonly<Props>) {
-  console.log(subset)
   const [showMap, setShowMap] = useState<boolean>(true)
   const {
     region,
