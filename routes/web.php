@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\ChatHistory\ChatHistoryController;
-use App\Http\Controllers\InsightsGen\GetInsights;
-use App\Http\Controllers\InsightsGen\InsightsGen;
-use App\Http\Controllers\TitleGen\TitleGen;
 use App\Http\Controllers\Chat\ChatController;
+use App\Http\Controllers\ChatHistory\ChatHistoryController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
@@ -21,6 +18,8 @@ use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\InsightsGen\GetInsights;
+use App\Http\Controllers\InsightsGen\InsightsGen;
 use App\Http\Controllers\Map\OfficeCoordinateListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
@@ -63,6 +62,7 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Http\Controllers\TitleGen\TitleGen;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
@@ -388,11 +388,14 @@ Route::get('office-coordinates', OfficeCoordinateListController::class)
     ->name('office-coordinates')
     ->middleware('auth');
 
-Route::post('/title-gen', [TitleGen::class, '__invoke'])->name('__invoke');
+Route::post('/title-gen', TitleGen::class)
+    ->name('title-gen');
 
-Route::get('/insight-gen', [InsightsGen::class, '__invoke'])->name('__invoke');;
+Route::get('/insight-gen', InsightsGen::class)
+    ->name('insight-gen');
 
-Route::get('/get-insights', [GetInsights::class, '__invoke'])->name('__invoke');
+Route::get('/get-insights', GetInsights::class)
+    ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
 
