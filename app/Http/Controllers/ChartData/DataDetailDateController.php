@@ -15,10 +15,9 @@ class DataDetailDateController extends Controller
         $dataDetail = DataDetail::with('dateFields')->findOrFail($dataDetailId);
         $queryDataTable = new QueryDataTable();
 
-        // Build the query using the dataDetail model
         $query = $queryDataTable->query($dataDetail);
 
-        // Get the result
+
         $result = $query->paginate(10);
 
         return Response::json($result);
