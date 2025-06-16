@@ -2,31 +2,29 @@
 
 namespace App\Http\Controllers\ChartData;
 
-use App\Models\DataDetail\DataDetail;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
+use App\Models\DataDetail\DataDetail;
 use App\Services\DataTable\JoinDataTable;
-use App\Services\DataTable\QueryDataTable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class DataDetailDateController extends Controller
 {
-    public function __invoke(Request $request, int $dataDetailId)
+    public function __invoke(int $dataDetailId, Request $request, JoinDataTable $joinDataTable): JsonResponse
     {
 
-        $dataDetail = DataDetail::with('dateFields')->findOrFail($dataDetailId);
-        $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
+        $field = $request->get('field', 'month_year');
+
+        $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields')
             ->where('id', $dataDetailId)
             ->first();
 
-        $query = $this->joinDataTable->join($detail);
-
+        $query = $joinDataTable->join($detail);
 
         $latestValue = $query
-            ->selectRaw("MAX($expression) as max_value")
+            ->selectRaw('MAX('.$field.'_record.name) as max_value')
             ->first();
-        dd($result);
 
-        return Response::json($result);
+        return response()->json($latestValue);
     }
 }
