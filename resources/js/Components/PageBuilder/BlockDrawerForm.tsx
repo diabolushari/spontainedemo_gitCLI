@@ -1,13 +1,8 @@
-import useCustomForm from '@/hooks/useCustomForm'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import useInertiaPost from '@/hooks/useInertiaPost'
-import { Axis, Block, Config } from '@/interfaces/data_interfaces'
-import React, { useCallback, useMemo, useState } from 'react'
+import { Block, Config } from '@/interfaces/data_interfaces'
+import { useState } from 'react'
 import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStepGeneral'
 import ConfigFormStepTrend from './PageBlockConfigFormComponent/ConfigFormStepTrend'
 import ConfigFormStepRanking from './PageBlockConfigFormComponent/ConfigFormStepRanking'
-import { div } from 'framer-motion/client'
-import ConfigFormStepOverview from './PageBlockConfigFormComponent/ConfigFormStepOverview'
 
 interface BlockFormProps {
   initialData: Config

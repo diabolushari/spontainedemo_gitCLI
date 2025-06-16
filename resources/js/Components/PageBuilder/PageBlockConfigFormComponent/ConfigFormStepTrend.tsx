@@ -42,12 +42,16 @@ export default function ConfigFormStepTrend({
     xAxisLabel: initialData.trend?.data_field?.x_axis?.label ?? 'Month',
     xAxisValue: initialData.trend?.data_field?.x_axis?.value ?? 'month',
     xAxisShowLabel: initialData.trend?.data_field?.x_axis?.show_label ?? false,
-    yAxisLabel: initialData.trend?.data_field?.y_axis?.label ?? '',
-    yAxisValue: initialData.trend?.data_field?.y_axis?.value ?? '',
-    yAxisShowLabel: initialData.trend?.data_field?.y_axis?.show_label ?? false,
-    tooltipLabel: initialData.trend?.tooltip_field?.label ?? '',
-    tooltipUnit: initialData.trend?.tooltip_field?.unit ?? '',
-    tooltipShowLabel: initialData.trend?.tooltip_field?.show_label ?? false,
+    yAxisLabel: initialData.trend?.subset_id ? initialData.trend?.data_field?.y_axis?.label : '',
+    yAxisValue: initialData.trend?.subset_id ? initialData.trend?.data_field?.y_axis?.value : '',
+    yAxisShowLabel: initialData.trend?.subset_id
+      ? initialData.trend?.data_field?.y_axis?.show_label
+      : false,
+    tooltipLabel: initialData.trend?.subset_id ? initialData.trend?.tooltip_field?.label : '',
+    tooltipUnit: initialData.trend?.subset_id ? initialData.trend?.tooltip_field?.unit : '',
+    tooltipShowLabel: initialData.trend?.subset_id
+      ? initialData.trend?.tooltip_field?.show_label
+      : false,
   })
   const strucetureTrend = (formData: FormData) => {
     return {

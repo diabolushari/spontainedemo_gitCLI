@@ -47,7 +47,7 @@ export function CustomAreaChart({
 
   return (
     <ChartContainer config={chartConfig}>
-      <div className='h-[300px]'>
+      <div className='h-[350px]'>
         <ResponsiveContainer
           width='100%'
           height={200}

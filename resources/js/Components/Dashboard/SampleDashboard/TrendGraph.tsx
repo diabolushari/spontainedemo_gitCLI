@@ -109,7 +109,7 @@ export default function TrendGraph({
 
   return (
     <div className='flex w-full flex-col pr-4'>
-      <div className='mt-4 flex w-full justify-end gap-2 p-2'>
+      <div className='mt-4 flex w-full justify-end p-2'>
         <span className='subheader-sm-1stop'>{cardTitle}</span>
       </div>
 
@@ -131,14 +131,11 @@ export default function TrendGraph({
       <div className='w-4/4'>
         {isLoading ? (
           <Skeleton
-            height={150}
+            height={300}
             width='100%'
           />
         ) : chartType === 'area' ? (
-          <div
-            className='h-[300px]'
-            style={{ border: '1px solid red' }}
-          >
+          <div style={{ height: '220px', border: '1px solid red' }}>
             <CustomAreaChart
               data={chartData}
               dataKey='month'

@@ -1,11 +1,8 @@
 import useCustomForm from '@/hooks/useCustomForm'
 import { Block, Config } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
-import Input from '@/ui/form/Input'
 import React, { useCallback } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import DynamicSelectList from '@/ui/form/DynamicSelectList'
-import CheckBox from '@/ui/form/CheckBox'
 import SelectList from '@/ui/form/SelectList'
 
 interface ConfigFormStepOverviewProps {

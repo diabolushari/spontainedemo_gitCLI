@@ -10,8 +10,8 @@ interface BlockRadioGroupProps {
 export function BlockRadioGroup({ block, selectedView, setSelectedView }: BlockRadioGroupProps) {
   const tabs = [
     { value: 'overview', label: 'Overview', show: true },
-    { value: 'trend', label: 'Trend', show: !!block?.data?.trend },
-    { value: 'rank', label: 'Ranking', show: !!block?.data?.ranking },
+    { value: 'trend', label: 'Trend', show: !!block?.data?.trend?.subset_id },
+    { value: 'rank', label: 'Ranking', show: !!block?.data?.ranking?.subset_id },
   ]
   return (
     <div className='flex w-max gap-2 rounded-md bg-gray-100 p-1'>

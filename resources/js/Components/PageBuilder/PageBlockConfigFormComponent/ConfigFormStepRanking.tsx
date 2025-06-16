@@ -16,13 +16,13 @@ interface ConfigFormStepRankingFieldsProps {
 const strucetureRanking = (formData: any) => {
   return {
     ranking: {
-      subset_id: formData.subset_id ?? null,
+      subset_id: formData.subsetId ?? null,
       title: formData.title ?? null,
-      data_field: formData.subset_id
+      data_field: formData.subsetId
         ? {
             label: formData.label ?? '',
             value: formData.value ?? '',
-            show_label: formData.show_label ?? false,
+            show_label: formData.showLabel ?? false,
           }
         : null,
     },
@@ -36,22 +36,21 @@ export default function ConfigFormStepRanking({
   onBack,
 }: ConfigFormStepRankingFieldsProps) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
-    title: initialData.ranking?.title ?? 0,
-    subset_id: initialData.ranking?.subset_id ?? 0,
+    title: initialData.ranking?.title ?? '',
+    subsetId: initialData.ranking?.subset_id ?? '',
     label: initialData.ranking?.data_field?.label ?? '',
     value: initialData.ranking?.data_field?.value ?? '',
-    show_label: initialData.ranking?.data_field?.show_label ?? false,
+    showLabel: initialData.ranking?.data_field?.show_label ?? false,
   })
 
-  const { post, loading, errors } = useInertiaPost<Partial<Config> & { _method?: string }>(
-    route('config.ranking.update', block.id),
-    {
-      showErrorToast: true,
-      preserveState: true,
-      preserveScroll: true,
-      onComplete: () => onNext({ ...initialData, ...strucetureRanking(formData) }),
-    }
-  )
+  const { post, loading, errors } = useInertiaPost(route('config.ranking.update', block.id), {
+    showErrorToast: true,
+    preserveState: true,
+    preserveScroll: true,
+    onComplete: () => {
+      if (onNext) onNext({ ...initialData, ...strucetureRanking(formData) })
+    },
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,30 +72,33 @@ export default function ConfigFormStepRanking({
                 url={`/api/subset-group/${initialData.subset_group_id}`}
                 dataKey='id'
                 displayKey='name'
-                value={formData.subset_id?.toString() || ''}
-                setValue={setFormValue('subset_id')}
-                error={errors?.subset_id}
+                value={formData.subsetId ?? ''}
+                setValue={setFormValue('subsetId')}
+                error={errors?.subsetId}
+                showAllOption={true}
+                allOptionText='-- None --'
               />
             </div>
             <div className='col-span-3 flex flex-col'>
-              <Input
-                label='Subset Title'
-                value={formData.title || ''}
-                setValue={setFormValue('title')}
-                error={errors?.title}
-              />
+              {formData.subsetId !== '' && (
+                <Input
+                  label='Subset Title'
+                  value={formData.title ?? ''}
+                  setValue={setFormValue('title')}
+                  error={errors?.title}
+                />
+              )}
             </div>
           </>
         )}
       </div>
 
-      {/* Ranking Field Selection */}
-      {formData.subset_id !== 0 && (
+      {formData.subsetId !== '' && (
         <div className='grid grid-cols-3 md:gap-4'>
           <div className='flex flex-col'>
             <DynamicSelectList
               label='Select Ranking Field'
-              url={`/api/subset/${formData.subset_id}?filter_only=1`}
+              url={`/api/subset/${formData.subsetId}?filter_only=1`}
               dataKey='subset_field_name'
               displayKey='subset_field_name'
               value={formData.value}
@@ -117,8 +119,8 @@ export default function ConfigFormStepRanking({
           <div className='flex flex-col'>
             <CheckBox
               label='Enable Label for Ranking Field'
-              value={formData.show_label}
-              toggleValue={toggleBoolean('show_label')}
+              value={formData.showLabel}
+              toggleValue={toggleBoolean('showLabel')}
             />
           </div>
         </div>
@@ -132,7 +134,8 @@ export default function ConfigFormStepRanking({
         />
         <Button
           type='submit'
-          label='Submit'
+          label={loading ? 'Saving...' : 'Next'}
+          disabled={loading}
         />
       </div>
     </form>
