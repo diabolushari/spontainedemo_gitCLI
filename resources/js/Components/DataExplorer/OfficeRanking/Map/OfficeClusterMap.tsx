@@ -101,16 +101,19 @@ const OfficeClusterMap = ({ mapData, onOfficeSelect, selectedOfficeCode, officeL
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(mapRef.current)
 
+    const enableScroll = () => mapRef.current?.scrollWheelZoom.enable()
+    const disableScroll = () => mapRef.current?.scrollWheelZoom.disable()
+
     if (mapContainerRef.current && mapRef.current) {
-      mapContainerRef.current.addEventListener('click', () => {
-        mapRef.current?.scrollWheelZoom.enable()
-      })
-      mapContainerRef.current.addEventListener('mouseleave', () => {
-        mapRef.current?.scrollWheelZoom.disable()
-      })
+      mapContainerRef.current.addEventListener('click', enableScroll)
+      mapContainerRef.current.addEventListener('mouseleave', disableScroll)
     }
 
     return () => {
+      if (mapContainerRef.current) {
+        mapContainerRef.current.removeEventListener('click', enableScroll)
+        mapContainerRef.current.removeEventListener('mouseleave', disableScroll)
+      }
       if (mapRef.current) {
         mapRef.current.off()
         mapRef.current.remove()

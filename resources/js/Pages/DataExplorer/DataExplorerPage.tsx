@@ -90,6 +90,7 @@ export default function DataExplorerPage({
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
     yearMonthToDate(oldFilters['month'])
   )
+  const [activeViewTab, setActiveViewTab] = useState('map')
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsetItems, oldSubsetName)
@@ -224,6 +225,7 @@ export default function DataExplorerPage({
               <OfficeLevelTabs
                 activeTab={activeTab}
                 setActiveTab={changeTab}
+                isMapView={activeViewTab === 'map'}
               />
 
               {selectedSubset != null && (
@@ -241,6 +243,8 @@ export default function DataExplorerPage({
                   selectedSubsetId={selectedSubsetId}
                   setSelectedSubsetId={setSelectedSubsetId}
                   setShowSearchModal={setShowSearchModal}
+                  activeViewTab={activeViewTab}
+                  setActiveViewTab={setActiveViewTab}
                 />
               )}
             </Card>

@@ -46,6 +46,10 @@ interface CustomTickProps {
   }
 }
 
+interface RechartsClickPayload {
+  payload: MapDataItem
+}
+
 const CustomTick = ({ x, y, payload }: CustomTickProps) => {
   const displayName = payload.value.length > 10 ? `${payload.value.slice(0, 9)}...` : payload.value
 
@@ -202,8 +206,16 @@ export default function OfficeRanking({
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  const handleOfficeSelect = (office: MapDataItem) => {
-    if (officeLevel === 'state' || officeLevel === 'section' || !office.office_code) {
+  const handleOfficeSelect = (data: RechartsClickPayload | MapDataItem) => {
+    const office = 'payload' in data ? data.payload : data
+    if (
+      !office ||
+      typeof office === 'string' ||
+      typeof office === 'number' ||
+      officeLevel === 'state' ||
+      officeLevel === 'section' ||
+      !office.office_code
+    ) {
       return
     }
     setSelectedOfficeLevel(getNextOfficeLevel(officeLevel))
@@ -303,7 +315,7 @@ export default function OfficeRanking({
                   dataKey={selectedSortField?.subset_field_name ?? 'Value'}
                   fill={solidColors[0]}
                   barSize={30}
-                  onClick={handleOfficeSelect}
+                  onClick={(data) => handleOfficeSelect(data)}
                 />
               </BarChart>
             </ResponsiveContainer>

@@ -503,11 +503,9 @@ body {
 }
 
 .month-picker-calendar {
-  z-index: 9999 !important;
+  z-index: 999 !important;
 }
 
-.month-picker-calendar .react-datepicker__month {
-  font-size: 10px;
-  font-weight: 600;
-  font-family: 'Figtree-Regular';
+.react-datepicker-popper {
+  z-index: 99999 !important;
 }

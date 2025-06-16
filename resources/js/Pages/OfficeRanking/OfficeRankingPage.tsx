@@ -189,11 +189,11 @@ export default function OfficeRankingPage({
               </div>
             </div>
           </div>
-          <div className='flex items-end justify-between gap-4 border-b border-1stop-alt-gray pb-4 pt-4'>
-            <div className='inline-flex rounded-lg border border-1stop-alt-gray bg-white'>
+          <div className='flex flex-col gap-4 border-b border-1stop-alt-gray pb-4 pt-4 sm:flex-row sm:items-end sm:justify-between'>
+            <div className='inline-flex w-full rounded-lg border border-1stop-alt-gray bg-white sm:w-auto'>
               <button
                 onClick={() => setActiveViewTab('map')}
-                className={`rounded-l-lg ${buttonBaseStyles} ${
+                className={`flex-1 justify-center rounded-l-lg ${buttonBaseStyles} ${
                   activeViewTab === 'map' ? activeButtonStyles : inactiveButtonStyles
                 }`}
               >
@@ -202,7 +202,7 @@ export default function OfficeRankingPage({
               </button>
               <button
                 onClick={() => setActiveViewTab('table')}
-                className={`${buttonBaseStyles} ${
+                className={`flex-1 justify-center ${buttonBaseStyles} ${
                   activeViewTab === 'table' ? activeButtonStyles : inactiveButtonStyles
                 }`}
               >
@@ -211,7 +211,7 @@ export default function OfficeRankingPage({
               </button>
               <button
                 onClick={() => setActiveViewTab('trend')}
-                className={`rounded-r-lg ${buttonBaseStyles} ${
+                className={`flex-1 justify-center rounded-r-lg ${buttonBaseStyles} ${
                   activeViewTab === 'trend' ? activeButtonStyles : inactiveButtonStyles
                 }`}
               >
@@ -220,7 +220,7 @@ export default function OfficeRankingPage({
               </button>
             </div>
 
-            <div className='flex min-w-[220px] max-w-xs flex-1 flex-col gap-1 rounded-lg'>
+            <div className='flex w-full flex-col gap-1 rounded-lg sm:min-w-[220px] sm:max-w-xs sm:flex-1'>
               <SelectList
                 list={subsetItems}
                 dataKey='id'

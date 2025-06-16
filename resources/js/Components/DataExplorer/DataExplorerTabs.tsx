@@ -1,7 +1,7 @@
 import { SubsetDetail, SubsetGroupItem } from '@/interfaces/data_interfaces'
 import MonthPicker from '@/ui/form/MonthPicker'
 import SelectList from '@/ui/form/SelectList'
-import React, { useState } from 'react'
+import React from 'react'
 import DataExplorerTrend from './DataExplorerTrend/DataExplorerTrend'
 import OfficeLevelExplorerTable from './OfficeLevelExplorerTable'
 
@@ -19,6 +19,8 @@ interface Props {
   selectedSubsetId: string
   setSelectedSubsetId: React.Dispatch<React.SetStateAction<string>>
   setShowSearchModal: React.Dispatch<React.SetStateAction<boolean>>
+  activeViewTab: string
+  setActiveViewTab: React.Dispatch<React.SetStateAction<string>>
 }
 
 const buttonBaseStyles = 'px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2'
@@ -41,9 +43,11 @@ export default function DataExplorerTabs({
   selectedSubsetId,
   setSelectedSubsetId,
   setShowSearchModal,
+  activeViewTab,
+  setActiveViewTab,
 }: Readonly<Props>) {
-  const [activeViewTab, setActiveViewTab] = useState('map')
   const hasTrendField = Boolean(selectedSubsetItem?.trend_field)
+  const isStateLevel = activeTab === 'state'
 
   // If trend tab is active but there's no trend field, switch to map view
   React.useEffect(() => {
@@ -52,19 +56,28 @@ export default function DataExplorerTabs({
     }
   }, [activeViewTab, hasTrendField])
 
+  // If map view is active and state level is selected, switch to table view
+  React.useEffect(() => {
+    if (activeViewTab === 'map' && isStateLevel) {
+      setActiveViewTab('table')
+    }
+  }, [activeViewTab, isStateLevel])
+
   if (!selectedSubset || !selectedSubsetItem) {
     return null
   }
 
   return (
     <div className='flex flex-col gap-4'>
-      <div className='flex items-end justify-between gap-4 border-b border-1stop-alt-gray pb-4 pt-4'>
-        <div className='inline-flex rounded-lg border border-1stop-alt-gray bg-white'>
+      <div className='flex flex-col flex-wrap gap-4 border-b border-1stop-alt-gray pb-4 pt-4 sm:flex-row sm:items-end sm:justify-between'>
+        <div className='mb-2 inline-flex w-full rounded-lg border border-1stop-alt-gray bg-white md:mb-0 md:w-auto'>
           <button
             onClick={() => setActiveViewTab('map')}
             className={`rounded-l-lg ${buttonBaseStyles} ${
               activeViewTab === 'map' ? activeButtonStyles : inactiveButtonStyles
-            }`}
+            } ${isStateLevel ? disabledButtonStyles : ''}`}
+            disabled={isStateLevel}
+            title={isStateLevel ? 'Map view is not available at state level' : ''}
           >
             <i className='la la-map-marker'></i>
             <span>Map</span>
@@ -90,10 +103,26 @@ export default function DataExplorerTabs({
             <span>Trend</span>
           </button>
         </div>
-        <div className='flex flex-1 items-end gap-3'>
-          {activeViewTab !== 'trend' && (
-            <>
-              <div className='flex min-w-[220px] max-w-xs flex-1 flex-col gap-1 rounded-lg'>
+        {activeViewTab !== 'trend' && (
+          <div className='flex min-w-0 max-w-full flex-1 flex-col gap-1 rounded-lg md:min-w-[220px] md:max-w-xs'>
+            <SelectList
+              list={subsetItems}
+              dataKey='id'
+              displayKey='name'
+              setValue={setSelectedSubsetId}
+              value={selectedSubsetId}
+              showAllOption
+              allOptionText='Select Subset'
+              style='1stop-background'
+              label='Leading Subset'
+              showLabel={true}
+            />
+          </div>
+        )}
+        {/* <div className='flex w-full flex-1 flex-col items-stretch gap-3 md:w-auto md:flex-row md:items-end'> */}
+        {activeViewTab !== 'trend' && (
+          <>
+            {/* <div className='flex min-w-0 max-w-full flex-1 flex-col gap-1 rounded-lg md:min-w-[220px] md:max-w-xs'>
                 <SelectList
                   list={subsetItems}
                   dataKey='id'
@@ -106,26 +135,26 @@ export default function DataExplorerTabs({
                   label='Leading Subset'
                   showLabel={true}
                 />
+              </div> */}
+            <div className='flex w-full flex-col items-stretch gap-3 md:w-auto md:flex-row md:items-center'>
+              <div className='flex h-11 w-full items-center rounded-lg border border-1stop-alt-gray bg-1stop-alt-gray px-4 py-2 text-sm md:w-auto'>
+                <i className='la la-calendar mr-2 text-1stop-dark-gray'></i>
+                <MonthPicker
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                />
               </div>
-              <div className='flex items-center gap-3'>
-                <div className='flex h-11 items-center rounded-lg border border-1stop-alt-gray bg-1stop-alt-gray px-4 py-2 text-sm'>
-                  <i className='la la-calendar mr-2 text-1stop-dark-gray'></i>
-                  <MonthPicker
-                    selectedMonth={selectedMonth}
-                    setSelectedMonth={setSelectedMonth}
-                  />
-                </div>
-                <button
-                  onClick={() => setShowSearchModal(true)}
-                  className='hover:bg-1stop-accent2/10 flex h-11 items-center gap-2 rounded-lg border border-1stop-alt-gray bg-1stop-alt-gray px-4 py-2 text-sm text-1stop-dark-gray transition-colors hover:text-1stop-accent2'
-                >
-                  <i className='la la-filter'></i>
-                  <span>Filters</span>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+              <button
+                onClick={() => setShowSearchModal(true)}
+                className='hover:bg-1stop-accent2/10 flex h-11 w-full items-center gap-2 rounded-lg border border-1stop-alt-gray bg-1stop-alt-gray px-4 py-2 text-sm text-1stop-dark-gray transition-colors hover:text-1stop-accent2 md:w-auto'
+              >
+                <i className='la la-filter'></i>
+                <span>Filters</span>
+              </button>
+            </div>
+          </>
+        )}
+        {/* </div> */}
       </div>
 
       {activeViewTab === 'map' && hasTrendField && (

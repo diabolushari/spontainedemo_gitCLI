@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 interface Props {
   activeTab: string
   setActiveTab: (tab: string) => void
-  showState?: boolean
+  isMapView?: boolean
 }
 
 const tabItems = [
@@ -22,13 +22,10 @@ export function getNextOfficeLevel(currentLevel: string) {
   return tabItems[index + 1]?.value || 'state'
 }
 
-export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = true }: Props) {
+export default function OfficeLevelTabs({ activeTab, setActiveTab, isMapView = false }: Props) {
   const tabs = useMemo(() => {
-    if (showState) {
-      return tabItems
-    }
-    return tabItems.filter((tab) => tab.value !== 'state')
-  }, [showState])
+    return tabItems
+  }, [])
 
   return (
     <div
@@ -43,11 +40,25 @@ export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = t
               activeTab === tab.value
                 ? 'text-1stop-highlight'
                 : 'text-1stop-dark-gray hover:text-1stop-highlight'
-            }`}
-            onClick={() => setActiveTab(tab.value)}
+            } ${tab.value === 'state' && isMapView ? 'cursor-not-allowed opacity-50' : ''}`}
+            onClick={() => {
+              if (tab.value === 'state' && isMapView) {
+                return
+              }
+              setActiveTab(tab.value)
+            }}
             tabIndex={0}
             role='tab'
-            onKeyDown={(event) => handleEnterPress(event, () => setActiveTab(tab.value))}
+            onKeyDown={(event) => {
+              if (tab.value === 'state' && isMapView) {
+                return
+              }
+              handleEnterPress(event, () => setActiveTab(tab.value))
+            }}
+            disabled={tab.value === 'state' && isMapView}
+            title={
+              tab.value === 'state' && isMapView ? 'Map view is not available at state level' : ''
+            }
           >
             {tab.name}
             {activeTab === tab.value && (
@@ -62,7 +73,12 @@ export default function OfficeLevelTabs({ activeTab, setActiveTab, showState = t
           dataKey='value'
           displayKey='name'
           value={activeTab}
-          setValue={setActiveTab}
+          setValue={(value) => {
+            if (value === 'state' && isMapView) {
+              return
+            }
+            setActiveTab(value)
+          }}
         />
       </div>
     </div>
