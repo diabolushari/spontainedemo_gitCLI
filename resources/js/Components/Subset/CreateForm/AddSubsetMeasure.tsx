@@ -6,9 +6,9 @@ import {
   SubsetMeasureField,
   TableMeasureField,
 } from '@/interfaces/data_interfaces'
-import React, { useMemo } from 'react'
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 import { showError } from '@/ui/alerts'
+import React, { useMemo } from 'react'
 
 interface Props {
   dataDetail: DataDetail
@@ -121,10 +121,15 @@ export default function AddSubsetMeasure({
   const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
     if (formData.field_id == '' || formData.subset_field_name == '') {
+      showError('Please select a field and name its name on subset')
       return
     }
-    if (usingGroup && formData.aggregation === '') {
+    if (usingGroup && !formData.use_expression && formData.aggregation === '') {
       showError('Please select an aggregation method')
+      return
+    }
+    if (usingGroup && formData.use_expression && formData.expression === '') {
+      showError('Please enter an expression')
       return
     }
     onSubmit({
@@ -132,10 +137,10 @@ export default function AddSubsetMeasure({
       subset_field_name: formData.subset_field_name,
       subset_column: generateSnakeCaseName(formData.subset_field_name),
       sort_order: formData.sort_order == '' ? null : formData.sort_order,
-      aggregation: usingGroup ? formData.aggregation : null,
+      aggregation: usingGroup && !formData.use_expression ? formData.aggregation : null,
       expression: formData.use_expression ? formData.expression : null,
       weight_field_id:
-        usingGroup && formData.aggregation === WEIGHTED_AVG
+        usingGroup && !formData.use_expression && formData.aggregation === WEIGHTED_AVG
           ? Number(formData.weight_field_id)
           : null,
     })
