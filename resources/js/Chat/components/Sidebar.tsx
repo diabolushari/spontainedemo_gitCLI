@@ -2,11 +2,11 @@ import {
   FiBarChart2,
   FiChevronDown,
   FiChevronRight,
-  FiClock,
   FiCompass,
   FiCpu,
   FiMessageSquare,
   FiSearch,
+  //   FiTrash2,
 } from 'react-icons/fi'
 import { useState } from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible'
@@ -17,6 +17,7 @@ interface ChatHistoryItem {
   id: number
   title: string
   timestamp: string
+  preview?: string
 }
 
 interface ChatProps {
@@ -37,8 +38,24 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
     }
   }
 
+  const filteredChats = history.filter((chat) =>
+    chat.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  //   const handleDeleteChat = (id: number) => {
+  //     if (window.confirm('Are you sure you want to delete this chat?')) {
+  //       setHistory((prev) => prev.filter((chat) => chat.id !== id))
+  //     }
+  //   }
+
+  const getAvatar = (title: string) => (
+    <span className='flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700'>
+      {title.charAt(0).toUpperCase()}
+    </span>
+  )
+
   return (
-    <aside className='flex w-64 flex-col border-r border-gray-100 bg-1stop-white p-4'>
+    <aside className='flex h-screen flex-col border-r border-gray-100 bg-1stop-white p-4 lg:w-64 2xl:w-80'>
       {/* Navigation Toggle Group */}
       <div className='mb-6'>
         <ToggleGroup
@@ -107,7 +124,7 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
       <Collapsible
         open={isRecentChatsOpen}
         onOpenChange={setIsRecentChatsOpen}
-        className='mt-6'
+        className='mt-6 flex min-h-0 flex-1 flex-col'
       >
         <CollapsibleTrigger className='flex w-full items-center justify-between rounded-lg px-4 py-2 text-sm font-semibold text-gray-500 hover:bg-gray-50'>
           <span>Recent Chats</span>
@@ -117,23 +134,48 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
             <FiChevronRight className='h-4 w-4' />
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent className='mt-2 max-h-[500px] space-y-2 overflow-y-auto'>
-          {history?.map((chat) => (
-            <button
-              key={chat.id}
-              className={`group w-full overflow-hidden rounded-lg px-4 py-2 text-left transition-colors hover:bg-gray-50 ${sessionId == chat.id ? 'bg-blue-300' : null}`}
-              onClick={() => onSessionChange(chat.id)}
-            >
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center'>
-                  <FiMessageSquare className='mr-2 text-gray-400 group-hover:text-blue-500' />
-                  <span className='truncate text-gray-700'>{chat.title}</span>
-                </div>
-                <FiClock className='text-xs text-gray-400' />
+        <CollapsibleContent className='mt-2 min-h-0 flex-1 space-y-2 overflow-y-auto'>
+          {filteredChats.length === 0 ? (
+            <div className='flex flex-col items-center justify-center py-8 text-xs text-gray-400'>
+              <FiMessageSquare className='mb-2 h-6 w-6' />
+              No recent chats found.
+            </div>
+          ) : (
+            filteredChats.map((chat) => (
+              <div
+                key={chat.id}
+                className={`group relative flex w-full items-center gap-2 overflow-hidden rounded-lg px-3 py-2 text-left transition-colors hover:bg-gray-50 ${sessionId === chat.id ? 'bg-blue-50 ring-2 ring-blue-500' : ''}`}
+              >
+                <button
+                  className='flex flex-1 items-center gap-2 focus:outline-none'
+                  onClick={() => onSessionChange(chat.id)}
+                  tabIndex={0}
+                  aria-label={`Open chat: ${chat.title}`}
+                >
+                  {getAvatar(chat.title)}
+                  <div className='flex min-w-0 flex-col'>
+                    <span
+                      className='max-w-[8rem] truncate text-start text-sm font-medium text-gray-800 lg:max-w-[8rem] 2xl:max-w-[12rem]'
+                      title={chat.title}
+                    >
+                      {chat.title}
+                    </span>
+                    <span className='truncate text-start text-xs text-gray-500'>
+                      {chat.preview || chat.timestamp}
+                    </span>
+                  </div>
+                </button>
+                {/* <button
+                  className='ml-2 rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 focus:outline-none'
+                  onClick={() => handleDeleteChat(chat.id)}
+                  tabIndex={0}
+                  aria-label={`Delete chat: ${chat.title}`}
+                >
+                  <FiTrash2 className='h-4 w-4' />
+                </button> */}
               </div>
-              <div className='mt-1 text-xs text-gray-500'>{chat.timestamp}</div>
-            </button>
-          ))}
+            ))
+          )}
         </CollapsibleContent>
       </Collapsible>
     </aside>
