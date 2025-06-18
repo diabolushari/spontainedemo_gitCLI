@@ -42,7 +42,7 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
               </AccordionItem>
             </Accordion>
           )}
-          {message.role !== 'action' && (
+          {(message.role === 'assistant' || message.role === 'user') && (
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}

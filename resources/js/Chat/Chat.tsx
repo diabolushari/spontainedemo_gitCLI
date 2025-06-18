@@ -29,8 +29,15 @@ interface ChatProps {
 export default function Chat({ chatHistory, currentSession }: ChatProps) {
   const [mode, setMode] = useState<'chat' | 'agent'>('agent')
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
-  const { messages, handleSendMessage, isLoading, input, setInput, setMessageFromHistory } =
-    useChat(mode, _currentSession)
+  const {
+    messages,
+    handleSendMessage,
+    isLoading,
+    input,
+    setInput,
+    setMessageFromHistory,
+    handleRetryConnection,
+  } = useChat(mode, _currentSession)
 
   const switchConversation = (sessionId: number) => {
     console.log(sessionId)
@@ -58,6 +65,7 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
         setInput={setInput}
         mode={mode}
         onModeChange={setMode}
+        onRetry={handleRetryConnection}
       />
       <AIInsights />
     </div>
