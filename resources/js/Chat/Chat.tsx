@@ -1,7 +1,7 @@
 import AIInsights from './components/AiInsights'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useChat from './components/useChat'
 import axios from 'axios'
 
@@ -38,6 +38,18 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
     setMessageFromHistory,
     handleRetryConnection,
   } = useChat(mode, _currentSession)
+
+  // Listen for AI Insights custom event to send a message
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const customEvent = event as CustomEvent<string>
+      if (customEvent.detail) {
+        handleSendMessage(customEvent.detail)
+      }
+    }
+    window.addEventListener('ai-insight-send-message', handler)
+    return () => window.removeEventListener('ai-insight-send-message', handler)
+  }, [handleSendMessage])
 
   const switchConversation = (sessionId: number) => {
     console.log(sessionId)
