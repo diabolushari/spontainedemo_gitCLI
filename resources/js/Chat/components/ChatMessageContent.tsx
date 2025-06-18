@@ -79,6 +79,16 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
           <ChatVisualization message={message} />
         </div>
       )}
+      {message.contentType === 'explore' && (
+        <div>
+          <button
+            onClick={() => (window.location.href = `/subset-preview/${message.content}`)}
+            className='rounded-lg border border-blue-600 bg-blue-300 px-4 py-2 font-semibold text-white shadow-md transition duration-200 hover:bg-blue-400'
+          >
+            Data Explorer
+          </button>
+        </div>
+      )}
     </div>
   )
 }

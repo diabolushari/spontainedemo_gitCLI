@@ -50,16 +50,26 @@ function handleOutputResponse(
           role: 'assistant',
           content: parsedOutput.output,
           contentType: 'text',
-          suggestions: [],
+          suggestions: parsedOutput.suggestions ?? [],
         })
       }
       // Add visualization message if available
-      if (parsedOutput.visualization != null) {
+      if (parsedOutput.visualization != null && parsedOutput.visualization.length > 0) {
         messages.push({
           id: currentIdRef.current++,
           role: 'assistant',
           content: JSON.stringify(parsedOutput.visualization),
           contentType: 'chart',
+          suggestions: [],
+        })
+      }
+
+      if (parsedOutput.data_explore != null) {
+        messages.push({
+          id: currentIdRef.current++,
+          role: 'assistant',
+          content: JSON.stringify(parsedOutput.data_explore),
+          contentType: 'explore',
           suggestions: [],
         })
       }
@@ -130,6 +140,7 @@ export function parseAndConvertAgentResponse(
   currentIdRef: MutableRefObject<number>,
   setLoading?: Dispatch<SetStateAction<boolean>>
 ): ChatMessage[] {
+  console.log(`Raw response from fastapi  : \n${responseString}`)
   try {
     const json = JSON.parse(responseString) as AgentResponse
     console.log(json)

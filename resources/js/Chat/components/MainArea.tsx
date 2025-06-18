@@ -8,8 +8,9 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'action' | 'error'
   content: string
   description?: string
-  contentType: 'text' | 'table' | 'chart'
+  contentType: 'text' | 'table' | 'chart' | 'explore'
   suggestions?: string[]
+  explore?: number
 }
 
 interface ChatHistory {
@@ -224,6 +225,7 @@ export default function MainArea({
                     } `}
                   >
                     <ChatMessageContent message={message} />
+
                     {message.suggestions && message.suggestions.length > 0 && (
                       <div className='mt-3 space-y-2'>
                         {message.suggestions.map((suggestion, idx) => (
