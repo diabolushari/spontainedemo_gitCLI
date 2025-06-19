@@ -36,7 +36,7 @@ export function CustomLineChart({ data, dataKey, keysToPlot }: Props) {
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
       label: plotKey.key,
-      color: chartColors[index % chartColors.length],
+      color: '#2563eb',
     }
     return acc
   }, {} as ChartConfig)

@@ -11,7 +11,7 @@ const keysToPlot = [{ key: 'requests_completed_within_sla__count_', label: 'Requ
 const Chart = () => {
   const [breachingSlaData] = useFetchRecord<{
     data: Record<string, number | string>[]
-  }>('/subset/200')
+  }>('/subset/120')
   // console.log(breachingSlaData?.data?.[0])
 
   return (

@@ -37,7 +37,7 @@ export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
       label: plotKey.key,
-      color: chartColors[index % chartColors.length],
+      color: '#2563eb',
     }
     return acc
   }, {} as ChartConfig)
@@ -78,7 +78,11 @@ export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
             fill='#60a5fa'
             radius={[4, 4, 0, 0]}
           />
-          {/* <Bar dataKey="amt" fill="var(--color-amt)" radius={4} /> */}
+          <Bar
+            dataKey='amt'
+            fill='#f5c842'
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>

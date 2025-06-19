@@ -8,6 +8,8 @@ use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
 use App\Http\Controllers\ChartData\DataDetailDateController;
 use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
+use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
 use App\Http\Controllers\ChartData\SubsetFieldsController;
 use App\Http\Controllers\ChartData\SubsetGroupItemsController;
 use App\Http\Controllers\ChartData\SubsetGroupListController;
@@ -117,6 +119,9 @@ Route::get('/api/subset-group', SubsetGroupListController::class);
 Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
 Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)
     ->name('data-detail.date');
+Route::get('api/subset/dimension/{subsetId}', SubsetDimensionFieldsController::class)
+    ->name('subset.dimension.fields');
+Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDimensionFieldItemController::class);
 
 //testing
 Route::get('/test', function () {

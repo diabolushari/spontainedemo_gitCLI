@@ -33,10 +33,11 @@ export function BlockDataDrawer({ children, open, setOpen }: BlockDataDrawerProp
       </DrawerTrigger>
       <DrawerContent>
         <div className='mx-auto flex h-full w-full max-w-3xl flex-col md:max-h-[80vh]'>
-          <DrawerHeader>
+          {/* <DrawerHeader>
             <DrawerTitle>Block Configuration</DrawerTitle>
             <DrawerDescription>Configure your block here.</DrawerDescription>
-          </DrawerHeader>
+            {headerChildren}
+          </DrawerHeader> */}
           <div className='flex justify-center overflow-y-auto'>{children}</div>
           <DrawerFooter>
             <DrawerClose asChild>

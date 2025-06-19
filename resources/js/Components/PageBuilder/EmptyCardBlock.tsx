@@ -8,6 +8,7 @@ import { BlockRadioGroup } from './BlockRadioGroup'
 import MonthPicker from '@/ui/form/MonthPicker'
 import MoreButton from '../MoreButton'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import Overview from '../Dashboard/SampleDashboard/Overview'
 
 // Convert "YYYYMM" → JS Date
 function parseMonthYearString(monthYear: string): Date | null {
@@ -55,7 +56,20 @@ export function EmptyCardBlock({
 
     return classes.join(' ')
   }, [block])
-
+  const sampleOverviewContent = {
+    title: 'Test',
+    description: 'This is a test',
+    overview_chart: {
+      default: true,
+      subset_id: 120,
+      title: 'chart',
+      chart_type: 'bar',
+    },
+    overview_grid: {
+      default: false,
+      grid: true,
+    },
+  }
   return (
     <div className={classNames}>
       <Card className='min-h-18 rounded-md'>
@@ -70,6 +84,14 @@ export function EmptyCardBlock({
         />
 
         <div className='flex flex-col justify-center md:min-h-[400px]'>
+          {selectedView === 'overview' && block?.data && selectedMonth && (
+            <Overview
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              content={sampleOverviewContent}
+            />
+          )}
+
           {/* === Trend Graph === */}
           {selectedView === 'trend' && block?.data?.trend?.subset_id && selectedMonth && (
             <TrendGraph
