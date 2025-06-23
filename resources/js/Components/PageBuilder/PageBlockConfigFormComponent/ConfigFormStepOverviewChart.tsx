@@ -7,6 +7,7 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
 import CheckBox from '@/ui/form/CheckBox'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { title } from 'process'
 
 const chartOptions = [
   { label: 'Bar', value: 'bar' },
@@ -37,8 +38,8 @@ export default function ConfigFormStepOverviewChart({
   onBack,
 }: ConfigFormStepOverviewProps) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
-    title: '',
-    subsetId: '',
+    title: initialData.overview?.overview_chart?.title ?? '',
+    subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
     chartType: 'bar',
     dimension: '',
     xAxis: '',
@@ -54,7 +55,7 @@ export default function ConfigFormStepOverviewChart({
     }[],
     pieYaxis: '',
   })
-
+  console.log(initialData, 'here it is ')
   const {
     formData: yAxisFormData,
     setFormValue: yAxisSetValue,
@@ -111,12 +112,15 @@ export default function ConfigFormStepOverviewChart({
         if (onNext)
           onNext({
             ...initialData,
-            highlight_chart: strucetureHighlightChart(formData).highlight_chart,
+            overview: {
+              ...initialData.overview,
+              overview_chart: strucetureHighlightChart(formData).highlight_chart,
+            },
           })
       },
     }
   )
-
+  console.log(initialData, 'form chart')
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     let finalYAxis = formData.yAxis
@@ -136,7 +140,6 @@ export default function ConfigFormStepOverviewChart({
       ...formData,
       yAxis: finalYAxis,
     }
-    console.log(finalData)
     post({ overview_chart: finalData, _method: 'PUT' })
   }
 

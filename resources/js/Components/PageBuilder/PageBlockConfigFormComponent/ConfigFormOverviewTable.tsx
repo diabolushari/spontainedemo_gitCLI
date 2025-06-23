@@ -70,6 +70,7 @@ export default function ConfigFormStepOverviewTable({
         formData.measureField.filter((f: any) => f.value !== field.subset_column)
       )
     } else {
+      setMeasureFieldValue('value')(field.subset_column)
       setFormValue('measureField')([
         ...formData.measureField,
         {
@@ -112,11 +113,20 @@ export default function ConfigFormStepOverviewTable({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(formData)
+    console.log({
+      ...initialData,
+      overview: {
+        ...initialData.overview,
+        overview_table: structureOverviewTable(formData).overview_table,
+      },
+      _method: 'PUT',
+    })
+
     post({
       ...initialData,
-      overview_table: {
-        ...structureOverviewTable(formData).overview_table,
+      overview: {
+        ...initialData.overview,
+        overview_table: structureOverviewTable(formData).overview_table,
       },
       _method: 'PUT',
     })
@@ -190,14 +200,6 @@ export default function ConfigFormStepOverviewTable({
               <div className='flex flex-col gap-4'>
                 {subsetFields.map((field) => {
                   const isSelected = isMeasureSelected(field.subset_column)
-                  const currentData = formData.measureField.find(
-                    (f: any) => f.value === field.subset_column
-                  ) || {
-                    label: '',
-                    value: field.subset_column,
-                    unit: '',
-                    show_label: false,
-                  }
 
                   return (
                     <div
@@ -215,7 +217,11 @@ export default function ConfigFormStepOverviewTable({
                           <div className='flex flex-col gap-4'>
                             <Input
                               label='Enter your Label'
-                              value={currentData.label}
+                              value={
+                                formData.measureField.find(
+                                  (f: any) => f.value === field.subset_column
+                                )?.label || ''
+                              }
                               setValue={(val) =>
                                 updateMeasureField(field.subset_column, { label: val })
                               }
@@ -225,7 +231,7 @@ export default function ConfigFormStepOverviewTable({
                           <div className='flex flex-col gap-4'>
                             <Input
                               label='Value'
-                              value={field.subset_column}
+                              value={measureFieldFormData.value}
                               setValue={() => {}}
                               disabled
                             />
@@ -233,7 +239,11 @@ export default function ConfigFormStepOverviewTable({
                           <div className='flex flex-col gap-4'>
                             <Input
                               label='Unit'
-                              value={currentData.unit}
+                              value={
+                                formData.measureField.find(
+                                  (f: any) => f.value === field.subset_column
+                                )?.unit || ''
+                              }
                               setValue={(val) =>
                                 updateMeasureField(field.subset_column, { unit: val })
                               }
@@ -242,10 +252,16 @@ export default function ConfigFormStepOverviewTable({
                           <div className='flex flex-col gap-4'>
                             <CheckBox
                               label='Show Label'
-                              value={currentData.show_label}
+                              value={
+                                formData.measureField.find(
+                                  (f: any) => f.value === field.subset_column
+                                )?.show_label ?? false
+                              }
                               toggleValue={() =>
                                 updateMeasureField(field.subset_column, {
-                                  show_label: !currentData.show_label,
+                                  show_label: !formData.measureField.find(
+                                    (f: any) => f.value === field.subset_column
+                                  )?.show_label,
                                 })
                               }
                             />

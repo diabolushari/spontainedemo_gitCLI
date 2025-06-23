@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
@@ -112,9 +113,9 @@ Route::put('block/config/ranking/update/{id}', BlocksConfigRankingUpdateControll
     ->name('config.ranking.update');
 Route::put('block/config/overview/update/{id}', BlocksConfigOverviewUpdateController::class)
     ->name('config.overview.update');
-Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewUpdateController::class)
+Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewChartUpdateController::class)
     ->name('config.overview.chart.update');
-Route::put('block/config/overview/table/upate{id}', BlocksConfigOverviewTableUpdateController::class)
+Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)
     ->name('config.overview.table.update');
 
 

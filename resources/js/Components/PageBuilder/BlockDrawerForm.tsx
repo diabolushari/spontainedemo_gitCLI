@@ -157,7 +157,7 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 onBack={() => setStep(4)}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setCloseDrawer(false)
+                  setStep(6)
                 }}
               />
             )}
