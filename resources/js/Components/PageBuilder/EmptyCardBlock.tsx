@@ -10,11 +10,10 @@ import MoreButton from '../MoreButton'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Overview from '../Dashboard/SampleDashboard/Overview'
 
-// Convert "YYYYMM" → JS Date
 function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
   const year = parseInt(monthYear.slice(0, 4), 10)
-  const month = parseInt(monthYear.slice(4), 10) - 1 // Month is 0-indexed
+  const month = parseInt(monthYear.slice(4), 10) - 1
   return new Date(year, month, 1)
 }
 

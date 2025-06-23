@@ -8,9 +8,12 @@ import ConfigFormStepRanking from './PageBlockConfigFormComponent/ConfigFormStep
 import { cn } from '@/lib/utils' // Optional utility for conditional classNames
 import { DrawerDescription, DrawerHeader, DrawerTitle } from '../ui/drawer'
 import ConfigFormStepOverviewChart from './PageBlockConfigFormComponent/ConfigFormStepOverviewChart'
+import ConfigFormStepOverviewGeneral from './PageBlockConfigFormComponent/ConfigFormStepOverviewGeneral'
+import StrongText from '@/typography/StrongText'
+import ConfigFormStepOverviewTable from './PageBlockConfigFormComponent/ConfigFormOverviewTable'
 
 interface BlockFormProps {
-  initialData: Config
+  initialData: any
   onCloseStep?: () => void
   block: Block
   setCloseDrawer: (value: boolean) => void
@@ -20,7 +23,9 @@ const steps = [
   { title: 'General' },
   { title: 'Trend' },
   { title: 'Ranking' },
-  { title: 'Highlight chart' },
+  { title: 'Overview' },
+  { title: 'Chart' },
+  { title: 'Table' },
 ]
 
 export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: BlockFormProps) {
@@ -59,7 +64,7 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
               >
                 <div
                   className={cn(
-                    'flex h-8 w-8 items-center justify-center rounded-full border text-sm font-medium',
+                    'flex h-6 w-6 items-center justify-center rounded-full border text-sm font-medium',
                     isCompleted
                       ? 'bg-green-500 text-white'
                       : isActive
@@ -70,7 +75,6 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                   {isCompleted ? <Check className='h-4 w-4' /> : currentStep}
                 </div>
                 <div className='ml-2 text-sm font-medium text-gray-700'>{s.title}</div>
-                {index !== steps.length - 1 && <div className='mx-2 h-0.5 flex-1 bg-gray-300' />}
               </div>
             )
           })}
@@ -88,8 +92,8 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
               <ConfigFormStepGeneral
                 initialData={stepData}
                 block={block}
-                onNext={(validatedData: Partial<Config>) => {
-                  setStepData((prev) => ({ ...prev, ...validatedData }))
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
                   setStep(2)
                 }}
               />
@@ -103,8 +107,8 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 initialData={stepData}
                 block={block}
                 onBack={() => setStep(1)}
-                onNext={(validatedData: Partial<Config>) => {
-                  setStepData((prev) => ({ ...prev, ...validatedData }))
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
                   setStep(3)
                 }}
               />
@@ -118,9 +122,9 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 initialData={stepData}
                 block={block}
                 onBack={() => setStep(2)}
-                onNext={(validatedData: Partial<Config>) => {
-                  setStepData((prev) => ({ ...prev, ...validatedData }))
-                  setCloseDrawer(false)
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
+                  setStep(4)
                 }}
               />
             )}
@@ -128,12 +132,45 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
           {/* Step 4 */}
           <div className='w-full shrink-0'>
             {step === 4 && (
-              <ConfigFormStepOverviewChart
+              <ConfigFormStepOverviewGeneral
                 initialData={stepData}
                 block={block}
                 onBack={() => setStep(3)}
-                onNext={(validatedData: Partial<Config>) => {
-                  setStepData((prev) => ({ ...prev, ...validatedData }))
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
+
+                  if (validatedData.overview.card_type === 'table') {
+                    setStep(6)
+                  } else {
+                    setStep(5)
+                  }
+                }}
+              />
+            )}
+          </div>
+          {/* Step 5 */}
+          <div className='w-full shrink-0'>
+            {step === 5 && (
+              <ConfigFormStepOverviewChart
+                initialData={stepData}
+                block={block}
+                onBack={() => setStep(4)}
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
+                  setCloseDrawer(false)
+                }}
+              />
+            )}
+          </div>
+          {/* Step 6 */}
+          <div className='w-full shrink-0'>
+            {step === 6 && (
+              <ConfigFormStepOverviewTable
+                initialData={stepData}
+                block={block}
+                onBack={() => setStep(5)}
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
                   setCloseDrawer(false)
                 }}
               />

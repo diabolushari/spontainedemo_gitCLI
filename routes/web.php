@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewUpdateController;
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
@@ -108,6 +110,14 @@ Route::put('block/config/trend/update/{id}', BlocksConfigTrendUpdateController::
     ->name('config.trend.update');
 Route::put('block/config/ranking/update/{id}', BlocksConfigRankingUpdateController::class)
     ->name('config.ranking.update');
+Route::put('block/config/overview/update/{id}', BlocksConfigOverviewUpdateController::class)
+    ->name('config.overview.update');
+Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewUpdateController::class)
+    ->name('config.overview.chart.update');
+Route::put('block/config/overview/table/upate{id}', BlocksConfigOverviewTableUpdateController::class)
+    ->name('config.overview.table.update');
+
+
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
