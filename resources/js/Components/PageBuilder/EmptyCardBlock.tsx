@@ -87,7 +87,7 @@ export function EmptyCardBlock({
             <Overview
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
-              content={sampleOverviewContent}
+              content={block?.data?.overview}
             />
           )}
 

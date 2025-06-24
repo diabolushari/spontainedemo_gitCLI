@@ -40,22 +40,17 @@ export default function ConfigFormStepOverviewChart({
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     title: initialData.overview?.overview_chart?.title ?? '',
     subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
-    chartType: 'bar',
-    dimension: '',
-    xAxis: '',
-    xAxisCount: 0,
-    xAxisLabel: '',
-    xAxisOrder: '',
-    xAxisEnable: false,
-    yAxis: [] as {
-      value: string
-      label: string
-      unit: string
-      show_label: boolean
-    }[],
+    chartType: initialData.overview?.overview_chart?.chart_type ?? 'bar',
+    dimension: initialData.overview?.overview_chart?.dimension ?? '',
+    xAxis: initialData.overview?.overview_chart?.x_axis ?? '',
+    xAxisCount: initialData.overview?.overview_chart?.x_axis_count ?? 0,
+    xAxisLabel: initialData.overview?.overview_chart?.x_axis_label ?? '',
+    xAxisOrder: initialData.overview?.overview_chart?.x_axis_order ?? '',
+    xAxisEnable: initialData.overview?.overview_chart?.x_axis_enable ?? false,
+    yAxis: initialData.overview?.overview_chart?.y_axis ?? [],
     pieYaxis: '',
   })
-  console.log(initialData, 'here it is ')
+
   const {
     formData: yAxisFormData,
     setFormValue: yAxisSetValue,
@@ -120,12 +115,12 @@ export default function ConfigFormStepOverviewChart({
       },
     }
   )
-  console.log(initialData, 'form chart')
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     let finalYAxis = formData.yAxis
-
-    if (formData.chartType === 'pie') {
+    const overview_chart_data = strucetureHighlightChart(formData).highlight_chart
+    if (overview_chart_data.chart_type === 'pie') {
       finalYAxis = [
         {
           label: yAxisFormData.label,
@@ -137,9 +132,10 @@ export default function ConfigFormStepOverviewChart({
     }
 
     const finalData = {
-      ...formData,
-      yAxis: finalYAxis,
+      ...overview_chart_data,
+      y_axis: finalYAxis,
     }
+    console.log(finalData, 'finla data before post')
     post({ overview_chart: finalData, _method: 'PUT' })
   }
 
@@ -155,7 +151,7 @@ export default function ConfigFormStepOverviewChart({
               displayKey='name'
               value={formData.subsetId ?? ''}
               setValue={setFormValue('subsetId')}
-              error={errors?.subsetId}
+              error={errors?.['overview_chart.subset_id']}
               showAllOption={true}
               allOptionText='-- None --'
             />
@@ -168,7 +164,7 @@ export default function ConfigFormStepOverviewChart({
                       label='Title for chart'
                       value={formData.title ?? ''}
                       setValue={setFormValue('title')}
-                      error={errors?.title}
+                      error={errors?.['overview_chart.title']}
                     />
                   </div>
                   <div className='flex flex-col'>
@@ -179,7 +175,7 @@ export default function ConfigFormStepOverviewChart({
                       displayKey='label'
                       value={formData.chartType ?? 'bar'}
                       setValue={setFormValue('chartType')}
-                      error={errors?.chartType}
+                      error={errors?.['overview_chart.chart_type']}
                     />
                   </div>
                 </div>
@@ -193,7 +189,7 @@ export default function ConfigFormStepOverviewChart({
                     setValue={setFormValue('xAxis')}
                     showAllOption={true}
                     allOptionText='-- None --'
-                    error={errors?.xAxis}
+                    error={errors?.['overview_chart.x_axis']}
                   />
                 </div>
               </>
@@ -208,6 +204,7 @@ export default function ConfigFormStepOverviewChart({
                       label='Number of items'
                       value={formData.xAxisCount ?? 0}
                       setValue={(value) => setFormValue('xAxisCount')(Number(value))}
+                      error={errors?.['overview_chart.x_axis_count']}
                     />
                   </div>
                   <div className='flex flex-col'>
@@ -215,6 +212,7 @@ export default function ConfigFormStepOverviewChart({
                       label='Name for x axis'
                       value={formData.xAxisLabel}
                       setValue={setFormValue('xAxisLabel')}
+                      error={errors?.['overview_chart.x_axis_label']}
                     />
                   </div>
                   <div className='flex flex-col'>
@@ -225,6 +223,7 @@ export default function ConfigFormStepOverviewChart({
                       displayKey='label'
                       value={formData.xAxisOrder ?? 'asc'}
                       setValue={setFormValue('xAxisOrder')}
+                      error={errors?.['overview_chart.x_axis_order']}
                     />
                   </div>
                   <div className='flex flex-col'>
@@ -232,12 +231,13 @@ export default function ConfigFormStepOverviewChart({
                       label='Label enable for x axis'
                       value={formData.xAxisEnable}
                       toggleValue={toggleBoolean('xAxisEnable')}
+                      error={errors?.['overview_chart.x_axis_enable']}
                     />
                   </div>
                 </div>
               )}
 
-              {formData.subsetId && subsetFields && (
+              {formData.subsetId && subsetFields && formData.xAxis && (
                 <div className='flex flex-col gap-4 md:grid md:grid-cols-4'>
                   {formData.chartType === 'pie' ? (
                     <>
@@ -393,8 +393,8 @@ export default function ConfigFormStepOverviewChart({
               onClick={onBack}
             />
             <Button
-              type='next'
-              label={loading ? 'Saving...' : 'Submit'}
+              type='submit'
+              label={loading ? 'Saving...' : 'Next'}
               disabled={loading}
             />
           </div>

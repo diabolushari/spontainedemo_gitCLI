@@ -400,6 +400,32 @@ export interface Trend {
     show_label: boolean
   }
 }
+export interface Overview {
+  title: string
+  description: string
+  card_type: 'chart_and_table' | 'chart_only' | 'table_only' // extend as needed
+  overview_chart?: OverviewChart
+  overview_table?: OverviewTable
+}
+export interface OverviewChart {
+  title: string
+  subset_id: string
+  chart_type: string // e.g., "bar", "line", etc.
+  x_axis: string
+  y_axis: string[] // assuming it's an array as per your input
+  [key: string]: any // for flexibility (e.g., filters, extra settings)
+}
+
+export interface OverviewTable {
+  title: string
+  subset_id: string | null
+  show_total: boolean
+  grid_number: number | null
+  measure_field_dimension?: string
+  measure_field: string[]
+  [key: string]: any
+}
+
 export interface Config {
   title: string
   data_table_id: string
@@ -408,6 +434,7 @@ export interface Config {
   subset_group_id: string
   trend: Trend
   ranking: Ranking
+  overview: Overview
 }
 
 export interface Block extends Model {

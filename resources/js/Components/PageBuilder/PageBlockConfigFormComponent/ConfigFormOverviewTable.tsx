@@ -27,10 +27,11 @@ export default function ConfigFormStepOverviewTable({
   onBack,
 }: ConfigFormStepOverviewTableProps) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
-    title: initialData?.overview?.title ?? '',
-    subsetId: initialData?.subset_id ?? '',
+    title: initialData?.overview?.overview_table?.title ?? '',
+    subsetId: initialData?.overview?.overview_table?.subset_id ?? '',
     dimensionField: initialData?.dimension_field ?? '',
     measureField: Array.isArray(initialData?.measure_field) ? initialData.measure_field : [],
+    measureFieldDimension: '',
     gridNumber: initialData?.grid_number ?? '',
     showTotal: initialData?.show_total ?? false,
   })
@@ -90,6 +91,7 @@ export default function ConfigFormStepOverviewTable({
         subset_id: formData.subsetId,
         dimension_field: formData.dimensionField,
         measure_field: formData.measureField,
+        measure_field_dimension: formData.measureFieldDimension,
         grid_number: formData.gridNumber,
         show_total: formData.showTotal,
       },
@@ -197,6 +199,18 @@ export default function ConfigFormStepOverviewTable({
           {formData.subsetId && subsetFields && (
             <div className='col-span-3 flex flex-col gap-4'>
               <StrongText>Select Measure Fields</StrongText>
+              <div>
+                {formData.subsetId && formData.dimensionField && (
+                  <DynamicSelectList
+                    label='Select a dimension field'
+                    url={`/api/subset/dimension/fields/${formData.dimensionField}/${formData.subsetId}`}
+                    dataKey='name'
+                    displayKey='name'
+                    value={formData.measureFieldDimension}
+                    setValue={setFormValue('measureFieldDimension')}
+                  />
+                )}
+              </div>
               <div className='flex flex-col gap-4'>
                 {subsetFields.map((field) => {
                   const isSelected = isMeasureSelected(field.subset_column)

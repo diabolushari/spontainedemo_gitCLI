@@ -8,6 +8,7 @@ use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWith;
 use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
@@ -26,6 +27,25 @@ class BlockConfigOverviewChart extends Data
         #[Max(255)]
         #[RequiredWith('subset_id')]
         public ?string $chartType,
+
+        #[RequiredWith('subset_id')]
+        #[Max(255)]
+        public ?string $xAxisLabel,
+
+        #[RequiredWith('subset_id')]
+        #[Max(255)]
+        public ?string $xAxis,
+
+        #[RequiredWith('subset_id')]
+        public ?bool $xAxisEnable,
+
+        #[RequiredWith('subset_id')]
+        #[Min(0)]
+        #[Max(100)]
+        public ?int $xAxisCount,
+
+        #[RequiredWith('subset_id')]
+        public ?array $yAxis
 
 
     ) {}

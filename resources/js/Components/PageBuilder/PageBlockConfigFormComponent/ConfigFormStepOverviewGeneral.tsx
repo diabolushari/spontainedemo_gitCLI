@@ -78,7 +78,7 @@ export default function ConfigFormStepOverviewGeneral({
           </div>
           <div className='flex flex-col md:col-span-2'>
             <TextArea
-              label='Enter your discritpion'
+              label='Enter your descritpion'
               value={formData.description}
               setValue={setFormValue('description')}
               error={errors?.description}

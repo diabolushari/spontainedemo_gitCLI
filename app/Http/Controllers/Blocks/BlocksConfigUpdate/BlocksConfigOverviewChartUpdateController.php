@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class BlocksConfigOverviewChartUpdateController extends Controller
 {
 
-    public function __invoke(Request $request, $id): RedirectResponse
+    public function __invoke(BlocksConfigOverviewChartUpdateRequest $request, $id): RedirectResponse
     {
 
         return redirect()->back();

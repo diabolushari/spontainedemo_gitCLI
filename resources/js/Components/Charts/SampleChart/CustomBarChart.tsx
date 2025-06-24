@@ -8,39 +8,32 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/Components/ui/chart'
-const chartData = [
-  { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-  { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-  { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-  { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-  { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-  { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-  { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-]
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
-const chartConfig = {
-  uv: {
-    label: 'UV',
-    color: 'hsl(var(--chart-1))',
-  },
-  pv: {
-    label: 'PV',
-    color: 'hsl(var(--chart-2))',
-  },
-  amt: {
-    label: 'AMT',
-    color: 'hsl(var(--chart-3))',
-  },
-} satisfies ChartConfig
+interface Props {
+  data: Record<string, number | string>[]
+  dataKey: string
+  keysToPlot: {
+    key: string
+    label: string
+  }[]
+}
+
+const chartColors = ['#2563eb', '#60a5fa', '#f5c842', '#10b981', '#ef4444']
 
 export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
+  if (!data || data.length === 0) {
+    return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
+  }
+
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
-      label: plotKey.key,
-      color: '#2563eb',
+      label: plotKey.label,
+      color: chartColors[index % chartColors.length],
     }
     return acc
   }, {} as ChartConfig)
+
   return (
     <ChartContainer config={chartConfig}>
       <ResponsiveContainer
@@ -48,41 +41,49 @@ export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
         height={300}
       >
         <BarChart
-          accessibilityLayer
-          data={chartData}
+          data={data}
           margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
-            dataKey='name'
+            dataKey={dataKey}
             tickLine={false}
             tickMargin={10}
             axisLine={false}
           />
           <YAxis
+            tickFormatter={(value) => (formatNumber(value as number) ?? '').toString()}
             tickLine={false}
             axisLine={false}
             tickMargin={8}
+            label={{
+              value: keysToPlot.length === 1 ? keysToPlot[0].label : 'Value',
+              angle: -90,
+              position: 'insideLeft',
+            }}
           />
+          {/* Tooltip shows values on hover */}
           <ChartTooltip
             cursor={false}
+            formatter={(value: number | string, name: string) => {
+              const matchingKey = keysToPlot.find((k) => k.key === name)
+              const formattedValue = formatNumber(Number(value))
+              const labelWithUnit = matchingKey
+                ? `${matchingKey.label}${matchingKey.unit ? ` (${matchingKey.unit})` : ''}`
+                : name
+              return [formattedValue, labelWithUnit]
+            }}
             content={<ChartTooltipContent indicator='dashed' />}
           />
-          <Bar
-            dataKey='uv'
-            fill='#2563eb'
-            radius={[4, 4, 0, 0]}
-          />
-          <Bar
-            dataKey='pv'
-            fill='#60a5fa'
-            radius={[4, 4, 0, 0]}
-          />
-          <Bar
-            dataKey='amt'
-            fill='#f5c842'
-            radius={[4, 4, 0, 0]}
-          />
+          {keysToPlot.map((plotKey, index) => (
+            <Bar
+              key={plotKey.key}
+              dataKey={plotKey.key}
+              name={plotKey.label}
+              fill={chartColors[index % chartColors.length]}
+              radius={[4, 4, 0, 0]}
+            />
+          ))}
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>
