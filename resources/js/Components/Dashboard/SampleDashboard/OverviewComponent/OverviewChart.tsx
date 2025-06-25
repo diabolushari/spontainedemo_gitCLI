@@ -3,6 +3,7 @@ import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import React, { useEffect, useMemo, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
 
 interface Props {
   selectedMonth: Date | null
@@ -28,7 +29,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
     key: axis.value,
     label: axis.label,
   }))
-  const [data] = useFetchRecord<{
+  const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(
     `/subset/${chart_content.subset_id}?${
@@ -72,6 +73,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           <span className='subheader-sm-1stop'>{chart_content.title}</span>
         </div>
       </div>
+      {loading && <Skeleton height={200} />}
       {chart_content.chart_type === 'bar' && (
         <CustomBarChart
           data={aggregatedData}

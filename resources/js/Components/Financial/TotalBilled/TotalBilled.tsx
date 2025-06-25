@@ -75,7 +75,7 @@ const TotalBilled = () => {
         : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
-  console.log(graphValues, 'dshajkfhasdj')
+
   // graphValues?.data.sort((a, b) => a.total_demand - b.total_demand).reverse()
   const graphData = useMemo(() => {
     if (graphValues?.data == null) {

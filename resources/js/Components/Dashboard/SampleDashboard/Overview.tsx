@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NormalText from '@/typography/NormalText'
 import OverviewChart from './OverviewComponent/OverviewChart'
 import OverviewGrid from './OverviewComponent/OverviewGrid'
@@ -13,17 +13,10 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
   const overview_table = content?.overview_table
   const overview_chart = content?.overview_chart
 
-  const [toggleValue, setToggleValue] = useState(true) // true = number, false = percentage
-  const [selectedValue, setSelectedValue] = useState('') // current selected dimension value
-  const [graphValues, setGraphValues] = useState<any>({ data: [] }) // fake default
-  console.log(content)
-  // Simulated data fetch (replace with real one)
-  useEffect(() => {
-    if (content?.graph_data) {
-      setGraphValues(content.graph_data)
-    }
-  }, [content])
+  const [toggleValue, setToggleValue] = useState(true)
+  const [selectedValue, setSelectedValue] = useState('')
 
+  console.log('content in overviw: ', content)
   return (
     <div className='flex w-full flex-col pr-4'>
       <div>
@@ -34,7 +27,22 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
       </div>
 
       <div className='grid grid-cols-2 gap-2'>
-        {/* Chart Section */}
+        <div
+          className={`${
+            overview_chart ? 'col-span-1' : 'col-span-2'
+          } rounded-md border border-gray-200`}
+        >
+          {overview_table && (
+            <OverviewGrid
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              config={overview_table}
+              toggleValue={toggleValue}
+              selected={selectedValue}
+              onSelect={setSelectedValue}
+            />
+          )}
+        </div>
         <div
           className={`${
             overview_table ? 'col-span-1' : 'col-span-2'
@@ -45,23 +53,6 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
               chart_content={overview_chart}
-            />
-          )}
-        </div>
-
-        {/* Grid Section */}
-        <div
-          className={`${
-            overview_chart ? 'col-span-1' : 'col-span-2'
-          } rounded-md border border-gray-200`}
-        >
-          {overview_table && (
-            <OverviewGrid
-              config={overview_table}
-              data={graphValues.data}
-              toggleValue={toggleValue}
-              selected={selectedValue}
-              onSelect={setSelectedValue}
             />
           )}
         </div>

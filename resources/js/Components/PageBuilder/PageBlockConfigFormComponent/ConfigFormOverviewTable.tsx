@@ -230,7 +230,7 @@ export default function ConfigFormStepOverviewTable({
                         <div className='grid grid-cols-4 gap-4 md:grid-cols-4'>
                           <div className='flex flex-col gap-4'>
                             <Input
-                              label='Enter your Label'
+                              label='Enter your Label for this field'
                               value={
                                 formData.measureField.find(
                                   (f: any) => f.value === field.subset_column

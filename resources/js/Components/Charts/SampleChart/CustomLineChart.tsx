@@ -50,17 +50,17 @@ export function CustomLineChart({ data, dataKey, keysToPlot }: Props) {
       >
         <LineChart
           data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+          margin={{ top: 5, right: 30, left: 20, bottom: 0 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey={dataKey}
             tickLine={false}
             tickMargin={10}
-            minTickGap={40}
+            minTickGap={10}
             axisLine={false}
             interval={0} // show all ticks
-            tick={{ angle: -45, textAnchor: 'end', fontSize: 8 }}
+            tick={{ angle: -95, textAnchor: 'top', fontSize: 8 }}
           />
 
           <YAxis

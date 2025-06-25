@@ -1,5 +1,7 @@
 import React from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import Skeleton from 'react-loading-skeleton'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
 interface MeasureField {
   label: string
@@ -20,18 +22,20 @@ interface Config {
 
 interface OverviewGridProps {
   config: Config
-  data: Record<string, any>[]
   toggleValue: boolean
   selected: string
   onSelect: (value: string) => void
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
 
 const OverviewGrid: React.FC<OverviewGridProps> = ({
   config,
-  data,
   toggleValue,
   selected,
   onSelect,
+  selectedMonth,
+  setSelectedMonth,
 }) => {
   const {
     dimension_field,
@@ -44,13 +48,14 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
   } = config
 
   // API URL to fetch dimension values
-  const apiUrl = `/api/subset/dimension/fields/${dimension_field}/${subset_id}`
-  const [response, loading] = useFetchRecord<{ name: string }[]>(apiUrl)
-  const dimensionValues = response ? response.map((d) => d.name) : []
-
-  const isMultiMeasure = measure_field?.length > 1 && measure_field_dimension
-
-  // grid limit logic
+  const dimensionApiUrl = `/api/subset/dimension/fields/${dimension_field}/${subset_id}`
+  const [dimensionResponse, dimensionLoading] = useFetchRecord<{ name: string }[]>(dimensionApiUrl)
+  const dimensionValues = dimensionResponse ? dimensionResponse.map((d) => d.name) : []
+  const [graphValues] = useFetchRecord(
+    `/subset/${subset_id}?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${measure_field_dimension ? `${dimension_field}=${measure_field_dimension}` : ''}`
+  )
+  const isMultiMeasure = measure_field?.length > 0
+  console.log(subset_id, graphValues, measure_field_dimension)
   const gridNumber = parseInt(grid_number || '', 10)
   const visibleCount =
     isNaN(gridNumber) || gridNumber <= 0
@@ -59,26 +64,12 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
         : dimensionValues.length
       : gridNumber
 
-  const getMetricValue = (fieldValue: string, metricKey: string) => {
-    const total = data.reduce((sum, item) => sum + (item[metricKey] || 0), 0)
-    const current = data
-      .filter((item) => item[dimension_field] === fieldValue)
-      .reduce((sum, item) => sum + (item[metricKey] || 0), 0)
-
-    if (toggleValue) {
-      return current.toLocaleString()
-    } else {
-      const percent = total ? (current / total) * 100 : 0
-      return `${percent.toFixed(2)}%`
-    }
-  }
-
   return (
     <div className='flex w-full flex-col gap-4 p-2'>
       <h2 className='text-xl font-semibold'>{title}</h2>
 
-      {loading ? (
-        <div className='text-sm text-gray-500'>Loading...</div>
+      {dimensionLoading ? (
+        <Skeleton height={200} />
       ) : (
         <div className='grid grid-cols-2 gap-2'>
           {/* Total card on top */}
@@ -89,7 +80,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
           )}
 
           {/* Dynamic logic: measure-field or dimension-based cards */}
-          {isMultiMeasure
+          {measure_field_dimension
             ? measure_field.slice(0, visibleCount).map((field) => (
                 <div
                   key={field.value}
@@ -106,10 +97,8 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
                     selected === field.value ? 'border-blue-500 bg-blue-100' : 'hover:shadow'
                   }`}
                 >
-                  <p className='text-lg font-bold'>
-                    {getMetricValue(measure_field_dimension, field.value)}
-                  </p>
-                  {field.show_label && <p className='text-sm text-gray-600'>{field.label}</p>}
+                  <p className='text-sm text-gray-600'>{field.label}</p>
+                  <p>{formatNumber(graphValues?.data?.[0]?.[field.value] ?? 'N/A')}</p>
                 </div>
               ))
             : dimensionValues.slice(0, visibleCount).map((value) => (
@@ -128,10 +117,16 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
                     selected === value ? 'border-blue-500 bg-blue-100' : 'hover:shadow'
                   }`}
                 >
-                  <p className='text-lg font-bold'>
-                    {getMetricValue(value, measure_field[0]?.value || '')}
+                  <p className='text-lg font-bold'>{value}</p>
+                  <p>
+                    {graphValues?.data?.[0]?.[dimension_field] === value ? (
+                      <span className='text-green-500'>
+                        {formatNumber(graphValues?.data?.[0]?.[measure_field[0].value])}
+                      </span>
+                    ) : (
+                      <span className='text-red-500'>✗</span>
+                    )}
                   </p>
-                  {measure_field[0]?.show_label && <p className='text-sm text-gray-600'>{value}</p>}
                 </div>
               ))}
         </div>

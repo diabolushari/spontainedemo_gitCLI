@@ -7,7 +7,6 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
 import CheckBox from '@/ui/form/CheckBox'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { title } from 'process'
 
 const chartOptions = [
   { label: 'Bar', value: 'bar' },
@@ -135,7 +134,7 @@ export default function ConfigFormStepOverviewChart({
       ...overview_chart_data,
       y_axis: finalYAxis,
     }
-    console.log(finalData, 'finla data before post')
+
     post({ overview_chart: finalData, _method: 'PUT' })
   }
 
