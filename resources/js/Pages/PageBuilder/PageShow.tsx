@@ -51,13 +51,13 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
       <DashboardPadding>
         <Card>
           <CardHeader
-            title='Page management'
+            title={page.title}
             backUrl={route('page-builder.index')}
             editUrl={route('page-builder.edit', page.id)}
             onDeleteClick={() => {
               setShowDeleteModal(true)
             }}
-            subheading={page.title}
+            subheading={page.description}
           />
           {showDeleteModal && (
             <DeleteModal

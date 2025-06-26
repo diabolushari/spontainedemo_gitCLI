@@ -9,6 +9,7 @@ import { BlockDataDrawer } from './BlockDataDrawer'
 import BlockDrawerForm from './BlockDrawerForm'
 import EditBlockDimension from './EditBlockDimension'
 import { EmptyCardBlock } from './EmptyCardBlock'
+import { router } from '@inertiajs/react'
 
 interface BlockActionProps {
   block: Block
@@ -96,7 +97,10 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
       {isEditModalOpen && (
         <EditBlockDimension
           isOpen={isEditModalOpen}
-          onClose={() => setEditModalOpen(false)}
+          onClose={() => {
+            setEditModalOpen(false)
+            router.reload()
+          }}
           block={block}
         />
       )}

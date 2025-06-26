@@ -38,7 +38,7 @@ export default function ConfigFormStepOverviewChart({
   onNext,
   onBack,
 }: ConfigFormStepOverviewProps) {
-  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     title: initialData.overview?.overview_chart?.title ?? '',
     subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
     chartType: initialData.overview?.overview_chart?.chart_type ?? 'bar',
@@ -51,6 +51,21 @@ export default function ConfigFormStepOverviewChart({
     yAxis: initialData.overview?.overview_chart?.y_axis ?? [],
     pieYaxis: '',
   })
+  useEffect(() => {
+    setAll({
+      title: initialData.overview?.overview_chart?.title ?? '',
+      subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
+      chartType: initialData.overview?.overview_chart?.chart_type ?? 'bar',
+      dimension: initialData.overview?.overview_chart?.dimension ?? '',
+      xAxis: initialData.overview?.overview_chart?.x_axis ?? '',
+      xAxisCount: initialData.overview?.overview_chart?.x_axis_count ?? 0,
+      xAxisLabel: initialData.overview?.overview_chart?.x_axis_label ?? '',
+      xAxisOrder: initialData.overview?.overview_chart?.x_axis_order ?? '',
+      xAxisEnable: initialData.overview?.overview_chart?.x_axis_enable ?? false,
+      yAxis: initialData.overview?.overview_chart?.y_axis ?? [],
+      pieYaxis: '',
+    })
+  }, [formData.subsetId, formData.chartType])
 
   const {
     formData: yAxisFormData,
@@ -67,10 +82,6 @@ export default function ConfigFormStepOverviewChart({
   const [subsetFields] = useFetchRecord<SubsetField[]>(
     formData.subsetId ? `/api/subset/${formData.subsetId}` : null
   )
-
-  useEffect(() => {
-    setFormValue('yAxis')([])
-  }, [formData.subsetId, formData.chartType])
 
   const strucetureHighlightChart = (formData: any) => {
     return {
@@ -187,7 +198,7 @@ export default function ConfigFormStepOverviewChart({
               </div>
               <div className='flex flex-col'>
                 <DynamicSelectList
-                  label='Select the fields you want to add in the x axis'
+                  label='Select a dimension for x axis'
                   url={`/api/subset/dimension/${formData.subsetId}`}
                   dataKey='subset_column'
                   displayKey='subset_field_name'
