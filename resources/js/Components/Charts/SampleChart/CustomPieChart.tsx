@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo } from 'react'
-// 1. Import Legend from recharts
 import { Cell, Legend, Pie, PieChart } from 'recharts'
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 
@@ -25,35 +24,68 @@ interface Props {
   }[]
   colors: string
   fontSize: string
+  sliceCount?: number
+  sortOrder?: 'asc' | 'desc'
 }
 
-export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors, fontSize }: Props) {
+export function CustomPieChart({
+  data,
+  dataKey,
+  nameKey,
+  keysToPlot,
+  colors,
+  fontSize,
+  sliceCount,
+  sortOrder = 'desc',
+}: Props) {
   if (!data || data.length === 0 || keysToPlot.length === 0) {
     return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
   }
 
   const processedData = useMemo(() => {
     if (!data) return []
+
     const aggregated = data.reduce(
       (acc, item) => {
         const key = item[nameKey] as string
         const value = Number(item[dataKey] || 0)
-
         if (!acc[key]) {
           acc[key] = 0
         }
         acc[key] += value
-
         return acc
       },
       {} as Record<string, number>
     )
 
-    return Object.entries(aggregated).map(([key, value]) => ({
+    const aggregatedArray = Object.entries(aggregated).map(([key, value]) => ({
       [nameKey]: key,
       [dataKey]: value,
     }))
-  }, [data, dataKey, nameKey])
+
+    const sortedData = [...aggregatedArray].sort((a, b) => {
+      const valA = Number(a[dataKey] || 0)
+      const valB = Number(b[dataKey] || 0)
+      return sortOrder === 'asc' ? valA - valB : valB - valA
+    })
+
+    if (sliceCount && sortedData.length > sliceCount) {
+      const topItems = sortedData.slice(0, sliceCount)
+      const otherItems = sortedData.slice(sliceCount)
+
+      const othersTotal = otherItems.reduce((sum, item) => sum + Number(item[dataKey] || 0), 0)
+
+      const othersSlice = {
+        [nameKey]: 'OTHER',
+        [dataKey]: othersTotal,
+      }
+
+      return [...topItems, othersSlice]
+    }
+
+    // If no grouping is needed, return the sorted data
+    return sortedData
+  }, [data, dataKey, nameKey, sliceCount, sortOrder])
 
   const chartColors: string[] = chartPallet[colors]
 
@@ -65,17 +97,14 @@ export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors, fon
     return acc
   }, {} as ChartConfig)
 
-  const selectedKey = keysToPlot[0]
-  const labelText = `${selectedKey.label}${selectedKey.unit ? ` (${selectedKey.unit})` : ''}`
-
   const totalValue = useMemo(() => {
+    // Total value remains correct as it's calculated from the final processedData
     return processedData.reduce((sum, item) => sum + Number(item[dataKey] || 0), 0)
   }, [processedData, dataKey])
 
   const renderLegend = (value: string, entry: any) => {
     const itemValue = Number(entry.payload?.[dataKey] || 0)
     const percent = totalValue > 0 ? (itemValue / totalValue) * 100 : 0
-
     return `${value} (${percent.toFixed(2)}%)`
   }
 
@@ -89,7 +118,7 @@ export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors, fon
           cursor={false}
           formatter={(value: number | string, name: string) => {
             const formattedValue = formatNumber(Number(value))
-            return [formattedValue, name]
+            return [formattedValue, ' ' + name]
           }}
           content={<ChartTooltipContent hideLabel />}
         />

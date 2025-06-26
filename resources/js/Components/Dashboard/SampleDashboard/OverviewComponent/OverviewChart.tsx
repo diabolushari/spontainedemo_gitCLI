@@ -29,6 +29,7 @@ const keysToPlot = [
   },
 ]
 export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_content }: Props) {
+  console.log(chart_content)
   const [fontClasses, setFontClasses] = useState('text-base')
   const keysToPlot = chart_content?.y_axis?.map((axis) => ({
     key: axis.value,
@@ -80,9 +81,6 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
     setFontClasses(sizeMap[newSize])
   }
 
-  console.log('data : ', aggregatedData)
-  console.log(' dataKey: ', keysToPlot[0].key)
-  console.log(' nameKey: ', chart_content.x_axis)
   return (
     <div className={`flex w-full flex-col pr-4 ${fontClasses}`}>
       <FontSizeSelector onSizeChange={handleSizeChange} />
@@ -110,16 +108,16 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
         />
       )}
       {chart_content.chart_type === 'pie' && keysToPlot?.length === 1 && (
-        <>
-          <CustomPieChart
-            data={aggregatedData}
-            dataKey={keysToPlot[0].key}
-            nameKey={chart_content.x_axis}
-            keysToPlot={keysToPlot}
-            colors={'boldWarm'}
-            fontSize={fontClasses}
-          />
-        </>
+        <CustomPieChart
+          data={aggregatedData}
+          dataKey={keysToPlot[0].key}
+          nameKey={chart_content.x_axis}
+          keysToPlot={keysToPlot}
+          colors={'boldWarm'}
+          fontSize={fontClasses}
+          sliceCount={chart_content.x_axis_count}
+          sortOrder={'desc'}
+        />
       )}
     </div>
   )
