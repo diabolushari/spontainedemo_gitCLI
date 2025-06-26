@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigOverviewFields;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Exists;
@@ -9,6 +10,7 @@ use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWith;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
@@ -45,7 +47,8 @@ class BlockConfigOverviewChart extends Data
         public ?int $xAxisCount,
 
         #[RequiredWith('subset_id')]
-        public ?array $yAxis
+        #[DataCollectionOf(BlockConfigMeasureField::class)]
+        public ?DataCollection $yAxis,
 
 
     ) {}

@@ -16,7 +16,6 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
   const [toggleValue, setToggleValue] = useState(true)
   const [selectedValue, setSelectedValue] = useState('')
 
-  console.log('content in overviw: ', content)
   return (
     <div className='flex w-full flex-col pr-4'>
       <div>
@@ -32,7 +31,7 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
             overview_chart ? 'col-span-1' : 'col-span-2'
           } rounded-md border border-gray-200`}
         >
-          {overview_table && (
+          {overview_table?.subset_id && (
             <OverviewGrid
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}

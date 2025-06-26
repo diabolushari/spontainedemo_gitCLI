@@ -15,14 +15,14 @@ class BlocksConfigRankingUpdateController extends Controller
 {
 
     public function __invoke(BlocksConfigRankingUpdateRequest $request, $id): RedirectResponse
-    {   
+    {
 
         $block = Block::findOrFail($id);
         $blockData = $request->toArray();
-        $block->data = $blockData; 
+        $block->data = $blockData;
         $block->save();
-        
 
-        return redirect()->back()->with('message', 'Block configuration updated.');
+
+        return redirect()->back();
     }
 }
