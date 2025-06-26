@@ -79,6 +79,10 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
     }
     setFontClasses(sizeMap[newSize])
   }
+
+  console.log('data : ', aggregatedData)
+  console.log(' dataKey: ', keysToPlot[0].key)
+  console.log(' nameKey: ', chart_content.x_axis)
   return (
     <div className={`flex w-full flex-col pr-4 ${fontClasses}`}>
       <FontSizeSelector onSizeChange={handleSizeChange} />
