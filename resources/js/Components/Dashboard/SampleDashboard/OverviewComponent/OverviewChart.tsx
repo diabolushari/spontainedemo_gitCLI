@@ -113,6 +113,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
             nameKey={chart_content.x_axis}
             keysToPlot={keysToPlot}
             colors={'boldWarm'}
+            fontSize={fontClasses}
           />
         </>
       )}

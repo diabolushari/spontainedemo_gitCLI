@@ -23,9 +23,10 @@ interface Props {
     unit?: string
   }[]
   colors: string
+  fontSize: string
 }
 
-export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors }: Props) {
+export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors, fontSize }: Props) {
   if (!data || data.length === 0 || keysToPlot.length === 0) {
     return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
   }
@@ -48,7 +49,10 @@ export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors }: P
   }, [data, dataKey])
 
   return (
-    <ChartContainer config={chartConfig}>
+    <ChartContainer
+      config={chartConfig}
+      className={`${fontSize}`}
+    >
       <PieChart>
         <ChartTooltip
           cursor={false}
