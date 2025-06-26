@@ -4,7 +4,6 @@ import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import React, { useContext, useMemo } from 'react'
 import Table from '@/ui/Table/Table'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
-import OfficePill from '@/Components/DataExplorer/OfficePill'
 
 interface Props {
   tableData?: DataTableItem[]
@@ -25,16 +24,7 @@ export default function OfficeLevelSubsetTable({
   setOfficeLevel,
   exportUrl,
 }: Readonly<Props>) {
-  const {
-    region,
-    circle,
-    division,
-    subdivision,
-    setRegion,
-    setCircle,
-    setDivision,
-    setSubdivision,
-  } = useContext(SelectedOfficeContext)
+  const { setRegion, setCircle, setDivision, setSubdivision } = useContext(SelectedOfficeContext)
 
   const selectOffice = (row: DataTableItem) => {
     if (officeLevel === 'state' || row['office_code' as keyof typeof row] == null) {
@@ -74,72 +64,13 @@ export default function OfficeLevelSubsetTable({
     return tableCols.filter((col) => col.name !== 'Office Code').map((col) => col.name)
   }, [tableCols])
 
-  const removeOffice = (level: string) => {
-    if (level === 'region') {
-      setRegion?.(null)
-      setCircle?.(null)
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (level === 'circle') {
-      setCircle?.(null)
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (level === 'division') {
-      setDivision?.(null)
-      setSubdivision?.(null)
-    }
-    if (level === 'subdivision') {
-      setSubdivision?.(null)
-    }
-  }
-
   const openExportUrl = () => {
     window.open(exportUrl, '_blank')
   }
 
   return (
     <>
-      <div className='flex flex-wrap gap-4'>
-        {region != null && (
-          <OfficePill
-            office={region}
-            levelName='Region'
-            level='region'
-            onClose={removeOffice}
-            selectedLevel={officeLevel}
-          />
-        )}
-        {circle != null && (
-          <OfficePill
-            office={circle}
-            levelName='Circle'
-            level='circle'
-            onClose={removeOffice}
-            selectedLevel={officeLevel}
-          />
-        )}
-        {division != null && (
-          <OfficePill
-            office={division}
-            levelName='Division'
-            level='division'
-            onClose={removeOffice}
-            selectedLevel={officeLevel}
-          />
-        )}
-        {subdivision != null && (
-          <OfficePill
-            office={subdivision}
-            levelName='Subdivision'
-            level='subdivision'
-            onClose={removeOffice}
-            selectedLevel={officeLevel}
-          />
-        )}
-      </div>
-
+      {/* Office Pills removed: now rendered in OfficeRanking via OfficePillsBar */}
       <div className='w-full pb-4 text-end font-bold text-1stop-highlight'>
         <button onClick={openExportUrl}>
           <b>

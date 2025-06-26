@@ -30,7 +30,7 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
       {message.contentType === 'text' && (
         <div>
           {/* Display action messages with description in an accordion */}
-          {message.type === 'action' && (
+          {message.role === 'action' && (
             <Accordion
               type='single'
               collapsible
@@ -42,7 +42,7 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
               </AccordionItem>
             </Accordion>
           )}
-          {message.type !== 'action' && (
+          {(message.role === 'assistant' || message.role === 'user') && (
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}
@@ -77,6 +77,16 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
       {message.contentType === 'chart' && (
         <div className='flex w-full items-center justify-center rounded-lg bg-gray-50'>
           <ChatVisualization message={message} />
+        </div>
+      )}
+      {message.contentType === 'explore' && (
+        <div>
+          <button
+            onClick={() => (window.location.href = `/subset-preview/${message.content}`)}
+            className='rounded-lg border border-blue-600 bg-blue-300 px-4 py-2 font-semibold text-white shadow-md transition duration-200 hover:bg-blue-400'
+          >
+            Data Explorer
+          </button>
         </div>
       )}
     </div>

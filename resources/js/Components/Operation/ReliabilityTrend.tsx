@@ -10,6 +10,7 @@ interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
+
 interface RelliabilityTrendValues {
   month: string
   total_interruption_duration__h_: number
@@ -20,6 +21,7 @@ interface RelliabilityTrendValues {
   avg_customer_interruptions___rural: number
   avg_customer_avg_customer_interruptions___rural: number
 }
+
 const renderCustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -51,7 +53,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
     data: RelliabilityTrendValues[]
     latest_value: string
   }>(
-    `subset/357?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
+    `subset/360?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
   )
   const avgInterruptionDurationRural = graphValues?.data.reduce(
     (sum, record) => sum + record.avg_customer_interruption_duration___rural,

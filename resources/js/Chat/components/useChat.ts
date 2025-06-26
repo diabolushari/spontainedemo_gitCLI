@@ -2,6 +2,7 @@ import { ChatMessage } from '@/Chat/components/MainArea'
 import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
 import { usePage } from '@inertiajs/react'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import axios from 'axios'
 
 function startNewChat(
   newId: number,
@@ -13,7 +14,7 @@ function startNewChat(
       ...oldValues,
       {
         id: newId,
-        type: 'bot',
+        role: 'assistant',
         content: '',
         contentType: type,
         suggestions: [],
@@ -91,25 +92,33 @@ const addSuggestionsToLastChat = (
   }
 }
 
-export default function useChat(mode: 'chat' | 'agent') {
+interface currentSession {
+  id: number
+  title: string
+  messages: ChatMessage[]
+}
+
+// const INITIAL_MESSAGES: ChatMessage[] = [
+//   {
+//     id: 0,
+//     role: 'assistant',
+//     content: 'Hello! How can I assist you today?',
+//     contentType: 'text',
+//     suggestions: [
+//       'Show me the revenue trends for this quarter',
+//       'Compare billing vs collection performance',
+//       'Analyze customer satisfaction metrics',
+//     ],
+//   },
+// ]
+//
+export default function useChat(mode: 'chat' | 'agent', currentSession: currentSession) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
     chatURL: string
     agentURL: string
   }>().props
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 0,
-      type: 'bot',
-      content: 'Hello! How can I assist you today?',
-      contentType: 'text',
-      suggestions: [
-        'Show me the revenue trends for this quarter',
-        'Compare billing vs collection performance',
-        'Analyze customer satisfaction metrics',
-      ],
-    },
-  ])
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const socketRef = useRef<WebSocket | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [input, setInput] = useState('')
@@ -117,6 +126,7 @@ export default function useChat(mode: 'chat' | 'agent') {
   const isBeingStreamed = useRef(false)
   const chartIsBeingStreamed = useRef(false)
   const isExpectingFollowup = useRef(false)
+  const [reconnectTrigger, setReconnectTrigger] = useState(0)
 
   useEffect(() => {
     const url = mode === 'agent' ? agentURL : chatURL
@@ -146,7 +156,7 @@ export default function useChat(mode: 'chat' | 'agent') {
           setMessages([
             {
               id: uuid.current++,
-              type: 'bot',
+              role: 'assistant',
               content: 'Chat history cleared.',
               contentType: 'text',
             },
@@ -174,7 +184,7 @@ export default function useChat(mode: 'chat' | 'agent') {
           ...prev,
           {
             id: uuid.current++,
-            type: 'bot',
+            role: 'assistant',
             content: '❌ Error processing response.',
             contentType: 'text',
             suggestions: [],
@@ -192,7 +202,7 @@ export default function useChat(mode: 'chat' | 'agent') {
     socketRef.current = ws
 
     return () => ws.close()
-  }, [chatToken, chatURL, agentURL, mode])
+  }, [chatToken, chatURL, agentURL, mode, reconnectTrigger])
 
   const handleSendMessage = (messageContent: string) => {
     const trimmedContent = messageContent.trim()
@@ -208,22 +218,79 @@ export default function useChat(mode: 'chat' | 'agent') {
       ...prev,
       {
         id: uuid.current++,
-        type: 'user',
+        role: 'user',
         content: trimmedContent,
         contentType: 'text',
       },
     ])
-
     setIsLoading(true)
-    socketRef.current?.send(JSON.stringify({ question: trimmedContent }))
+
+    socketRef.current?.send(
+      JSON.stringify({
+        type: 'question',
+        question: trimmedContent,
+      })
+    )
     setInput('')
   }
 
+  useEffect(() => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      const filteredMessages = messages.filter(
+        (message) => message.role === 'user' || message.role === 'assistant'
+      )
+      console.log('update server history : ', messages)
+      socketRef.current.send(
+        JSON.stringify({
+          type: 'history',
+          history: filteredMessages,
+        })
+      )
+    } else {
+      console.log('socket not ready')
+    }
+  }, [currentSession, reconnectTrigger])
+
+  const setMessageFromHistory = (History: ChatMessage[]) => {
+    setMessages(History)
+  }
+
+  useEffect(() => {
+    console.log('messsage from history: ', messages)
+    axios
+      .patch(`/chat-history/${currentSession.id}`, {
+        messages: messages,
+      })
+      .then((res) => {
+        console.log('Chat history saved/updated from useChat:', res.data)
+      })
+      .catch((err) => {
+        console.error('Error saving chat history from useChat:', err)
+      })
+  }, [messages, currentSession])
+  const handleRetryConnection = () => {
+    const lastUserMessageIndex = messages.findLastIndex((msg) => msg.role === 'user')
+
+    if (lastUserMessageIndex !== -1) {
+      setMessages((prevMessages) => prevMessages.slice(0, lastUserMessageIndex))
+    } else {
+      setMessages([])
+    }
+
+    setIsLoading(false)
+    isBeingStreamed.current = false
+    chartIsBeingStreamed.current = false
+    isExpectingFollowup.current = false
+
+    setReconnectTrigger((prev) => prev + 1)
+  }
   return {
     messages,
     handleSendMessage,
     isLoading,
     input,
     setInput,
+    setMessageFromHistory,
+    handleRetryConnection,
   }
 }

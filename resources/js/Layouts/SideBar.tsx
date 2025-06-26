@@ -139,6 +139,87 @@ const dashboardSidebarItems = [
     },
     link: '/operation',
   },
+  {
+    name: 'AI Insights',
+    image: {
+      svg: (
+        <span className='relative inline-block'>
+          <svg
+            width='30'
+            height='30'
+            viewBox='0 0 48 48'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <rect
+              width='48'
+              height='48'
+              rx='24'
+              fill='#E0F7FA'
+            />
+            <g>
+              <rect
+                x='14'
+                y='14'
+                width='20'
+                height='20'
+                rx='5'
+                fill='#2CA9BC'
+              />
+              <rect
+                x='18'
+                y='18'
+                width='12'
+                height='12'
+                rx='3'
+                fill='white'
+              />
+              <text
+                x='24'
+                y='26'
+                textAnchor='middle'
+                fontSize='7'
+                fontWeight='bold'
+                fill='#2CA9BC'
+                dominantBaseline='middle'
+              >
+                AI
+              </text>
+              <circle
+                cx='19'
+                cy='19'
+                r='1.2'
+                fill='#2CA9BC'
+              />
+              <circle
+                cx='29'
+                cy='19'
+                r='1.2'
+                fill='#2CA9BC'
+              />
+              <circle
+                cx='19'
+                cy='29'
+                r='1.2'
+                fill='#2CA9BC'
+              />
+              <circle
+                cx='29'
+                cy='29'
+                r='1.2'
+                fill='#2CA9BC'
+              />
+            </g>
+          </svg>
+          <span className='absolute -right-2 -top-2 rounded bg-yellow-300 px-1 py-0.5 text-[10px] font-semibold leading-none text-yellow-900'>
+            Beta
+          </span>
+        </span>
+      ),
+    },
+    link: '/chat',
+    isBeta: true,
+  },
 ]
 
 const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) => {
@@ -221,14 +302,19 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                   <div
                     className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'}`}
                   >
-                    <Link href={item.link}>{item.image.svg}</Link>
+                    <Link
+                      href={item.link}
+                      className='flex items-center'
+                    >
+                      {item.image.svg}
+                    </Link>
                   </div>
 
                   <Link
                     href={item.link}
                     key={item.name}
                   >
-                    <span className='small-1stop-header rounded-lg p-2 font-bold hover:bg-1stop-alt-gray'>
+                    <span className='small-1stop-header flex items-center gap-2 rounded-lg p-2 font-bold hover:bg-1stop-alt-gray'>
                       {item.name}
                     </span>
                   </Link>
@@ -386,7 +472,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                     className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'} `}
                     onMouseEnter={() => setIsShowSideBar(true)}
                   >
-                    {item.image.svg}
+                    <span className='flex items-center'>{item.image.svg}</span>
                   </button>
                 </button>
               ))}
@@ -460,83 +546,25 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                       <div
                         className={`rounded-full border p-2 shadow-2xl ${type === item.name ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2' : 'border-1stop-gray bg-1stop-accent2'}`}
                       >
-                        <Link href={item.link}>{item.image.svg}</Link>
+                        <Link
+                          href={item.link}
+                          className='flex items-center'
+                        >
+                          {item.image.svg}
+                        </Link>
                       </div>
 
                       <Link
                         href={item.link}
                         key={item.name}
                       >
-                        <span className='subheader-sm-1stop p-2 font-bold uppercase hover:text-xs'>
+                        <span className='subheader-sm-1stop flex items-center gap-2 p-2 font-bold uppercase hover:text-xs'>
                           {item.name}
                         </span>
                       </Link>
                     </div>
                   ))}
                 </div>
-
-                {/* <div className='mt-auto'>
-                  <div className='mt-48 py-2'>
-                    <Link
-                      href='/data-detail'
-                      className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
-                    >
-                      <div
-                        className='rounded-full'
-                        dangerouslySetInnerHTML={{
-                          __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
-<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
-</svg>`,
-                        }}
-                      />
-                      <span className='small-1stop-header ml-2 pl-2 pt-2 font-bold hover:text-xs'>
-                        Admin
-                      </span>
-                    </Link>
-                  </div>
-                  <div
-                    className='mt-52 flex flex-shrink-0 justify-center sm:relative sm:justify-normal'
-                    ref={profileRef}
-                  >
-                    <button
-                      className={`h1-stop 'border-1stop-highlight to-1stop-accent2' ml-10 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-1stop-highlight text-2xl text-black`}
-                      onClick={() => setIsProfileDropdown(!isProfileDropdown)}
-                    >
-                      {userInitial}
-                    </button>
-                  </div>
-                  <div>
-                    <div className='ml-20 py-2'>
-                      <Link
-                        href='/logout'
-                        method='post'
-                        className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
-                      >
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='icon icon-tabler icon-tabler-logout'
-                          width={20}
-                          height={20}
-                          viewBox='0 0 24 24'
-                          strokeWidth='1.5'
-                          stroke='currentColor'
-                          fill='none'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        >
-                          <path
-                            stroke='none'
-                            d='M0 0h24v24H0z'
-                          />
-                          <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
-                          <path d='M7 12h14l-3 -3m0 6l3 -3' />
-                        </svg>
-                        <span className='text-sm'>Sign out</span>
-                      </Link>
-                    </div>
-                  </div>
-                </div> */}
 
                 <div className='mt-48 flex w-full flex-col border-t border-1stop-alt-gray'>
                   <div
@@ -621,48 +649,6 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                       Admin
                     </span>
                   </Link>
-
-                  {/* <div
-                className='ml-28 flex flex-shrink-0 justify-center sm:relative sm:justify-normal'
-                ref={profileRef}
-              >
-                <button
-                  className={`h1-stop 'border-1stop-highlight to-1stop-accent2' flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-1stop-highlight text-2xl text-black`}
-                  onClick={() => setIsProfileDropdown(!isProfileDropdown)}
-                >
-                  {userInitial}
-                </button>
-              </div>
-              <div>
-                <div className='ml-20 py-2'>
-                  <Link
-                    href='/logout'
-                    method='post'
-                    className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
-                  >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='icon icon-tabler icon-tabler-logout'
-                      width={20}
-                      height={20}
-                      viewBox='0 0 24 24'
-                      strokeWidth='1.5'
-                      stroke='currentColor'
-                      fill='none'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    >
-                      <path
-                        stroke='none'
-                        d='M0 0h24v24H0z'
-                      />
-                      <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
-                      <path d='M7 12h14l-3 -3m0 6l3 -3' />
-                    </svg>
-                    <span className='ml-2 text-sm'>Sign out</span>
-                  </Link>
-                </div>
-              </div> */}
                 </div>
               </div>
             </div>

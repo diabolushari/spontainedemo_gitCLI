@@ -425,7 +425,7 @@ const ActiveConnection = () => {
       )}
       {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
-          subsetId={198}
+          subsetId={314}
           cardTitle='Ranked by Connection Counts'
           dataField='total_consumers__count_'
           dataFieldName='Consumer Count'

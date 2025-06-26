@@ -15,10 +15,10 @@ import {
   TableDimensionField,
   TableMeasureField,
 } from '@/interfaces/data_interfaces'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
+import CardHeader from '@/ui/Card/CardHeader'
 import Button from '@/ui/button/Button'
 import React, { useMemo, useState } from 'react'
-import CardHeader from '@/ui/Card/CardHeader'
-import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 interface Props {
   dataDetail: DataDetail

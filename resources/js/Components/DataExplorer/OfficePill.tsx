@@ -41,7 +41,7 @@ export default function OfficePill({
       {isVisible && (
         <div className='flex'>
           <div className='flex items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'>
-            <span className='axial-label-1stop capitalize'>
+            <span className='text-xs'>
               {levelName} <i>equals</i>{' '}
               <b>
                 {office?.office_name} ({office?.office_code})

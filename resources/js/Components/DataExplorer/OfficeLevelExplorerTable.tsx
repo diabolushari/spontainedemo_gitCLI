@@ -1,13 +1,13 @@
-import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
-import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { dateToYearMonth, yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
-import OfficeClusterMap from './OfficeRanking/Map/OfficeClusterMap'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
+import OfficeClusterMap, { MapDataItem } from './OfficeRanking/Map/OfficeClusterMap'
 
 interface Props {
   subset: SubsetDetail
@@ -18,7 +18,9 @@ interface Props {
   setSearchParams: Dispatch<SetStateAction<Record<string, string>>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  mapField: string | null
+  mapField?: string | null
+  showMapOnly?: boolean
+  hideMap?: boolean
 }
 
 export default function OfficeLevelExplorerTable({
@@ -30,10 +32,20 @@ export default function OfficeLevelExplorerTable({
   selectedMonth,
   setSelectedMonth,
   mapField,
+  showMapOnly = false,
+  hideMap = false,
 }: Readonly<Props>) {
-  console.log(subset)
-  const [showMap, setShowMap] = useState<boolean>(false)
-  const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
+  const [showMap, setShowMap] = useState<boolean>(true)
+  const {
+    region,
+    circle,
+    division,
+    subdivision,
+    setRegion,
+    setCircle,
+    setDivision,
+    setSubdivision,
+  } = useContext(SelectedOfficeContext)
 
   const { prevLevelOffice, selectedOffice } = useOfficeLevelSelection(
     officeLevel,
@@ -163,9 +175,43 @@ export default function OfficeLevelExplorerTable({
     })
   }, [dataTable?.data, tableCols, mapField])
 
+  const selectOffice = (row: MapDataItem) => {
+    const officeCode = row['office_code'] ?? row.office_code
+    const officeName = row['office_name'] ?? row.office_name
+    if (officeLevel === 'state' || !officeCode) {
+      return
+    }
+    const office = {
+      office_name: officeName ?? officeCode,
+      office_code: officeCode,
+    }
+    if (officeLevel === 'region') {
+      setActiveTab('circle')
+      setRegion?.(office)
+      setCircle?.(null)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'circle') {
+      setActiveTab('division')
+      setCircle?.(office)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'division') {
+      setActiveTab('subdivision')
+      setDivision?.(office)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'subdivision') {
+      setActiveTab('section')
+      setSubdivision?.(office)
+    }
+  }
+
   return (
     <FullSpinnerWrapper processing={loading}>
-      {selectedMonth != null && mapField != null && (
+      {selectedMonth != null && mapField != null && !showMapOnly && !hideMap && (
         <div className='flex items-end justify-end text-1stop-highlight'>
           <button
             onClick={() => setShowMap(!showMap)}
@@ -176,24 +222,32 @@ export default function OfficeLevelExplorerTable({
         </div>
       )}
 
-      {showMap && selectedMonth != null && mapField != null && (
-        <OfficeClusterMap mapData={mapData ?? []} />
+      {(showMap || showMapOnly) && !hideMap && selectedMonth != null && mapField != null && (
+        <OfficeClusterMap
+          mapData={mapData ?? []}
+          onOfficeSelect={selectOffice}
+          selectedOfficeCode={selectedOffice?.office_code}
+          officeLevel={officeLevel}
+        />
       )}
-      <OfficeLevelSubsetTable
-        officeLevel={officeLevel}
-        tableCols={tableCols}
-        prevLevel={prevLevelOffice}
-        selectedOffice={selectedOffice}
-        tableData={dataTable?.data}
-        setOfficeLevel={setActiveTab}
-        exportUrl={route('subset-export', {
-          ...searchParams,
-          subsetDetail: subset.id,
-          level: officeLevel,
-          office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
-          excludeNonMeasurements: false,
-        })}
-      />
+
+      {!showMapOnly && (
+        <OfficeLevelSubsetTable
+          officeLevel={officeLevel}
+          tableCols={tableCols}
+          prevLevel={prevLevelOffice}
+          selectedOffice={selectedOffice}
+          tableData={dataTable?.data}
+          setOfficeLevel={setActiveTab}
+          exportUrl={route('subset-export', {
+            ...searchParams,
+            subsetDetail: subset.id,
+            level: officeLevel,
+            office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
+            excludeNonMeasurements: false,
+          })}
+        />
+      )}
     </FullSpinnerWrapper>
   )
 }
