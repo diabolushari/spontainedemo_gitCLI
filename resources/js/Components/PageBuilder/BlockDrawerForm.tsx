@@ -60,16 +60,41 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
             const isActive = step === currentStep
             const isCompleted = step > currentStep
 
-            const cardType = stepData?.overview?.card_type
+            const overview = stepData?.overview
+            const cardType = overview?.card_type
 
-            let isAllowed = currentStep === 1 || isStepOneComplete
+            let isAllowed = false
 
-            if (currentStep === 5 && cardType === 'table') {
-              isAllowed = false
+            // Step 1 is always allowed
+            if (currentStep === 1) {
+              isAllowed = true
             }
 
-            if (currentStep === 6 && cardType === 'chart') {
-              isAllowed = false
+            // Steps 2–4 require general config (Step 1) completion
+            else if (currentStep >= 2 && currentStep <= 4 && isStepOneComplete) {
+              isAllowed = true
+            }
+
+            // Step 5 - Chart view, only allowed if card_type is not 'table' and overview is complete
+            else if (
+              currentStep === 5 &&
+              cardType !== 'table' &&
+              overview?.title &&
+              overview?.description &&
+              cardType
+            ) {
+              isAllowed = true
+            }
+
+            // Step 6 - Table view, only allowed if card_type is not 'chart' and overview is complete
+            else if (
+              currentStep === 6 &&
+              cardType !== 'chart' &&
+              overview?.title &&
+              overview?.description &&
+              cardType
+            ) {
+              isAllowed = true
             }
 
             return (
@@ -164,7 +189,9 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 onBack={() => setStep(3)}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-
+                  if (validatedData.__skip) {
+                    setCloseDrawer(false)
+                  }
                   if (validatedData.overview.card_type === 'table') {
                     setStep(6)
                   } else {

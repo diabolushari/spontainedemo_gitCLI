@@ -23,6 +23,7 @@ class BlocksConfigRankingUpdateController extends Controller
         $block->save();
 
 
+
         return redirect()->back();
     }
 }

@@ -28,7 +28,7 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
       <div className='grid grid-cols-2 gap-2'>
         <div
           className={`${
-            overview_chart ? 'col-span-1' : 'col-span-2'
+            overview_chart?.subset_id ? 'col-span-1' : 'col-span-2'
           } rounded-md border border-gray-200`}
         >
           {overview_table?.subset_id && (
@@ -44,10 +44,10 @@ export default function Overview({ selectedMonth, setSelectedMonth, content }: P
         </div>
         <div
           className={`${
-            overview_table ? 'col-span-1' : 'col-span-2'
+            overview_table?.subset_id ? 'col-span-1' : 'col-span-2'
           } rounded-md border border-gray-200`}
         >
-          {overview_chart && (
+          {overview_chart?.subset_id && (
             <OverviewChart
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}

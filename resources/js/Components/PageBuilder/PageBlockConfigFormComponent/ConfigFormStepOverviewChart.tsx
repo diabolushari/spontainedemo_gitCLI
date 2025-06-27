@@ -54,8 +54,6 @@ export default function ConfigFormStepOverviewChart({
   useEffect(() => {
     setAll({
       title: initialData.overview?.overview_chart?.title ?? '',
-      subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
-      chartType: initialData.overview?.overview_chart?.chart_type ?? 'bar',
       dimension: initialData.overview?.overview_chart?.dimension ?? '',
       xAxis: initialData.overview?.overview_chart?.x_axis ?? '',
       xAxisCount: initialData.overview?.overview_chart?.x_axis_count ?? 0,

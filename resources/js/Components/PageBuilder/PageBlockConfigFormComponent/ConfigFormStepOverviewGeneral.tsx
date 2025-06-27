@@ -52,6 +52,15 @@ export default function ConfigFormStepOverviewGeneral({
     e.preventDefault()
     post({ ...strucetureOverviewGeneral(formData).overview, _method: 'PUT' })
   }
+
+  const handleSkip = () => {
+    if (onNext)
+      onNext({
+        ...initialData,
+        overview: strucetureOverviewGeneral(formData).overview,
+        __skip: true,
+      })
+  }
   return (
     <div>
       <StrongText>General</StrongText>
@@ -74,6 +83,8 @@ export default function ConfigFormStepOverviewGeneral({
               dataKey='value'
               displayKey='label'
               error={errors?.card_type}
+              allOptionText='-- None --'
+              showAllOption={true}
             />
           </div>
           <div className='flex flex-col md:col-span-2'>
@@ -92,11 +103,19 @@ export default function ConfigFormStepOverviewGeneral({
             label='Back'
             onClick={onBack}
           />
-          <Button
-            type='submit'
-            label={loading ? 'Saving...' : 'Next'}
-            disabled={loading}
-          />
+          <div className='flex gap-2'>
+            <Button
+              type='button'
+              variant='ghost'
+              label='Skip'
+              onClick={handleSkip}
+            />
+            <Button
+              type='submit'
+              label={loading ? 'Saving...' : 'Next'}
+              disabled={loading}
+            />
+          </div>
         </div>
       </form>
     </div>

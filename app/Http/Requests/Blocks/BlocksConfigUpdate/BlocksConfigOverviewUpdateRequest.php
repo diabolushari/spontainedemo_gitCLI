@@ -24,4 +24,15 @@ class BlocksConfigOverviewUpdateRequest extends Data
         #[Required]
         public string $cardType,
     ) {}
+
+    public static function messages(): array
+    {
+        return [
+            'title.required' => 'Please provide a title.',
+            'description.required' => 'Please provide a description.',
+            'card_type.required' => 'Please select a card type.',
+            'card_type.in' => 'Invalid card type selected.',
+            'card_type.string' => 'Choose a valid card type.',
+        ];
+    }
 }

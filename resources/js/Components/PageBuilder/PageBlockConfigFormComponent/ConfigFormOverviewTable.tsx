@@ -32,26 +32,13 @@ export default function ConfigFormStepOverviewTable({
     title: initialData?.overview?.overview_table?.title ?? '',
     subsetId: initialData?.overview?.overview_table?.subset_id ?? '',
     dimensionField: initialData?.overview?.overview_table?.dimension_field ?? '',
-    measureField: Array.isArray(initialData?.measure_field) ? initialData.measure_field : [],
-    measureFieldDimension: initialData?.measure_field_dimension ?? '',
+    measureField: initialData?.overview?.overview_table?.measure_field ?? [],
+    measureFieldDimension: initialData?.overview?.overview_table?.measure_field_dimension ?? '',
     gridNumber: initialData?.overview?.overview_table?.grid_number ?? 0,
     showTotal: initialData?.overview?.overview_table?.show_total ?? false,
   })
 
-  const [subsetFields] = useFetchRecord<SubsetField[]>(
-    formData.subsetId ? `/api/subset/${formData.subsetId}` : null
-  )
-  useEffect(() => {
-    setAll({
-      title: initialData.overview?.overview_chart?.title ?? '',
-      subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
-      dimensionField: initialData?.overview?.overview_table?.dimension_field ?? '',
-      measureField: initialData?.overview?.overview_table?.measure_field ?? '',
-      measureFieldDimension: initialData?.overview?.overview_table?.measure_field_dimension ?? '',
-      gridNumber: initialData?.overview?.overview_table?.grid_number ?? 0,
-      showTotal: initialData?.overview?.overview_table?.show_total ?? false,
-    })
-  }, [formData.subsetId])
+  const [subsetFields] = useFetchRecord(`/api/subset/${formData.subsetId}`)
   const { post, loading, errors } = useInertiaPost(
     route('config.overview.table.update', block.id),
     {
@@ -66,6 +53,16 @@ export default function ConfigFormStepOverviewTable({
       },
     }
   )
+  useEffect(() => {
+    setAll({
+      title: initialData?.overview?.overview_table?.title ?? '',
+      dimensionField: initialData?.overview?.overview_table?.dimension_field ?? '',
+      measureField: initialData?.overview?.overview_table?.measure_field ?? [],
+      measureFieldDimension: initialData?.overview?.overview_table?.measure_field_dimension ?? '',
+      gridNumber: initialData?.overview?.overview_table?.grid_number ?? 0,
+      showTotal: initialData?.overview?.overview_table?.show_total ?? false,
+    })
+  }, [errors, formData.subsetId])
 
   const structureOverviewTable = (formData: any) => {
     return {
@@ -98,15 +95,19 @@ export default function ConfigFormStepOverviewTable({
 
     Object.entries(errors || {}).forEach(([key, message]) => {
       const cleanKey = key.replace(/^overview\.overview_table\./, '')
-      const match = cleanKey.match(/^measure_field\.(\d+)\.(.+)$/)
+      const match = cleanKey.match(/^measure_field\.(\d+)\.(\w+)$/)
+
       if (match) {
         const index = Number(match[1])
         const fieldKey = match[2]
         const item = formData.measureField?.[index]
+
         if (!item) return
+
         if (!map[item.value]) {
           map[item.value] = {}
         }
+
         map[item.value][fieldKey] = message
       }
     })
@@ -121,7 +122,7 @@ export default function ConfigFormStepOverviewTable({
         <div className='flex flex-col gap-4 md:grid md:grid-cols-3'>
           <div className='col-span-3 flex flex-col'>
             <DynamicSelectList
-              label='Select Subset for Overview Table'
+              label='Subset for Overview Table'
               url={`/api/subset-group/${initialData.subset_group_id}`}
               dataKey='subset_detail_id'
               displayKey='name'
@@ -130,6 +131,7 @@ export default function ConfigFormStepOverviewTable({
               error={errors?.subsetId}
               showAllOption={true}
               allOptionText='-- None --'
+              disabled={initialData.overview?.card_type === 'chart' ? true : false}
             />
           </div>
 

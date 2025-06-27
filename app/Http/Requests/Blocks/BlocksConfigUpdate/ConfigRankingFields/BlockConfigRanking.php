@@ -28,5 +28,15 @@ class BlockConfigRanking extends Data
         public ?RankingDataField $dataField,
     ) {}
 
-    
+    public static function messages(): array
+    {
+        return [
+            'title.required_with' => 'Please provide a title when a subset is selected.',
+            'data_field.required_with' => 'You must select fields to plot the ranking.',
+            'data_field.label.required' => 'Please enter a label for the ranking.',
+            'data_field.label.string' => 'Ranking label must be a string.',
+            'data_field.value.required' => 'Please enter a value for the ranking.',
+            'data_field.value.string' => 'Ranking value must be a string.',
+        ];
+    }
 }
