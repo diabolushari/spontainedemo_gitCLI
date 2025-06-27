@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Input from '@/ui/form/Input'
 import CheckBox from '@/ui/form/CheckBox'
 import useCustomForm from '@/hooks/useCustomForm'
-import useInertiaPost from '@/hooks/useInertiaPost'
 
 export default function ConfigFormMeasureFields({
   field,
@@ -28,7 +27,7 @@ export default function ConfigFormMeasureFields({
   }) => void
   errors?: any
 }) {
-  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     field: isSelected,
     label: data.label,
     value: data.value,
@@ -37,6 +36,17 @@ export default function ConfigFormMeasureFields({
   })
 
   useEffect(() => {
+    setAll({
+      field: isSelected,
+      label: data.label,
+      value: data.value,
+      unit: data.unit,
+      show_label: data.show_label,
+    })
+  }, [data.label, data.value, data.unit, data.show_label, isSelected])
+
+  // 🔁 Sync external parent with current field state
+  useEffect(() => {
     onUpdate({
       label: formData.label,
       value: formData.value,
@@ -44,7 +54,7 @@ export default function ConfigFormMeasureFields({
       show_label: formData.show_label,
       selected: formData.field,
     })
-  }, [formData])
+  }, [formData.label, formData.value, formData.unit, formData.show_label, formData.field])
 
   return (
     <div className='flex flex-col gap-4 md:grid md:grid-cols-4'>
@@ -94,3 +104,4 @@ export default function ConfigFormMeasureFields({
     </div>
   )
 }
+;``

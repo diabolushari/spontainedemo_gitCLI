@@ -9,6 +9,8 @@ import CheckBox from '@/ui/form/CheckBox'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import ConfigFormMeasureFields from './ConfigOverviewForm/ConfigFormMeasureFields'
 import StrongText from '@/typography/StrongText'
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import NormalText from '@/typography/NormalText'
 
 const chartOptions = [
   { label: 'Bar', value: 'bar' },
@@ -19,7 +21,7 @@ const orderOptions = [
   { label: 'Ascending Order', value: 'ascending' },
   { label: 'Descending Order', value: 'descending' },
 ]
-
+const colorSchemeOptions = chartPallet
 type SubsetField = {
   id: number
   subset_column: string
@@ -51,10 +53,25 @@ export default function ConfigFormStepOverviewChart({
     xAxisEnable: initialData.overview?.overview_chart?.x_axis_enable ?? false,
     yAxis: initialData.overview?.overview_chart?.y_axis ?? [],
     pieYaxis: '',
+    colorScheme: initialData.overview?.overview_chart?.color_scheme ?? '',
   })
   useEffect(() => {
+    if (formData.chartType === 'pie' && formData.pieYaxis) {
+      const selectedField = subsetFields?.find((f) => f.subset_column === formData.pieYaxis)
+      if (selectedField) {
+        const newData = {
+          label: selectedField.subset_field_name,
+          value: formData.pieYaxis,
+          unit: '',
+          show_label: false,
+        }
+        setFormValue('yAxis')([newData])
+      }
+    }
+  }, [formData.pieYaxis])
+
+  useEffect(() => {
     setAll({
-      title: initialData.overview?.overview_chart?.title ?? '',
       dimension: initialData.overview?.overview_chart?.dimension ?? '',
       xAxis: initialData.overview?.overview_chart?.x_axis ?? '',
       xAxisCount: initialData.overview?.overview_chart?.x_axis_count ?? 0,
@@ -65,18 +82,6 @@ export default function ConfigFormStepOverviewChart({
       pieYaxis: '',
     })
   }, [formData.subsetId, formData.chartType])
-
-  const {
-    formData: yAxisFormData,
-    setFormValue: yAxisSetValue,
-    toggleBoolean: toggleYAxisBoolean,
-    setFormValue: setYAxisAll,
-  } = useCustomForm({
-    label: '',
-    value: '',
-    unit: '',
-    show_label: false,
-  })
 
   const [subsetFields] = useFetchRecord<SubsetField[]>(
     formData.subsetId ? `/api/subset/${formData.subsetId}` : null
@@ -94,6 +99,7 @@ export default function ConfigFormStepOverviewChart({
         x_axis_count: formData.xAxisCount ?? '',
         x_axis_order: formData.xAxisOrder ?? 'ascending',
         y_axis: formData.yAxis ?? [],
+        color_scheme: formData.colorScheme ?? '',
       },
     }
   }
@@ -138,15 +144,8 @@ export default function ConfigFormStepOverviewChart({
     e.preventDefault()
     let finalYAxis = formData.yAxis
     const overview_chart_data = strucetureHighlightChart(formData).highlight_chart
-    if (overview_chart_data.chart_type === 'pie') {
-      finalYAxis = [
-        {
-          label: yAxisFormData.label,
-          value: formData.pieYaxis,
-          unit: yAxisFormData.unit,
-          show_label: yAxisFormData.show_label,
-        },
-      ]
+    if (formData.chartType === 'pie' && formData.yAxis.length > 0) {
+      finalYAxis = [formData.yAxis[0]]
     }
 
     const finalData = {
@@ -157,11 +156,16 @@ export default function ConfigFormStepOverviewChart({
     post({ overview_chart: finalData, _method: 'PUT' })
   }
 
+  const paletteOptions = Object.entries(chartPallet).map(([key]) => ({
+    label: `${key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}`,
+    value: key,
+  }))
+
   return (
     <div className='flex w-full flex-col'>
       <StrongText>Overview Chart</StrongText>
       <form onSubmit={handleSubmit}>
-        <div className='flex flex-col'>
+        <div className='flex flex-col gap-2'>
           <DynamicSelectList
             label='Select Subset for Highlight Chart'
             url={`/api/subset-group/${initialData.subset_group_id}`}
@@ -176,8 +180,8 @@ export default function ConfigFormStepOverviewChart({
 
           {formData.subsetId && (
             <>
-              <div className='flex gap-4 md:grid md:grid-cols-2'>
-                <div className='flex flex-col'>
+              <div className='flex gap-4 md:grid md:grid-cols-4'>
+                <div className='flex flex-col gap-1'>
                   <Input
                     label='Title for chart'
                     value={formData.title ?? ''}
@@ -185,7 +189,7 @@ export default function ConfigFormStepOverviewChart({
                     error={errors?.['overview_chart.title']}
                   />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1'>
                   <SelectList
                     label='Chart Type'
                     list={chartOptions}
@@ -196,8 +200,34 @@ export default function ConfigFormStepOverviewChart({
                     error={errors?.['overview_chart.chart_type']}
                   />
                 </div>
+                <div className='flex flex-col gap-1'>
+                  <SelectList
+                    label='Color scheme for chart'
+                    list={paletteOptions}
+                    dataKey='value'
+                    displayKey='label'
+                    value={formData.colorScheme}
+                    setValue={setFormValue('colorScheme')}
+                    error={errors?.['overview_chart.color_scheme']}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <div>
+                    <NormalText> Colors in the list</NormalText>
+                    <div className='flex gap-4'>
+                      {formData.colorScheme &&
+                        chartPallet[formData.colorScheme].map((color) => (
+                          <div
+                            key={color}
+                            className='h-3 w-3 rounded-full'
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className='flex flex-col'>
+              <div className='flex flex-col gap-1'>
                 <DynamicSelectList
                   label='Select a dimension for x axis'
                   url={`/api/subset/dimension/${formData.subsetId}`}
@@ -213,10 +243,10 @@ export default function ConfigFormStepOverviewChart({
             </>
           )}
 
-          <div>
+          <div className='flex flex-col gap-2'>
             {formData.xAxis && (
               <div className='flex gap-4 md:grid md:grid-cols-4'>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1'>
                   <Input
                     type='number'
                     label='Maximum number of items'
@@ -225,7 +255,7 @@ export default function ConfigFormStepOverviewChart({
                     error={errors?.['overview_chart.x_axis_count']}
                   />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1'>
                   <Input
                     label='Name for x axis'
                     value={formData.xAxisLabel}
@@ -233,7 +263,7 @@ export default function ConfigFormStepOverviewChart({
                     error={errors?.['overview_chart.x_axis_label']}
                   />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1'>
                   <SelectList
                     label='Order of dimension'
                     list={orderOptions}
@@ -244,7 +274,7 @@ export default function ConfigFormStepOverviewChart({
                     error={errors?.['overview_chart.x_axis_order']}
                   />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1'>
                   <CheckBox
                     label='Enable label for x axis'
                     value={formData.xAxisEnable}
@@ -258,27 +288,18 @@ export default function ConfigFormStepOverviewChart({
             {formData.subsetId && subsetFields && formData.xAxis && (
               <div className='flex flex-col gap-4 md:grid md:grid-cols-4'>
                 {formData.chartType === 'pie' ? (
-                  <div className='col-span-4'>
+                  <div className='col-span-4 gap-2'>
                     <SelectList
                       label='Select a y axis field'
                       value={formData.pieYaxis ?? ''}
-                      setValue={(val) => {
-                        setFormValue('pieYaxis')(val)
-                        setFormValue('yAxis')([
-                          {
-                            label: '',
-                            value: val,
-                            unit: '',
-                            show_label: false,
-                          },
-                        ])
-                      }}
+                      setValue={setFormValue('pieYaxis')}
                       list={subsetFields}
                       dataKey='subset_column'
                       displayKey='subset_field_name'
                     />
 
                     {formData.yAxis &&
+                      formData.pieYaxis &&
                       formData.yAxis.length > 0 &&
                       (() => {
                         const fieldErrors = yAxisErrorsByValue[formData.yAxis[0].value] ?? {}
@@ -293,9 +314,6 @@ export default function ConfigFormStepOverviewChart({
                             data={formData.yAxis[0]}
                             onUpdate={(updatedData) => {
                               setFormValue('yAxis')([updatedData])
-                              yAxisSetValue('label')(updatedData.label)
-                              yAxisSetValue('unit')(updatedData.unit)
-                              yAxisSetValue('show_label')(updatedData.show_label)
                             }}
                             errors={fieldErrors}
                           />

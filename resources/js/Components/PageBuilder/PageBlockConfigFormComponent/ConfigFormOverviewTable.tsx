@@ -198,7 +198,7 @@ export default function ConfigFormStepOverviewTable({
           )}
 
           {formData.subsetId && subsetFields && (
-            <div className='col-span-3 flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 md:col-span-4'>
               <StrongText>Select Measure Fields</StrongText>
               <div>
                 {formData.subsetId && formData.dimensionField && (

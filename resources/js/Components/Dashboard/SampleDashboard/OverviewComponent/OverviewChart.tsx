@@ -29,7 +29,6 @@ const keysToPlot = [
   },
 ]
 export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_content }: Props) {
-  console.log(chart_content)
   const [fontClasses, setFontClasses] = useState('text-base')
   const keysToPlot = chart_content?.y_axis?.map((axis) => ({
     key: axis.value,
@@ -95,7 +94,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           data={aggregatedData}
           dataKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
-          colors={'boldWarm'}
+          colors={chart_content.color_scheme}
           fontSize={fontClasses}
         />
       )}
@@ -104,7 +103,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           data={aggregatedData}
           dataKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
-          colors={'boldWarm'}
+          colors={chart_content.color_scheme}
         />
       )}
       {chart_content.chart_type === 'pie' && keysToPlot?.length === 1 && (
@@ -113,7 +112,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           dataKey={keysToPlot[0].key}
           nameKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
-          colors={'boldWarm'}
+          colors={chart_content.color_scheme}
           fontSize={fontClasses}
           sliceCount={chart_content.x_axis_count}
           sortOrder={'desc'}

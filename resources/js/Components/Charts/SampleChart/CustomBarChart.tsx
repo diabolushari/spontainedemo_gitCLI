@@ -28,7 +28,6 @@ export function CustomBarChart({ data, dataKey, keysToPlot, colors, fontSize }: 
   }
 
   const chartColors: string[] = chartPallet[colors]
-
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
       label: plotKey.label,
