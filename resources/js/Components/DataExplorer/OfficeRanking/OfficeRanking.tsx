@@ -17,7 +17,9 @@ import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSel
 import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
 import { CustomTooltip } from '../../CustomTooltip'
 import SecondarySort from '@/Components/DataExplorer/OfficeRanking/SecondarySort'
-import OfficeClusterMap from './Map/OfficeClusterMap'
+import OfficeClusterMap, { MapDataItem } from './Map/OfficeClusterMap'
+import PropTypes from 'prop-types'
+import OfficePillsBar from '@/Components/DataExplorer/OfficePillsBar'
 
 interface Props {
   subset: SubsetDetail
@@ -31,13 +33,25 @@ interface Props {
   secondarySortField: string
   setSecondarySortField: React.Dispatch<SetStateAction<string>>
   secondarySortOrder: string
-  setSecondarySortOrder: React.Dispatch<React.SetStateAction<string>>
+  setSecondarySortOrder: React.Dispatch<SetStateAction<string>>
   showSecondarySortField: boolean
-  setShowSecondarySortField: React.Dispatch<React.SetStateAction<boolean>>
+  setShowSecondarySortField: React.Dispatch<SetStateAction<boolean>>
+  activeViewTab: string
 }
 
-const CustomTick = (props) => {
-  const { x, y, payload } = props
+interface CustomTickProps {
+  x: number
+  y: number
+  payload: {
+    value: string
+  }
+}
+
+interface RechartsClickPayload {
+  payload: MapDataItem
+}
+
+const CustomTick = ({ x, y, payload }: CustomTickProps) => {
   const displayName = payload.value.length > 10 ? `${payload.value.slice(0, 9)}...` : payload.value
 
   return (
@@ -53,6 +67,7 @@ const CustomTick = (props) => {
     </text>
   )
 }
+
 export default function OfficeRanking({
   subset,
   officeLevel,
@@ -68,6 +83,7 @@ export default function OfficeRanking({
   setSecondarySortOrder,
   showSecondarySortField,
   setShowSecondarySortField,
+  activeViewTab,
 }: Readonly<Props>) {
   const [page, setPage] = useState(1)
   const {
@@ -80,8 +96,6 @@ export default function OfficeRanking({
     setCircle,
     setDivision,
   } = useContext(SelectedOfficeContext)
-
-  const [viewOnMap, setViewOnMap] = useState<boolean>(false)
 
   const { selectedOffice, prevLevelOffice } = useOfficeLevelSelection(
     officeLevel,
@@ -193,58 +207,101 @@ export default function OfficeRanking({
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  const handleTooltipClick = (data: { office_code: string | null; office_name: string | null }) => {
-    if (officeLevel === 'state' || officeLevel === 'section') {
+  const handleOfficeSelect = (data: RechartsClickPayload | MapDataItem) => {
+    const office = 'payload' in data ? data.payload : data
+    if (
+      !office ||
+      typeof office === 'string' ||
+      typeof office === 'number' ||
+      officeLevel === 'state' ||
+      officeLevel === 'section' ||
+      !office.office_code
+    ) {
       return
     }
     setSelectedOfficeLevel(getNextOfficeLevel(officeLevel))
-    const office = {
-      office_name:
-        (data['office_name' as keyof typeof data] as string) ??
-        (data['office_code' as keyof typeof data] as string),
-      office_code: data['office_code' as keyof typeof data] as string,
+    const selectedOffice = {
+      office_name: office.office_name ?? office.office_code,
+      office_code: office.office_code,
     }
     if (officeLevel === 'region') {
-      setRegion?.(office)
+      setRegion?.(selectedOffice)
       setCircle?.(null)
       setDivision?.(null)
       setSubdivision?.(null)
     }
     if (officeLevel === 'circle') {
-      setCircle?.(office)
+      setCircle?.(selectedOffice)
       setDivision?.(null)
       setSubdivision?.(null)
     }
     if (officeLevel === 'division') {
-      setDivision?.(office)
+      setDivision?.(selectedOffice)
       setSubdivision?.(null)
     }
     if (officeLevel === 'subdivision') {
-      setSubdivision?.(office)
+      setSubdivision?.(selectedOffice)
     }
   }
 
   return (
     <FullSpinnerWrapper processing={loading}>
       <div className='ml-1 space-y-2 rounded-lg bg-1stop-white p-4 md:ml-0'>
-        <div className='rounded-lg bg-white'>
-          <div className='flex justify-end text-2xl text-blue-700'>
-            <i className='las la-chart-bar'></i>
-            <button
-              className='flex justify-end'
-              onClick={() => setViewOnMap(!viewOnMap)}
-            >
-              {viewOnMap ? (
-                <i className='las la-toggle-on'></i>
-              ) : (
-                <i className='las la-toggle-off'></i>
-              )}
-            </button>
-            <i className='las la-map'></i>
+        <div className='flex flex-col items-center justify-between md:flex-row'>
+          <div className='w-full text-sm font-bold sm:pb-2 md:w-1/2 lg:w-1/4'>
+            {selectedSortField?.subset_field_name}
           </div>
-          {viewOnMap ? (
-            <OfficeClusterMap mapData={chartData} />
-          ) : (
+          <div className='w-full md:w-1/2 lg:w-3/4'>
+            <OfficePillsBar officeLevel={officeLevel} />
+          </div>
+        </div>
+
+        {activeViewTab === 'map' && (
+          <div className='rounded-lg bg-white'>
+            <OfficeClusterMap
+              mapData={chartData}
+              officeLevel={officeLevel}
+              onOfficeSelect={handleOfficeSelect}
+            />
+          </div>
+        )}
+
+        {activeViewTab === 'table' && (
+          <div>
+            <SecondarySort
+              subset={subset}
+              selectedSortField={selectedSortField}
+              secondarySortField={secondarySortField}
+              setSecondarySortField={setSecondarySortField}
+              secondarySortOrder={secondarySortOrder}
+              setSecondarySortOrder={setSecondarySortOrder}
+              showSecondarySortField={showSecondarySortField}
+              setShowSecondarySortField={setShowSecondarySortField}
+            />
+            <div className='rounded-lg bg-white p-4'>
+              <OfficeLevelSubsetTable
+                officeLevel={officeLevel}
+                tableCols={tableCols}
+                tableData={graphValues?.data.data}
+                selectedOffice={selectedOffice}
+                prevLevel={prevLevelOffice}
+                setOfficeLevel={setSelectedOfficeLevel}
+                exportUrl={exportUrl}
+              />
+              <div className='flex w-full flex-col'>
+                {graphValues?.data != null && (
+                  <RestPagination
+                    pagination={graphValues.data}
+                    onNewPage={setPage}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeViewTab === 'trend' && (
+          <div className='rounded-lg bg-white'>
             <ResponsiveContainer
               width='100%'
               height={200}
@@ -255,7 +312,7 @@ export default function OfficeRanking({
               >
                 <XAxis
                   dataKey='office_name'
-                  tick={<CustomTick />}
+                  tick={(props: CustomTickProps) => <CustomTick {...props} />}
                   height={80}
                   interval={0}
                 />
@@ -268,42 +325,31 @@ export default function OfficeRanking({
                   dataKey={selectedSortField?.subset_field_name ?? 'Value'}
                   fill={solidColors[0]}
                   barSize={30}
-                  onClick={handleTooltipClick}
+                  onClick={(data) => handleOfficeSelect(data)}
                 />
               </BarChart>
             </ResponsiveContainer>
-          )}
-        </div>
-        <SecondarySort
-          subset={subset}
-          selectedSortField={selectedSortField}
-          secondarySortField={secondarySortField}
-          setSecondarySortField={setSecondarySortField}
-          secondarySortOrder={secondarySortOrder}
-          setSecondarySortOrder={setSecondarySortOrder}
-          showSecondarySortField={showSecondarySortField}
-          setShowSecondarySortField={setShowSecondarySortField}
-        />
-        <div className='rounded-lg bg-white p-4'>
-          <OfficeLevelSubsetTable
-            officeLevel={officeLevel}
-            tableCols={tableCols}
-            tableData={graphValues?.data.data}
-            selectedOffice={selectedOffice}
-            prevLevel={prevLevelOffice}
-            setOfficeLevel={setSelectedOfficeLevel}
-            exportUrl={exportUrl}
-          />
-          <div className='flex w-full flex-col'>
-            {graphValues?.data != null && (
-              <RestPagination
-                pagination={graphValues.data}
-                onNewPage={setPage}
-              />
-            )}
           </div>
-        </div>
+        )}
       </div>
     </FullSpinnerWrapper>
   )
+}
+
+OfficeRanking.propTypes = {
+  subset: PropTypes.object.isRequired,
+  officeLevel: PropTypes.string.isRequired,
+  selectedSortField: PropTypes.object,
+  selectedSortOrder: PropTypes.string.isRequired,
+  selectedLimit: PropTypes.string.isRequired,
+  setSelectedOfficeLevel: PropTypes.func.isRequired,
+  selectedMonth: PropTypes.object,
+  setSelectedMonth: PropTypes.func.isRequired,
+  secondarySortField: PropTypes.string.isRequired,
+  setSecondarySortField: PropTypes.func.isRequired,
+  secondarySortOrder: PropTypes.string.isRequired,
+  setSecondarySortOrder: PropTypes.func.isRequired,
+  showSecondarySortField: PropTypes.bool.isRequired,
+  setShowSecondarySortField: PropTypes.func.isRequired,
+  activeViewTab: PropTypes.string.isRequired,
 }

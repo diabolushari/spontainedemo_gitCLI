@@ -31,16 +31,27 @@ const steps = [
 export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: BlockFormProps) {
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)
-  const handleStepClick = (step: number) => {
-    setStep(step)
+  const chartDataExists = !!stepData?.overview?.overview_chart?.chart_type
+  const tableDataExists = !!stepData?.overview?.overview_table?.subset_id
+  const isStepOneComplete = !!(
+    stepData?.title &&
+    stepData?.data_table_id &&
+    stepData?.description &&
+    stepData?.subset_group_id
+  )
+  const handleStepClick = (stepNumber: number) => {
+    if (stepNumber === 1 || isStepOneComplete) {
+      setStep(stepNumber)
+    }
   }
+
   return (
     <div className='w-full'>
       {/* --- Drawer Header with Title + Stepper --- */}
       <DrawerHeader className='space-y-2 px-4 pt-4'>
         <div>
-          <DrawerTitle>Block Configuration</DrawerTitle>
-          <DrawerDescription>Configure your block here.</DrawerDescription>
+          <DrawerTitle>Card Configuration</DrawerTitle>
+          <DrawerDescription>Customize your card here.</DrawerDescription>
         </div>
 
         <div className='mt-2 flex items-center justify-between'>
@@ -49,18 +60,58 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
             const isActive = step === currentStep
             const isCompleted = step > currentStep
 
+            const overview = stepData?.overview
+            const cardType = overview?.card_type
+
+            let isAllowed = false
+
+            // Step 1 is always allowed
+            if (currentStep === 1) {
+              isAllowed = true
+            }
+
+            // Steps 2–4 require general config (Step 1) completion
+            else if (currentStep >= 2 && currentStep <= 4 && isStepOneComplete) {
+              isAllowed = true
+            }
+
+            // Step 5 - Chart view, only allowed if card_type is not 'table' and overview is complete
+            else if (
+              currentStep === 5 &&
+              cardType !== 'table' &&
+              overview?.title &&
+              overview?.description &&
+              cardType
+            ) {
+              isAllowed = true
+            }
+
+            // Step 6 - Table view, only allowed if card_type is not 'chart' and overview is complete
+            else if (
+              currentStep === 6 &&
+              cardType !== 'chart' &&
+              overview?.title &&
+              overview?.description &&
+              cardType
+            ) {
+              isAllowed = true
+            }
+
             return (
               <div
-                onClick={() => handleStepClick(currentStep)}
+                key={index}
+                onClick={() => isAllowed && handleStepClick(currentStep)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (isAllowed && (e.key === 'Enter' || e.key === ' ')) {
                     handleStepClick(currentStep)
                   }
                 }}
                 role='button'
-                tabIndex={0}
-                key={index}
-                className='flex flex-1 items-center'
+                tabIndex={isAllowed ? 0 : -1}
+                className={cn(
+                  'flex flex-1 items-center',
+                  !isAllowed && 'cursor-not-allowed opacity-50'
+                )}
               >
                 <div
                   className={cn(
@@ -138,7 +189,9 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 onBack={() => setStep(3)}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-
+                  if (validatedData.__skip) {
+                    setCloseDrawer(false)
+                  }
                   if (validatedData.overview.card_type === 'table') {
                     setStep(6)
                   } else {

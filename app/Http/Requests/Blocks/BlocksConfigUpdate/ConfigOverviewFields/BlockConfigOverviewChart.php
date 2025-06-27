@@ -47,6 +47,10 @@ class BlockConfigOverviewChart extends Data
         public ?int $xAxisCount,
 
         #[RequiredWith('subset_id')]
+        #[Max(255)]
+        public ?string $xAxisOrder,
+
+        #[RequiredWith('subset_id')]
         #[DataCollectionOf(BlockConfigMeasureField::class)]
         public ?DataCollection $yAxis,
 

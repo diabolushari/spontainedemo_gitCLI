@@ -31,4 +31,11 @@ class BlockConfigTrend extends Data
         public ?TooltipFieldData $tooltipField
 
     ) {}
+    public static function messages(): array
+    {
+        return [
+            'title.required_with' => 'Please provide a title when a subset is selected.',
+
+        ];
+    }
 }

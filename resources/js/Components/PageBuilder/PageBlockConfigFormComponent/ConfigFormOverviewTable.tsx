@@ -7,13 +7,18 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import CheckBox from '@/ui/form/CheckBox'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import ConfigFormMeasureFields from './ConfigOverviewForm/ConfigFormMeasureFields'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import SelectList from '@/ui/form/SelectList'
 
 interface SubsetField {
   id: number
   subset_column: string
   subset_field_name: string
 }
+const orderOptions = [
+  { label: 'Ascending Order', value: 'ascending' },
+  { label: 'Descending Order', value: 'descending' },
+]
 
 interface ConfigFormStepOverviewTableProps {
   initialData: any
@@ -28,20 +33,20 @@ export default function ConfigFormStepOverviewTable({
   onNext,
   onBack,
 }: ConfigFormStepOverviewTableProps) {
-  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     title: initialData?.overview?.overview_table?.title ?? '',
     subsetId: initialData?.overview?.overview_table?.subset_id ?? '',
-    dimensionField: initialData?.dimension_field ?? '',
-    measureField: Array.isArray(initialData?.measure_field) ? initialData.measure_field : [],
-    measureFieldDimension: '',
-    gridNumber: initialData?.grid_number ?? '',
-    showTotal: initialData?.show_total ?? false,
+    dimensionField: initialData?.overview?.overview_table?.dimension_field ?? '',
+    measureField: initialData?.overview?.overview_table?.measure_field ?? [],
+    measureFieldDimension: initialData?.overview?.overview_table?.measure_field_dimension ?? '',
+    gridNumber: initialData?.overview?.overview_table?.grid_number ?? 0,
+    showTotal: initialData?.overview?.overview_table?.show_total ?? false,
+    order: initialData?.overview?.overview_table?.order ?? 'ascending',
   })
 
-  const [subsetFields] = useFetchRecord<SubsetField[]>(
+  const [subsetFields] = useFetchRecord(
     formData.subsetId ? `/api/subset/${formData.subsetId}` : null
   )
-
   const { post, loading, errors } = useInertiaPost(
     route('config.overview.table.update', block.id),
     {
@@ -56,6 +61,16 @@ export default function ConfigFormStepOverviewTable({
       },
     }
   )
+  useEffect(() => {
+    setAll({
+      title: initialData?.overview?.overview_table?.title ?? '',
+      dimensionField: initialData?.overview?.overview_table?.dimension_field ?? '',
+      measureField: initialData?.overview?.overview_table?.measure_field ?? [],
+      measureFieldDimension: initialData?.overview?.overview_table?.measure_field_dimension ?? '',
+      gridNumber: initialData?.overview?.overview_table?.grid_number ?? 0,
+      showTotal: initialData?.overview?.overview_table?.show_total ?? false,
+    })
+  }, [errors, formData.subsetId])
 
   const structureOverviewTable = (formData: any) => {
     return {
@@ -67,6 +82,7 @@ export default function ConfigFormStepOverviewTable({
         measure_field_dimension: formData.measureFieldDimension,
         grid_number: formData.gridNumber,
         show_total: formData.showTotal,
+        order: formData.order,
       },
     }
   }
@@ -85,39 +101,37 @@ export default function ConfigFormStepOverviewTable({
 
   const measureFieldErrorsByValue = useMemo(() => {
     const map: Record<string, Record<string, string>> = {}
+
     Object.entries(errors || {}).forEach(([key, message]) => {
-      const match = key.match(/^measure_field\.(\d+)\.(.+)$/)
+      const cleanKey = key.replace(/^overview\.overview_table\./, '')
+      const match = cleanKey.match(/^measure_field\.(\d+)\.(\w+)$/)
+
       if (match) {
         const index = Number(match[1])
         const fieldKey = match[2]
         const item = formData.measureField?.[index]
+
         if (!item) return
+
         if (!map[item.value]) {
           map[item.value] = {}
         }
+
         map[item.value][fieldKey] = message
       }
     })
+
     return map
   }, [errors, formData.measureField])
 
   return (
     <div>
-      <StrongText>General</StrongText>
+      <StrongText>Overview Table</StrongText>
       <form onSubmit={handleSubmit}>
-        <div className='flex flex-col gap-4 md:grid md:grid-cols-3'>
-          <div className='col-span-2 flex flex-col'>
-            <Input
-              label='Enter your title'
-              value={formData.title}
-              setValue={setFormValue('title')}
-              error={errors?.title}
-            />
-          </div>
-
-          <div className='col-span-3 flex flex-col'>
+        <div className='flex flex-col gap-4 md:grid md:grid-cols-4'>
+          <div className='col-span-4 flex flex-col'>
             <DynamicSelectList
-              label='Select Subset for Highlight Table'
+              label='Subset for Overview Table'
               url={`/api/subset-group/${initialData.subset_group_id}`}
               dataKey='subset_detail_id'
               displayKey='name'
@@ -126,34 +140,54 @@ export default function ConfigFormStepOverviewTable({
               error={errors?.subsetId}
               showAllOption={true}
               allOptionText='-- None --'
+              disabled={initialData.overview?.card_type === 'chart' ? true : false}
             />
           </div>
 
           {formData.subsetId && (
             <>
-              <div className='flex flex-col gap-4'>
+              <div className='col-span-4 flex flex-col'>
+                <Input
+                  label='Enter your title'
+                  value={formData.title}
+                  setValue={setFormValue('title')}
+                  error={errors?.['overview.overview_table.title']}
+                />
+              </div>
+              <div className='flex flex-col'>
                 <DynamicSelectList
-                  label='Select a dimension field'
+                  label='Dimension field'
                   url={`/api/subset/dimension/${formData.subsetId}`}
                   dataKey='subset_column'
                   displayKey='subset_field_name'
                   value={formData.dimensionField ?? ''}
                   setValue={setFormValue('dimensionField')}
-                  error={errors?.dimensionField}
+                  error={errors?.['overview.overview_table.dimension_field']}
                   showAllOption={true}
                   allOptionText='-- None --'
                 />
               </div>
-              <div className='flex flex-col gap-4'>
+              <div className='flex flex-col'>
                 <Input
                   label='Enter number of grid you want'
                   type='number'
                   value={formData.gridNumber ?? ''}
                   setValue={setFormValue('gridNumber')}
-                  error={errors?.gridNumber}
+                  error={errors?.['overview.overview_table.grid_number']}
                 />
               </div>
-              <div className='flex flex-col gap-4'>
+              <div className='flex flex-col'>
+                <SelectList
+                  label='Select order'
+                  value={formData.order}
+                  setValue={setFormValue('order')}
+                  list={orderOptions}
+                  dataKey='value'
+                  displayKey='label'
+                  error={errors?.['overview.overview_table.order']}
+                />
+              </div>
+              <div className='flex flex-col'>
                 <CheckBox
                   label='Show total'
                   value={formData.showTotal ?? false}
@@ -169,16 +203,18 @@ export default function ConfigFormStepOverviewTable({
               <div>
                 {formData.subsetId && formData.dimensionField && (
                   <DynamicSelectList
-                    label='Select a dimension field'
+                    label='Choose a dimension to filter results (leave blank to show all)'
                     url={`/api/subset/dimension/fields/${formData.dimensionField}/${formData.subsetId}`}
                     dataKey='name'
                     displayKey='name'
                     value={formData.measureFieldDimension}
                     setValue={setFormValue('measureFieldDimension')}
+                    allOptionText='-- None --'
+                    showAllOption={true}
                   />
                 )}
               </div>
-              <div className='flex flex-col gap-4'>
+              <div className='flex flex-col'>
                 {subsetFields.map((field) => {
                   const selected = formData.measureField.find(
                     (m: any) => m.value === field.subset_column
@@ -192,7 +228,7 @@ export default function ConfigFormStepOverviewTable({
                   return (
                     <div
                       key={field.id}
-                      className='flex flex-col gap-4 rounded border p-2'
+                      className='flex flex-col gap-2 rounded border p-2'
                     >
                       <ConfigFormMeasureFields
                         field={field}

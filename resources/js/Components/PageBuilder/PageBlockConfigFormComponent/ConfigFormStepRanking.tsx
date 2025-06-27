@@ -134,7 +134,7 @@ export default function ConfigFormStepRanking({
         />
         <Button
           type='submit'
-          label={loading ? 'Saving...' : 'Submit'}
+          label={loading ? 'Saving...' : formData.subsetId === '' ? 'Skip' : 'Submit'}
           disabled={loading}
         />
       </div>

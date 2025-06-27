@@ -17,6 +17,7 @@ use App\Http\Controllers\ChartData\SubsetFieldsController;
 use App\Http\Controllers\ChartData\SubsetGroupItemsController;
 use App\Http\Controllers\ChartData\SubsetGroupListController;
 use App\Http\Controllers\Chat\ChatController;
+use App\Http\Controllers\ChatHistory\ChatHistoryController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
@@ -33,6 +34,8 @@ use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\InsightsGen\GetInsights;
+use App\Http\Controllers\InsightsGen\InsightsGen;
 use App\Http\Controllers\Map\OfficeCoordinateListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
@@ -79,9 +82,6 @@ use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
-use App\Models\Meta\MetaHierarchy;
-use App\Models\Meta\MetaHierarchyItem;
-use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use App\Services\DataTable\JoinDataTable;
 use Illuminate\Support\Facades\DB;
@@ -279,135 +279,6 @@ Route::get('subset-fields', SubsetFieldsListController::class)
 Route::get('static-list', StaticListController::class)
     ->name('static-list');
 
-Route::get('regions', function () {
-
-    $hierarchy = MetaHierarchy::first();
-    $regions = DB::table('data_table_distribution_hierarchy')
-        ->groupBy('region_code', 'region_name')
-        ->select('region_code', 'region_name')
-        ->get();
-
-    $fields = [];
-    foreach ($regions as $region) {
-        $fields[] = [
-            'primary_field_id' => $region->region_code,
-            'secondary_field_id' => $region->region_name,
-            'parent_id' => null,
-            'meta_hierarchy_id' => $hierarchy->id,
-            'level' => 1,
-        ];
-    }
-
-    return MetaHierarchyItem::insert($fields);
-});
-
-Route::get('circles', function () {
-
-    $hierarchy = MetaHierarchy::first();
-    $circles = DB::table('data_table_distribution_hierarchy')
-        ->groupBy('circle_code', 'circle_name', 'region_code')
-        ->select('circle_code', 'circle_name', 'region_code')
-        ->get();
-
-    $hierarchyItems = MetaHierarchyItem::where('level', 1)
-        ->get();
-
-    $fields = [];
-    foreach ($circles as $circle) {
-        $fields[] = [
-            'primary_field_id' => $circle->circle_code,
-            'secondary_field_id' => $circle->circle_name,
-            'parent_id' => $hierarchyItems->where('primary_field_id', $circle->region_code)->first()->id,
-            'meta_hierarchy_id' => $hierarchy->id,
-            'level' => 2,
-        ];
-    }
-
-    return MetaHierarchyItem::insert($fields);
-});
-
-Route::get('divisions', function () {
-    $hierarchy = MetaHierarchy::first();
-    $divions = DB::table('data_table_distribution_hierarchy')
-        ->groupBy('division_code', 'division_name', 'circle_code')
-        ->select('division_code', 'division_name', 'circle_code')
-        ->get();
-
-    $hierarchyItems = MetaHierarchyItem::where('level', 2)
-        ->get();
-
-    $fields = [];
-    foreach ($divions as $division) {
-        $fields[] = [
-            'primary_field_id' => $division->division_code,
-            'secondary_field_id' => $division->division_name,
-            'parent_id' => $hierarchyItems->where('primary_field_id', $division->circle_code)->first()->id,
-            'meta_hierarchy_id' => $hierarchy->id,
-            'level' => 3,
-        ];
-    }
-
-    return MetaHierarchyItem::insert($fields);
-});
-
-Route::get('subdivisions', function () {
-    $hierarchy = MetaHierarchy::first();
-    $divions = DB::table('data_table_distribution_hierarchy')
-        ->groupBy('subdivision_code', 'subdivision_name', 'division_code')
-        ->select('subdivision_code', 'subdivision_name', 'division_code')
-        ->get();
-
-    $hierarchyItems = MetaHierarchyItem::where('level', 3)
-        ->get();
-
-    $fields = [];
-    foreach ($divions as $division) {
-        $fields[] = [
-            'primary_field_id' => $division->subdivision_code,
-            'secondary_field_id' => $division->subdivision_name,
-            'parent_id' => $hierarchyItems->where('primary_field_id', $division->division_code)->first()->id,
-            'meta_hierarchy_id' => $hierarchy->id,
-            'level' => 4,
-        ];
-    }
-
-    return MetaHierarchyItem::insert($fields);
-});
-
-Route::get('sections', function () {
-    $hierarchy = MetaHierarchy::first();
-    $divions = DB::table('data_table_distribution_hierarchy')
-        ->groupBy('section_code', 'section_name', 'subdivision_code')
-        ->select('section_code', 'section_name', 'subdivision_code')
-        ->get();
-
-    $hierarchyItems = MetaHierarchyItem::where('level', 4)
-        ->get();
-
-    $fields = [];
-    foreach ($divions as $division) {
-        $fields[] = [
-            'primary_field_id' => $division->section_code,
-            'secondary_field_id' => $division->section_name,
-            'parent_id' => $hierarchyItems->where('primary_field_id', $division->subdivision_code)->first()->id,
-            'meta_hierarchy_id' => $hierarchy->id,
-            'level' => 5,
-        ];
-    }
-
-    return MetaHierarchyItem::insert($fields);
-});
-
-Route::get('fix-sections', function () {
-
-    SubsetDetailDimension::where('subset_column', 'section_code')->update([
-        'hierarchy_id' => 1,
-    ]);
-
-    return SubsetDetailDimension::where('subset_column', 'section_code')
-        ->get();
-});
-
 Route::get('chat', ChatController::class)
     ->name('chat');
 
@@ -455,5 +326,14 @@ Route::get('test', function (JoinDataTable $joinDataTable) {
         ->selectRaw('MAX(month_year_record.name) as month_year')
         ->first();
 });
+
+require __DIR__ . '/auth.php';
+Route::get('/insight-gen', InsightsGen::class)
+    ->name('insight-gen');
+
+Route::get('/get-insights', GetInsights::class)
+    ->name('get-insights');
+
+Route::apiResource('/chat-history', ChatHistoryController::class);
 
 require __DIR__ . '/auth.php';

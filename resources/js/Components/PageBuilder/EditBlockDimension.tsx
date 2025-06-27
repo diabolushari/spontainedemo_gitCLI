@@ -101,9 +101,10 @@ const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, bl
   })
   const { post } = useInertiaPost(route('dimension.update', block.id), {
     preserveState: false,
+
     onComplete: () => {
-      route('page.show', block.page_id)
       onClose()
+      route('page', block.page_id)
     },
     showErrorToast: true,
   })
@@ -223,7 +224,10 @@ const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, bl
               />
             </div>
             <div className='flex justify-end'>
-              <Button label='Save' />
+              <Button
+                type='submit'
+                label='Save'
+              />
             </div>
           </form>
         </Modal>

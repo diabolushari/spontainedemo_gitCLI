@@ -16,23 +16,20 @@ import {
   SubsetGroupItem,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
-import SelectList from '@/ui/form/SelectList'
-import OfficeLevelExplorerTable from '@/Components/DataExplorer/OfficeLevelExplorerTable'
 import Card from '@/ui/Card/Card'
 import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
 import { showError } from '@/ui/alerts'
 import DetailDashboardLayout from '@/Layouts/DetailDashboardLayout'
-import MonthPicker from '@/ui/form/MonthPicker'
 import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
 import Modal from '@/ui/Modal/Modal'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
-import DataExplorerTrend from '@/Components/DataExplorer/DataExplorerTrend/DataExplorerTrend'
+import DataExplorerTabs from '@/Components/DataExplorer/DataExplorerTabs'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 
 interface Props {
   subsetGroup: SubsetGroup
   subsetItems: SubsetGroupItem[]
-  oldTab: string
   oldSubsetName: string | null
   oldFilters: Record<string, string>
   oldRoute?: string
@@ -79,12 +76,12 @@ export const SelectedOfficeContext = createContext<{
 export default function DataExplorerPage({
   subsetGroup,
   subsetItems,
-  oldTab,
   oldSubsetName,
   oldFilters,
   oldRoute,
   offices,
 }: Readonly<Props>) {
+  const [isLoading, setIsLoading] = useState(true)
   const [showSearchModal, setShowSearchModal] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
@@ -93,12 +90,13 @@ export default function DataExplorerPage({
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
     yearMonthToDate(oldFilters['month'])
   )
+  const [activeViewTab, setActiveViewTab] = useState('map')
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsetItems, oldSubsetName)
   )
 
-  const [activeTab, setActiveTab] = useState(oldTab)
+  const [activeTab, setActiveTab] = useState('region')
 
   const { selectedSubset, selectedSubsetItem } = useMemo(() => {
     if (selectedSubsetId === '') {
@@ -122,8 +120,15 @@ export default function DataExplorerPage({
     setSelectedSubdivision(null)
   }, [selectedSubset, setSelectedDivision, setSelectedSubdivision])
 
+  useEffect(() => {
+    // Set loading to false once the initial data is loaded
+    if (selectedSubset && selectedSubsetItem) {
+      setIsLoading(false)
+    }
+  }, [selectedSubset, selectedSubsetItem])
+
   const [searchParams, setSearchParams] = useState<Record<string, string>>({
-    level: activeTab,
+    level: 'region',
     ...oldFilters,
   })
 
@@ -194,113 +199,79 @@ export default function DataExplorerPage({
       pageTitle='Analysis Sets'
       appliedFilters={appliedFilters}
     >
-      <div className='flex w-full flex-col gap-5 p-5'>
-        <div className='flex justify-center'>
-          {selectedMonth != null &&
-            selectedSubsetItem?.trend_field != null &&
-            selectedSubset != null && (
-              <DataExplorerTrend
-                date={selectedMonth}
-                subset={selectedSubset}
-                trendField={selectedSubsetItem.trend_field}
-                title={
-                  subsetItems.find((value) => value.subset?.id == selectedSubset?.id)?.name ?? ''
-                }
-              />
-            )}
-        </div>
-        <div className='border border-1stop-alt-gray'></div>
-        <div className='grid w-full grid-cols-1 gap-4 md:grid-cols-3 md:gap-2 lg:grid-cols-4'>
-          <div className='flex flex-col'>
-            <SelectList
-              list={subsetItems}
-              dataKey='id'
-              displayKey='name'
-              setValue={setSelectedSubsetId}
-              value={selectedSubsetId}
-              showAllOption
-              allOptionText='Select Subset'
-              style='1stop-background'
-            />
+      <FullSpinnerWrapper processing={isLoading}>
+        <div className='flex w-full flex-col gap-5 p-5'>
+          <div>
+            <span className='data-xs-1stop'>
+              {' '}
+              <b>Note:</b> In order to view data at subdivision level and below, please filter at a
+              higher organization level.
+            </span>
           </div>
-          <div className='grid grid-cols-2 md:col-start-3 lg:col-start-4'>
-            <div className='place-content-center place-items-center rounded-l-lg bg-1stop-accent2'>
-              <MonthPicker
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-              />
-            </div>
-            <button
-              onClick={() => setShowSearchModal(true)}
-              className='flex items-center justify-center rounded-r-lg bg-1stop-highlight2 py-4'
-            >
-              <i className='la la-filter'></i>
-              <p className='small-1stop-header'>Filters</p>
-            </button>
-          </div>
-        </div>
 
-        <div>
-          <span className='data-xs-1stop'>
-            {' '}
-            <b>Note:</b> In order to view data at subdivision level and below, please filter at a
-            higher organization level.
-          </span>
-        </div>
-
-        <SelectedOfficeContext.Provider
-          value={{
-            region: selectedRegion,
-            setRegion: setSelectedRegion,
-            circle: selectedCircle,
-            setCircle: setSelectedCircle,
-            division: selectedDivision,
-            setDivision: setSelectedDivision,
-            subdivision: selectedSubdivision,
-            setSubdivision: setSelectedSubdivision,
-          }}
-        >
-          <Card className='p-2'>
-            <OfficeLevelTabs
-              activeTab={activeTab}
-              setActiveTab={changeTab}
-            />
-
-            {selectedSubset != null && (
-              <OfficeLevelExplorerTable
-                subset={selectedSubset}
-                officeLevel={activeTab}
-                oldFilters={oldFilters}
-                setActiveTab={setActiveTab}
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                mapField={selectedSubsetItem?.trend_field}
-              />
-            )}
-          </Card>
-        </SelectedOfficeContext.Provider>
-        {showSearchModal && selectedSubset != null && (
-          <Modal
-            title='Search'
-            large
-            setShowModal={setShowSearchModal}
+          <SelectedOfficeContext.Provider
+            value={{
+              region: selectedRegion,
+              setRegion: setSelectedRegion,
+              circle: selectedCircle,
+              setCircle: setSelectedCircle,
+              division: selectedDivision,
+              setDivision: setSelectedDivision,
+              subdivision: selectedSubdivision,
+              setSubdivision: setSelectedSubdivision,
+            }}
           >
-            <div className='p-2'>
-              <SubsetFilterForm
-                dates={selectedSubset.dates as SubsetDateField[]}
-                measures={selectedSubset.measures as SubsetMeasureField[]}
-                dimensions={selectedSubset.dimensions as SubsetDimensionField[]}
-                subset={selectedSubset}
-                filters={searchParams}
-                onSubmit={onSubmit}
-                offices={offices}
+            <Card className='p-2'>
+              <OfficeLevelTabs
+                activeTab={activeTab}
+                setActiveTab={changeTab}
+                isMapView={activeViewTab === 'map'}
               />
-            </div>
-          </Modal>
-        )}
-      </div>
+
+              {selectedSubset != null && (
+                <div className='min-h-screen'>
+                  <DataExplorerTabs
+                    selectedSubset={selectedSubset}
+                    selectedSubsetItem={selectedSubsetItem}
+                    selectedMonth={selectedMonth}
+                    setSelectedMonth={setSelectedMonth}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    searchParams={searchParams}
+                    setSearchParams={setSearchParams}
+                    oldFilters={oldFilters}
+                    subsetItems={subsetItems}
+                    selectedSubsetId={selectedSubsetId}
+                    setSelectedSubsetId={setSelectedSubsetId}
+                    setShowSearchModal={setShowSearchModal}
+                    activeViewTab={activeViewTab}
+                    setActiveViewTab={setActiveViewTab}
+                  />
+                </div>
+              )}
+            </Card>
+          </SelectedOfficeContext.Provider>
+          {showSearchModal && selectedSubset != null && (
+            <Modal
+              title='Search'
+              large
+              setShowModal={setShowSearchModal}
+            >
+              <div className='p-2'>
+                <SubsetFilterForm
+                  dates={selectedSubset.dates as SubsetDateField[]}
+                  measures={selectedSubset.measures as SubsetMeasureField[]}
+                  dimensions={selectedSubset.dimensions as SubsetDimensionField[]}
+                  subset={selectedSubset}
+                  filters={searchParams}
+                  onSubmit={onSubmit}
+                  offices={offices}
+                />
+              </div>
+            </Modal>
+          )}
+        </div>
+      </FullSpinnerWrapper>
     </DetailDashboardLayout>
   )
 }

@@ -7,8 +7,9 @@ import {
   TableDimensionField,
 } from '@/interfaces/data_interfaces'
 import { MetaData, MetaHierarchy } from '@/interfaces/meta_interfaces'
-import { useCallback, useMemo, useState } from 'react'
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
+import { showError } from '@/ui/alerts'
+import { useCallback, useMemo, useState } from 'react'
 
 interface Props {
   dataDetail: DataDetail
@@ -144,6 +145,7 @@ export default function AddSubsetDimensionForm({
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (formData.field_id == '' || formData.subset_field_name == '') {
+      showError('Please select a field and name its name on subset')
       return
     }
     onSubmit({

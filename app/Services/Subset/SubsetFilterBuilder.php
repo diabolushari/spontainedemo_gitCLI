@@ -70,15 +70,18 @@ class SubsetFilterBuilder
                 $hierarchyItem = MetaHierarchyItem::where('meta_hierarchy_id', $dimension->hierarchy_id)
                     ->whereHas('primaryField', function ($query) use ($searchValue) {
                         $query->where('name', $searchValue);
-                    })->first();
+                    })
+                    ->first();
 
                 if ($hierarchyItem == null) {
                     return;
                 }
 
-                $childrenMetaValues = $this->hierarchyChildList->getChildren($hierarchyItem)->map(function ($child) {
-                    return $child->primaryField->name;
-                })->toArray();
+                $childrenMetaValues = $this->hierarchyChildList->getChildren($hierarchyItem)
+                    ->map(function ($child) {
+                        return $child->primaryField->name;
+                    })
+                    ->toArray();
 
                 $query->whereIn($dimension->info->column.'_record.name', [
                     $hierarchyItem->primaryField->name,

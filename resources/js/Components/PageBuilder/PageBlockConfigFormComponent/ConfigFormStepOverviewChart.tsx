@@ -8,6 +8,7 @@ import Button from '@/ui/button/Button'
 import CheckBox from '@/ui/form/CheckBox'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import ConfigFormMeasureFields from './ConfigOverviewForm/ConfigFormMeasureFields'
+import StrongText from '@/typography/StrongText'
 
 const chartOptions = [
   { label: 'Bar', value: 'bar' },
@@ -38,7 +39,7 @@ export default function ConfigFormStepOverviewChart({
   onNext,
   onBack,
 }: ConfigFormStepOverviewProps) {
-  const { formData, setFormValue, toggleBoolean } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     title: initialData.overview?.overview_chart?.title ?? '',
     subsetId: initialData.overview?.overview_chart?.subset_id ?? '',
     chartType: initialData.overview?.overview_chart?.chart_type ?? 'bar',
@@ -51,6 +52,19 @@ export default function ConfigFormStepOverviewChart({
     yAxis: initialData.overview?.overview_chart?.y_axis ?? [],
     pieYaxis: '',
   })
+  useEffect(() => {
+    setAll({
+      title: initialData.overview?.overview_chart?.title ?? '',
+      dimension: initialData.overview?.overview_chart?.dimension ?? '',
+      xAxis: initialData.overview?.overview_chart?.x_axis ?? '',
+      xAxisCount: initialData.overview?.overview_chart?.x_axis_count ?? 0,
+      xAxisLabel: initialData.overview?.overview_chart?.x_axis_label ?? '',
+      xAxisOrder: initialData.overview?.overview_chart?.x_axis_order ?? 'ascending',
+      xAxisEnable: initialData.overview?.overview_chart?.x_axis_enable ?? false,
+      yAxis: initialData.overview?.overview_chart?.y_axis ?? [],
+      pieYaxis: '',
+    })
+  }, [formData.subsetId, formData.chartType])
 
   const {
     formData: yAxisFormData,
@@ -68,10 +82,6 @@ export default function ConfigFormStepOverviewChart({
     formData.subsetId ? `/api/subset/${formData.subsetId}` : null
   )
 
-  useEffect(() => {
-    setFormValue('yAxis')([])
-  }, [formData.subsetId, formData.chartType])
-
   const strucetureHighlightChart = (formData: any) => {
     return {
       highlight_chart: {
@@ -82,6 +92,7 @@ export default function ConfigFormStepOverviewChart({
         x_axis_label: formData.xAxisLabel ?? '',
         x_axis_enable: formData.xAxisEnable ?? false,
         x_axis_count: formData.xAxisCount ?? '',
+        x_axis_order: formData.xAxisOrder ?? 'ascending',
         y_axis: formData.yAxis ?? [],
       },
     }
@@ -147,7 +158,8 @@ export default function ConfigFormStepOverviewChart({
   }
 
   return (
-    <div className='flex w-full flex-col gap-4'>
+    <div className='flex w-full flex-col'>
+      <StrongText>Overview Chart</StrongText>
       <form onSubmit={handleSubmit}>
         <div className='flex flex-col'>
           <DynamicSelectList
@@ -187,7 +199,7 @@ export default function ConfigFormStepOverviewChart({
               </div>
               <div className='flex flex-col'>
                 <DynamicSelectList
-                  label='Select the fields you want to add in the x axis'
+                  label='Select a dimension for x axis'
                   url={`/api/subset/dimension/${formData.subsetId}`}
                   dataKey='subset_column'
                   displayKey='subset_field_name'
@@ -207,7 +219,7 @@ export default function ConfigFormStepOverviewChart({
                 <div className='flex flex-col'>
                   <Input
                     type='number'
-                    label='Number of items'
+                    label='Maximum number of items'
                     value={formData.xAxisCount ?? 0}
                     setValue={(value) => setFormValue('xAxisCount')(Number(value))}
                     error={errors?.['overview_chart.x_axis_count']}
@@ -223,7 +235,7 @@ export default function ConfigFormStepOverviewChart({
                 </div>
                 <div className='flex flex-col'>
                   <SelectList
-                    label='Select the order of the x axis'
+                    label='Order of dimension'
                     list={orderOptions}
                     dataKey='value'
                     displayKey='label'
@@ -234,7 +246,7 @@ export default function ConfigFormStepOverviewChart({
                 </div>
                 <div className='flex flex-col'>
                   <CheckBox
-                    label='Label enable for x axis'
+                    label='Enable label for x axis'
                     value={formData.xAxisEnable}
                     toggleValue={toggleBoolean('xAxisEnable')}
                     error={errors?.['overview_chart.x_axis_enable']}

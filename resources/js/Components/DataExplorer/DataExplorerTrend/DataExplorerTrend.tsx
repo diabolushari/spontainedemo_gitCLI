@@ -1,5 +1,5 @@
 import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import dayjs from 'dayjs'
 import {
@@ -69,12 +69,49 @@ const CustomLegend = ({ payload }: LegendProps) => {
   )
 }
 
+function calculateDateRange(
+  currentDate: dayjs.Dayjs,
+  selectedMonthValue: number
+): {
+  currentYearStart: string
+  currentYearEnd: string
+  prevYearStart: string
+  prevYearEnd: string
+} {
+  const currentMonth = currentDate.month() + 1
+  console.log('current Month: ' + currentMonth)
+  const currentYear = currentDate.year()
+
+  let startMonth = currentMonth - selectedMonthValue
+  let endMonth = currentMonth
+
+  if (selectedMonthValue + 1 >= currentMonth) {
+    startMonth = 1
+    endMonth = selectedMonthValue + 1
+  }
+
+  return {
+    currentYearStart: `${currentYear}${startMonth.toString().padStart(2, '0')}`,
+    currentYearEnd: `${currentYear}${endMonth.toString().padStart(2, '0')}`,
+    prevYearStart: `${currentYear - 1}${startMonth.toString().padStart(2, '0')}`,
+    prevYearEnd: `${currentYear - 1}${endMonth.toString().padStart(2, '0')}`,
+  }
+}
+
 export default function DataExplorerTrend({ date, trendField, subset, title }: Readonly<Props>) {
-  const { dateObject, prevYearDate } = useMemo(() => {
-    return { dateObject: dayjs(date), prevYearDate: dayjs(date).subtract(1, 'year') }
+  const { dateObject, prevYearToDate } = useMemo(() => {
+    return { dateObject: dayjs(date), prevYearToDate: dayjs(date).subtract(1, 'year') }
   }, [date])
 
   const [selectedMonthValue, setSelectedMonthValue] = useState(5)
+
+  const dateRange = useMemo(() => {
+    return calculateDateRange(dateObject, selectedMonthValue)
+  }, [dateObject, selectedMonthValue])
+
+  useEffect(() => {
+    console.log(selectedMonthValue)
+  }, [selectedMonthValue])
 
   const fieldName = useMemo(() => {
     return (
@@ -86,20 +123,16 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
   const [currentYearValues] = useFetchRecord<{ data: DataTableItem[]; latest_value: string }>(
     route('subset.show', {
       subsetDetail: subset.id,
-      month_less_than_or_equal: dateObject.format('YYYYMM'),
-      month_greater_than_or_equal: dateObject
-        .subtract(selectedMonthValue, 'month')
-        .format('YYYYMM'),
+      month_less_than_or_equal: dateRange.currentYearEnd,
+      month_greater_than_or_equal: dateRange.currentYearStart,
     })
   )
 
   const [prevYearValues] = useFetchRecord<{ data: DataTableItem[]; latest_value: string }>(
     route('subset.show', {
       subsetDetail: subset.id,
-      month_less_than_or_equal: prevYearDate.format('YYYYMM'),
-      month_greater_than_or_equal: prevYearDate
-        .subtract(selectedMonthValue, 'month')
-        .format('YYYYMM'),
+      month_less_than_or_equal: dateRange.prevYearEnd,
+      month_greater_than_or_equal: dateRange.prevYearStart,
     })
   )
 
@@ -107,29 +140,35 @@ export default function DataExplorerTrend({ date, trendField, subset, title }: R
     const data: Record<string, string | number | null>[] = []
 
     const currentYear = dateObject.year().toString()
-    const prevYear = prevYearDate.year().toString()
+    const prevYear = prevYearToDate.year().toString()
 
-    for (let i = 0; i <= selectedMonthValue; i++) {
-      const currentYearMonth = dateObject.subtract(i, 'month')
-      const prevYearMonth = prevYearDate.subtract(i, 'month')
+    const { currentYearStart, currentYearEnd, prevYearStart, prevYearEnd } = dateRange
+    const currentStart = dayjs(currentYearStart, 'YYYYMM')
+    const currentEnd = dayjs(currentYearEnd, 'YYYYMM')
+    const prevStart = dayjs(prevYearStart, 'YYYYMM')
+    const prevEnd = dayjs(prevYearEnd, 'YYYYMM')
 
-      const prevYearData = prevYearValues?.data.find(
-        (item) => item['month' as keyof typeof item] === prevYearMonth.format('YYYYMM')
-      )
-
+    let mCur = currentStart
+    let mPrev = prevStart
+    while (!mCur.isAfter(currentEnd)) {
       const currentYearData = currentYearValues?.data.find(
-        (item) => item['month' as keyof typeof item] === currentYearMonth.format('YYYYMM')
+        (item) => item['month' as keyof typeof item] === mCur.format('YYYYMM')
+      )
+      const prevYearData = prevYearValues?.data.find(
+        (item) => item['month' as keyof typeof item] === mPrev.format('YYYYMM')
       )
 
       data.push({
-        month: currentYearMonth.format('MMMM'),
+        month: mCur.format('MMMM'),
         [currentYear]: currentYearData?.[trendField as keyof DataTableItem] ?? null,
         [prevYear]: prevYearData?.[trendField as keyof DataTableItem] ?? null,
       })
+      mCur = mCur.add(1, 'month')
+      mPrev = mPrev.add(1, 'month')
     }
 
-    return { chartData: data.reverse(), keys: [currentYear, prevYear] }
-  }, [dateObject, prevYearDate, selectedMonthValue, currentYearValues, prevYearValues, trendField])
+    return { chartData: data, keys: [currentYear, prevYear] }
+  }, [dateRange, currentYearValues, prevYearValues, trendField, dateObject, prevYearToDate])
 
   return (
     <div className='flex w-full flex-col gap-5 md:w-10/12'>

@@ -34,10 +34,28 @@ class BlockConfigOverviewTable extends Data
 
         public ?bool $showTotal,
 
+        public ?string $order,
+
         #[RequiredWith('subset_id')]
         #[DataCollectionOf(BlockConfigMeasureField::class)]
         public ?DataCollection $measureField,
 
 
     ) {}
+    public static function messages(): array
+    {
+        return [
+            'title.required_with' => 'Please provide a title when a subset is selected.',
+            'dimension_field.required_with' => 'Please select a dimension field.',
+            'measure_field.required_with' => 'Please select a measure field.',
+            'grid_number.required_with' => 'Please select a grid number.',
+            'show_total.required_with' => 'Please specify if total should be shown.',
+            'overview.overview_table.measure_field.required_with' => 'Please select a measure field.',
+            'measure_field.label.required' => 'Please enter a label for the measure field.',
+            'measure_field.label.string' => 'Measure field label must be a string.',
+            'measure_field.value.required' => 'Please enter a value for the measure field.',
+            'measure_field.value.string' => 'Measure field value must be a string.',
+            'order.required_with' => 'Please select an order.',
+        ];
+    }
 }

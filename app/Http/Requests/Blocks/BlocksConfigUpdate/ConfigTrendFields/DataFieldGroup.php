@@ -16,4 +16,13 @@ class DataFieldGroup extends Data
         public ?AxisDataField $xAxis,
         public ?AxisDataField $yAxis,
     ) {}
+    public static function messages(): array
+    {
+        return [
+            'x_axis.required' => 'Please select a value for the X-axis.',
+            'x_axis.label.required' => 'Enter a label for the X-axis.',
+            'y_axis.required' => 'Please select a value for the Y-axis.',
+            'y_axis.label.required' => 'Enter a label for the Y-axis.',
+        ];
+    }
 }

@@ -59,8 +59,8 @@ export default function ConfigFormStepGeneral({
   return (
     <div className='flex flex-col gap-6'>
       <div className='flex flex-col'>
-        <StrongText>Customise your card componenet</StrongText>
-        <NormalText>Here you can select your title and base date for the card</NormalText>
+        <StrongText>General</StrongText>
+        <NormalText>Fill the general details of the card</NormalText>
       </div>
       <form onSubmit={handleSubmit}>
         <div className='flex flex-col gap-2 p-2 md:grid md:grid-cols-3 md:gap-4'>
@@ -74,7 +74,7 @@ export default function ConfigFormStepGeneral({
           </div>
           <div className='flex flex-col'>
             <DynamicSelectList
-              label='Select a data table for date'
+              label='Select a data table for default date'
               url='/api/data-detail'
               dataKey='id'
               displayKey='name'
@@ -85,7 +85,7 @@ export default function ConfigFormStepGeneral({
           </div>
           <div className='flex flex-col'>
             <DynamicSelectList
-              label='Select group'
+              label='Select a subset group'
               url='/api/subset-group'
               dataKey='id'
               displayKey='name'

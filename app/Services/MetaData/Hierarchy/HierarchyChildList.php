@@ -19,7 +19,7 @@ class HierarchyChildList
     public function getChildren(MetaHierarchyItem $hierarchyItem): Collection
     {
 
-        $this->hierarchyItems = MetaHierarchyItem::where('meta_hierarchy_id', $hierarchyItem->id)
+        $this->hierarchyItems = MetaHierarchyItem::where('meta_hierarchy_id', $hierarchyItem->meta_hierarchy_id)
             ->where('level', '>', $hierarchyItem->level)
             ->with('primaryField:id,name')
             ->orderBy('level')

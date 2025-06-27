@@ -58,7 +58,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
       measure_field_dimension ? `&${dimension_field}=${measure_field_dimension}` : ''
     }`
   )
-  console.log(subset_id, config)
+
   const isMultiMeasure = measure_field?.length > 0
   const gridNumber = parseInt(grid_number || '', 10)
   const visibleCount =

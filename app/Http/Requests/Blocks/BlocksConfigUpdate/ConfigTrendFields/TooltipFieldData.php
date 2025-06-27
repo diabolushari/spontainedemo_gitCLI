@@ -25,5 +25,13 @@ class TooltipFieldData extends Data
         #[Required]
         public bool $showLabel,
     ) {}
-}
 
+    public static function messages(): array
+    {
+        return [
+            'label.required_with' => 'Tooltip label is required when a subset is selected.',
+            'unit.required_with' => 'Tooltip unit is required when a subset is selected.',
+            'show_label.required_with' => 'Please choose whether to show the tooltip label.',
+        ];
+    }
+}
