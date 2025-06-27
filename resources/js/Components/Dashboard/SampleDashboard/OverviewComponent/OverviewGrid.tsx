@@ -46,15 +46,17 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
     title,
     show_total,
     measure_field_dimension,
-    order, // Destructure order from config
+    order,
   } = config
+
   const monthYear = useMemo(() => {
     return dateToYearMonth(selectedMonth)
   }, [selectedMonth])
-  // API URL to fetch dimension values
+
   const dimensionApiUrl = `/api/subset/dimension/fields/${dimension_field}/${subset_id}`
   const [dimensionResponse, dimensionLoading] = useFetchRecord<{ name: string }[]>(dimensionApiUrl)
   const dimensionValues = dimensionResponse ? dimensionResponse.map((d) => d.name) : []
+
   const [graphValues] = useFetchRecord(
     `/subset/${subset_id}?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}${
       measure_field_dimension ? `&${dimension_field}=${measure_field_dimension}` : ''
@@ -64,17 +66,12 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
   const sortedMeasureFields = useMemo(() => {
     const data = graphValues?.data?.[0]
     const fieldsToSort = [...measure_field]
-
-    if (!order || !data) {
-      return fieldsToSort
-    }
-
+    if (!order || !data) return fieldsToSort
     fieldsToSort.sort((a, b) => {
       const valA = data[a.value]
       const valB = data[b.value]
       const numA = typeof valA === 'number' ? valA : -Infinity
       const numB = typeof valB === 'number' ? valB : -Infinity
-
       return order === 'descending' ? numB - numA : numA - numB
     })
     return fieldsToSort
@@ -97,24 +94,36 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
   const sortedDimensionValues = useMemo(() => {
     const valuesToSort = [...dimensionValues]
     if (!order) return valuesToSort
-
     valuesToSort.sort((a, b) => {
       const valA = dataMap.get(a) ?? -Infinity
       const valB = dataMap.get(b) ?? -Infinity
-
       return order === 'descending' ? valB - valA : valA - valB
     })
     return valuesToSort
   }, [dimensionValues, dataMap, order])
 
-  const isMultiMeasure = measure_field?.length > 0
+  const totalValue = useMemo(() => {
+    if (
+      !show_total ||
+      measure_field_dimension ||
+      !graphValues?.data ||
+      measure_field.length === 0
+    ) {
+      return null
+    }
+    const measureKey = measure_field[0].value
+    return graphValues.data.reduce((sum: number, item: any) => {
+      const value = item[measureKey]
+      return typeof value === 'number' ? sum + value : sum
+    }, 0)
+  }, [show_total, measure_field_dimension, graphValues, measure_field])
+
   const gridNumber = parseInt(grid_number || '', 10)
-  const visibleCount =
-    isNaN(gridNumber) || gridNumber <= 0
-      ? isMultiMeasure
-        ? measure_field.length
-        : dimensionValues.length
-      : gridNumber
+  const totalItems = measure_field_dimension
+    ? sortedMeasureFields.length
+    : sortedDimensionValues.length
+
+  const visibleCount = gridNumber > 0 ? gridNumber : totalItems
 
   return (
     <div className='flex w-full flex-col gap-4 p-2'>
@@ -124,14 +133,13 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
         <Skeleton height={200} />
       ) : (
         <div className='grid grid-cols-2 gap-2'>
-          {/* Total card on top */}
-          {show_total && (
-            <div className='col-span-2 rounded border bg-gray-100 p-4 text-center font-semibold text-gray-800'>
-              TOTAL
+          {show_total && totalValue !== null && (
+            <div className='col-span-2 rounded border bg-gray-100 p-4 text-center'>
+              <p className='text-sm uppercase text-gray-600'>Total</p>
+              <p className='text-xl font-bold'>{formatNumber(totalValue)}</p>
             </div>
           )}
 
-          {/* Dynamic logic: uses sorted arrays for rendering */}
           {measure_field_dimension
             ? sortedMeasureFields.slice(0, visibleCount).map((field) => (
                 <div
