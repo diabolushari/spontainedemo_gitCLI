@@ -45,7 +45,6 @@ export default function ConfigFormMeasureFields({
     })
   }, [data.label, data.value, data.unit, data.show_label, isSelected])
 
-  // 🔁 Sync external parent with current field state
   useEffect(() => {
     onUpdate({
       label: formData.label,
@@ -104,4 +103,3 @@ export default function ConfigFormMeasureFields({
     </div>
   )
 }
-;``
