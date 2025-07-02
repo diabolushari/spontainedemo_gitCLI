@@ -55,20 +55,9 @@ export function EmptyCardBlock({
 
     return classes.join(' ')
   }, [block])
-  const sampleOverviewContent = {
-    title: 'Test',
-    description: 'This is a test',
-    overview_chart: {
-      default: true,
-      subset_id: 120,
-      title: 'chart',
-      chart_type: 'bar',
-    },
-    overview_grid: {
-      default: false,
-      grid: true,
-    },
-  }
+
+  console.log('block : ', block)
+
   return (
     <div className={classNames}>
       <Card className='min-h-18 rounded-md'>
@@ -88,6 +77,7 @@ export function EmptyCardBlock({
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
               content={block?.data?.overview}
+              subsetGroupId={block.data.subset_group_id}
             />
           )}
 

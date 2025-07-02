@@ -3,6 +3,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import Skeleton from 'react-loading-skeleton'
 import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
+// Interface definitions (no changes here)
 interface MeasureField {
   label: string
   value: string
@@ -21,6 +22,7 @@ interface Config {
   order?: 'ascending' | 'descending'
 }
 
+// 1. UPDATE PROPS: Add the optional 'onAdd' handler
 interface OverviewGridProps {
   config: Config
   toggleValue: boolean
@@ -28,6 +30,7 @@ interface OverviewGridProps {
   onSelect: (value: string) => void
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+  onAdd?: () => void // <-- ADD THIS LINE
 }
 
 const OverviewGrid: React.FC<OverviewGridProps> = ({
@@ -37,6 +40,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
   onSelect,
   selectedMonth,
   setSelectedMonth,
+  onAdd, // <-- 2. Destructure the new prop
 }) => {
   const {
     dimension_field,
@@ -49,6 +53,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
     order,
   } = config
 
+  // ... (all existing hooks and memoized calculations remain the same)
   const monthYear = useMemo(() => {
     return dateToYearMonth(selectedMonth)
   }, [selectedMonth])
@@ -140,6 +145,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
             </div>
           )}
 
+          {/* Data mapping logic remains the same */}
           {measure_field_dimension
             ? sortedMeasureFields.slice(0, visibleCount).map((field) => (
                 <div
@@ -187,6 +193,19 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
                   </p>
                 </div>
               ))}
+
+          {/* 3. & 4. CONDITIONALLY RENDER THE "ADD" BUTTON */}
+          {onAdd && (
+            <button
+              type='button'
+              onClick={onAdd}
+              className='flex cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-gray-300 p-4 text-center text-gray-400 outline-none transition hover:border-gray-400 hover:bg-gray-50 focus-visible:border-blue-500 focus-visible:bg-blue-50'
+              aria-label='Add new item'
+            >
+              <span className='text-4xl font-light leading-none'>+</span>
+              <span className='mt-1 text-xs font-semibold'>ADD NEW</span>
+            </button>
+          )}
         </div>
       )}
     </div>
