@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import NormalText from '@/typography/NormalText'
 import OverviewChart from './OverviewComponent/OverviewChart'
 import OverviewGrid from './OverviewComponent/OverviewGrid'
-import AddGridItemModal from './OverviewComponent/AddGridItemModal' // Import the new modal
+import AddGridItemModal from './OverviewComponent/AddGridItemModal'
 
 interface Props {
   selectedMonth: Date | null
@@ -17,8 +16,8 @@ export default function Overview({
   content,
   subsetGroupId,
 }: Props) {
-  const overview_table = content?.overview_table
-  const overview_chart = content?.overview_chart
+  // Destructure content for easier access and handle potential null/undefined content
+  const { title, card_type, overview_chart, overview_table } = content || {}
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -30,49 +29,81 @@ export default function Overview({
     setIsModalOpen(false)
   }
 
+  // Placeholder for adding a chart
+  function handleOpenAddChartModal() {
+    // TODO: Implement logic to open a chart configuration modal
+    alert('Add Chart functionality not yet implemented.')
+  }
+
   function handleAddNewItem(newItemConfig: any) {
     console.log('A new item was configured and saved!', newItemConfig)
     // TODO: Add logic here to update the state that feeds the `OverviewGrid`.
-    // For example, you might update the `overview_table` prop in the parent component.
+    // For example, you might call a mutation to save the new item and refetch data.
   }
+
+  // Determine which components to show based on card_type
+  const showTable = card_type === 'chart_and_table' || card_type === 'table'
+  const showChart = card_type === 'chart_and_table' || card_type === 'chart'
 
   return (
     <>
-      <div className={`flex w-full flex-col pr-4 transition-all duration-300`}>
+      <div className='flex min-h-56 w-full flex-col pr-4 transition-all duration-300'>
         <div className='mt-4 flex w-full justify-start p-2'>
-          <span className='subheader-sm-1stop'>{content?.title}</span>
+          <span className='subheader-sm-1stop'>{title}</span>
         </div>
 
-        <div className='grid grid-cols-2 gap-2'>
-          <div
-            className={`${content?.overview?.card_type === 'chart_and_table' ? 'col-span-1' : 'col-span-2'} rounded-md border border-gray-200`}
-          >
-            {content?.overview?.card_type === 'chart_and_table' ||
-              (content?.overview?.card_type === 'table' && (
+        <div
+          className={`grid ${card_type === 'chart_and_table' ? 'grid-cols-1 gap-4 md:grid-cols-2' : 'grid-cols-1'}`}
+        >
+          {/* --- Table / Grid Section --- */}
+          {showTable && (
+            <div className='flex-1 rounded-md border border-gray-200'>
+              {overview_table ? (
                 <OverviewGrid
                   config={overview_table}
-                  onAdd={handleOpenModal}
+                  onAdd={handleOpenModal} // Trigger for existing grid
                   selectedMonth={selectedMonth}
-                  setSelectedMonth={setSelectedMonth}
                 />
-              ))}
-          </div>
-          <div
-            className={`${content?.overview?.card_type === 'chart_and_table' ? 'col-span-1' : 'col-span-2'} rounded-md border border-gray-200`}
-          >
-            {content?.overview?.card_type === 'chart_and_table' ||
-              (content?.overview?.card_type === 'chart' && (
+              ) : (
+                // Placeholder when grid is null, reusing the same modal trigger
+                <div className='flex h-full min-h-[200px] w-full items-center justify-center rounded-md border-dashed border-gray-300 bg-gray-50'>
+                  <button
+                    onClick={handleOpenModal} // Trigger for new grid
+                    className='rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                  >
+                    Add Grid Item
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* --- Chart Section --- */}
+          {showChart && (
+            <div className='flex-1 rounded-md border border-gray-200'>
+              {overview_chart ? (
                 <OverviewChart
                   chart_content={overview_chart}
                   selectedMonth={selectedMonth}
                   setSelectedMonth={setSelectedMonth}
                 />
-              ))}
-          </div>
+              ) : (
+                // Placeholder for adding a chart
+                <div className='flex h-full min-h-[200px] w-full items-center justify-center rounded-md border-dashed border-gray-300 bg-gray-50'>
+                  <button
+                    onClick={handleOpenAddChartModal}
+                    className='rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                  >
+                    Add Chart
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* The new modal is now cleanly integrated */}
+      {/* The same modal is used for adding the first item or subsequent items */}
       <AddGridItemModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

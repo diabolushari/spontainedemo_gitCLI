@@ -25,21 +25,17 @@ interface Config {
 // 1. UPDATE PROPS: Add the optional 'onAdd' handler
 interface OverviewGridProps {
   config: Config
-  toggleValue: boolean
   selected: string
   onSelect: (value: string) => void
   selectedMonth: Date | null
-  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   onAdd?: () => void // <-- ADD THIS LINE
 }
 
 const OverviewGrid: React.FC<OverviewGridProps> = ({
   config,
-  toggleValue,
   selected,
   onSelect,
   selectedMonth,
-  setSelectedMonth,
   onAdd, // <-- 2. Destructure the new prop
 }) => {
   const {

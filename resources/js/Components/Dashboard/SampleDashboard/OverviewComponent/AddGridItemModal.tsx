@@ -27,7 +27,6 @@ interface SelectFieldProps {
 interface NewItemConfig {
   title: string
   subsetId: number | ''
-  groupBy: string
   filters: Omit<Filter, 'id'>[]
   measureField: { value: string; label: string; unit: string; show_label: boolean }[]
 }
@@ -82,7 +81,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   children,
 }) => {
   let placeholder = `Select a ${label.toLowerCase().split(' (')[0]}`
-  if (disabled && !loading && (label.startsWith('Group By') || label.startsWith('Metric'))) {
+  if (disabled && !loading && label.startsWith('Metric')) {
     placeholder = 'Select a subset first'
   }
   return (
@@ -123,8 +122,6 @@ export default function AddGridItemModal({
     setSelectedSubsetDetailId,
     selectedMetric,
     setSelectedMetric,
-    groupByDimension,
-    setGroupByDimension,
     filters,
     addFilter,
     removeFilter,
@@ -144,7 +141,6 @@ export default function AddGridItemModal({
     const newItemConfig: NewItemConfig = {
       title,
       subsetId: selectedSubsetDetailId,
-      groupBy: groupByDimension,
       filters: filters.map(({ id: _, ...rest }) => rest),
       measureField: [{ value: selectedMetric, label: '', unit: '', show_label: false }],
     }
@@ -192,23 +188,7 @@ export default function AddGridItemModal({
             </option>
           ))}
         </SelectField>
-        <SelectField
-          label='Group By'
-          value={groupByDimension}
-          onChange={(e) => setGroupByDimension(e.target.value)}
-          loading={isLoading.details}
-          disabled={!selectedSubsetDetailId || isLoading.details}
-        >
-          <option value=''>-- Show Total --</option>
-          {dimensions.map((d: SubsetDimensionField) => (
-            <option
-              key={d.id}
-              value={d.subset_column}
-            >
-              {d.subset_field_name}
-            </option>
-          ))}
-        </SelectField>
+
         <div className='space-y-3 rounded-md border border-gray-200 p-3'>
           <div className='block text-sm font-medium text-gray-700'>Filters</div>
           {filters.length === 0 && <p className='text-sm text-gray-500'>No filters applied.</p>}
@@ -234,7 +214,11 @@ export default function AddGridItemModal({
                     Dimension
                   </option>
                   {dimensions
-                    .filter((d) => !dimensionsUsedInOtherFilters.includes(d.subset_column))
+                    .filter(
+                      (d) =>
+                        !dimensionsUsedInOtherFilters.includes(d.subset_column) &&
+                        d.subset_field_name.toLowerCase() !== 'month'
+                    )
                     .map((d: SubsetDimensionField) => (
                       <option
                         key={d.id}

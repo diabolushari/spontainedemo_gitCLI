@@ -21,14 +21,12 @@ export interface Filter {
 type FetchError = Error & { info?: string }
 
 export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
-  // ... (no changes in this section)
   const [title, setTitle] = useState('')
   const [subsets, setSubsets] = useState<SubsetGroupItem[]>([])
   const [metrics, setMetrics] = useState<SubsetMeasureField[]>([])
   const [dimensions, setDimensions] = useState<SubsetDimensionField[]>([])
   const [selectedSubsetDetailId, setSelectedSubsetDetailId] = useState<number | ''>('')
   const [selectedMetric, setSelectedMetric] = useState('')
-  const [groupByDimension, setGroupByDimension] = useState('')
   const [filters, setFilters] = useState<Filter[]>([])
   const [nextFilterId, setNextFilterId] = useState(1)
   const [availableValues, setAvailableValues] = useState<Record<string, DimensionValue[]>>({})
@@ -39,7 +37,6 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
   })
   const [error, setError] = useState<string | null>(null)
 
-  // ... (no changes in fetchSubsets or fetchDetails)
   useEffect(() => {
     if (isModalOpen && subsetGroupId) {
       const fetchSubsets = async () => {
@@ -66,7 +63,6 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
       setMetrics([])
       setDimensions([])
       setSelectedMetric('')
-      setGroupByDimension('')
       setFilters([])
       setAvailableValues({})
       setIsLoading((prev) => ({ ...prev, details: true, values: {} }))
@@ -88,7 +84,6 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
     void fetchDetails()
   }, [selectedSubsetDetailId])
 
-  // Fetch values for a specific dimension
   const fetchValuesForDimension = useCallback(
     async (dimensionColumn: string) => {
       if (!dimensionColumn || !selectedSubsetDetailId || availableValues[dimensionColumn]) return
@@ -98,12 +93,7 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
           `/api/subset/dimension/fields/${dimensionColumn}/${selectedSubsetDetailId}`
         )
         if (!res.ok) throw new Error(`Failed to fetch values for ${dimensionColumn}`)
-
-        // *** THE FIX IS HERE ***
-        // 1. Await the JSON response and store it in a variable first.
         const values = (await res.json()) as DimensionValue[]
-
-        // 2. Then, use that variable to update the state.
         setAvailableValues((prev) => ({ ...prev, [dimensionColumn]: values }))
       } catch (e: unknown) {
         const err = e as FetchError
@@ -115,7 +105,6 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
     [selectedSubsetDetailId, availableValues]
   )
 
-  // ... (no changes in the rest of the file)
   const addFilter = () => {
     setFilters((prev) => [
       ...prev,
@@ -151,7 +140,6 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
     setMetrics([])
     setDimensions([])
     setSelectedMetric('')
-    setGroupByDimension('')
     setFilters([])
     setAvailableValues({})
     setNextFilterId(1)
@@ -168,8 +156,6 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
     dimensions,
     selectedSubsetDetailId,
     setSelectedSubsetDetailId,
-    groupByDimension,
-    setGroupByDimension,
     filters,
     addFilter,
     removeFilter,
