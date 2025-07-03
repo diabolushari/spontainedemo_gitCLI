@@ -47,13 +47,13 @@ export default function ConfigFormStepRanking({
     preserveState: true,
     preserveScroll: true,
     onComplete: () => {
-      if (onNext) onNext({ ...initialData, ranking: strucetureRanking(formData).ranking })
+      if (onNext) onNext({ ...initialData, ...formData })
     },
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    post({ ...initialData, ranking: strucetureRanking(formData).ranking, _method: 'PUT' })
+    post({ ranking: strucetureRanking(formData).ranking, _method: 'PUT' })
   }
 
   return (
@@ -74,8 +74,6 @@ export default function ConfigFormStepRanking({
                 value={formData.subsetId ?? ''}
                 setValue={setFormValue('subsetId')}
                 error={errors?.subsetId}
-                showAllOption={true}
-                allOptionText='-- None --'
               />
             </div>
             <div className='col-span-3 flex flex-col'>
@@ -134,8 +132,9 @@ export default function ConfigFormStepRanking({
         />
         <Button
           type='submit'
-          label={loading ? 'Saving...' : formData.subsetId === '' ? 'Skip' : 'Submit'}
-          disabled={loading}
+          variant={formData.subsetId === '' ? 'disabled' : 'primary'}
+          label={loading ? 'Saving...' : 'Submit'}
+          disabled={loading || formData.subsetId === ''}
         />
       </div>
     </form>

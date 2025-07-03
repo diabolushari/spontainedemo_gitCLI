@@ -18,7 +18,8 @@ class BlocksConfigRankingUpdateController extends Controller
     {
 
         $block = Block::findOrFail($id);
-        $blockData = $request->toArray();
+        $blockData = $block->data ?? [];
+        $blockData['ranking'] = $request->ranking;
         $block->data = $blockData;
         $block->save();
 

@@ -118,8 +118,6 @@ export default function ConfigFormStepTrend({
                 value={formData.subsetId ?? ''}
                 setValue={setFormValue('subsetId')}
                 error={errors?.['trend.subset_id']}
-                showAllOption={true}
-                allOptionText='-- None --'
               />
             )}
           </div>
@@ -230,8 +228,9 @@ export default function ConfigFormStepTrend({
           />
           <Button
             type='submit'
-            label={loading ? 'Saving...' : formData.subsetId === '' ? 'Skip' : 'Next'}
-            disabled={loading}
+            variant={formData.subsetId === '' ? 'disabled' : 'primary'}
+            label={loading ? 'Saving...' : initialData.ranking_selected ? 'Next' : 'Submit'}
+            disabled={loading || formData.subsetId === ''}
           />
         </div>
       </form>

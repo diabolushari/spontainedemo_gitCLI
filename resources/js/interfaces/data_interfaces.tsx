@@ -431,7 +431,11 @@ export interface Config {
   data_table_id: string
   description: string
   default_date?: string
+  default_view?: string
   subset_group_id: string
+  trend_selected: boolean
+  ranking_selected: boolean
+  overview_selected: boolean
   trend: Trend
   ranking: Ranking
   overview: Overview

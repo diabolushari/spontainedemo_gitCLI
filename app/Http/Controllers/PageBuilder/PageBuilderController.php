@@ -15,7 +15,7 @@ class PageBuilderController extends Controller
 {
     public function index(): Response
     {
-        $pages = PageBuilder::paginate(10);
+        $pages = PageBuilder::orderBy('created_at', 'desc')->paginate(10);
 
         return Inertia::render('PageBuilder/PageIndex', [
             'page_list' => $pages,

@@ -16,6 +16,12 @@ interface Properties {
 
 export const chooseButtonColor = (type: string): [string, string] => {
   switch (type) {
+    case 'disabled': {
+      return [
+        'bg-1stop-highlight text-white rounded disabled:opacity-50 disabled:cursor-not-allowed focus:ring-1',
+        'text-primary-700 ',
+      ]
+    }
     case 'secondary': {
       return ['bg-gray-200 hover:bg-gray-400 focus:ring-gray-200 text-gray-700', 'text-gray-500']
     }

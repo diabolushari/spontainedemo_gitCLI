@@ -15,21 +15,9 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class BlocksConfigRankingUpdateRequest extends Data
 {
     public function __construct(
-        #[Required, StringType, Max(255)]
-        public string $title,
 
-        #[Required, StringType]
-        public string $description,
-
-        #[Required, StringType]
-        public string $dataTableId,
-
-        #[Required, StringType]
-        public string $subsetGroupId,
-
-        public ?string $defaultDate,
 
         public ?BlockConfigRanking $ranking,
-        public ?BlockConfigTrend $trend,
+
     ) {}
 }

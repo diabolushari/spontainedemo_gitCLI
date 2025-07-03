@@ -26,5 +26,14 @@ class BlocksConfigGeneralUpdateRequest extends Data
 
         #[Required, Exists('subset_groups', 'id')]
         public int $subsetGroupId,
+
+        #[Required]
+        public string $defaultView,
+
+        public bool $trendSelected,
+
+        public bool $rankingSelected,
+
+        public bool $overviewSelected,
     ) {}
 }

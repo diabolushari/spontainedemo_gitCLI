@@ -72,7 +72,11 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
 
             // Steps 2–4 require general config (Step 1) completion
             else if (currentStep >= 2 && currentStep <= 4 && isStepOneComplete) {
-              isAllowed = true
+              if (currentStep === 2 && stepData?.trend_selected === true) {
+                isAllowed = true
+              } else if (currentStep === 3 && stepData?.ranking_selected === true) {
+                isAllowed = true
+              }
             }
 
             // Step 5 - Chart view, only allowed if card_type is not 'table' and overview is complete
@@ -145,7 +149,18 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 block={block}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setStep(2)
+                  if (validatedData.trend_selected) {
+                    setStep(2)
+                  } else if (validatedData.ranking_selected) {
+                    setStep(3)
+                  }
+                  if (
+                    validatedData.overview_selected &&
+                    !validatedData.trend_selected &&
+                    !validatedData.ranking_selected
+                  ) {
+                    setCloseDrawer(false)
+                  }
                 }}
               />
             )}
@@ -160,7 +175,11 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 onBack={() => setStep(1)}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setStep(3)
+                  if (stepData.ranking_selected) {
+                    setStep(3)
+                  } else {
+                    setCloseDrawer(false)
+                  }
                 }}
               />
             )}
@@ -172,10 +191,16 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
               <ConfigFormStepRanking
                 initialData={stepData}
                 block={block}
-                onBack={() => setStep(2)}
+                onBack={() => {
+                  if (stepData.trend_selected) {
+                    setStep(2)
+                  } else {
+                    setStep(1)
+                  }
+                }}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setStep(4)
+                  setCloseDrawer(false)
                 }}
               />
             )}

@@ -17,8 +17,7 @@ class BlockConfigTrend extends Data
 {
     public function __construct(
         #[Exists('subset_group_items', 'subset_detail_id')]
-        #[Nullable]
-        public ?int $subsetId,
+        public int $subsetId,
 
         #[Max(255)]
         #[RequiredWith('subset_id')]

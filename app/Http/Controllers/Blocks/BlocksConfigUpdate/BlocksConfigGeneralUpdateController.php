@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateRequest;
+use App\Models\Blocks\Block;
 use App\Models\DataDetail\DataDetail;
 use App\Services\DataTable\QueryDataTable;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +29,19 @@ class BlocksConfigGeneralUpdateController extends Controller
                     . 'Please coose another data table for date field'
             ]);
         }
+        $block = Block::findOrFail($id);
+        $block->data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'data_table_id' => $request->dataTableId,
+            'subset_group_id' => $request->subsetGroupId,
+            'default_view' => $request->defaultView,
+            'trend_selected' => $request->trendSelected,
+            'ranking_selected' => $request->rankingSelected,
+            'overview_selected' => $request->overviewSelected,
+        ];
+        $block->save();
+
         return redirect()->back();
     }
 }
