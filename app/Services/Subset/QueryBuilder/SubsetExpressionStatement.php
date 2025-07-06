@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Subset;
+namespace App\Services\Subset\QueryBuilder;
 
 use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;

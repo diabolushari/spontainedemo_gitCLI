@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Subset;
+namespace App\Services\Subset\QueryBuilder;
 
 use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Subset\SubsetDetail;

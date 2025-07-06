@@ -3,6 +3,9 @@
 namespace App\Services\Subset;
 
 use App\Models\Subset\SubsetDetail;
+use App\Services\Subset\QueryBuilder\SubsetFilterBuilder;
+use App\Services\Subset\QueryBuilder\SubsetQueryBuilder;
+use App\Services\Subset\QueryBuilder\SubsetQuerySorting;
 use Illuminate\Contracts\Database\Query\Builder;
 
 class GetSubsetData
