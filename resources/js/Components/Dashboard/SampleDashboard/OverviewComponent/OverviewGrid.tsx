@@ -3,7 +3,6 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import Skeleton from 'react-loading-skeleton'
 import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
-
 import type { OverviewTable, Filter } from '@/interfaces/data_interfaces'
 
 interface OverviewGridProps {
@@ -27,18 +26,42 @@ const getFilterQuery = (filters?: Filter[]): string => {
   return `&${params.toString()}`
 }
 
+/**
+ * Converts a string from a format like "Total Demand" to "total_demand".
+ * @param str The string to convert.
+ * @returns The snake_case version of the string.
+ */
+const toSnakeCase = (str: string): string => {
+  return str.replace(/\s+/g, '_').toLowerCase()
+}
+
 const getCellData = (
   graphValues: any,
   title: string,
   measureFields: string[]
 ): { title: string; value: string } => {
-  if (!graphValues?.data || graphValues.data.length === 0 || !Array.isArray(measureFields) || measureFields.length === 0) {
+  // Guard clause: Return 'N/A' if data is missing, empty, or not an array.
+  if (!graphValues?.data || !Array.isArray(graphValues.data) || graphValues.data.length === 0 || !Array.isArray(measureFields) || measureFields.length === 0) {
     return { title, value: 'N/A' }
   }
-  const measureKey = measureFields[0]
-  const value = graphValues.data[0]?.[measureKey]
-  return { title, value: value !== undefined && value !== null ? formatNumber(value) : 'N/A' }
+  
+  // Get the key from config (e.g., "Total Demand") and convert it to the data key format (e.g., "total_demand").
+  const measureKeyFromConfig = measureFields[0]
+  const dataKey = toSnakeCase(measureKeyFromConfig)
+  
+  // Use reduce to sum the values for the specified key across all objects in the data array.
+  const totalValue = graphValues.data.reduce((sum: number, item: any) => {
+    // Check if the item has the key and its value is a number before adding it to the sum.
+    if (item && typeof item[dataKey] === 'number') {
+      return sum + item[dataKey]
+    }
+    return sum
+  }, 0)
+  
+  // Format the calculated total and return it.
+  return { title, value: formatNumber(totalValue) }
 }
+
 
 const OverviewGrid: React.FC<OverviewGridProps> = ({
   config,
@@ -47,10 +70,9 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
   selectedMonth,
   onDelete
 }) => {
-  const { subset_id, measure_field, title, filters } = config
+  const { subset_id, measure_field, title, filters, id } = config
 
   const monthYear = useMemo(() => getMonthYear(selectedMonth), [selectedMonth])
-
   const filterQuery = useMemo(() => getFilterQuery(filters), [filters])
 
   const [graphValues, loading] = useFetchRecord(
@@ -72,7 +94,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
       role='button'
       tabIndex={0}
       onClick={() => {
-        onDelete?.(config.id)
+        onDelete?.(id) // Use the id from the destructured config
       }}
       className={`relative cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg`}
     >
@@ -81,4 +103,5 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
     </div>
   )
 }
+
 export default OverviewGrid
