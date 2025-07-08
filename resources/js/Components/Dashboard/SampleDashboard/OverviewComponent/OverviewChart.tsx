@@ -14,13 +14,9 @@ interface Props {
   chart_content: any
 }
 
-// Mock data and keys are not used when real data is fetched, so they can be removed or kept for testing.
-
 export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_content }: Props) {
   const [fontClasses, setFontClasses] = useState('text-base')
-  console.log(chart_content)
-  // FIX 1: Correctly map the y_axis array of strings.
-  // The original code assumed an array of objects ({ value, label }), but it's an array of strings.
+
   const keysToPlot = useMemo(() => {
     if (!chart_content?.y_axis) return []
 
@@ -54,15 +50,11 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
       return []
     }
 
-    // FIX 2: Removed the specific case for pie charts.
-    // All chart types require data to be aggregated by the x_axis category.
-    // The original code `if (chart_content.chart_type === 'pie') return data.data` was incorrect.
-
     const grouped = new Map<string, any>()
 
     data.data.forEach((item) => {
       const category = item[chart_content.x_axis] as string
-      if (category === undefined || category === null) return // Skip items without a category
+      if (category === undefined || category === null) return
 
       if (!grouped.has(category)) {
         grouped.set(category, {
