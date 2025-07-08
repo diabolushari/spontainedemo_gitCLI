@@ -10,8 +10,7 @@ import SecondaryButton from '@/Components/SecondaryButton'
 import DeleteButton from '@/ui/button/DeleteButton'
 import Checkbox from '@/Components/Checkbox'
 import SelectList from '@/ui/form/SelectList'
-
-import useCustomForm from '@/hooks/useCustomForm' 
+import useCustomForm from '@/hooks/useCustomForm'
 
 import {
     OverviewTable,
@@ -30,10 +29,10 @@ type NewGridItem = OverviewTable & { id: number }
 interface FormData {
     title: string
     subsetId: SubsetDetail['id'] | ''
-    metricId: SubsetMeasureField['subset_column']
+    metricId: string
     filters: FilterWithId[]
     colSpan2: boolean
-}
+ }
 
 interface AddGridItemModalProps {
     isModalOpen: boolean
@@ -113,11 +112,17 @@ function AddGridItemModal({
 
     const handleSave = (e: FormEvent) => {
         e.preventDefault()
+
+        // FIX: Extract the single value if metricId is an array
+        const measureField = Array.isArray(formData.metricId)
+            ? formData.metricId[0]
+            : formData.metricId;
+
         const newItem: NewGridItem = {
             id: Date.now(),
             title: formData.title,
             subset_id: String(formData.subsetId),
-            measure_field: [formData.metricId],
+            measure_field: measureField, // Use the corrected value
             show_total: false,
             grid_number: null,
             filters: formData.filters.map(({ id, ...rest }) => rest),
@@ -185,7 +190,6 @@ function AddGridItemModal({
                     <Input
                         label="Title"
                         value={formData.title}
-                        // Use the hook's setter factory directly for a cleaner call.
                         setValue={setFormValue('title')}
                         required
                         type="text"
@@ -197,7 +201,6 @@ function AddGridItemModal({
                         dataKey="subset_detail_id"
                         displayKey="name"
                         value={formData.subsetId}
-                        // Use our custom handler here because this change has side effects.
                         setValue={(value: number | string) => handleChange('subsetId', Number(value))}
                     />
 
@@ -208,7 +211,6 @@ function AddGridItemModal({
                         dataKey="subset_column"
                         displayKey="subset_field_name"
                         value={formData.metricId}
-                        // Use the hook's setter factory for a simple value update.
                         setValue={setFormValue('metricId')}
                         disabled={!formData.subsetId}
                         required
