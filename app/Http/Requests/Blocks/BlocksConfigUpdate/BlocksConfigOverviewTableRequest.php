@@ -9,29 +9,20 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\Max;
 
 #[MapName(SnakeCaseMapper::class)]
 class BlocksConfigOverviewTableRequest extends Data
 {
     public function __construct(
-        #[Required, StringType, Max(255)]
+        #[StringType, Max(255)]
         public string $title,
 
-        #[Required, StringType]
-        public string $description,
+        public string $subsetId,
 
-        #[Required, StringType]
-        public string $dataTableId,
+        public string $measureField,
 
-        #[Required, StringType]
-        public string $subsetGroupId,
+        public bool $colSpan2,
 
-        public ?string $defaultDate,
-
-        public ?BlockConfigRanking $ranking,
-        public ?BlockConfigTrend $trend,
-        public ?BlockConfigOverview $overview,
     ) {}
 }
