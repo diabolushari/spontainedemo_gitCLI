@@ -423,7 +423,7 @@ export interface OverviewTable {
   show_total: boolean
   grid_number: number | null
   measure_field_dimension?: string
-  measure_field: string[]
+  measure_field: string
   col_span_2?: boolean
   filters?: Filter[]
   [key: string]: any

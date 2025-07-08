@@ -1,19 +1,46 @@
-import { FormEvent, memo, ChangeEvent, useState } from 'react'
 import { X } from 'lucide-react'
-import { useOverviewForm, Filter } from './hooks/useOverviewForm'
-import { SubsetDimensionField } from '@/interfaces/data_interfaces'
+import { memo } from 'react'
+
 import Modal from '@/Components/Modal'
 import Input from '@/ui/form/Input'
 import InputLabel from '@/Components/InputLabel'
-import SelectList from '@/ui/form/SelectList'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import PrimaryButton from '@/Components/PrimaryButton'
 import SecondaryButton from '@/Components/SecondaryButton'
 import DeleteButton from '@/ui/button/DeleteButton'
 import Checkbox from '@/Components/Checkbox'
-import useInertiaPost from '@/hooks/useInertiaPost'
-import Button from '@/ui/button/Button'
+import SelectList from '@/ui/form/SelectList'
+import useCustomForm from '@/hooks/useCustomForm'
 
-// Operator options for the filter rows.
+import {
+  OverviewTable,
+  Filter as BaseFilter,
+  SubsetDetail,
+  SubsetMeasureField,
+} from '@/interfaces/data_interfaces'
+
+interface FilterWithId extends BaseFilter {
+  id: number
+  value: string
+}
+
+type NewGridItem = OverviewTable & { id: number }
+
+interface FormData {
+  title: string
+  subsetId: SubsetDetail['id'] | ''
+  metricId: string
+  filters: FilterWithId[]
+  colSpan2: boolean
+}
+
+interface AddGridItemModalProps {
+  isModalOpen: boolean
+  setIsModalOpen: (isOpen: boolean) => void
+  subsetGroupId: number
+  onSave: (newItem: NewGridItem) => void
+}
+
 const operatorOptions = [
   { value: 'equals', name: 'Equals' },
   { value: 'not_equals', name: 'Not Equals' },
@@ -21,11 +48,12 @@ const operatorOptions = [
   { value: 'less_than', name: 'Less Than' },
 ]
 
-interface AddGridItemModalProps {
-  isModalOpen: boolean
-  setIsModalOpen: (isOpen: boolean) => void
-  subsetGroupId: number
-  onSave: (newItem: any) => void
+const initialFormData: FormData = {
+  title: '',
+  subsetId: '',
+  metricId: '',
+  filters: [],
+  colSpan2: false,
 }
 
 function AddGridItemModal({
@@ -34,90 +62,118 @@ function AddGridItemModal({
   subsetGroupId,
   onSave,
 }: AddGridItemModalProps) {
-  const form = useOverviewForm(subsetGroupId, isModalOpen)
-  const [colSpan2, setColSpan2] = useState(false)
-  const { post, errors, loading } = useInertiaPost(route('config.overview.table.update', 10), {
-    onComplete: () => {
-      setIsModalOpen(false)
-    },
-  })
-  const handleSave = (e: FormEvent) => {
-    e.preventDefault()
-    post({
-      data: form,
-      _method: 'PUT',
+  const { formData, setFormValue, setAll, toggleBoolean } = useCustomForm<FormData>(initialFormData)
+
+  const handleChange = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    if (field === 'subsetId') {
+      setAll({
+        subsetId: value,
+        metricId: '',
+        filters: [],
+      })
+    } else {
+      setFormValue(field)(value)
+    }
+  }
+
+  const addFilter = () => {
+    const newFilter: FilterWithId = {
+      id: Date.now(),
+      dimension: '',
+      operator: 'equals',
+      value: '',
+    }
+    setAll({ filters: [...formData.filters, newFilter] })
+  }
+
+  const removeFilter = (id: number) => {
+    const updatedFilters = formData.filters.filter((f) => f.id !== id)
+    setAll({ filters: updatedFilters })
+  }
+
+  const updateFilter = (id: number, field: keyof BaseFilter, value: string) => {
+    const updatedFilters = formData.filters.map((f) => {
+      if (f.id !== id) return f
+
+      const isDimensionChange = field === 'dimension' && f.dimension !== value
+      return {
+        ...f,
+        [field]: value,
+        ...(isDimensionChange && { value: '' }),
+      }
     })
-    // const newItem = {
-    //   id: Date.now(),
-    //   title: form.title,
-    //   subset_id: String(form.selectedSubsetDetailId),
-    //   measure_field: [form.selectedMetric],
-    //   show_total: false,
-    //   grid_number: 1,
-    //   filters: form.filters.map(({ id, ...rest }) => rest),
-    //   col_span_2: colSpan2,
-    // }
-    // onSave(newItem)
+    setAll({ filters: updatedFilters })
   }
 
   const handleClose = () => {
     setIsModalOpen(false)
-    form.resetAllState()
+    setAll(initialFormData)
   }
 
-  const renderFilterRow = (filter: Filter) => {
-    const dimensionOptions = form.dimensions.map((d: SubsetDimensionField) => ({
-      id: d.subset_column,
-      name: d.subset_field_name,
-    }))
+  const handleSave = (e: FormEvent) => {
+    e.preventDefault()
 
-    const valueOptions = form.availableValues[filter.dimension]
-      ? form.availableValues[filter.dimension].map((v) => ({ name: v.name, id: v.name }))
-      : []
+    // FIX: Extract the single value if metricId is an array
+    const measureField = Array.isArray(formData.metricId) ? formData.metricId[0] : formData.metricId
 
-    return (
-      <div
-        key={filter.id}
-        className='grid grid-cols-12 items-end gap-x-2'
-      >
-        <div className='col-span-4'>
-          <SelectList
-            label='Dimension'
-            list={dimensionOptions}
-            dataKey='id'
-            displayKey='name'
-            value={filter.dimension}
-            setValue={(value: string) => form.updateFilter(filter.id, 'dimension', value)}
-          />
-        </div>
-        <div className='col-span-3'>
-          <SelectList
-            label='Operator'
-            list={operatorOptions}
-            dataKey='value'
-            displayKey='name'
-            value={filter.operator}
-            setValue={(value: string) => form.updateFilter(filter.id, 'operator', value)}
-            error={errors.filters?.[filter.id]?.operator}
-          />
-        </div>
-        <div className='col-span-4'>
-          <SelectList
-            label='Value'
-            list={valueOptions}
-            dataKey='id'
-            displayKey='name'
-            value={filter.value}
-            setValue={(value: string) => form.updateFilter(filter.id, 'value', value)}
-            disabled={!filter.dimension || form.isLoading.values[filter.dimension]}
-          />
-        </div>
-        <div className='col-span-1'>
-          <DeleteButton onClick={() => form.removeFilter(filter.id)} />
-        </div>
+    const newItem: NewGridItem = {
+      id: Date.now(),
+      title: formData.title,
+      subset_id: String(formData.subsetId),
+      measure_field: measureField, // Use the corrected value
+      show_total: false,
+      grid_number: null,
+      filters: formData.filters.map(({ id, ...rest }) => rest),
+      col_span_2: formData.colSpan2,
+    }
+    onSave(newItem)
+    handleClose()
+  }
+
+  const renderFilterRow = (filter: FilterWithId) => (
+    <div
+      key={filter.id}
+      className='grid grid-cols-12 items-end gap-x-2'
+    >
+      <div className='col-span-4'>
+        <DynamicSelectList
+          label='Dimension'
+          key={`dim-${formData.subsetId}`}
+          url={`/api/subset/dimension/${formData.subsetId}`}
+          dataKey='subset_column'
+          displayKey='subset_field_name'
+          value={filter.dimension}
+          setValue={(value: string) => updateFilter(filter.id, 'dimension', value)}
+          disabled={!formData.subsetId}
+        />
       </div>
-    )
-  }
+      <div className='col-span-3'>
+        <SelectList
+          label='Operator'
+          list={operatorOptions}
+          dataKey='value'
+          displayKey='name'
+          value={filter.operator}
+          setValue={(value: string) => updateFilter(filter.id, 'operator', value)}
+        />
+      </div>
+      <div className='col-span-4'>
+        <DynamicSelectList
+          label='Value'
+          key={`val-${filter.dimension}`}
+          url={`/api/subset/dimension/fields/${filter.dimension}/${formData.subsetId}`}
+          dataKey='name'
+          displayKey='name'
+          value={filter.value}
+          setValue={(value: string) => updateFilter(filter.id, 'value', value)}
+          disabled={!filter.dimension}
+        />
+      </div>
+      <div className='col-span-1'>
+        <DeleteButton onClick={() => removeFilter(filter.id)} />
+      </div>
+    </div>
+  )
 
   return (
     <Modal
@@ -142,45 +198,43 @@ function AddGridItemModal({
         </div>
 
         <div className='mt-6 space-y-6'>
-          <div>
-            <Input
-              label='Title'
-              value={form.title}
-              setValue={(value: string) => form.setTitle(value)}
-              required
-              type='text'
-            />
-          </div>
-
-          <SelectList
-            label='Data Subset'
-            list={form.subsets}
-            dataKey='subset_detail_id'
-            displayKey='name'
-            value={String(form.selectedSubsetDetailId)}
-            setValue={(value: string | number) => form.setSelectedSubsetDetailId(Number(value))}
-            disabled={form.isLoading.subsets}
-            error={form.error ?? undefined}
+          <Input
+            label='Title'
+            value={formData.title}
+            setValue={setFormValue('title')}
+            required
+            type='text'
           />
 
-          <SelectList
+          <DynamicSelectList
+            label='Data Subset'
+            url={`/api/subset-group/${subsetGroupId}`}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={formData.subsetId}
+            setValue={(value: number | string) => handleChange('subsetId', Number(value))}
+          />
+
+          <DynamicSelectList
             label='Metric'
-            list={form.metrics}
+            key={formData.subsetId}
+            url={`/api/subset/${formData.subsetId}`}
             dataKey='subset_column'
             displayKey='subset_field_name'
-            value={form.selectedMetric}
-            setValue={(value: string) => form.setSelectedMetric(value)}
-            disabled={!form.selectedSubsetDetailId || form.isLoading.details}
+            value={formData.metricId}
+            setValue={setFormValue('metricId')}
+            disabled={!formData.subsetId}
+            required
           />
 
           <div>
             <InputLabel>Filters</InputLabel>
-            <div className='mt-2 space-y-4'>{form.filters.map(renderFilterRow)}</div>
+            <div className='mt-2 space-y-4'>{formData.filters.map(renderFilterRow)}</div>
             <SecondaryButton
               type='button'
               className='mt-4'
-              onClick={form.addFilter}
-              disabled={!form.selectedSubsetDetailId || form.dimensions.length === 0}
+              onClick={addFilter}
+              disabled={!formData.subsetId}
             >
               Add Filter
             </SecondaryButton>
@@ -190,8 +244,8 @@ function AddGridItemModal({
             <Checkbox
               id='col_span_2'
               name='col_span_2'
-              checked={colSpan2}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setColSpan2(e.target.checked)}
+              checked={formData.colSpan2}
+              onChange={toggleBoolean('colSpan2')}
             />
             <InputLabel
               htmlFor='col_span_2'
@@ -201,10 +255,7 @@ function AddGridItemModal({
             </InputLabel>
           </div>
         </div>
-        <Button
-          type='submit'
-          label='Save'
-        />
+
         <div className='mt-8 flex justify-end space-x-2 border-t pt-4'>
           <SecondaryButton
             type='button'
