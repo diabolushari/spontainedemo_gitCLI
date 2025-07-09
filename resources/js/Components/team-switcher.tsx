@@ -33,16 +33,14 @@ export function TeamSwitcher({ onMenuChange }: TeamSwitcherProps) {
 
   const handleMenuSelect = (menu: (typeof headings)[0]) => {
     // Only update active menu and trigger onMenuChange if it's not dashboard
-    if (menu.value !== 'dashboard') {
-      setActiveMenu(menu)
-      if (onMenuChange) {
-        onMenuChange(menu.value as 'manage' | 'dashboard')
-      }
-      // Expand sidebar when manage is selected
-      setOpen(true)
-      // Store the sidebar state in localStorage
-      localStorage.setItem('sidebarState', 'expanded')
+    setActiveMenu(menu)
+    if (onMenuChange) {
+      onMenuChange(menu.value as 'manage' | 'dashboard')
     }
+    // Expand sidebar when manage is selected
+    setOpen(true)
+    // Store the sidebar state in localStorage
+    localStorage.setItem('sidebarState', 'expanded')
 
     // Navigate after a small delay to ensure sidebar state is saved
     if (menu.url) {

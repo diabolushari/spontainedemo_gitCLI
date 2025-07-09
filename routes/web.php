@@ -33,6 +33,7 @@ use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
+use App\Http\Controllers\NavController\NavController;
 use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
@@ -261,5 +262,7 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
+
+Route::get('/nav-editor', [NavController::class, 'index'])->name('nav.editor');
 
 require __DIR__.'/auth.php';
