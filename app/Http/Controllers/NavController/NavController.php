@@ -4,16 +4,13 @@ namespace App\Http\Controllers\NavController;
 
 use App\Http\Controllers\Controller;
 use App\Models\NavigationBar\NavGroup;
-use Inertia\Inertia;
 
 class NavController extends Controller
 {
-    public function index()
+    public function __invoke()
     {
         $navData = NavGroup::with('navItems')->get();
 
-        return Inertia::render('NavEditor/NavEditorIndexPage', [
-            'allNavData' => $navData,
-        ]);
+        return response()->json($navData);
     }
 }

@@ -79,7 +79,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
       const response = await axios.post('/nav-group', {
         group_label: formData.name,
         group_url: formData.link,
-        nav_type: 'h',
+        nav_type: 'dashboard',
         group_pos: formData.position,
         group_icon: 'h',
       })
@@ -104,7 +104,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
         group_label: formData.name,
         group_url: formData.link,
         group_pos: formData.position,
-        nav_type: 'h',
+        nav_type: 'dashboard',
       })
       setNavData(
         navData.map((s) =>
