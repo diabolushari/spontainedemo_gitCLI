@@ -267,8 +267,14 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 
 Route::get('/nav-editor', [NavController::class, 'index'])->name('nav.editor');
 
-Route::post('/nav-group', [NavGroupController::class, 'create']);
+Route::resource('nav-group', NavGroupController::class)->only([
+    'update',
+    'store',
+    'destroy',
+]);
+
 Route::resource('nav-item', NavItemController::class)->only([
+    'update',
     'store',
     'destroy',
 ]);

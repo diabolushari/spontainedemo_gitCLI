@@ -1,36 +1,35 @@
-import React, { useState } from 'react'
+// src/Components/Nav/ManageLinkModal.tsx
+
+import React, { useEffect, useState } from 'react'
 import Modal from '@/ui/Modal/Modal'
 
+// The props interface defines the contract for this component
 interface ManageLinkModalProps {
-  // The mode determines the modal's behavior and appearance
   mode: 'add' | 'edit'
-  // Function to control the modal's visibility
   setShowModal: (value: boolean) => void
-  // The title to display at the top of the modal (e.g., "Add Link" or "Edit Link")
   title: string
-  // The text for the primary action button (e.g., "ADD" or "UPDATE")
   submitButtonText: string
-  // Optional initial value for the name field (used in 'edit' mode)
+  itemId?: number // The ID of the item being edited.
   initialName?: string
-  // Optional initial value for the link field (used in 'edit' mode)
   initialLink?: string
-  // Optional initial value for the position field (used in 'edit' mode)
   initialPosition?: number
-  // Callback for when the form is submitted
-  onSubmit: (name: string, link: string, position: number) => void
-  // Optional callback for when the "REMOVE" button is clicked (only shown in 'edit' mode)
-  onRemove?: () => void
+  // onSubmit now passes back the ID for 'edit' mode
+  onSubmit: (formData: { name: string; link: string; position: number }, id?: number) => void
+  // onRemove now passes back the ID of the item to remove
+  onRemove?: (id: number) => void
 }
 
 /**
- * A reusable modal for both adding and editing a link.
- * Its behavior is configured via props from the parent component.
+ * A reusable modal for adding or editing a navigation item (section or link).
+ * It receives its configuration and data via props and communicates actions
+ * back to the parent component through callbacks.
  */
 export default function ManageLinkModal({
   mode,
   setShowModal,
   title,
   submitButtonText,
+  itemId, // The ID of the item being edited
   initialName = '',
   initialLink = '',
   initialPosition,
@@ -39,16 +38,32 @@ export default function ManageLinkModal({
 }: ManageLinkModalProps) {
   const [name, setName] = useState(initialName)
   const [link, setLink] = useState(initialLink)
-  // Add state for the new position field
   const [position, setPosition] = useState(initialPosition?.toString() ?? '')
+
+  // This effect prevents a "stale state" bug by resetting the form fields
+  // whenever the modal is opened for a new item.
+  useEffect(() => {
+    setName(initialName)
+    setLink(initialLink)
+    setPosition(initialPosition?.toString() ?? '')
+  }, [initialName, initialLink, initialPosition, itemId])
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    // Parse position to a number before submitting
     const positionAsNumber = parseInt(position, 10)
-    // Ensure all fields are valid before submitting
     if (name && link && !isNaN(positionAsNumber)) {
-      onSubmit(name, link, positionAsNumber)
+      // Pass the form data and the item's ID back to the parent.
+      onSubmit({ name, link, position: positionAsNumber }, itemId)
+    } else {
+      alert('Please fill out all fields with valid values.')
+    }
+  }
+
+  const handleRemoveClick = () => {
+    // If an onRemove handler exists and we have an ID, call it.
+    if (onRemove && itemId !== undefined) {
+      onRemove(itemId)
+      setShowModal(false) // Close modal after the action is triggered
     }
   }
 
@@ -63,12 +78,12 @@ export default function ManageLinkModal({
           <div className='mb-4'>
             <label
               className='mb-2 block text-sm font-semibold text-gray-800'
-              htmlFor='link-name'
+              htmlFor='item-name'
             >
               Name
             </label>
             <input
-              id='link-name'
+              id='item-name'
               type='text'
               placeholder='e.g. About Us'
               value={name}
@@ -82,12 +97,12 @@ export default function ManageLinkModal({
           <div className='mb-4'>
             <label
               className='mb-2 block text-sm font-semibold text-gray-800'
-              htmlFor='link-url'
+              htmlFor='item-url'
             >
               Link
             </label>
             <input
-              id='link-url'
+              id='item-url'
               type='text'
               placeholder='e.g. /about'
               value={link}
@@ -97,16 +112,16 @@ export default function ManageLinkModal({
             />
           </div>
 
-          {/* Position Input - NEW */}
+          {/* Position Input */}
           <div className='mb-8'>
             <label
               className='mb-2 block text-sm font-semibold text-gray-800'
-              htmlFor='link-position'
+              htmlFor='item-position'
             >
               Position
             </label>
             <input
-              id='link-position'
+              id='item-position'
               type='number'
               placeholder='e.g. 1'
               value={position}
@@ -119,23 +134,21 @@ export default function ManageLinkModal({
 
           {/* Action Buttons */}
           <div className='flex items-center justify-end space-x-4'>
+            {mode === 'edit' && onRemove && (
+              <button
+                type='button'
+                onClick={handleRemoveClick}
+                className='rounded-md bg-red-600 px-6 py-2 font-bold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2'
+              >
+                REMOVE
+              </button>
+            )}
             <button
               type='submit'
               className='rounded-md bg-blue-700 px-6 py-2 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
             >
               {submitButtonText}
             </button>
-
-            {/* The "Remove" button is only rendered in 'edit' mode */}
-            {mode === 'edit' && onRemove && (
-              <button
-                type='button'
-                onClick={onRemove}
-                className='rounded-md bg-red-600 px-6 py-2 font-bold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2'
-              >
-                REMOVE
-              </button>
-            )}
           </div>
         </form>
       </div>

@@ -5,7 +5,7 @@ namespace App\Http\Requests\NavRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreNavItemRequest extends FormRequest
+class UpdateNavGroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,11 @@ class StoreNavItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nav_group_id' => ['required', 'exists:nav_groups,id'],
-            'item_label' => ['required', 'string', 'max:255'],
-            'item_url' => ['required', 'string', 'max:255'],
-            'item_icon' => ['nullable', 'string', 'max:255'],
-            'item_pos' => ['nullable', 'integer'],
+            'nav_type' => 'required|string|max:50',
+            'group_label' => 'required|string|max:100',
+            'group_url' => 'nullable|string|max:255',
+            'group_icon' => 'nullable|string|max:100',
+            'group_pos' => 'required|integer',
         ];
     }
 }

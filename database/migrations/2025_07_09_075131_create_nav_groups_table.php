@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('group_label');
             $table->string('group_url');
             $table->string('group_icon');
-            $table->string('group_pos');
+            $table->integer('group_pos');
         });
     }
 

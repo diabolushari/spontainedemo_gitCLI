@@ -27,7 +27,7 @@ class StoreNavGroupRequest extends FormRequest
             'group_label' => 'required|string|max:100',
             'group_url' => 'nullable|string|max:255',
             'group_icon' => 'nullable|string|max:100',
-            'group_pos' => 'required|string|max:10',
+            'group_pos' => 'required|integer',
         ];
     }
 }

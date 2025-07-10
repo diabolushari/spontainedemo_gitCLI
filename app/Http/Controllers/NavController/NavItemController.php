@@ -4,6 +4,7 @@ namespace App\Http\Controllers\NavController;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NavRequest\StoreNavItemRequest;
+use App\Http\Requests\NavRequest\UpdateNavItemRequest;
 use App\Models\NavigationBar\NavItem;
 
 class NavItemController extends Controller
@@ -15,7 +16,7 @@ class NavItemController extends Controller
         ];
     }
 
-    public function create(StoreNavItemRequest $request)
+    public function store(StoreNavItemRequest $request)
     {
         $navItem = NavItem::create($request->validated());
 
@@ -25,8 +26,22 @@ class NavItemController extends Controller
         ], 201);
     }
 
+    public function update(UpdateNavItemRequest $request, NavItem $navItem)
+    {
+        $navItem->update($request->validated());
+
+        return response()->json([
+            'message' => 'Nav item updated successfully.',
+            'data' => $navItem,
+        ]);
+    }
+
     public function destroy(NavItem $navItem)
     {
-        dd($navItem);
+        $navItem->delete();
+
+        return response()->json([
+            'message' => 'Nav item deleted successfully.',
+        ]);
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('item_label');
             $table->string('item_url');
             $table->string('item_icon');
-            $table->string('item_pos');
+            $table->integer('item_pos');
         });
     }
 
