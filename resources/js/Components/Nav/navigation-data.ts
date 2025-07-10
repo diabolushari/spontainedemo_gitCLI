@@ -31,9 +31,7 @@ export interface NavGroup {
   nav_items: NavItem[]
 }
 
-// === CHANGE 2: Add all the new icon string keys to the map ===
 const iconMap: { [key: string]: React.ComponentType<LucideProps> } = {
-  // Icons for the 'manage' menu (converted from your old data)
   Database: Database,
   Table2: Table2,
   BookOpen: BookOpen,
@@ -42,13 +40,11 @@ const iconMap: { [key: string]: React.ComponentType<LucideProps> } = {
   Users: Users,
   Cog: Cog,
   CheckSquare: CheckSquare,
-  FileJson: FileJson2, // Map the string 'FileJson' to the FileJson2 component
+  FileJson: FileJson2,
   Settings: Settings,
-  // Icons for the 'dashboard' menu
   ShieldCheck: ShieldCheck,
 }
 
-// This can be your simple "dashboard" menu
 const dashboardMenuData: NavGroup[] = [
   {
     id: 1,
@@ -75,34 +71,32 @@ const dashboardMenuData: NavGroup[] = [
   },
 ]
 
-// === CHANGE 3: This is the complete conversion of your provided data ===
-// Note: `permission` and `subtype` fields are not part of the new structure and have been omitted.
 const manageMenuData: NavGroup[] = [
   {
     id: 10,
-    group_label: 'Data', // from `name`
-    group_url: '/data-detail', // from `url`
+    group_label: 'Data',
+    group_url: '/data-detail',
     group_pos: 1,
-    group_icon: 'Database', // from `icon`, mapped to string key
+    group_icon: 'Database',
     nav_items: [
       {
         id: 1001,
-        item_label: 'Data Tables', // from `title`
-        item_url: '/data-detail', // from `link`
+        item_label: 'Data Tables',
+        item_url: '/data-detail',
         item_pos: 1,
-        item_icon: 'Table2', // from `image`, mapped to string key
+        item_icon: 'Table2',
       },
       {
         id: 1002,
         item_label: 'Subset Groups',
-        item_url: '/subset-groups', // from `route('subset-groups.index')`
+        item_url: '/subset-groups',
         item_pos: 2,
         item_icon: 'Database',
       },
       {
         id: 1003,
         item_label: 'Subsets',
-        item_url: '/subsets', // from `route('subsets')`
+        item_url: '/subsets',
         item_pos: 3,
         item_icon: 'Database',
       },
@@ -207,12 +201,12 @@ const manageMenuData: NavGroup[] = [
   },
 ]
 
-// The final export wires up the two different menus
 export const allMenus = {
   dashboard: dashboardMenuData,
   manage: manageMenuData,
 }
 
-// These exports remain the same
+export { manageMenuData }
+
 export type MenuType = keyof typeof allMenus
 export { iconMap }
