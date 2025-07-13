@@ -8,7 +8,6 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import Card from '@/ui/Card/Card'
 import ManageLinkModal from '@/Components/Nav/ManageLinkModal'
 
-// Strongly-typed interfaces for our data structures
 interface NavItem {
   id: number
   item_label: string
@@ -48,9 +47,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
     data: undefined,
   })
 
-  // Keep local state in sync with server-provided props
   useEffect(() => {
-    // FIX: Ensure every section has a `nav_items` array upon initialization.
     const sanitizedData = (allNavData || []).map((section) => ({
       ...section,
       nav_items: section.nav_items || [],
@@ -74,6 +71,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
     name: string
     link: string
     position: number
+    icon: string
   }) => {
     try {
       const response = await axios.post('/nav-group', {
@@ -81,9 +79,8 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
         group_url: formData.link,
         nav_type: 'dashboard',
         group_pos: formData.position,
-        group_icon: 'h',
+        group_icon: formData.icon,
       })
-      // FIX: Ensure the new section from the API has a nav_items array before adding to state.
       const newSection = {
         ...response.data.data,
         nav_items: response.data.data.nav_items || [],
@@ -96,11 +93,12 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
   }
 
   const handleUpdateSection = async (
-    formData: { name: string; link: string; position: number },
+    formData: { name: string; link: string; position: number; icon: string },
     sectionId: number
   ) => {
     try {
       await axios.put(`/nav-group/${sectionId}`, {
+        group_icon: formData.icon,
         group_label: formData.name,
         group_url: formData.link,
         group_pos: formData.position,
@@ -114,6 +112,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
                 group_label: formData.name,
                 group_url: formData.link,
                 group_pos: formData.position,
+                group_icon: formData.icon,
               }
             : s
         )
@@ -135,7 +134,12 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
     }
   }
 
-  const handleCreateLink = async (formData: { name: string; link: string; position: number }) => {
+  const handleCreateLink = async (formData: {
+    name: string
+    link: string
+    position: number
+    icon: string
+  }) => {
     const { parentGroupId } = modalState.data as { parentGroupId: number }
     try {
       const response = await axios.post('/nav-item', {
@@ -143,7 +147,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
         item_label: formData.name,
         item_url: formData.link,
         item_pos: formData.position,
-        item_icon: 'h',
+        item_icon: formData.icon,
       })
       const newLink = response.data.data
       setNavData(
@@ -163,7 +167,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
   }
 
   const handleUpdateLink = async (
-    formData: { name: string; link: string; position: number },
+    formData: { name: string; link: string; position: number; icon: string },
     linkId: number
   ) => {
     try {
@@ -171,7 +175,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
         item_label: formData.name,
         item_url: formData.link,
         item_pos: formData.position,
-        item_icon: 'h',
+        item_icon: formData.icon,
       })
       setNavData(
         navData.map((section) => ({
@@ -231,6 +235,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           initialName: section.group_label,
           initialLink: section.group_url,
           initialPosition: section.group_pos,
+          initialIcon: section.group_icon,
           onSubmit: handleUpdateSection,
           onRemove: handleDeleteSection,
         }
@@ -252,6 +257,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           initialName: link.item_label,
           initialLink: link.item_url,
           initialPosition: link.item_pos,
+          initialIcon: link.item_icon,
           onSubmit: handleUpdateLink,
           onRemove: handleDeleteLink,
         }

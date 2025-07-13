@@ -1,20 +1,22 @@
-// src/Components/Nav/ManageLinkModal.tsx
-
 import React, { useEffect, useState } from 'react'
 import Modal from '@/ui/Modal/Modal'
+import { IconDropdownPicker } from '@/Components/Nav/IconDropdownPicker'
 
-// The props interface defines the contract for this component
 interface ManageLinkModalProps {
   mode: 'add' | 'edit'
   setShowModal: (value: boolean) => void
   title: string
   submitButtonText: string
-  itemId?: number // The ID of the item being edited.
+  itemId?: number
   initialName?: string
   initialLink?: string
+  initialIcon?: string
   initialPosition?: number
   // onSubmit now passes back the ID for 'edit' mode
-  onSubmit: (formData: { name: string; link: string; position: number }, id?: number) => void
+  onSubmit: (
+    formData: { name: string; link: string; position: number; icon: string },
+    id?: number
+  ) => void
   // onRemove now passes back the ID of the item to remove
   onRemove?: (id: number) => void
 }
@@ -29,16 +31,18 @@ export default function ManageLinkModal({
   setShowModal,
   title,
   submitButtonText,
-  itemId, // The ID of the item being edited
+  itemId,
   initialName = '',
   initialLink = '',
   initialPosition,
+  initialIcon = 'activity',
   onSubmit,
   onRemove,
 }: ManageLinkModalProps) {
   const [name, setName] = useState(initialName)
   const [link, setLink] = useState(initialLink)
   const [position, setPosition] = useState(initialPosition?.toString() ?? '')
+  const [selectedIcon, setSelectedIcon] = useState<string>(initialIcon)
 
   // This effect prevents a "stale state" bug by resetting the form fields
   // whenever the modal is opened for a new item.
@@ -46,14 +50,15 @@ export default function ManageLinkModal({
     setName(initialName)
     setLink(initialLink)
     setPosition(initialPosition?.toString() ?? '')
-  }, [initialName, initialLink, initialPosition, itemId])
+    setSelectedIcon(initialIcon || 'activity')
+  }, [initialName, initialLink, initialPosition, itemId, initialIcon])
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     const positionAsNumber = parseInt(position, 10)
     if (name && link && !isNaN(positionAsNumber)) {
       // Pass the form data and the item's ID back to the parent.
-      onSubmit({ name, link, position: positionAsNumber }, itemId)
+      onSubmit({ name, link, position: positionAsNumber, icon: selectedIcon }, itemId)
     } else {
       alert('Please fill out all fields with valid values.')
     }
@@ -131,6 +136,10 @@ export default function ManageLinkModal({
               min='0'
             />
           </div>
+          <IconDropdownPicker
+            value={selectedIcon}
+            onChange={setSelectedIcon}
+          />
 
           {/* Action Buttons */}
           <div className='flex items-center justify-end space-x-4'>

@@ -1,5 +1,6 @@
 'use client'
 
+import type { FC } from 'react'
 import * as React from 'react'
 import {
   Sidebar,
@@ -12,11 +13,13 @@ import { TeamSwitcher } from './team-switcher'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip'
 import { router, usePage } from '@inertiajs/react'
 
-import { ChevronDown, X } from 'lucide-react'
+import { ChevronDown, icons as allLucideIcons, type LucideProps, X } from 'lucide-react'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { User } from '@/interfaces/data_interfaces'
 
-import { iconMap, manageMenuData, MenuType, NavGroup } from '@/Components/Nav/navigation-data'
+import { manageMenuData, MenuType, NavGroup } from '@/Components/Nav/navigation-data'
+
+export const iconMap: { [key: string]: FC<LucideProps> } = allLucideIcons
 
 const SidebarSkeleton = () => (
   <div className='space-y-4 px-4 py-2'>
@@ -198,9 +201,9 @@ export function AppSidebar(props: AppSidebarProps) {
                           <TooltipProvider delayDuration={0}>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div>
+                                <button onClick={(e) => handleLinkClick(e, group.group_url)}>
                                   <Icon className='size-5' />
-                                </div>
+                                </button>
                               </TooltipTrigger>
                               {isCollapsed && (
                                 <TooltipContent
@@ -216,7 +219,12 @@ export function AppSidebar(props: AppSidebarProps) {
                       </div>
                       {!isCollapsed && (
                         <>
-                          <span className='flex-1 text-left'>{group.group_label}</span>
+                          <button
+                            className='flex-1 text-left'
+                            onClick={(e) => handleLinkClick(e, group.group_url)}
+                          >
+                            {group.group_label}
+                          </button>
                           <ChevronDown
                             className={`size-4 transition-transform ${
                               expandedItems.includes(group.group_label) ? 'rotate-180' : ''
