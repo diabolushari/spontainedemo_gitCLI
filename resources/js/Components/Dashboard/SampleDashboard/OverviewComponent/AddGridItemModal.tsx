@@ -47,7 +47,7 @@ function AddGridItemModal({
     setColSpan2(false)
   }
 
-  const { post } = useInertiaPost(route('config.overview.table.update', blockId), {
+  const { post, errors } = useInertiaPost(route('config.overview.table.update', blockId), {
     onComplete: () => {
       handleClose()
     },
@@ -64,6 +64,7 @@ function AddGridItemModal({
       filters: formData.filters,
       col_span: colSpan2,
     }
+    console.log(newItem)
     post({ overview_table: newItem, _method: 'PUT' })
   }
 
@@ -94,8 +95,8 @@ function AddGridItemModal({
               label='Title'
               value={formData.title}
               setValue={setFormValue('title')}
-              required
               type='text'
+              error={errors?.['overview_table.title']}
             />
           </div>
 
@@ -107,7 +108,7 @@ function AddGridItemModal({
               dataKey='subset_detail_id'
               displayKey='name'
               setValue={setFormValue('subset_id')}
-              required
+              error={errors?.['overview_table.subset_id']}
             />
           </div>
 
@@ -120,6 +121,7 @@ function AddGridItemModal({
                 dataKey='subset_column'
                 displayKey='subset_field_name'
                 setValue={setFormValue('measure_field')}
+                error={errors?.['overview_table.measure_field']}
               />
             )}
           </div>
@@ -130,6 +132,7 @@ function AddGridItemModal({
               dataKey='subset_column'
               displayKey='subset_field_name'
               onChange={setFormValue('filters')}
+              errorBag={errors}
             />
           )}
           <div className='flex items-center'>

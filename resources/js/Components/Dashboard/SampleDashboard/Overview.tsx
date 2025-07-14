@@ -28,7 +28,7 @@ export default function Overview({
   const [editingGridItem, setEditingGridItem] = useState<any | null>(null)
 
   const [overviewChart, setOverviewChart] = useState<OverviewChart | null>(overview_chart)
-  const [gridItems, setGridItems] = useState<any[]>(() => (overview_table ? overview_table : []))
+  const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
 
   // --- Chart Handlers ---
   function handleOpenAddChartModal() {
@@ -93,19 +93,20 @@ export default function Overview({
           {/* --- Table / Grid Section --- */}
           {showTable && (
             <div className='grid grid-cols-2 gap-2'>
-              {gridItems?.slice(0, 6).map((item, idx) => (
-                <div
-                  key={item.id || idx}
-                  className={item.col_span ? 'col-span-2' : ''}
-                >
-                  <OverviewGrid
-                    config={item}
-                    selectedMonth={selectedMonth}
-                    onDelete={handleDeleteGridItem}
-                    blockId={blockId}
-                  />
-                </div>
-              ))}
+              {Array.isArray(gridItems) &&
+                gridItems?.slice(0, 6).map((item, idx) => (
+                  <div
+                    key={item.id || idx}
+                    className={item.col_span ? 'col-span-2' : ''}
+                  >
+                    <OverviewGrid
+                      config={item}
+                      selectedMonth={selectedMonth}
+                      onDelete={handleDeleteGridItem}
+                      blockId={blockId}
+                    />
+                  </div>
+                ))}
               {(gridItems?.length < 6 || !gridItems) && (
                 <button
                   onClick={() => setGridModalOpen(true)}

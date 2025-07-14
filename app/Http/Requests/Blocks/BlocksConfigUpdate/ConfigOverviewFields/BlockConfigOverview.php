@@ -19,12 +19,7 @@ class BlockConfigOverview extends Data
         #[Max(255)]
         public ?string $title,
 
-        public ?string $cardType,
-
-        public ?BlockConfigOverviewTable $overviewTable,
-
-        public ?BlockConfigOverviewChart $overviewChart,
-
+        public string $cardType,
 
     ) {}
 }

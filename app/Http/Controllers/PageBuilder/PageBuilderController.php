@@ -84,14 +84,19 @@ class PageBuilderController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         try {
-            $page = PageBuilder::findOrFail($id);
-            $page->delete();
-        } catch (Exception $e) {
-            return redirect()->back()->with(['error' => $e->getMessage()]);
-        }
+            $page = PageBuilder::with('blocks')->findOrFail($id);
 
-        return redirect()
-            ->route('page-builder.index')
-            ->with(['message' => 'Page Builder Deleted Successfully']);
+            // First delete related blocks
+            $page->blocks()->delete();
+
+            // Now delete the page
+            $page->delete();
+
+            return redirect()
+                ->route('page-builder.index')
+                ->with(['message' => 'Page Builder Deleted Successfully']);
+        } catch (Exception $e) {
+            return redirect()->back()->with(['error' => 'Failed to delete: ' . $e->getMessage()]);
+        }
     }
 }

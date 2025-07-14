@@ -11,6 +11,7 @@ interface Props {
   onChange: (filters: Array<{ dimension: string; operator: string; value: string }>) => void
   label?: string
   subsetId: string
+  errorBag?: Record<string, string>
 }
 
 // Fixed value options (always shown in every filter)
@@ -30,23 +31,22 @@ export default function MultiDynamicSelector({
   onChange,
   label,
   subsetId,
+  errorBag,
 }: Props) {
   const [records, setRecords] = useState<any[]>([])
   const [filters, setFilters] = useState<
     Array<{ dimension: string | ''; value: string; operator: string }>
   >([])
-
+  const getFieldError = (index: number, field: 'dimension' | 'operator' | 'value') => {
+    const key = `overview_table.filters.${index}.${field}`
+    return errorBag?.[key] || ''
+  }
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
       .then((data) => setRecords(data))
       .catch(() => setRecords([]))
   }, [url])
-
-  useEffect(() => {
-    const validFilters = filters.filter((f) => f.dimension && f.value)
-    onChange(validFilters as any)
-  }, [filters, onChange])
 
   const handleAdd = () => {
     setFilters((prev) => [...prev, { dimension: '', value: '', operator: '' }])
@@ -74,9 +74,11 @@ export default function MultiDynamicSelector({
 
     return records.filter((record) => !selectedDimensions.includes(record[dataKey]))
   }
-
+  useEffect(() => {
+    onChange(filters)
+  }, [filters])
   const isAddDisabled = hasIncompleteFilter || filters.length >= records.length
-
+  console.log('chagning', errorBag)
   return (
     <div className='flex flex-col gap-4'>
       <label className='font-medium text-gray-700'>{label ?? 'Select Multiple Filters'}</label>
@@ -98,9 +100,9 @@ export default function MultiDynamicSelector({
                 setValue={(val) => handleChange(index, 'dimension', val)}
                 label='Dimension'
                 value={filter.dimension || ''}
-                error={undefined}
                 disabled={false}
                 showAllOption={false}
+                error={getFieldError(index, 'dimension')}
               />
             </div>
             <div className='flex flex-col'>
@@ -111,9 +113,9 @@ export default function MultiDynamicSelector({
                 setValue={(val) => handleChange(index, 'operator', val)}
                 label='Operator'
                 value={filter.operator}
-                error={undefined}
                 disabled={false}
                 showAllOption={false}
+                error={getFieldError(index, 'operator')}
               />
             </div>
             <div className='flex flex-col'>
@@ -125,9 +127,9 @@ export default function MultiDynamicSelector({
                   setValue={(val) => handleChange(index, 'value', val)}
                   label='Metric'
                   value={filter.value}
-                  error={undefined}
                   disabled={false}
                   showAllOption={false}
+                  error={getFieldError(index, 'value')}
                 />
               )}
             </div>

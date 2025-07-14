@@ -21,4 +21,12 @@ class BlockConfigOverviewTableFilter extends Data
         #[StringType, Max(255)]
         public string $value,
     ) {}
+    public static function messages(): array
+    {
+        return [
+            'dimension.required' => 'Please provide a dimension.',
+            'operator.required' => 'Please provide an operator.',
+            'value.required' => 'Please provide a value.',
+        ];
+    }
 }

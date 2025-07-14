@@ -127,11 +127,16 @@ export default function ConfigFormStepGeneral({
     // add overview only when selected
     if (formData.overview_selected) {
       payload.overview = overviewFormData
+    } else {
+      payload.overview = null
     }
 
     post(payload)
   }
-  const [subsetData] = useFetchList('/api/subset-group/' + formData?.subset_group_id)
+  const [subsetData] = useFetchList(
+    formData?.subset_group_id ? `/api/subset-group/${formData?.subset_group_id}` : null
+  )
+
   return (
     <div className='flex flex-col gap-6'>
       <div className='flex flex-col'>
@@ -159,7 +164,7 @@ export default function ConfigFormStepGeneral({
               error={errors?.data_table_id}
             />
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col justify-end'>
             <DynamicSelectList
               label='Select a subset group'
               url='/api/subset-group'
@@ -169,14 +174,27 @@ export default function ConfigFormStepGeneral({
               setValue={setFormValue('subset_group_id')}
               error={errors?.subset_group_id}
             />
-            {subsetData && (
-              <div
-                onClick={() => setIsSubsetModalOpen(true)}
-                className='cursor-pointer text-blue-500'
-              >
-                view subsets
-              </div>
-            )}
+            <div className='flex justify-end'>
+              {subsetData && subsetData.length > 0 && (
+                <>
+                  {isSubsetModalOpen ? (
+                    <div
+                      onClick={() => setIsSubsetModalOpen(false)}
+                      className='cursor-pointer text-red-500'
+                    >
+                      close
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => setIsSubsetModalOpen(true)}
+                      className='cursor-pointer text-blue-500'
+                    >
+                      view subsets
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
           {subsetData && isSubsetModalOpen && (
             <>
@@ -186,13 +204,6 @@ export default function ConfigFormStepGeneral({
                   title='Subsets'
                   data={subsetData}
                   primaryKey='id'
-                />
-              </div>
-              <div className='flex flex-col'>
-                <Button
-                  label='Close'
-                  variant='danger'
-                  onClick={() => setIsSubsetModalOpen(false)}
                 />
               </div>
             </>

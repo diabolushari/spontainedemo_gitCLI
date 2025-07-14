@@ -17,8 +17,8 @@ export function BlockRadioGroup({ block, selectedView, setSelectedView }: BlockR
         block?.data?.overview?.overview_table ||
         block?.data?.overview_selected,
     },
-    { value: 'trend', label: 'Trend', show: !!block?.data?.trend?.subset_id },
-    { value: 'ranking', label: 'Ranking', show: !!block?.data?.ranking?.subset_id },
+    { value: 'trend', label: 'Trend', show: !!block?.data?.trend_selected },
+    { value: 'ranking', label: 'Ranking', show: !!block?.data?.ranking_selected },
   ]
 
   const visibleTabs = tabs.filter((tab) => tab.show)

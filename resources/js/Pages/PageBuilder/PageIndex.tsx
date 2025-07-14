@@ -1,5 +1,9 @@
+import CardGridView from '@/Components/ListingPage/CardGridView'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { Page } from '@/interfaces/data_interfaces'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import CardHeader from '@/ui/Card/CardHeader'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import { useCallback, useMemo } from 'react'
@@ -16,13 +20,7 @@ export default function PageIndex({ page_list }: Props) {
         title: row.title,
         description: row.description,
         url: row.url,
-        actions: [
-          {
-            title: 'Edit',
-            url: route('page-builder.edit', row.id, false),
-            textStyles: 'hover:scale-105 transition',
-          },
-        ],
+        actions: [],
       }
     })
   }, [page_list])
@@ -62,21 +60,30 @@ export default function PageIndex({ page_list }: Props) {
 
   return (
     <>
-      <ListResourcePage
-        rows={data}
-        keys={keys}
-        primaryKey={'id'}
-        title='Page Data'
-        paginator={page_list}
-        formItems={formItems}
-        formData={formData}
-        addUrl={route('page-builder.create')}
+      <AnalyticsDashboardLayout
         type='definitions'
         subtype='data'
-        cardStyles='p-4'
-        subheading='Pages available in the system'
-        handleCardClick={onCardClick}
-      />
+        title='Page Data'
+        description='Pages available in the system'
+      >
+        <DashboardPadding>
+          <CardHeader
+            title='Page Data'
+            backUrl={route('page-builder.index', {
+              type: 'definitions',
+              subtype: 'data',
+            })}
+          />
+          <CardGridView
+            keys={keys}
+            primaryKey={'id'}
+            rows={data}
+            onCardClick={onCardClick}
+            addButtonText='Add Page'
+            onAddClick={() => router.get(route('page-builder.create'))}
+          />
+        </DashboardPadding>
+      </AnalyticsDashboardLayout>
     </>
   )
 }

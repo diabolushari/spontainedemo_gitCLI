@@ -14,7 +14,6 @@ import SelectList from '@/ui/form/SelectList'
 import { graphColorPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { camelToNormal, snakeToCamel } from '@/formaters/NameFormater'
 import { defaultUnits } from '@/formaters/DataUnits'
-import useFetchList from '@/hooks/useFetchList'
 
 interface ConfigFormStepTrendProps {
   initialData: any
@@ -64,7 +63,7 @@ export default function ConfigFormStepTrend({
     tooltipShowLabel: initialData.trend?.subset_id
       ? initialData.trend?.tooltip_field?.show_label
       : false,
-    color: initialData.trend?.subset_id ? initialData.trend?.color : '',
+    color: initialData.trend?.subset_id ? initialData.trend?.color : '#5A0F35',
   })
   console.log(formData)
   const strucetureTrend = (formData: FormData) => {

@@ -8,6 +8,7 @@ use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Attributes\Validation\RequiredWith;
 use Spatie\LaravelData\Data;
@@ -38,7 +39,7 @@ class BlocksConfigGeneralUpdateRequest extends Data
         #[BooleanType]
         public bool $overviewSelected,
 
-        #[RequiredIf('overviewSelected', true)]
+        #[Nullable, RequiredIf('overviewSelected', true)]
         public ?BlockConfigOverview $overview,
     ) {}
 }

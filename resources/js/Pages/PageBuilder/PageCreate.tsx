@@ -94,7 +94,7 @@ export default function PageCreate({ page }: Readonly<Props>) {
             </div>
             <div className='flex flex-col'>
               <DatePicker
-                label='Date'
+                label='Published Date'
                 value={formData.published_at}
                 setValue={setFormValue('published_at')}
                 error={errors?.published_at}

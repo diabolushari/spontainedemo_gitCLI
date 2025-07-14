@@ -61,7 +61,7 @@ export function EmptyCardBlock({
     })
     return classes.join(' ')
   }, [block])
-
+  console.log('block', block)
   return (
     <div className={classNames}>
       <Card className='min-h-18 rounded-md'>
@@ -87,7 +87,7 @@ export function EmptyCardBlock({
           )}
 
           {selectedView === 'trend' &&
-            block?.data?.trend_selected &&
+            block?.data?.trend_selected == true &&
             block?.data?.trend?.subset_id &&
             selectedMonth && (
               <TrendGraph
@@ -116,7 +116,7 @@ export function EmptyCardBlock({
             )}
 
           {selectedView === 'ranking' &&
-            block?.data?.ranking_selected &&
+            block?.data?.ranking_selected == true &&
             selectedMonth &&
             block?.data?.ranking?.subset_id && (
               <RankedList

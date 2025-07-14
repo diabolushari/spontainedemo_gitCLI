@@ -31,14 +31,20 @@ class BlocksConfigGeneralUpdateController extends Controller
         }
 
         $block = Block::findOrFail($id);
-        $existingData = $block->data ?? [];
-
         // Check for subset group change
+        $existingData = $block->data ?? [];
         $subsetGroupChanged = isset($existingData['subset_group_id']) &&
             $existingData['subset_group_id'] != $request->subsetGroupId;
 
         // Prepare updated data
         $updatedData = $existingData;
+
+        // Remove trend, ranking, and overview if subset group changed
+        if ($subsetGroupChanged) {
+            unset($updatedData['trend']);
+            unset($updatedData['ranking']);
+            unset($updatedData['overview']);
+        }
 
         // Always update these fields
         $updatedData['title'] = $request->title;
@@ -50,32 +56,32 @@ class BlocksConfigGeneralUpdateController extends Controller
         $updatedData['ranking_selected'] = $request->rankingSelected;
         $updatedData['overview_selected'] = $request->overviewSelected;
 
-        $overviewArray = is_array($request->overview) ? $request->overview : $request->overview->toArray();
+        // Update overview only if subset group hasn't changed
+        if (!$subsetGroupChanged) {
+            $overviewArray = [];
 
-        if (!empty($existingData['overview']) && !empty($overviewArray)) {
-            if (
-                isset($existingData['overview']['card_type']) &&
-                $existingData['overview']['card_type'] !== ($overviewArray['card_type'] ?? null)
-            ) {
-                $updatedData['overview'] = $overviewArray;
-            } else {
-                // Only update the title
-                $updatedData['overview']['title'] = $overviewArray['title'] ?? '';
+            if (is_array($request->overview)) {
+                $overviewArray = $request->overview;
+            } elseif (!is_null($request->overview) && method_exists($request->overview, 'toArray')) {
+                $overviewArray = $request->overview->toArray();
             }
-        } else {
-            $updatedData['overview'] = $overviewArray;
-        }
 
 
-        // === TREND ===
-        if ($subsetGroupChanged && isset($updatedData['trend'])) {
-            unset($updatedData['trend']);
+
+            if (!empty($existingData['overview']) && !empty($overviewArray)) {
+                if (
+                    isset($existingData['overview']['card_type']) &&
+                    $existingData['overview']['card_type'] !== ($overviewArray['card_type'] ?? null)
+                ) {
+                    $updatedData['overview'] = $overviewArray;
+                } else {
+                    $updatedData['overview']['title'] = $overviewArray['title'] ?? '';
+                }
+            } else {
+                $updatedData['overview'] = $overviewArray;
+            }
         }
 
-        // === RANKING ===
-        if ($subsetGroupChanged && isset($updatedData['ranking'])) {
-            unset($updatedData['ranking']);
-        }
 
         // Save updated block data
         $block->data = $updatedData;

@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableRequest;
 use App\Models\Blocks\Block;
 use Illuminate\Http\Request;
+
 
 class BlocksConfigOverviewTableUpdateController extends Controller
 {
 
-    public function __invoke(Request $request, $id)
+    public function __invoke(BlocksConfigOverviewTableRequest $request, $id)
     {
         $block = Block::findOrFail($id);
         $blockData = $block->data ?? [];
