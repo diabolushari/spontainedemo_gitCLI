@@ -31,7 +31,7 @@ class BlockConfigRanking extends Data
     public static function messages(): array
     {
         return [
-            'title.required_with' => 'Please provide a title when a subset is selected.',
+            'title.required_with' => 'Please provide a title.',
             'data_field.required_with' => 'You must select fields to plot the ranking.',
             'data_field.label.required' => 'Please enter a label for the ranking.',
             'data_field.label.string' => 'Ranking label must be a string.',

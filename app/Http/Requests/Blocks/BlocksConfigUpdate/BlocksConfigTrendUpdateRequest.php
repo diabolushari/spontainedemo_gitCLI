@@ -15,6 +15,10 @@ class BlocksConfigTrendUpdateRequest extends Data
     public static function messages(): array
     {
         return [
+            'trend.title.required' => 'Please provide a title.',
+            'trend.title.max' => 'Title must be less than 255 characters',
+            'trend.title.string' => 'Title required',
+            'trend.title.required_with' => 'Please provide a title.',
             // Tooltip related — fix key path from tooltip_field ➜ tooltip
             'trend.tooltip_field.label.required' => 'Please enter a tooltip label.',
             'trend.tooltip_field.label.string' => 'Tooltip label must be a string.',

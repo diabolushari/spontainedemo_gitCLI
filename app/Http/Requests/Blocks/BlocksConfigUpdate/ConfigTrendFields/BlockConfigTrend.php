@@ -32,15 +32,4 @@ class BlockConfigTrend extends Data
         public ?TooltipFieldData $tooltipField
 
     ) {}
-    public static function messages(): array
-    {
-        return [
-            'title.required' => 'Please provide a title.',
-            'subset_id.required' => 'Please provide a subset.',
-            'color.required' => 'Please provide a color.',
-            'data_field.required' => 'Please provide a data field.',
-            'tooltip_field.required' => 'Please provide a tooltip field.',
-
-        ];
-    }
 }

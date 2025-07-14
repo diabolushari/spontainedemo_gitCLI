@@ -22,4 +22,14 @@ class BlockConfigOverview extends Data
         public string $cardType,
 
     ) {}
+
+    public static function messages(): array
+    {
+        return [
+            'title.required' => 'Title is required',
+            'title.max' => 'Title must be less than 255 characters',
+            'card_type.required' => 'Card type is required',
+
+        ];
+    }
 }
