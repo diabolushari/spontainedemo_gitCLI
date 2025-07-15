@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Meta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaHierarchyFormRequest;
 use App\Libs\ExceptionMessage;
+use App\Models\Meta\MetaData;
 use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Meta\MetaHierarchyLevelInfo;
 use App\Models\Meta\MetaStructure;
 use App\Services\MetaData\Hierarchy\HierarchyList;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -31,16 +32,27 @@ class MetaHierarchyController extends Controller implements HasMiddleware
 
     public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), function (Builder $query) use ($request) {
-            $query->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%')
-                ->orWhereHas('items.metaHierarchy', function (Builder $query) use ($request) {
-                    return $query->where('name', 'like', "%$request->search%");
-                });
-        })
-            ->withCount('items')
-            ->paginate(20)
-            ->withPath(route('meta-hierarchy.index'))
-            ->withQueryString();
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+
+            $matchedMetadataIds = MetaData::where('name', $search)->pluck('id');
+
+            $matchedItems = MetaHierarchyItem::whereIn('primary_field_id', $matchedMetadataIds)
+                ->orWhereIn('secondary_field_id', $matchedMetadataIds)
+                ->get()
+                ->unique('id')
+                ->values();
+
+            $metaHierarchyIds = $matchedItems->pluck('meta_hierarchy_id')->unique()->filter()->values();
+
+            $hierarchies = MetaHierarchy::whereIn('id', $metaHierarchyIds)->paginate(20);
+
+        } else {
+            $hierarchies = MetaHierarchy::withCount('items')
+                ->paginate(20)
+                ->withPath(route('meta-hierarchy.index'))
+                ->withQueryString();
+        }
 
         return Inertia::render('MetaHierarchy/MetaHierarchyIndex', [
             'hierarchies' => $hierarchies,
