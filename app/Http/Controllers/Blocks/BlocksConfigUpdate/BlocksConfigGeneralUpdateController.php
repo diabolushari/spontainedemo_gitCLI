@@ -8,11 +8,9 @@ use App\Models\Blocks\Block;
 use App\Models\DataDetail\DataDetail;
 use App\Services\DataTable\QueryDataTable;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Request;
 
 class BlocksConfigGeneralUpdateController extends Controller
 {
-
     public function __invoke(BlocksConfigGeneralUpdateRequest $request, $id): RedirectResponse
     {
         $dataDetail = DataDetail::findOrFail($request->dataTableId);
@@ -31,22 +29,17 @@ class BlocksConfigGeneralUpdateController extends Controller
         }
 
         $block = Block::findOrFail($id);
-        // Check for subset group change
         $existingData = $block->data ?? [];
         $subsetGroupChanged = isset($existingData['subset_group_id']) &&
             $existingData['subset_group_id'] != $request->subsetGroupId;
 
-        // Prepare updated data
         $updatedData = $existingData;
 
-        // Remove trend, ranking, and overview if subset group changed
         if ($subsetGroupChanged) {
             unset($updatedData['trend']);
             unset($updatedData['ranking']);
-            unset($updatedData['overview']);
         }
 
-        // Always update these fields
         $updatedData['title'] = $request->title;
         $updatedData['description'] = $request->description;
         $updatedData['data_table_id'] = $request->dataTableId;
@@ -56,34 +49,33 @@ class BlocksConfigGeneralUpdateController extends Controller
         $updatedData['ranking_selected'] = $request->rankingSelected;
         $updatedData['overview_selected'] = $request->overviewSelected;
 
-        // Update overview only if subset group hasn't changed
-        if (!$subsetGroupChanged) {
-            $overviewArray = [];
+        $overviewArray = [];
 
-            if (is_array($request->overview)) {
-                $overviewArray = $request->overview;
-            } elseif (!is_null($request->overview) && method_exists($request->overview, 'toArray')) {
-                $overviewArray = $request->overview->toArray();
+        if (is_array($request->overview)) {
+            $overviewArray = $request->overview;
+        } elseif (!is_null($request->overview) && method_exists($request->overview, 'toArray')) {
+            $overviewArray = $request->overview->toArray();
+        }
+
+        $cardTypeChanged = isset($existingData['overview']['card_type']) &&
+            isset($overviewArray['card_type']) &&
+            $existingData['overview']['card_type'] !== $overviewArray['card_type'];
+
+        if ($subsetGroupChanged || $cardTypeChanged) {
+            if (isset($updatedData['overview']) && is_array($updatedData['overview'])) {
+                unset($updatedData['overview']['overview_chart']);
+                unset($updatedData['overview']['overview_table']);
             }
+        }
 
-
-
-            if (!empty($existingData['overview']) && !empty($overviewArray)) {
-                if (
-                    isset($existingData['overview']['card_type']) &&
-                    $existingData['overview']['card_type'] !== ($overviewArray['card_type'] ?? null)
-                ) {
-                    $updatedData['overview'] = $overviewArray;
-                } else {
-                    $updatedData['overview']['title'] = $overviewArray['title'] ?? '';
-                }
-            } else {
+        if (!$subsetGroupChanged) {
+            if (!empty($existingData['overview'])) {
+                // Do nothing
+            } elseif (!empty($overviewArray)) {
                 $updatedData['overview'] = $overviewArray;
             }
         }
 
-
-        // Save updated block data
         $block->data = $updatedData;
         $block->save();
 

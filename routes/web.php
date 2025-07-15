@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartDeleteController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableDeleteController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
@@ -118,6 +119,7 @@ Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewChartU
     ->name('config.overview.chart.update');
 Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)->name('config.overview.table.update');
 Route::delete('block/config/overview/table/update/{id}/{blockId}', BlocksConfigOverviewTableDeleteController::class)->name('config.overview.table.destroy');
+Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOverviewChartDeleteController::class)->name('config.overview.chart.destroy');
 
 
 

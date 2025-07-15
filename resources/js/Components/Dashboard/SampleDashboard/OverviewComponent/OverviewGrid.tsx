@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Skeleton from 'react-loading-skeleton'
 import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-
 import type { OverviewTable, Filter } from '@/interfaces/data_interfaces'
 import { router } from '@inertiajs/react'
-
+import DeleteModal from '@/ui/Modal/DeleteModal'
 interface OverviewGridProps {
   readonly config: OverviewTable
   readonly selectedMonth: Date | null
@@ -53,7 +52,7 @@ const getCellData = (
 
 const OverviewGrid: React.FC<OverviewGridProps> = ({ config, selectedMonth, blockId }) => {
   const { subset_id, measure_field, title, filters, id } = config
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const monthYear = useMemo(() => getMonthYear(selectedMonth), [selectedMonth])
   const filterQuery = useMemo(() => getFilterQuery(filters), [filters])
 
@@ -74,21 +73,24 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({ config, selectedMonth, bloc
     )
   }
 
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this grid item?')) {
-      router.delete(route('config.overview.table.destroy', [id, blockId]))
-    }
-  }
-
   return (
     <div
       role='button'
       tabIndex={0}
-      onClick={handleDelete}
+      onClick={() => setShowDeleteModal(true)}
       className={`relative h-full min-h-[60px] cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg`}
     >
       <p className='text-sm uppercase text-gray-600'>{cellData.title}</p>
       <p className='text-xl font-bold'>{cellData.value}</p>
+      {showDeleteModal && (
+        <DeleteModal
+          setShowModal={setShowDeleteModal}
+          title={`Delete Record`}
+          url={route('config.overview.table.destroy', [id, blockId])}
+        >
+          <p>Are you sure you want to delete this grid item?</p>
+        </DeleteModal>
+      )}
     </div>
   )
 }

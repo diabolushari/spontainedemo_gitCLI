@@ -27,7 +27,7 @@ interface AddChartModalProps {
   isModalOpen: boolean
   setIsModalOpen: (isOpen: boolean) => void
   subsetGroupId: number
-  onSave: (newChart: OverviewChart) => void
+
   chartToEdit?: OverviewChart | null
 }
 
@@ -52,7 +52,6 @@ function AddChartModal({
   isModalOpen,
   setIsModalOpen,
   subsetGroupId,
-  onSave,
   chartToEdit,
   blockId,
 }: AddChartModalProps) {

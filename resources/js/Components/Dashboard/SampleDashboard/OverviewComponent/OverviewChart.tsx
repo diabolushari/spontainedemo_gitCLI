@@ -7,7 +7,6 @@ import Skeleton from 'react-loading-skeleton'
 import FontSizeSelector, {
   Size,
 } from '@/Components/Dashboard/SampleDashboard/OverviewComponent/FontSizeSelector'
-import { defaultUnits } from '@/Components/Dashboard/SampleDashboard/OverviewComponent/OverviewChart'
 
 interface Props {
   selectedMonth: Date | null

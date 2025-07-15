@@ -130,7 +130,6 @@ export default function ConfigFormStepGeneral({
     } else {
       payload.overview = null
     }
-
     post(payload)
   }
   const [subsetData] = useFetchList(

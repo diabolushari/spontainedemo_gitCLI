@@ -4,6 +4,7 @@ import OverviewGrid from './OverviewComponent/OverviewGrid'
 import AddGridItemModal from './OverviewComponent/AddGridItemModal'
 import AddChartModal from './OverviewComponent/AddChartModal'
 import { OverviewChart } from '@/interfaces/data_interfaces'
+import DeleteModal from '@/ui/Modal/DeleteModal'
 
 interface Props {
   selectedMonth: Date | null
@@ -26,7 +27,7 @@ export default function Overview({
   const [isChartModalOpen, setChartModalOpen] = useState(false)
   const [editingChart, setEditingChart] = useState<OverviewChart | null>(null)
   const [editingGridItem, setEditingGridItem] = useState<any | null>(null)
-
+  const [chartDeleteModal, setChartDeleteModal] = useState(false)
   const [overviewChart, setOverviewChart] = useState<OverviewChart | null>(overview_chart)
   const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
 
@@ -52,21 +53,10 @@ export default function Overview({
     setEditingChart(null) // Clear editing state
   }
 
-  function handleDeleteChart() {
-    if (window.confirm('Are you sure you want to delete this chart?')) {
-      setOverviewChart(null)
-    }
-  }
-
   // --- Grid Item Handlers ---
   function handleAddNewGridItem(newItemConfig: any) {
-    console.log(newItemConfig)
     setGridItems((prev) => [...prev, newItemConfig])
     setGridModalOpen(false)
-  }
-
-  function handleDeleteGridItem(id: number) {
-    setGridItems((items) => items.filter((item) => item.id !== id))
   }
 
   const showTable = card_type === 'chart_and_table' || card_type === 'table'
@@ -102,7 +92,6 @@ export default function Overview({
                     <OverviewGrid
                       config={item}
                       selectedMonth={selectedMonth}
-                      onDelete={handleDeleteGridItem}
                       blockId={blockId}
                     />
                   </div>
@@ -146,7 +135,7 @@ export default function Overview({
                       </svg>
                     </button>
                     <button
-                      onClick={handleDeleteChart}
+                      onClick={() => setChartDeleteModal(true)}
                       title='Delete Chart'
                       className='text-gray-600 hover:text-red-600'
                     >
@@ -198,21 +187,27 @@ export default function Overview({
           )}
         </div>
       </div>
-
+      {chartDeleteModal && (
+        <DeleteModal
+          setShowModal={setChartDeleteModal}
+          title='Delete Chart'
+          url={route('config.overview.chart.destroy', blockId)}
+        >
+          <p>Are you sure you want to delete this chart?</p>
+        </DeleteModal>
+      )}
       {/* --- Modals --- */}
       <AddGridItemModal
         isModalOpen={isGridModalOpen}
         setIsModalOpen={setGridModalOpen}
-        onSave={handleAddNewGridItem}
         subsetGroupId={subsetGroupId}
         blockId={blockId}
       />
       <AddChartModal
         isModalOpen={isChartModalOpen}
         setIsModalOpen={setChartModalOpen}
-        onSave={handleSaveChart}
         subsetGroupId={subsetGroupId}
-        chartToEdit={overviewChart}
+        chartToEdit={overviewChart ? overviewChart : null}
         blockId={blockId}
       />
     </>
