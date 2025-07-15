@@ -53,6 +53,7 @@ use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
 use App\Http\Controllers\OperationsController;
+use App\Http\Controllers\PageBuilder\CustomPageController;
 use App\Http\Controllers\PageBuilder\PageBuilderController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
@@ -126,6 +127,7 @@ Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOvervi
 
 
 //chart
+Route::get('/dashboard/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
 //api for subset, data table
