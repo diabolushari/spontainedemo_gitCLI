@@ -6,7 +6,7 @@ import Card from '@/ui/Card/Card'
 import CardGridView from '../ListingPage/CardGridView'
 
 type CustomScrollAreaProps = {
-  onChartClick: (id: number, name: string) => void
+  onChartClick: (id: number | string) => void
   title: string
   data: any[]
   primaryKey: string
@@ -43,6 +43,7 @@ export function CustomScrollArea({ onChartClick, title, data, primaryKey }: Cust
             keys={keys}
             primaryKey={primaryKey}
             rows={rows}
+            onCardClick={onChartClick}
             isAddButton={false}
           />
         </div>

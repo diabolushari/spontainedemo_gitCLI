@@ -3,7 +3,7 @@ import { Block, Config } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Input from '@/ui/form/Input'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import StrongText from '@/typography/StrongText'
 import NormalText from '@/typography/NormalText'
@@ -12,6 +12,7 @@ import CheckBox from '@/ui/form/CheckBox'
 import SelectList from '@/ui/form/SelectList'
 import { CustomScrollArea } from '../CustomScrollArea'
 import useFetchList from '@/hooks/useFetchList'
+import { router } from '@inertiajs/react'
 
 interface ConfigFormStepGeneralProps {
   initialData: Config
@@ -136,6 +137,10 @@ export default function ConfigFormStepGeneral({
   const [subsetData] = useFetchList(
     formData?.subset_group_id ? `/api/subset-group/${formData?.subset_group_id}` : null
   )
+  const handleSubsetClick = useCallback((id: number | string) => {
+    console.log(route('subset.preview', id))
+    router.get(route('subset.preview', id))
+  }, [])
 
   return (
     <div className='flex flex-col gap-6'>
@@ -145,7 +150,7 @@ export default function ConfigFormStepGeneral({
       </div>
       <form onSubmit={handleSubmit}>
         <div className='flex flex-col gap-2 p-2 md:grid md:grid-cols-2 md:gap-4'>
-          <div>
+          <div className='flex flex-col gap-2'>
             <div className='flex flex-col'>
               <Input
                 label='Enter your title'
@@ -187,7 +192,7 @@ export default function ConfigFormStepGeneral({
               </div>
             </div>
           </div>
-          <div>
+          <div className='flex flex-col gap-2'>
             <div className='flex flex-col'>
               <DynamicSelectList
                 label='Select a data table for default date'
@@ -217,10 +222,10 @@ export default function ConfigFormStepGeneral({
             <>
               <div className='col-span-3 flex flex-col'>
                 <CustomScrollArea
-                  onChartClick={() => {}}
+                  onChartClick={handleSubsetClick}
                   title='Subsets'
                   data={subsetData}
-                  primaryKey='id'
+                  primaryKey='subset_detail_id'
                 />
               </div>
             </>
