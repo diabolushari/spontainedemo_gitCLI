@@ -47,9 +47,14 @@ export function EmptyCardBlock({
   }, [date])
 
   // Set default view based on block.data.default_view
+  const [subsetGroup] = useFetchRecord<{
+    id: number
+    name: string
+  }>(block?.data?.subset_group_id ? `/subset-group/${block?.data?.subset_group_id}` : '')
+
   useEffect(() => {
     if (block?.data?.default_view) {
-      setSelectedView(block.data.default_view)
+      setSelectedView(block?.data?.default_view)
     }
   }, [block?.data?.default_view])
 
@@ -81,8 +86,8 @@ export function EmptyCardBlock({
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
               content={block?.data?.overview}
-              subsetGroupId={block.data.subset_group_id}
-              blockId={block.id}
+              subsetGroupId={block?.data?.subset_group_id}
+              blockId={block?.id}
             />
           )}
 
@@ -128,7 +133,7 @@ export function EmptyCardBlock({
                     ? block.data.ranking.data_field.label
                     : ''
                 }
-                rankingPageUrl={`/sample-ranking-page?month=${monthYear}&route=${route('service-delivery.index')}`}
+                rankingPageUrl={`/office-rankings/${subsetGroup?.name}?month=${monthYear}&route=${route('page-builder.show', 5)}`}
                 timePeriod={monthYear}
                 timePeriodFieldName='month'
               />

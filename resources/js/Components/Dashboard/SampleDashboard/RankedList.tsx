@@ -60,7 +60,7 @@ export default function RankedList({
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
   const [selectedColumn, setSelectedColumn] = useState(dataField)
   const [selectedFieldName, setSelectedFieldName] = useState(dataFieldName)
-
+  console.log(rankingPageUrl)
   useEffect(() => {
     if (onFilterChange == null) {
       return

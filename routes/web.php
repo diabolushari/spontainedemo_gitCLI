@@ -18,6 +18,7 @@ use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
 use App\Http\Controllers\ChartData\SubsetFieldsController;
 use App\Http\Controllers\ChartData\SubsetGroupItemsController;
 use App\Http\Controllers\ChartData\SubsetGroupListController;
+use App\Http\Controllers\ChartData\SubsetGroupNameController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
 use App\Http\Controllers\DataDetail\DataDetailController;
@@ -136,6 +137,7 @@ Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::cla
     ->name('data-detail.date');
 Route::get('api/subset/dimension/{subsetId}', SubsetDimensionFieldsController::class)
     ->name('subset.dimension.fields');
+Route::get('/subset-group/{id}', SubsetGroupNameController::class);
 Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDimensionFieldItemController::class);
 
 //testing

@@ -11,6 +11,8 @@ class SubsetGroupItemsController extends Controller
     {
         $group = SubsetGroup::findOrFail($subsetGroupId);
 
+
+
         return response()->json($group->items);
     }
 }
