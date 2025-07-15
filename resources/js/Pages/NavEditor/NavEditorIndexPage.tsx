@@ -85,6 +85,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
         ...response.data.data,
         nav_items: response.data.data.nav_items || [],
       }
+      //TODO use old navdata
       setNavData([...navData, newSection])
       closeModal()
     } catch (error) {
@@ -213,10 +214,12 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
     }
   }
 
+  //TODO: use useMemo for modal props
   const getModalProps = () => {
     if (!modalState.isOpen) return null
     const { type, data } = modalState
 
+    //TODO dont pass fucntion as reference
     switch (type) {
       case 'addSection':
         return {
@@ -355,6 +358,7 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           </div>
         </Card>
       </div>
+      {/*TODO: Fix Type Error*/}
       {modalState.isOpen && modalProps && (
         <ManageLinkModal
           setShowModal={closeModal}

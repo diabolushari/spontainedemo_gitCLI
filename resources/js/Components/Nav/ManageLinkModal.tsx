@@ -143,6 +143,7 @@ export default function ManageLinkModal({
 
           {/* Action Buttons */}
           <div className='flex items-center justify-end space-x-4'>
+            {/*TODO: Move Remove to separate component.*/}
             {mode === 'edit' && onRemove && (
               <button
                 type='button'

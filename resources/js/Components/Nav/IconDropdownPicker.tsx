@@ -62,13 +62,11 @@ export function IconDropdownPicker({ value, onChange }: IconDropdownPickerProps)
       >
         {/* Search Input - NOW FIXED */}
         <Input
-          autoFocus
           placeholder='Search icons...'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className='m-2 w-[calc(100%-1rem)]'
         />
-
         {/* Scrollable Icon List */}
         <div className='max-h-60 overflow-y-auto'>
           {filteredIcons.length > 0 ? (
