@@ -47,6 +47,7 @@ class BlocksConfigGeneralUpdateController extends Controller
         $updatedData['default_view'] = $request->defaultView;
         $updatedData['trend_selected'] = $request->trendSelected;
         $updatedData['ranking_selected'] = $request->rankingSelected;
+        $updatedData['explore_button_group'] = $request->exploreButtonGroup;
         $updatedData['overview_selected'] = $request->overviewSelected;
 
         $overviewArray = [];

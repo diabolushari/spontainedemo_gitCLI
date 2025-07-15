@@ -54,6 +54,7 @@ export default function ConfigFormStepGeneral({
     overview_selected: initialData?.overview_selected ?? false,
     default_view: initialData?.default_view ?? '',
     overview: initialData?.overview ?? {},
+    explore_button_group: initialData?.explore_button_group ?? '',
   })
   const selectedOptions = cardOptions.filter((opt) => {
     if (opt.value === 'trend' && formData.trend_selected) return true
@@ -143,58 +144,75 @@ export default function ConfigFormStepGeneral({
         <NormalText>Fill the general details of the card</NormalText>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className='flex flex-col gap-2 p-2 md:grid md:grid-cols-3 md:gap-4'>
-          <div className='flex flex-col'>
-            <Input
-              label='Enter your title'
-              value={formData.title}
-              setValue={setFormValue('title')}
-              error={errors?.title}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <DynamicSelectList
-              label='Select a data table for default date'
-              url='/api/data-detail'
-              dataKey='id'
-              displayKey='name'
-              value={formData.data_table_id ?? 0}
-              setValue={setFormValue('data_table_id')}
-              error={errors?.data_table_id}
-            />
-          </div>
-          <div className='flex flex-col justify-end'>
-            <DynamicSelectList
-              label='Select a subset group'
-              url='/api/subset-group'
-              dataKey='id'
-              displayKey='name'
-              value={formData.subset_group_id ?? ''}
-              setValue={setFormValue('subset_group_id')}
-              error={errors?.subset_group_id}
-            />
-            <div className='flex justify-end'>
-              {subsetData && subsetData.length > 0 && (
-                <>
-                  {isSubsetModalOpen ? (
-                    <div
-                      onClick={() => setIsSubsetModalOpen(false)}
-                      className='cursor-pointer text-red-500'
-                    >
-                      close
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() => setIsSubsetModalOpen(true)}
-                      className='cursor-pointer text-blue-500'
-                    >
-                      view subsets
-                    </div>
-                  )}
-                </>
-              )}
+        <div className='flex flex-col gap-2 p-2 md:grid md:grid-cols-2 md:gap-4'>
+          <div>
+            <div className='flex flex-col'>
+              <Input
+                label='Enter your title'
+                value={formData.title}
+                setValue={setFormValue('title')}
+                error={errors?.title}
+              />
+            </div>
+            <div className='flex flex-col'>
+              <DynamicSelectList
+                label='Select a subset group'
+                url='/api/subset-group'
+                dataKey='id'
+                displayKey='name'
+                value={formData.subset_group_id ?? ''}
+                setValue={setFormValue('subset_group_id')}
+                error={errors?.subset_group_id}
+              />
+              <div className='flex justify-end'>
+                {subsetData && subsetData.length > 0 && (
+                  <>
+                    {isSubsetModalOpen ? (
+                      <div
+                        onClick={() => setIsSubsetModalOpen(false)}
+                        className='cursor-pointer text-red-500'
+                      >
+                        close
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => setIsSubsetModalOpen(true)}
+                        className='cursor-pointer text-blue-500'
+                      >
+                        view subsets
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
+          <div>
+            <div className='flex flex-col'>
+              <DynamicSelectList
+                label='Select a data table for default date'
+                url='/api/data-detail'
+                dataKey='id'
+                displayKey='name'
+                value={formData.data_table_id ?? 0}
+                setValue={setFormValue('data_table_id')}
+                error={errors?.data_table_id}
+              />
+            </div>
+
+            <div className='flex flex-col'>
+              <DynamicSelectList
+                label='Subset for data explore button (optional)'
+                url='/api/subset-group'
+                dataKey='name'
+                displayKey='name'
+                value={formData.explore_button_group ?? 0}
+                setValue={setFormValue('explore_button_group')}
+                error={errors?.explore_button_group}
+              />
+            </div>
+          </div>
+
           {subsetData && isSubsetModalOpen && (
             <>
               <div className='col-span-3 flex flex-col'>

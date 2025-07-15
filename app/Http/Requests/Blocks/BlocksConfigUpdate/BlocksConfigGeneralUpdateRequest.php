@@ -36,6 +36,8 @@ class BlocksConfigGeneralUpdateRequest extends Data
 
         public bool $rankingSelected,
 
+        public ?string $exploreButtonGroup,
+
         #[BooleanType]
         public bool $overviewSelected,
 
@@ -65,6 +67,8 @@ class BlocksConfigGeneralUpdateRequest extends Data
             'overviewSelected.required' => 'Overview selected is required',
             'overviewSelected.boolean' => 'Overview selected must be a boolean',
             'overview.required_if' => 'Overview is required',
+            'explore_button_group.exists' => 'Explore button group does not exist',
+
         ];
     }
 }

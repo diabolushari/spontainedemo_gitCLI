@@ -437,6 +437,7 @@ export interface Config {
   trend_selected: boolean
   ranking_selected: boolean
   overview_selected: boolean
+  explore_button_group?: string
   trend: Trend
   ranking: Ranking
   overview: Overview

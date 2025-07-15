@@ -9,6 +9,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import MoreButton from '../MoreButton'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Overview from '../Dashboard/SampleDashboard/Overview'
+import { Link } from '@inertiajs/react'
 
 function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
@@ -66,6 +67,7 @@ export function EmptyCardBlock({
     })
     return classes.join(' ')
   }, [block])
+  const fullUrl = window.location.href
 
   return (
     <div className={classNames}>
@@ -133,7 +135,7 @@ export function EmptyCardBlock({
                     ? block.data.ranking.data_field.label
                     : ''
                 }
-                rankingPageUrl={`/office-rankings/${subsetGroup?.name}?month=${monthYear}&route=${route('page-builder.show', 5)}`}
+                rankingPageUrl={`/office-rankings/${subsetGroup?.name}?month=${monthYear}&route=${fullUrl}`}
                 timePeriod={monthYear}
                 timePeriodFieldName='month'
               />
@@ -152,10 +154,15 @@ export function EmptyCardBlock({
                 </div>
               </div>
             )}
-
-            <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
-              <MoreButton />
-            </div>
+            {block?.data?.explore_button_group && (
+              <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
+                <Link
+                  href={`/data-explorer/${block.data.explore_button_group}?month=${monthYear}&route=${fullUrl}`}
+                >
+                  <MoreButton />
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </Card>
