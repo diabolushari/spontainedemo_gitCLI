@@ -18,30 +18,23 @@ class NavGroupController extends Controller
 
     public function store(StoreNavGroupRequest $request)
     {
-        $navGroup = NavGroup::create($request->validated());
+        NavGroup::create($request->validated());
 
-        return response()->json([
-            'message' => 'Nav group created successfully.',
-            'data' => $navGroup,
-        ], 201);
+        return redirect()->back()->with('success', 'Operation successful!');
     }
 
     public function update(UpdateNavGroupRequest $request, NavGroup $navGroup)
     {
         $navGroup->update($request->validated());
 
-        return response()->json([
-            'message' => 'Nav item updated successfully.',
-            'data' => $navGroup,
-        ]);
+        return redirect()->back()->with('success', 'Operation successful!');
     }
 
     public function destroy(NavGroup $navGroup)
     {
         $navGroup->delete();
 
-        return response()->json([
-            'message' => 'Nav group deleted successfully.',
-        ]);
+        return redirect()->back()->with('success', 'Operation successful!');
+
     }
 }

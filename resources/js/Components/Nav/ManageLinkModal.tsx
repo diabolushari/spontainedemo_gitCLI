@@ -12,13 +12,10 @@ interface ManageLinkModalProps {
   initialLink?: string
   initialIcon?: string
   initialPosition?: number
-  // onSubmit now passes back the ID for 'edit' mode
   onSubmit: (
     formData: { name: string; link: string; position: number; icon: string },
     id?: number
   ) => void
-  // onRemove now passes back the ID of the item to remove
-  onRemove?: (id: number) => void
 }
 
 /**
@@ -37,15 +34,12 @@ export default function ManageLinkModal({
   initialPosition,
   initialIcon = 'activity',
   onSubmit,
-  onRemove,
 }: ManageLinkModalProps) {
   const [name, setName] = useState(initialName)
   const [link, setLink] = useState(initialLink)
   const [position, setPosition] = useState(initialPosition?.toString() ?? '')
   const [selectedIcon, setSelectedIcon] = useState<string>(initialIcon)
 
-  // This effect prevents a "stale state" bug by resetting the form fields
-  // whenever the modal is opened for a new item.
   useEffect(() => {
     setName(initialName)
     setLink(initialLink)
@@ -57,18 +51,9 @@ export default function ManageLinkModal({
     event.preventDefault()
     const positionAsNumber = parseInt(position, 10)
     if (name && link && !isNaN(positionAsNumber)) {
-      // Pass the form data and the item's ID back to the parent.
       onSubmit({ name, link, position: positionAsNumber, icon: selectedIcon }, itemId)
     } else {
       alert('Please fill out all fields with valid values.')
-    }
-  }
-
-  const handleRemoveClick = () => {
-    // If an onRemove handler exists and we have an ID, call it.
-    if (onRemove && itemId !== undefined) {
-      onRemove(itemId)
-      setShowModal(false) // Close modal after the action is triggered
     }
   }
 
@@ -79,7 +64,6 @@ export default function ManageLinkModal({
     >
       <div className='px-6 pb-2 pt-4'>
         <form onSubmit={handleSubmit}>
-          {/* Name Input */}
           <div className='mb-4'>
             <label
               className='mb-2 block text-sm font-semibold text-gray-800'
@@ -98,7 +82,6 @@ export default function ManageLinkModal({
             />
           </div>
 
-          {/* Link URL Input */}
           <div className='mb-4'>
             <label
               className='mb-2 block text-sm font-semibold text-gray-800'
@@ -117,7 +100,6 @@ export default function ManageLinkModal({
             />
           </div>
 
-          {/* Position Input */}
           <div className='mb-8'>
             <label
               className='mb-2 block text-sm font-semibold text-gray-800'
@@ -141,18 +123,7 @@ export default function ManageLinkModal({
             onChange={setSelectedIcon}
           />
 
-          {/* Action Buttons */}
           <div className='flex items-center justify-end space-x-4'>
-            {/*TODO: Move Remove to separate component.*/}
-            {mode === 'edit' && onRemove && (
-              <button
-                type='button'
-                onClick={handleRemoveClick}
-                className='rounded-md bg-red-600 px-6 py-2 font-bold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2'
-              >
-                REMOVE
-              </button>
-            )}
             <button
               type='submit'
               className='rounded-md bg-blue-700 px-6 py-2 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'

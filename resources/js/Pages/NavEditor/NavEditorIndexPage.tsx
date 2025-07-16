@@ -1,12 +1,12 @@
 // src/Pages/Admin/NavEditorIndexPage.tsx
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { AlertCircle, Pencil, Plus, Trash2 } from 'lucide-react'
 
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import Card from '@/ui/Card/Card'
 import ManageLinkModal from '@/Components/Nav/ManageLinkModal'
+import { router } from '@inertiajs/react'
 
 interface NavItem {
   id: number
@@ -22,14 +22,13 @@ interface NavGroup {
   group_url: string
   group_pos: number
   group_icon: string
-  nav_items: NavItem[] // This is defined as an array
+  nav_items: NavItem[]
 }
 
 interface NavEditorIndexPageProps {
   allNavData: NavGroup[]
 }
 
-// A centralized state object to manage which modal is open and what data it holds
 type ModalType = 'addSection' | 'editSection' | 'addLink' | 'editLink'
 
 interface ModalState {
@@ -40,7 +39,6 @@ interface ModalState {
 
 export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPageProps) {
   const [navData, setNavData] = useState<NavGroup[]>(allNavData || [])
-  const [selectedSection, setSelectedSection] = useState('main')
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
     type: null,
@@ -55,7 +53,6 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
     setNavData(sanitizedData)
   }, [allNavData])
 
-  // Modal helper functions
   const openModal = (type: ModalType, data?: ModalState['data']) =>
     setModalState({ isOpen: true, type, data })
   const closeModal = () => setModalState({ isOpen: false, type: null, data: undefined })
@@ -67,166 +64,121 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
 
   // --- CRUD API Handlers ---
 
-  const handleCreateSection = async (formData: {
-    name: string
-    link: string
-    position: number
-    icon: string
-  }) => {
-    try {
-      const response = await axios.post('/nav-group', {
-        group_label: formData.name,
-        group_url: formData.link,
-        nav_type: 'dashboard',
-        group_pos: formData.position,
-        group_icon: formData.icon,
-      })
-      const newSection = {
-        ...response.data.data,
-        nav_items: response.data.data.nav_items || [],
+  const handleCreateSection = React.useCallback(
+    async (formData: { name: string; link: string; position: number; icon: string }) => {
+      try {
+        router.post('/nav-group', {
+          group_label: formData.name,
+          group_url: formData.link,
+          nav_type: 'dashboard',
+          group_pos: formData.position,
+          group_icon: formData.icon,
+        })
+        closeModal()
+      } catch (error) {
+        handleApiError('Failed to create section', error)
       }
-      //TODO use old navdata
-      setNavData([...navData, newSection])
-      closeModal()
-    } catch (error) {
-      handleApiError('Failed to create section', error)
-    }
-  }
+    },
+    [closeModal, handleApiError]
+  )
 
-  const handleUpdateSection = async (
-    formData: { name: string; link: string; position: number; icon: string },
-    sectionId: number
-  ) => {
-    try {
-      await axios.put(`/nav-group/${sectionId}`, {
-        group_icon: formData.icon,
-        group_label: formData.name,
-        group_url: formData.link,
-        group_pos: formData.position,
-        nav_type: 'dashboard',
-      })
-      setNavData(
-        navData.map((s) =>
-          s.id === sectionId
-            ? {
-                ...s,
-                group_label: formData.name,
-                group_url: formData.link,
-                group_pos: formData.position,
-                group_icon: formData.icon,
-              }
-            : s
-        )
-      )
-      closeModal()
-    } catch (error) {
-      handleApiError('Failed to update section', error)
-    }
-  }
+  const handleUpdateSection = React.useCallback(
+    async (
+      formData: { name: string; link: string; position: number; icon: string },
+      sectionId: number
+    ) => {
+      try {
+        router.put(`/nav-group/${sectionId}`, {
+          group_icon: formData.icon,
+          group_label: formData.name,
+          group_url: formData.link,
+          group_pos: formData.position,
+          nav_type: 'dashboard',
+        })
 
-  const handleDeleteSection = async (sectionId: number) => {
-    if (!window.confirm('Are you sure you want to delete this entire section and all its links?'))
-      return
-    try {
-      await axios.delete(`/nav-group/${sectionId}`)
-      setNavData(navData.filter((s) => s.id !== sectionId))
-    } catch (error) {
-      handleApiError('Failed to delete section', error)
-    }
-  }
+        closeModal()
+      } catch (error) {
+        handleApiError('Failed to update section', error)
+      }
+    },
+    [closeModal, handleApiError]
+  )
 
-  const handleCreateLink = async (formData: {
-    name: string
-    link: string
-    position: number
-    icon: string
-  }) => {
-    const { parentGroupId } = modalState.data as { parentGroupId: number }
-    try {
-      const response = await axios.post('/nav-item', {
-        nav_group_id: parentGroupId,
-        item_label: formData.name,
-        item_url: formData.link,
-        item_pos: formData.position,
-        item_icon: formData.icon,
-      })
-      const newLink = response.data.data
-      setNavData(
-        navData.map((section) =>
-          section.id === parentGroupId
-            ? {
-                ...section,
-                nav_items: [...section.nav_items, newLink].sort((a, b) => a.item_pos - b.item_pos),
-              }
-            : section
-        )
-      )
-      closeModal()
-    } catch (error) {
-      handleApiError('Failed to create link', error)
-    }
-  }
+  const handleDeleteSection = React.useCallback(
+    async (sectionId: number) => {
+      if (!window.confirm('Are you sure you want to delete this entire section and all its links?'))
+        return
+      try {
+        router.delete(`/nav-group/${sectionId}`)
+      } catch (error) {
+        handleApiError('Failed to delete section', error)
+      }
+    },
+    [handleApiError]
+  )
 
-  const handleUpdateLink = async (
-    formData: { name: string; link: string; position: number; icon: string },
-    linkId: number
-  ) => {
-    try {
-      await axios.put(`/nav-item/${linkId}`, {
-        item_label: formData.name,
-        item_url: formData.link,
-        item_pos: formData.position,
-        item_icon: formData.icon,
-      })
-      setNavData(
-        navData.map((section) => ({
-          ...section,
-          nav_items: section.nav_items.map((item) =>
-            item.id === linkId
-              ? {
-                  ...item,
-                  item_label: formData.name,
-                  item_url: formData.link,
-                  item_pos: formData.position,
-                }
-              : item
-          ),
-        }))
-      )
-      closeModal()
-    } catch (error) {
-      handleApiError('Failed to update link', error)
-    }
-  }
+  const handleCreateLink = React.useCallback(
+    async (formData: { name: string; link: string; position: number; icon: string }) => {
+      const { parentGroupId } = modalState.data as { parentGroupId: number }
+      try {
+        await router.post('/nav-item', {
+          nav_group_id: parentGroupId,
+          item_label: formData.name,
+          item_url: formData.link,
+          item_pos: formData.position,
+          item_icon: formData.icon,
+        })
+        closeModal()
+      } catch (error) {
+        handleApiError('Failed to create link', error)
+      }
+    },
+    [modalState, closeModal, handleApiError]
+  )
 
-  const handleDeleteLink = async (linkId: number) => {
-    if (!window.confirm('Are you sure you want to delete this link?')) return
-    try {
-      await axios.delete(`/nav-item/${linkId}`)
-      setNavData(
-        navData.map((section) => ({
-          ...section,
-          nav_items: section.nav_items.filter((item) => item.id !== linkId),
-        }))
-      )
-    } catch (error) {
-      handleApiError('Failed to delete link', error)
-    }
-  }
+  const handleUpdateLink = React.useCallback(
+    async (
+      formData: { name: string; link: string; position: number; icon: string },
+      linkId: number
+    ) => {
+      try {
+        await router.put(`/nav-item/${linkId}`, {
+          item_label: formData.name,
+          item_url: formData.link,
+          item_pos: formData.position,
+          item_icon: formData.icon,
+        })
+        closeModal()
+      } catch (error) {
+        handleApiError('Failed to update link', error)
+      }
+    },
+    [closeModal, handleApiError]
+  )
 
-  //TODO: use useMemo for modal props
-  const getModalProps = () => {
+  const handleDeleteLink = React.useCallback(
+    async (linkId: number) => {
+      if (!window.confirm('Are you sure you want to delete this link?')) return
+      try {
+        await router.delete(`/nav-item/${linkId}`)
+      } catch (error) {
+        handleApiError('Failed to delete link', error)
+      }
+    },
+    [handleApiError]
+  )
+
+  // Compute modalProps using useMemo for optimization
+  const modalProps = React.useMemo(() => {
     if (!modalState.isOpen) return null
     const { type, data } = modalState
 
-    //TODO dont pass fucntion as reference
     switch (type) {
       case 'addSection':
         return {
           mode: 'add' as const,
           title: 'Add Section',
           submitButtonText: 'Create Section',
-          onSubmit: handleCreateSection,
         }
       case 'editSection': {
         const section = data as NavGroup
@@ -239,8 +191,6 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           initialLink: section.group_url,
           initialPosition: section.group_pos,
           initialIcon: section.group_icon,
-          onSubmit: handleUpdateSection,
-          onRemove: handleDeleteSection,
         }
       }
       case 'addLink':
@@ -248,7 +198,6 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           mode: 'add' as const,
           title: 'Add Link',
           submitButtonText: 'Create Link',
-          onSubmit: handleCreateLink,
         }
       case 'editLink': {
         const link = data as NavItem
@@ -261,16 +210,36 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           initialLink: link.item_url,
           initialPosition: link.item_pos,
           initialIcon: link.item_icon,
-          onSubmit: handleUpdateLink,
-          onRemove: handleDeleteLink,
         }
       }
       default:
         return null
     }
-  }
+  }, [modalState, handleCreateSection, handleUpdateSection, handleCreateLink, handleUpdateLink])
 
-  const modalProps = getModalProps()
+  const handleSubmit = (
+    formData: { name: string; link: string; position: number; icon: string },
+    id?: number
+  ) => {
+    if (!modalState.type) return
+
+    switch (modalState.type) {
+      case 'addSection':
+        return handleCreateSection(formData)
+      case 'editSection':
+        if (modalState.data && 'id' in modalState.data) {
+          return handleUpdateSection(formData, modalState.data.id)
+        }
+        break
+      case 'addLink':
+        return handleCreateLink(formData)
+      case 'editLink':
+        if (modalState.data && 'id' in modalState.data) {
+          return handleUpdateLink(formData, modalState.data.id)
+        }
+        break
+    }
+  }
 
   return (
     <AnalyticsDashboardLayout
@@ -358,11 +327,18 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
           </div>
         </Card>
       </div>
-      {/*TODO: Fix Type Error*/}
       {modalState.isOpen && modalProps && (
         <ManageLinkModal
-          setShowModal={closeModal}
-          {...modalProps}
+          setShowModal={() => closeModal()}
+          onSubmit={handleSubmit}
+          mode={modalProps.mode}
+          title={modalProps.title}
+          submitButtonText={modalProps.submitButtonText}
+          itemId={modalProps.itemId}
+          initialName={modalProps.initialName}
+          initialLink={modalProps.initialLink}
+          initialPosition={modalProps.initialPosition}
+          initialIcon={modalProps.initialIcon}
         />
       )}
     </AnalyticsDashboardLayout>

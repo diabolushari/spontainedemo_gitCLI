@@ -20,28 +20,23 @@ class NavItemController extends Controller
     {
         $navItem = NavItem::create($request->validated());
 
-        return response()->json([
-            'message' => 'Nav group created successfully.',
-            'data' => $navItem,
-        ], 201);
+        return redirect()->back()->with('success', 'Operation successful!');
+
     }
 
     public function update(UpdateNavItemRequest $request, NavItem $navItem)
     {
         $navItem->update($request->validated());
 
-        return response()->json([
-            'message' => 'Nav item updated successfully.',
-            'data' => $navItem,
-        ]);
+        return redirect()->back()->with('success', 'Operation successful!');
+
     }
 
     public function destroy(NavItem $navItem)
     {
         $navItem->delete();
 
-        return response()->json([
-            'message' => 'Nav item deleted successfully.',
-        ]);
+        return redirect()->back()->with('success', 'Operation successful!');
+
     }
 }
