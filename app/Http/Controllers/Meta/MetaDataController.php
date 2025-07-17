@@ -46,7 +46,7 @@ class MetaDataController extends Controller implements HasMiddleware
             })
             ->when($request->filled('structure'), function (Builder $builder) use ($request) {
                 $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
-                    $query->where('structure_name', 'like', '%'.$request->input('structure').'%');
+                    $query->where('id', $request->input('structure'));
                 });
             })
             ->withCount('hierarchyPrimaryField', 'hierarchySecondaryField', 'groupItem')
@@ -54,12 +54,17 @@ class MetaDataController extends Controller implements HasMiddleware
             ->withPath(route('meta-data.index'))
             ->withQueryString();
 
+        $oldStructure = $request->filled('structure') ? MetaStructure::find($request->structure) : null;
+
         return Inertia::render('MetaData/MetaDataIndex', [
             'metaData' => $records,
             'structures' => $structures,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all(),
+            'oldValues' => [
+                'search' => $request->search ?? '',
+                'structure' => $oldStructure,
+            ],
         ]);
     }
 

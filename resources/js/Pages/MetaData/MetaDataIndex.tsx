@@ -11,13 +11,16 @@ interface Props {
   metaData: Paginator<MetaData>
   type?: string
   subtype?: string
-  oldValues?: Record<string, string>
+  oldValues?: {
+    search: string
+    structure: MetaStructure | null
+  }
 }
 
 export default function MetaDataIndex({ structures, metaData, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
-    search: '',
-    structure: '',
+    search: oldValues?.search ?? '',
+    structure: oldValues?.structure?.id.toString() ?? '',
     type: 'definitions',
     subtype: 'metadata',
   })
@@ -25,7 +28,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
   const [selectedItem, setSelectedItem] = useState<Pick<
     MetaStructure,
     'id' | 'structure_name'
-  > | null>(null)
+  > | null>(oldValues?.structure ?? null)
 
   const formItems = useMemo(<
     T,
@@ -55,7 +58,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
         }),
         setValue: (value: Pick<MetaStructure, 'id' | 'structure_name'>) => {
           setSelectedItem(value)
-          setFormValue('structure')(value?.structure_name ?? '')
+          setFormValue('structure')(value?.id.toString() ?? '')
         },
       },
     } as Record<U, FormItem<T[U], K, G, L>>

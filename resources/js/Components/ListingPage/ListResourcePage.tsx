@@ -7,7 +7,6 @@ import Pagination from '@/ui/Pagination/Pagination'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import React, { useCallback, useRef } from 'react'
-import FilterOldValues from '../OldSearch/FilterOldValues'
 
 export interface ListItemKeys<T> {
   key: keyof T
@@ -163,10 +162,10 @@ export default function ListResourcePage<
             </div>
           </div>
         </div>
-        <FilterOldValues
-          oldValues={oldValues}
-          searchUrl={searchUrl}
-        />
+        {/*<FilterOldValues*/}
+        {/*  oldValues={oldValues}*/}
+        {/*  searchUrl={searchUrl}*/}
+        {/*/>*/}
         <CardGridView
           keys={keys}
           primaryKey={primaryKey}
