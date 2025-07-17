@@ -9,6 +9,7 @@ use App\Libs\ExceptionMessage;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderJob;
+use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Models\DataLoader\DataLoaderQuery;
 use App\Models\DataLoader\LoaderAPI;
 use Exception;
@@ -41,7 +42,11 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy(DataLoaderJobStatus::select('executed_at')
+                ->whereColumn('loader_job_id', 'loader_jobs.id')
+                ->orderBy('executed_at', 'desc')
+                ->limit(1),
+                'desc')
             ->paginate(20)
             ->withPath(route('loader-jobs.index'))
             ->withQueryString();
