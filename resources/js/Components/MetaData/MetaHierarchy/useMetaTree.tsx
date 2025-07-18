@@ -1,4 +1,4 @@
-import { MetaHierarchyItem } from '@/interfaces/meta_interfaces'
+import { MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_interfaces'
 import { useCallback, useEffect, useState } from 'react'
 
 export interface MetaTreeNodeData {
@@ -6,6 +6,7 @@ export interface MetaTreeNodeData {
   nodePrimaryValue: string
   nodeSecondaryValue?: string
   level: number
+  levelName: string
   parentId: number | null
   expanded: boolean
   visible: boolean
@@ -60,30 +61,38 @@ function collapseNode(node: MetaTreeNodeData, tree: MetaTreeNodeData[]): MetaTre
   })
 }
 
-export default function useMetaTree(hierarchyList: MetaHierarchyItem[]) {
+export default function useMetaTree(
+  hierarchyList: MetaHierarchyItem[],
+  metaHierarchy: MetaHierarchy
+) {
   const [tree, setTree] = useState<MetaTreeNodeData[]>([])
 
   useEffect(() => {
-    setTree((oldValues) => {
-      //if the treeNode is visible in old tree then it will be visible in new tree
-      //node at root level(parentId = null) will be always visible
-      //node is visible when its parent is expanded
+    const levelNameMap = new Map<number, string>()
+    if (metaHierarchy?.levels) {
+      for (const level of metaHierarchy.levels) {
+        if (level.level != null) {
+          levelNameMap.set(level.level, level.name ?? '')
+        }
+      }
+    }
 
+    setTree((oldValues) => {
       return hierarchyList.map((hierarchyItem) => {
         let visible = false
         let expanded = false
 
-        if (hierarchyItem.parent_id == null) {
+        if (hierarchyItem.parent_id === null) {
           visible = true
         } else {
           const parent = oldValues.find((item) => item.nodeId === hierarchyItem.parent_id)
-          if (parent != null) {
+          if (parent) {
             visible = parent.expanded
           }
         }
 
         const oldNode = oldValues.find((item) => item.nodeId === hierarchyItem.id)
-        if (oldNode != null) {
+        if (oldNode) {
           expanded = oldNode.expanded
         }
 
@@ -92,6 +101,7 @@ export default function useMetaTree(hierarchyList: MetaHierarchyItem[]) {
           nodePrimaryValue: hierarchyItem.primary_field?.name ?? '',
           nodeSecondaryValue: hierarchyItem.secondary_field?.name ?? '',
           level: hierarchyItem.level,
+          levelName: levelNameMap.get(hierarchyItem.level) ?? '',
           parentId: hierarchyItem.parent_id,
           expanded,
           visible,
@@ -99,22 +109,20 @@ export default function useMetaTree(hierarchyList: MetaHierarchyItem[]) {
         }
       })
     })
-  }, [hierarchyList])
+  }, [hierarchyList, metaHierarchy])
 
   const toggleNode = useCallback((nodeId: number) => {
     setTree((oldValues) => {
       const currentNode = oldValues.find((item) => item.nodeId === nodeId)
 
-      if (currentNode == null) {
+      if (!currentNode) {
         return oldValues
       }
 
       if (currentNode.expanded) {
-        //collapse the node and all its children
         return collapseNode(currentNode, oldValues)
       }
 
-      //expand the node and show its children
       return expandNode(currentNode, oldValues)
     })
   }, [])

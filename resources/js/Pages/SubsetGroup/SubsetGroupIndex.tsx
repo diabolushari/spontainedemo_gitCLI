@@ -8,16 +8,19 @@ import { router } from '@inertiajs/react'
 
 interface Props {
   subsetGroups: Paginator<SubsetGroup>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function SubsetGroupIndex({ subsetGroups }: Readonly<Props>) {
+export default function SubsetGroupIndex({ subsetGroups, oldValues }: Readonly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
-    search: '',
+    search: oldValues?.search ?? '',
   })
 
   //input elements list

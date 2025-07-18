@@ -24,9 +24,10 @@ export default function DataLoaderJobIndex({
   subtype,
   oldValues,
 }: Readonly<Props>) {
+  console.log(oldValues)
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
-    search: '',
+    search: oldValues?.search ?? '',
   })
 
   //input elements list

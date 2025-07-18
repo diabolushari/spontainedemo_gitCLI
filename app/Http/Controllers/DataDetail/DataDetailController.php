@@ -52,6 +52,7 @@ class DataDetailController extends Controller implements HasMiddleware
         return Inertia::render('DataDetail/DataDetailIndex', [
             'details' => $details,
             'types' => $referenceData,
+            'oldValues' => $request->all(),
         ]);
     }
 

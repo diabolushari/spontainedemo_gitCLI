@@ -15,7 +15,7 @@ interface Props {
 
 export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
-    search: '',
+    search: oldValues?.search ?? '',
     type: 'definitions',
     subtype: 'groups',
   })

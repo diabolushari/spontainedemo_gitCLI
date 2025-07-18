@@ -15,7 +15,7 @@ interface Props {
 
 export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
-    search: '',
+    search: oldValues?.search ?? '',
     type: 'definitions',
     subtype: 'heirarchies',
   })
