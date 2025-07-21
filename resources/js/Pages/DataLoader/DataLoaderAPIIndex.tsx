@@ -1,10 +1,10 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataLoaderAPI } from '@/interfaces/data_interfaces'
-import { useCallback, useMemo } from 'react'
-import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
+import { useCallback, useMemo } from 'react'
 
 interface Props {
   dataLoaderAPIs: Paginator<DataLoaderAPI>
@@ -17,15 +17,7 @@ interface FormFields {
   search: string
 }
 
-export default function DataLoaderAPIIndex({
-  dataLoaderAPIs,
-  type,
-  subtype,
-  oldValues,
-}: Readonly<Props>) {
-  //TODO : oldvalues is undefined
-  console.log(oldValues)
-  //holds data
+export default function DataLoaderAPIIndex({ dataLoaderAPIs, oldValues }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: oldValues?.search ?? '',
   })
@@ -77,6 +69,7 @@ export default function DataLoaderAPIIndex({
   return (
     <ListResourcePage
       keys={keys}
+      title={'JSON APIs'}
       primaryKey={'id'}
       rows={data}
       formData={formData}

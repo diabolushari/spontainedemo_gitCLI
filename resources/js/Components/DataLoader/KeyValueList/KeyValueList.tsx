@@ -7,9 +7,15 @@ interface Props {
   list: KeyValue[]
   setList: Dispatch<SetStateAction<KeyValue[]>>
   errorsKey?: string
+  placeholder?: {
+    key?: string
+    value?: string
+  }
 }
 
-function KeyValueList({ list, setList, errorsKey = '' }: Readonly<Props>) {
+function KeyValueList({ list, setList, errorsKey = '', placeholder }: Readonly<Props>) {
+  const { errors } = usePage().props as { errors: Record<string, string | undefined> }
+
   const changeKey = useCallback(
     (itemIndex: number, key: string) => {
       setList((oldValues) => {
@@ -59,8 +65,6 @@ function KeyValueList({ list, setList, errorsKey = '' }: Readonly<Props>) {
     })
   }
 
-  const { errors } = usePage().props as { errors: Record<string, string | undefined> }
-
   return (
     <div className='grid grid-cols-1 gap-1 p-2'>
       {list.map((item, index) => (
@@ -68,26 +72,26 @@ function KeyValueList({ list, setList, errorsKey = '' }: Readonly<Props>) {
           className='flex items-end gap-2'
           key={index}
         >
-          <div className='flex-grow-1 grid grid-cols-2 gap-1'>
+          <div className='grid grow grid-cols-2 gap-1'>
             <div className='flex flex-col'>
               <Input
                 setValue={(value) => changeKey(index, value)}
                 value={item.key}
-                label='key'
                 error={errors[`${errorsKey}.${index}.key`] ?? undefined}
+                placeholder={placeholder?.key ?? 'Parameter name (e.g., user_id)'}
               />
             </div>
             <div className='flex flex-col'>
               <Input
                 setValue={(value) => changeValue(index, value)}
                 value={item.value ?? ''}
-                label='value'
                 error={errors[`${errorsKey}.${index}.value`] ?? undefined}
+                placeholder={placeholder?.value ?? 'Parameter value'}
               />
             </div>
           </div>
           <button
-            className='flex-shrink-0 p-2 hover:bg-1stop-accent2'
+            className='shrink-0 p-2 hover:bg-1stop-accent2'
             type='button'
             onClick={() => removeItem(index)}
           >

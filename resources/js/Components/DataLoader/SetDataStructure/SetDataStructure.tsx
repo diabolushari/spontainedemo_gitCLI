@@ -56,7 +56,7 @@ function SetDataStructure({
             <Input
               setValue={(value) => updateJsonFieldName(definition.id, value)}
               value={definition.field_name}
-              disabled={definition.field_name === 'root'}
+              disabled={definition.field_name === 'response'}
               placeholder='Field Name'
             />
           </div>
@@ -64,13 +64,13 @@ function SetDataStructure({
             <SelectList
               setValue={(value) => updateJsonFieldType(definition.id, value as JSONFieldType)}
               value={definition.field_type}
-              list={definition.field_name === 'root' ? rootFieldTypes : fieldTypes}
+              list={definition.field_name === 'response' ? rootFieldTypes : fieldTypes}
               dataKey='value'
               displayKey='label'
             />
           </div>
         </div>
-        {definition.field_name !== 'root' && (
+        {definition.field_name !== 'response' && (
           <button
             className='flex-shrink-0 p-2 hover:bg-1stop-accent2'
             type='button'

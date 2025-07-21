@@ -29,11 +29,18 @@ class DataLoaderAPIController extends Controller implements HasMiddleware
     public function index(DataLoaderAPISearchRequest $request): Response
     {
         /** @var LengthAwarePaginator<LoaderAPI> $dataLoaderAPIs */
-        $dataLoaderAPIs = LoaderAPI::paginate(20)
+        $dataLoaderAPIs = LoaderAPI::when($request->search, function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('description', 'like', '%' . $request->search . '%');
+            })
+            ->paginate(20)
             ->withQueryString();
 
         return Inertia::render('DataLoader/DataLoaderAPIIndex', [
             'dataLoaderAPIs' => $dataLoaderAPIs,
+            'oldValues' => [
+                'search' => $request->search ?? '',
+            ]
         ]);
     }
 

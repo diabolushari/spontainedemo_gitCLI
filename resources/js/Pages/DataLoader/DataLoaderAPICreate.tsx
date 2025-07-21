@@ -1,14 +1,15 @@
-import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo, useState } from 'react'
+import HttpHeadersForm from '@/Components/DataLoader/KeyValueList/HttpHeadersForm'
+import KeyValueList from '@/Components/DataLoader/KeyValueList/KeyValueList'
+import SetDataStructure from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
+import useJsonStructure from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import useCustomForm from '@/hooks/useCustomForm'
 import { DataLoaderAPI, KeyValue } from '@/interfaces/data_interfaces'
-import KeyValueList from '@/Components/DataLoader/KeyValueList/KeyValueList'
+import ErrorText from '@/typography/ErrorText'
 import Button from '@/ui/button/Button'
 import { usePage } from '@inertiajs/react'
-import ErrorText from '@/typography/ErrorText'
-import useJsonStructure from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
-import SetDataStructure from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
+import { useMemo, useState } from 'react'
 
 const requestTypes = [
   { method: 'GET', label: 'GET' },
@@ -17,6 +18,11 @@ const requestTypes = [
 
 interface Props {
   dataLoaderAPI?: DataLoaderAPI
+}
+
+const httpHeaderFieldPlaceholder = {
+  key: 'Header name (e.g., Authorization)',
+  value: 'Header value (e.g., Bearer YOUR_API_KEY)',
 }
 
 export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) {
@@ -44,7 +50,7 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
       last_uuid: 1,
       definition: {
         id: 1,
-        field_name: 'root',
+        field_name: 'response',
         field_type: 'array',
         primary_field: true,
         children: [],
@@ -116,16 +122,17 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
       isPatchRequest={dataLoaderAPI != null}
     >
       <div className='flex flex-col gap-5'>
-        <div>
+        <div className='flex flex-col gap-5'>
           <h3>Request Headers</h3>
           {errors['headers'] != null && <ErrorText>{errors['headers']}</ErrorText>}
-          <KeyValueList
+          <HttpHeadersForm
             list={headers}
             setList={setHeaders}
             errorsKey='headers'
+            placeholder={httpHeaderFieldPlaceholder}
           />
         </div>
-        <div>
+        <div className='flex flex-col gap-5'>
           <h3>Request Body</h3>
           {errors['body'] != null && <ErrorText>{errors['body']}</ErrorText>}
           <KeyValueList

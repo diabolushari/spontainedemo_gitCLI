@@ -70,14 +70,14 @@ class GetPrimaryFieldData implements DataFetcherInterface
             return $data;
         }
         $currentPathPosition = array_shift($pathToPrimary);
-        if ($currentPathPosition->fieldName === 'root' && $currentPathPosition->fieldType !== 'array') {
+        if ($currentPathPosition->fieldName === 'response' && $currentPathPosition->fieldType !== 'array') {
             return $this->traverseStructure($data, $pathToPrimary);
         }
 
-        if ($currentPathPosition->fieldName !== 'root' && ! isset($data[$currentPathPosition->fieldName])) {
+        if ($currentPathPosition->fieldName !== 'response' && ! isset($data[$currentPathPosition->fieldName])) {
             throw new Exception($currentPathPosition->fieldName.' is not present in the data');
         }
-        $currentLevelData = $currentPathPosition->fieldName === 'root' ? $data : $data[$currentPathPosition->fieldName];
+        $currentLevelData = $currentPathPosition->fieldName === 'response' ? $data : $data[$currentPathPosition->fieldName];
 
         if ($currentPathPosition->fieldType === 'array') {
             if (! $this->isSequential($currentLevelData)) {
