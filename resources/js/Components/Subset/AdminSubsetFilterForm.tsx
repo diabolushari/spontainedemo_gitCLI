@@ -390,6 +390,7 @@ export default function AdminSubsetFilterForm({
       <div className='flex gap-2'>
         <Button label='Search' />
         <Button
+          type={'button'}
           label='Reset'
           onClick={() => onSubmit(null)}
         />

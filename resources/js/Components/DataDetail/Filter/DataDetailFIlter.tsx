@@ -15,6 +15,7 @@ import {
   SubsetFilterFormField,
   SubsetFilterFormType,
 } from '@/Components/Subset/AdminSubsetFilterForm'
+import { router } from '@inertiajs/react'
 
 interface Props {
   details: DataDetail
@@ -269,6 +270,10 @@ export default function DataDetailFIlter({ details, filters, onSubmit, offices }
       return prevFormFields.filter((formField) => formField.id !== id)
     })
   }
+
+  const handleReset = () => {
+    router.get(route('data-detail.show', details.id))
+  }
   return (
     <form
       className='flex flex-col gap-5 py-5'
@@ -361,6 +366,7 @@ export default function DataDetailFIlter({ details, filters, onSubmit, offices }
       <div className='flex gap-2'>
         <Button label='Search' />
         <Button
+          type='button'
           label='Reset'
           onClick={() => onSubmit(null)}
         />
