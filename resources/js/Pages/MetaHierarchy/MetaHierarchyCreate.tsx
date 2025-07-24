@@ -177,13 +177,12 @@ export default function MetaHierarchyCreate({
             level: item.level,
             name: item.name,
             primary_field_structure_id: item.primary_structure?.id,
-            secondary_field_structure_id:
-              formData.secondary_field_name == '' ? '' : item.secondary_structure?.id,
+            secondary_field_structure_id: item.secondary_structure?.id ?? null,
           }
         }),
       })
     },
-    [formData, hierarchyLevelInfos, post]
+    [formData, hierarchyLevelInfos, post, metaHierarchy]
   )
 
   return (

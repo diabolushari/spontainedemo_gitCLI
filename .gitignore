@@ -24,3 +24,4 @@ yarn-error.log
 /.phpstorm.meta.php
 .DS_Store
 */.DS_Store
+mise.toml

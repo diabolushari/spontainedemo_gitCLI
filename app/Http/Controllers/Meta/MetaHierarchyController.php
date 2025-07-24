@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Log;
 
 class MetaHierarchyController extends Controller implements HasMiddleware
 {
@@ -143,6 +144,7 @@ class MetaHierarchyController extends Controller implements HasMiddleware
             foreach ($hierarchyLevels as &$tempLevel) {
                 $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
             }
+
             MetaHierarchyLevelInfo::upsert(
                 $hierarchyLevels,
                 ['level', 'meta_hierarchy_id'],
