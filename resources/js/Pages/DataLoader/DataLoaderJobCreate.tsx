@@ -1,14 +1,15 @@
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
-import JsonToDataTableMapping from '@/Components/DataLoader/JsonToDataTableMapping'
-import { JSONDefinition } from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
-import { useJsonFieldMapping } from '@/Components/DataLoader/useJsonFieldMapping'
+import DataTableToJsonMapping from '@/Components/DataLoader/DataTableToJsonMapping'
+import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import useCustomForm from '@/hooks/useCustomForm'
+import useFetchRecord from '@/hooks/useFetchRecord'
 import {
   cronTypes,
   DAILY_CRON,
   DataDetail,
+  DataDetailFields,
   DataLoaderAPI,
   DataLoaderConnection,
   DataLoaderJob,
@@ -18,7 +19,7 @@ import {
 } from '@/interfaces/data_interfaces'
 import { daysOfWeek, monthList } from '@/libs/dates'
 import Button from '@/ui/button/Button'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -26,12 +27,8 @@ interface Props {
   connectionId?: number | null
   dataDetail: DataDetail
   dataDetails: DataDetail[]
-  apis: Pick<DataLoaderAPI, 'id' | 'name' | 'response_structure'>[]
+  apis: Pick<DataLoaderAPI, 'id' | 'name' | 'response_structure' | 'body'>[]
 }
-
-type JSONValue = string | number | boolean | null | JSONArray | JSONObject
-type JSONArray = JSONValue[]
-type JSONObject = { [key: string]: JSONValue }
 
 interface FormData {
   name: string
@@ -64,19 +61,16 @@ const sourceTypes = [
   },
 ]
 
-const getPrimaryField = (structure: JSONDefinition): JSONDefinition | null => {
-  if (structure.primary_field) {
-    return structure
-  }
-  let primaryFieldInChild = null
-  structure.children.forEach((child) => {
-    const primaryField = getPrimaryField(child)
-    if (primaryField != null) {
-      primaryFieldInChild = primaryField
-    }
-  })
-  return primaryFieldInChild
-}
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Loader jobs',
+    link: '/loader-jobs',
+  },
+  {
+    item: 'Loader job create',
+    link: '',
+  },
+]
 
 export default function DataLoaderJobCreate({
   job,
@@ -105,15 +99,20 @@ export default function DataLoaderJobCreate({
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
     predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
   })
+  const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
-  const { fieldMapping, changeJsonDefinition, changeDataTableColumn } = useJsonFieldMapping()
+  const [fieldMapping, setFieldMapping] = useState<DataTableFieldMapping[]>([])
+
+  const handleMappingChange = useCallback((mappings: DataTableFieldMapping[]) => {
+    setFieldMapping(mappings)
+  }, [])
 
   const availableJobs = useMemo(() => {
     const jobs: { id: number; name: string }[] = []
 
     dataDetails.forEach((dataDetail) => {
       dataDetail.jobs?.forEach((job) => {
-        if (job == null || job.id == null || job.name == null) {
+        if (job?.id == null || job?.name == null) {
           return
         }
         jobs.push({
@@ -338,45 +337,12 @@ export default function DataLoaderJobCreate({
         })
   }, [dataDetail, job])
 
-  const breadCrumb: BreadcrumbItemLink[] = [
-    {
-      item: 'Loader jobs',
-      link: '/loader-jobs',
-    },
-    {
-      item: 'Loader job create',
-      link: '',
-    },
-  ]
-
-  const primaryField = useMemo(() => {
-    if (formData.api_id == '') {
-      return null
-    }
-    const selectedApi = apis.find((api) => api.id.toString() === formData.api_id)
-    if (selectedApi == null || selectedApi.response_structure == null) {
-      return null
-    }
-    const responseStructure = selectedApi.response_structure
-    return getPrimaryField(responseStructure.definition)
-  }, [formData.api_id, apis])
-
-  useEffect(() => {
-    if (primaryField != null) {
-      changeJsonDefinition(primaryField)
-    }
-  }, [primaryField, changeJsonDefinition])
-
   const customFormData = useMemo(() => {
     return {
       ...formData,
       field_mapping: fieldMapping ?? [],
     }
   }, [formData, fieldMapping])
-
-  useEffect(() => {
-    console.log(fieldMapping)
-  }, [fieldMapping])
 
   return (
     <FormPage
@@ -393,11 +359,12 @@ export default function DataLoaderJobCreate({
       hideSubmitButton
       customSubmitData={customFormData}
     >
-      {primaryField != null && (
-        <JsonToDataTableMapping
-          dataDetailId={dataDetail.id}
-          fieldMapping={fieldMapping}
-          changeDataTableColumn={changeDataTableColumn}
+      {formData.source_type === 'api' && dataTableDetail != null && formData.api_id != '' && (
+        <DataTableToJsonMapping
+          dataTableDetail={dataTableDetail}
+          apiId={formData.api_id}
+          onMappingChange={handleMappingChange}
+          job={job}
         />
       )}
 

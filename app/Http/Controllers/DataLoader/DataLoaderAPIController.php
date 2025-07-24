@@ -30,9 +30,9 @@ class DataLoaderAPIController extends Controller implements HasMiddleware
     {
         /** @var LengthAwarePaginator<LoaderAPI> $dataLoaderAPIs */
         $dataLoaderAPIs = LoaderAPI::when($request->search, function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%');
-            })
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('description', 'like', '%'.$request->search.'%');
+        })
             ->paginate(20)
             ->withQueryString();
 
@@ -40,7 +40,7 @@ class DataLoaderAPIController extends Controller implements HasMiddleware
             'dataLoaderAPIs' => $dataLoaderAPIs,
             'oldValues' => [
                 'search' => $request->search ?? '',
-            ]
+            ],
         ]);
     }
 
