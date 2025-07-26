@@ -4,7 +4,7 @@ import extractJsonMarkdown from './extract-json-markdown'
 
 export interface AgentAction {
   tool: string
-  tool_input: string
+  tool_input: string | Record<string, unknown>
   log: string
 }
 
@@ -107,7 +107,10 @@ function agentResponseToChatMessages(
         id: currentIdRef.current++,
         role: 'action',
         content: action.tool,
-        description: action.tool_input,
+        description:
+          typeof action.tool_input === 'string'
+            ? action.tool_input
+            : JSON.stringify(action.tool_input),
         contentType: 'text',
         suggestions: [],
       })
@@ -140,9 +143,9 @@ export function parseAndConvertAgentResponse(
   currentIdRef: MutableRefObject<number>,
   setLoading?: Dispatch<SetStateAction<boolean>>
 ): ChatMessage[] {
-  console.log(`Raw response from fastapi  : \n${responseString}`)
   try {
     const json = JSON.parse(responseString) as AgentResponse
+    console.log('Parsed agent response:', json)
     console.log(json)
     // If there's output property, this is the final response, so set loading to false
     if (('output' in json || 'error' in json) && setLoading != null) {

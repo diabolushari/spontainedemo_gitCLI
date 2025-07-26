@@ -1,8 +1,8 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
 import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
 import { usePage } from '@inertiajs/react'
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 function startNewChat(
   newId: number,
