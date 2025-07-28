@@ -63,6 +63,20 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
                         className='min-w-full divide-y divide-gray-200'
                         {...props}
                       />
+                      {message.data_table ? (
+                        <div className='mt-4 flex justify-end'>
+                          <button
+                            onClick={() =>
+                              downloadAsExcel(message.data_table!, `data_table_${message.id}`)
+                            }
+                            className='flex items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-xs text-gray-600 opacity-60 transition-all hover:bg-gray-50 hover:opacity-100 focus:outline-none focus:ring-1 focus:ring-gray-400'
+                            title='Download Excel file'
+                          >
+                            <Download size={12} />
+                            Excel
+                          </button>
+                        </div>
+                      ) : null}
                     </div>
                   ),
                   th: ({ ...props }) => (
