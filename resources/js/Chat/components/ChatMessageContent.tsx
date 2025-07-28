@@ -1,3 +1,4 @@
+import * as XLSX from 'xlsx'
 import { ChatMessage } from '@/Chat/components/MainArea'
 import {
   Accordion,
@@ -10,6 +11,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import styles from './ChatMessageContent.module.css'
 import ChatVisualization from './ChatVisualization'
+import { Download } from 'lucide-react'
 
 interface Props {
   message: ChatMessage
@@ -25,6 +27,13 @@ function stripCodeFencesAndIndent(content: string): string {
 }
 
 const ChatMessageContent = ({ message }: Readonly<Props>) => {
+  const downloadAsExcel = (data: object[], filename: string = 'data') => {
+    const worksheet = XLSX.utils.json_to_sheet(data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+    XLSX.writeFile(workbook, `${filename}.xlsx`)
+  }
+
   return (
     <div className={styles.container}>
       {message.contentType === 'text' && (
@@ -43,34 +52,62 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
             </Accordion>
           )}
           {(message.role === 'assistant' || message.role === 'user') && (
-            <ReactMarkdown
-              rehypePlugins={[rehypeRaw]}
-              remarkPlugins={[remarkGfm]}
-              components={{
-                table: ({ ...props }) => (
-                  <div className='w-full overflow-x-auto'>
-                    <table
-                      className='min-w-full divide-y divide-gray-200'
+            <div>
+              <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  table: ({ ...props }) => (
+                    <div className='w-full overflow-x-auto'>
+                      <table
+                        className='min-w-full divide-y divide-gray-200'
+                        {...props}
+                      />
+                      {message.data_table ? (
+                        <div className='mt-4 flex justify-end'>
+                          <button
+                            onClick={() =>
+                              downloadAsExcel(message.data_table!, `data_table_${message.id}`)
+                            }
+                            className='flex items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-xs text-gray-600 opacity-60 transition-all hover:bg-gray-50 hover:opacity-100 focus:outline-none focus:ring-1 focus:ring-gray-400'
+                            title='Download Excel file'
+                          >
+                            <Download size={12} />
+                            Excel
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
+                  ),
+                  th: ({ ...props }) => (
+                    <th
+                      className='bg-gray-100 px-4 py-2 text-left text-xs font-semibold text-gray-700'
                       {...props}
                     />
-                  </div>
-                ),
-                th: ({ ...props }) => (
-                  <th
-                    className='bg-gray-100 px-4 py-2 text-left text-xs font-semibold text-gray-700'
-                    {...props}
-                  />
-                ),
-                td: ({ ...props }) => (
-                  <td
-                    className='px-4 py-2 text-sm text-gray-600'
-                    {...props}
-                  />
-                ),
-              }}
-            >
-              {stripCodeFencesAndIndent(message.content)}
-            </ReactMarkdown>
+                  ),
+                  td: ({ ...props }) => (
+                    <td
+                      className='px-4 py-2 text-sm text-gray-600'
+                      {...props}
+                    />
+                  ),
+                }}
+              >
+                {stripCodeFencesAndIndent(message.content)}
+              </ReactMarkdown>
+              {message.data_table ? (
+                <div className='mt-4 flex justify-end'>
+                  <button
+                    onClick={() => downloadAsExcel(message.data_table!, `data_table_${message.id}`)}
+                    className='flex items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-xs text-gray-600 opacity-60 transition-all hover:bg-gray-50 hover:opacity-100 focus:outline-none focus:ring-1 focus:ring-gray-400'
+                    title='Download Excel file'
+                  >
+                    <Download size={12} />
+                    Excel
+                  </button>
+                </div>
+              ) : null}
+            </div>
           )}
         </div>
       )}

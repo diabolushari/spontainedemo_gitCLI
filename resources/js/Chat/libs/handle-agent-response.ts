@@ -52,6 +52,7 @@ function handleOutputResponse(
           content: parsedOutput.output,
           contentType: 'text',
           suggestions: parsedOutput.suggestions ?? [],
+          data_table: parsedOutput.data_table ?? [],
         })
       }
       // Add visualization message if available

@@ -11,6 +11,7 @@ export interface ChatMessage {
   contentType: 'text' | 'table' | 'chart' | 'explore'
   suggestions?: string[]
   explore?: number
+  data_table?: object[]
 }
 
 interface ChatHistory {
