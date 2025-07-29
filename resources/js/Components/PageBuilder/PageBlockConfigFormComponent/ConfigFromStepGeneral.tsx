@@ -162,7 +162,7 @@ export default function ConfigFormStepGeneral({
             <div className='flex flex-col'>
               <DynamicSelectList
                 label='Select a subset group'
-                url='/api/subset-group'
+                url={`/api/data-detail/subset-group/${formData.data_table_id}`}
                 dataKey='id'
                 displayKey='name'
                 value={formData.subset_group_id ?? ''}
@@ -208,7 +208,7 @@ export default function ConfigFormStepGeneral({
             <div className='flex flex-col'>
               <DynamicSelectList
                 label='Subset group for data explore button (optional)'
-                url='/api/subset-group'
+                url={`/api/data-detail/subset-group/${formData.data_table_id}`}
                 dataKey='name'
                 displayKey='name'
                 value={formData.explore_button_group ?? 0}

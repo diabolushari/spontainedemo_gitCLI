@@ -31,6 +31,11 @@ interface AddChartModalProps {
   chartToEdit?: OverviewChart | null
 }
 
+const valueOptions = [
+  { label: 'Measures', value: 'measures' },
+  { label: 'Dimensions', value: 'dimensions' },
+]
+
 const orderOptions = [
   { label: 'Ascending Order', value: 'ascending' },
   { label: 'Descending Order', value: 'descending' },
@@ -236,6 +241,15 @@ function AddChartModal({
                 </div>
 
                 <div className='flex flex-col gap-1'>
+                  <SelectList
+                    label='Value for chart'
+                    list={valueOptions}
+                    dataKey='value'
+                    displayKey='label'
+                    value={formData.value ?? 'measures'}
+                    setValue={setFormValue('value')}
+                    error={errors?.['overview_chart.value']}
+                  />
                   <DynamicSelectList
                     label='Select a dimension for x axis'
                     url={`/api/subset/dimension/${formData.subsetId}`}
