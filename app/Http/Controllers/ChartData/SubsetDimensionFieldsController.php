@@ -11,6 +11,7 @@ class SubsetDimensionFieldsController extends Controller
     {
         $subset = SubsetDetail::with(['dimensions' => function ($query) {
             $query->where('filter_only', 0);
+            $query->where('subset_column', '!=', 'month');
         }])->find($subsetId);
         $dimensions = $subset->dimensions->map(function ($dimension) {
             return [

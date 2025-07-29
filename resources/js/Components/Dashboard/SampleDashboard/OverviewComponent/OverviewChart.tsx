@@ -42,7 +42,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
     `/subset/${chart_content.subset_id}?${
       selectedMonth == null
         ? 'latest=month'
-        : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
+        : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}&fields=${chart_content.x_axis}`
     }`
   )
 

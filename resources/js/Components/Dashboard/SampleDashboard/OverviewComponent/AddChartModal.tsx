@@ -31,11 +31,6 @@ interface AddChartModalProps {
   chartToEdit?: OverviewChart | null
 }
 
-const valueOptions = [
-  { label: 'Measures', value: 'measures' },
-  { label: 'Dimensions', value: 'dimensions' },
-]
-
 const orderOptions = [
   { label: 'Ascending Order', value: 'ascending' },
   { label: 'Descending Order', value: 'descending' },
@@ -46,12 +41,6 @@ const chartOptions = [
   { label: 'Line', value: 'line' },
   { label: 'Pie', value: 'pie' },
 ]
-
-const colorSchemeOptions = Object.keys(chartPallet).map((key) => ({
-  id: key,
-  name: key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()),
-  colors: chartPallet[key as keyof typeof chartPallet],
-}))
 
 function AddChartModal({
   isModalOpen,
@@ -241,15 +230,6 @@ function AddChartModal({
                 </div>
 
                 <div className='flex flex-col gap-1'>
-                  <SelectList
-                    label='Value for chart'
-                    list={valueOptions}
-                    dataKey='value'
-                    displayKey='label'
-                    value={formData.value ?? 'measures'}
-                    setValue={setFormValue('value')}
-                    error={errors?.['overview_chart.value']}
-                  />
                   <DynamicSelectList
                     label='Select a dimension for x axis'
                     url={`/api/subset/dimension/${formData.subsetId}`}
