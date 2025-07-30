@@ -1,4 +1,4 @@
-import { DataDetail } from '@/interfaces/data_interfaces'
+import { DataDetail, DataTableItem } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import DataSetTable from '@/Components/DataExplorer/DataSetTable'
 import DataTableExcelImport from '@/Components/DataDetail/DataTableExcelImport/DataTableExcelImport'
@@ -7,10 +7,10 @@ import Pagination from '@/ui/Pagination/Pagination'
 import React from 'react'
 
 interface DataDetailTableSectionProps {
-  detail: DataDetail
-  filters: Record<string, any>
-  dataTableItems: Paginator<any>
-  onSubmit: (filters: Record<string, any>) => void
+  readonly detail: DataDetail
+  readonly filters: Readonly<Record<string, string | undefined | null>>
+  readonly dataTableItems: Paginator<DataTableItem>
+  readonly onSubmit: (filters: Readonly<Record<string, string>>) => void
 }
 
 export default function DataDetailTableSection({
@@ -19,7 +19,7 @@ export default function DataDetailTableSection({
   dataTableItems,
   onSubmit,
 }: Readonly<DataDetailTableSectionProps>) {
-  const handleFilterSubmit = (queryString: string | null) => {
+  const handleFilterSubmit = (queryString: string | null): void => {
     if (!queryString) {
       onSubmit({})
       return
@@ -28,9 +28,11 @@ export default function DataDetailTableSection({
     const params = new URLSearchParams(queryString)
     const filters: Record<string, string> = {}
 
-    params.forEach((value, key) => {
-      filters[key] = value
-    })
+    for (const [key, value] of params.entries()) {
+      if (value) {
+        filters[key] = value
+      }
+    }
 
     onSubmit(filters)
   }
