@@ -10,6 +10,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class SubsetMeasureField extends Data
 {
     public function __construct(
+        public ?int $id,
         public int $fieldId,
         public string $subsetFieldName,
         public string $subsetColumn,

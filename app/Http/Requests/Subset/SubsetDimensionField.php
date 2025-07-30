@@ -13,6 +13,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class SubsetDimensionField extends Data
 {
     public function __construct(
+        public ?int $id,
         public int $fieldId,
         public int $filterOnly,
         public string $subsetFieldName,

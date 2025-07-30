@@ -57,13 +57,13 @@ export default function SubsetEdit({
     visualization_instructions: subsetDetail.visualization_instructions ?? '',
     type: subsetDetail.type ?? '',
   })
-  const [dates, setDates] = useState<Omit<SubsetDateField, 'id' | 'subset_detail_id'>[]>(
+  const [dates, setDates] = useState<Omit<SubsetDateField, 'subset_detail_id'>[]>(
     subsetDetail.dates as SubsetDateField[]
   )
-  const [dimensions, setDimensions] = useState<
-    Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>[]
-  >(subsetDetail.dimensions as SubsetDimensionField[])
-  const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]>(
+  const [dimensions, setDimensions] = useState<Omit<SubsetDimensionField, 'subset_detail_id'>[]>(
+    subsetDetail.dimensions as SubsetDimensionField[]
+  )
+  const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'subset_detail_id'>[]>(
     subsetDetail.measures as SubsetMeasureField[]
   )
   const { post, loading, errors } = useInertiaPost(route('subset.update', subsetDetail.id), {
@@ -148,6 +148,7 @@ export default function SubsetEdit({
   const submitForm = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
 
+    console.log(dates, dimensions, measures)
     post({
       _method: 'PATCH',
       ...formData,

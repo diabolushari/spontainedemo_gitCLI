@@ -32,62 +32,128 @@ class SubsetUpdateController extends Controller implements HasMiddleware
         SubsetDetail $subsetDetail,
         SubsetFormRequest $request
     ): RedirectResponse {
-        DB::transaction(function () use ($subsetDetail, $request) {
+        try {
+            DB::beginTransaction();
 
             $subsetDetail->update(
                 $request->except('dates', 'dimensions', 'measures')->toArray()
             );
 
-            $subsetDetail->dates()->delete();
-            $subsetDetail->dimensions()->delete();
-            $subsetDetail->measures()->delete();
-
             $user = request()->user()?->id;
 
-            $dates = array_map(function ($date) use ($subsetDetail, $user) {
-                return [
-                    'subset_detail_id' => $subsetDetail->id,
-                    'created_by' => $user,
-                    'updated_by' => $user,
-                    ...$date->toArray(),
-                ];
-            }, $request->dates ?? []);
+            // --- Process Dates ---
+            $this->processRelatedData(
+                $request->dates ?? [],
+                $subsetDetail,
+                SubsetDetailDate::class,
+                'dates',
+                $user,
+                [
+                    'subset_detail_id', 'field_id', 'subset_field_name', 'subset_column',
+                    'sort_order', 'start_date', 'end_date', 'use_dynamic_date',
+                    'use_last_found_data', 'dynamic_start_type', 'dynamic_end_type',
+                    'dynamic_start_offset', 'dynamic_start_unit', 'dynamic_end_offset',
+                    'dynamic_end_unit', 'date_field_expression', 'updated_by',
+                ]
+            );
 
-            $dimensions = array_map(function ($dimension) use ($subsetDetail, $user) {
-                return [
-                    'subset_detail_id' => $subsetDetail->id,
-                    'created_by' => $user,
-                    'updated_by' => $user,
-                    ...$dimension->toArray(),
-                ];
-            }, $request->dimensions ?? []);
+            // --- Process Dimensions ---
+            $this->processRelatedData(
+                $request->dimensions ?? [],
+                $subsetDetail,
+                SubsetDetailDimension::class,
+                'dimensions',
+                $user,
+                [
+                    'subset_detail_id', 'field_id', 'subset_field_name', 'subset_column',
+                    'filter_only', 'column_expression', 'filters', 'hierarchy_id',
+                    'description', 'updated_by',
+                ]
+            );
 
-            $measures = array_map(function ($measure) use ($subsetDetail, $user) {
-                return [
-                    'subset_detail_id' => $subsetDetail->id,
-                    'created_by' => $user,
-                    'updated_by' => $user,
-                    ...$measure->toArray(),
-                ];
-            }, $request->measures ?? []);
+            // --- Process Measures ---
+            $this->processRelatedData(
+                $request->measures ?? [],
+                $subsetDetail,
+                SubsetDetailMeasure::class,
+                'measures',
+                $user,
+                [
+                    'subset_detail_id', 'field_id', 'subset_field_name', 'subset_column',
+                    'sort_order', 'column', 'aggregation', 'expression', 'weight_field_id',
+                    'updated_by',
+                ]
+            );
 
-            if (! empty($dates)) {
-                SubsetDetailDate::insert($dates);
+            DB::commit();
+
+            return redirect()
+                ->route('subset.preview', $subsetDetail->id)
+                ->with(['message' => 'Subset updated successfully']);
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Process related data for a subset (Dates, Dimensions, or Measures).
+     *
+     * @param  array  $data  The array of data from the request.
+     * @param  SubsetDetail  $subsetDetail  The parent subset detail model.
+     * @param  string  $modelClass  The model class name for the related data.
+     * @param  string  $relationName  The name of the relationship on the SubsetDetail model.
+     * @param  int|null  $userId  The ID of the current user.
+     * @param  array  $upsertColumns  The columns to update in case of an upsert.
+     */
+    private function processRelatedData(
+        array $data,
+        SubsetDetail $subsetDetail,
+        string $modelClass,
+        string $relationName,
+        ?int $userId,
+        array $upsertColumns
+    ): void {
+        $itemsToUpdate = [];
+        $itemsToCreate = [];
+        $idsToKeep = [];
+
+        foreach ($data as $item) {
+            $itemArray = $item->toArray();
+
+            if ($relationName === 'dimensions' && isset($itemArray['filters']) && is_array($itemArray['filters'])) {
+                $itemArray['filters'] = json_encode($itemArray['filters']);
             }
-            if (! empty($measures)) {
-                SubsetDetailMeasure::insert($measures);
-            }
-            if (! empty($dimensions)) {
-                foreach ($dimensions as $dimension) {
-                    SubsetDetailDimension::create($dimension);
+
+            $preparedData = [
+                'subset_detail_id' => $subsetDetail->id,
+                'created_by' => $userId,
+                'updated_by' => $userId,
+                ...collect($itemArray)->except('id')->toArray(),
+            ];
+
+            if (! empty($itemArray['id'])) {
+                $preparedData['id'] = $itemArray['id'];
+                $itemsToUpdate[] = $preparedData;
+                $idsToKeep[] = $itemArray['id'];
+            } else {
+                if ($relationName === 'dimensions' && isset($preparedData['filters'])) {
+                    $preparedData['filters'] = json_decode($preparedData['filters'], true);
                 }
+                $itemsToCreate[] = $preparedData;
             }
-        });
+        }
 
-        return redirect()
-            ->route('subset.preview', $subsetDetail->id)
-            ->with([
-                'message' => 'Subset updated successfully',
-            ]);
+        if (! empty($itemsToUpdate)) {
+            $modelClass::upsert($itemsToUpdate, ['id'], $upsertColumns);
+        }
+
+        foreach ($itemsToCreate as $itemData) {
+            $newItem = $modelClass::create($itemData);
+            $idsToKeep[] = $newItem->id;
+        }
+
+        $subsetDetail->{$relationName}()->whereNotIn('id', $idsToKeep)->delete();
     }
 }
