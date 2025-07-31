@@ -12,7 +12,7 @@ import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import SubsetTable from '@/Components/DataExplorer/SubsetTable'
 import { router } from '@inertiajs/react'
-import AdminSubsetFilterForm from '@/Components/Subset/AdminSubsetFilterForm'
+import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 
 interface Props {
   subset: SubsetDetail
@@ -45,13 +45,22 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
       editUrl={route('subset.edit', subset.id)}
     >
       <div className='flex w-full flex-col md:w-1/2'>
-        <AdminSubsetFilterForm
+        {/*<AdminSubsetFilterForm*/}
+        {/*  dates={subset.dates as SubsetDateField[]}*/}
+        {/*  measures={subset.measures as SubsetMeasureField[]}*/}
+        {/*  dimensions={subset.dimensions as SubsetDimensionField[]}*/}
+        {/*  subset={subset}*/}
+        {/*  filters={filters}*/}
+        {/*  onSubmit={handleSubmit}*/}
+        {/*/>*/}
+        <SubsetFilterForm
           dates={subset.dates as SubsetDateField[]}
           measures={subset.measures as SubsetMeasureField[]}
           dimensions={subset.dimensions as SubsetDimensionField[]}
           subset={subset}
           filters={filters}
           onSubmit={handleSubmit}
+          month={true}
         />
       </div>
       <div className='snap-y'>

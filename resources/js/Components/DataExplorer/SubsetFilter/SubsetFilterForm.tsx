@@ -139,7 +139,7 @@ export default function SubsetFilterForm({
     }
   }, [formFields])
 
-  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures)
+  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures, month)
 
   const setField = (id: number, value: string) => {
     const field = availableFields.find((field) => field.column === value)

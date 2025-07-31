@@ -3,10 +3,7 @@ import {
   SubsetDimensionField,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
-import {
-  SubsetFilterFormField,
-  SubsetFilterFormType,
-} from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
+import { SubsetFilterFormField } from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import {
   dateOperations,
   dimensionOperations,
@@ -14,70 +11,98 @@ import {
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
-//TODO: initSubsetFilterFormFields should be moved to a separate file
+// Utility for matching key/operator pattern
+function isKeyOfOperator(key: string, column: string | undefined, op: string): boolean {
+  return key === `${column}${op}`
+}
 
-function addFilterField(
+function pushDateField(
   fields: SubsetFilterFormField[],
-  options: {
-    field: string
-    operator: string
-    value?: string | null
-    type: SubsetFilterFormType
-    officeData?: { office_name: string; office_code: string } | null
-    dimensionData?: { value: string } | null
-  }
+  date: SubsetDateField,
+  operator: string,
+  value: string
 ) {
   fields.push({
     id: 0,
-    field: options.field,
-    operator: options.operator,
-    value: options.value ?? '',
-    officeData: options.officeData ?? null,
-    dimensionData: options.dimensionData ?? null,
-    type: options.type,
-  })
-}
-
-function addDateFilter(
-  fields: SubsetFilterFormField[],
-  date: SubsetDateField,
-  options: {
-    operator: string
-    value?: string | null
-    type: SubsetFilterFormType
-  }
-) {
-  addFilterField(fields, {
-    ...options,
     field: date.subset_column ?? '',
+    operator,
+    value,
     officeData: null,
     dimensionData: null,
+    type: date.use_expression === 1 ? 'string' : 'date',
   })
 }
 
-function handleInNotIn(
-  key: string,
-  item: { subset_column: string | null },
-  suffix: '_in' | '_not_in',
-  operator: '==' | '_not',
-  filters: Record<string, string | null | undefined>,
+function pushDimensionField(
   fields: SubsetFilterFormField[],
-  type: 'date' | 'string' | 'dimension',
-  getDimensionData: (value: string) => { value: string } | null
+  dimension: SubsetDimensionField,
+  operator: string,
+  value: string,
+  offices?: OfficeData[]
 ) {
-  if (key === `${item.subset_column}${suffix}`) {
-    filters[key]?.split(',').forEach((value) => {
-      fields.push({
-        id: 0,
-        field: item.subset_column ?? '',
-        operator,
-        value,
-        officeData: null,
-        dimensionData: getDimensionData(value),
-        type,
-      })
+  const columnName =
+    dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
+
+  if (columnName === 'office_code') {
+    const office = offices?.find((office) => office.office_code === value)
+    const officeName = (office?.office_name as string) ?? value
+    const officeCode = (office?.office_code as string) ?? value
+    fields.push({
+      id: 0,
+      field: columnName ?? '',
+      operator,
+      value: '',
+      officeData: { office_name: officeName, office_code: officeCode },
+      dimensionData: null,
+      type: 'office',
+    })
+  } else {
+    fields.push({
+      id: 0,
+      field: dimension.subset_column ?? '',
+      operator,
+      value: '',
+      officeData: null,
+      dimensionData: { value },
+      type: 'dimension',
     })
   }
+}
+
+function pushDimensionMultiValueField(
+  fields: SubsetFilterFormField[],
+  dimension: SubsetDimensionField,
+  operator: '==' | '_not',
+  values: string[]
+) {
+  values.forEach((value) => {
+    fields.push({
+      id: 0,
+      field: dimension.subset_column ?? '',
+      operator,
+      value,
+      officeData: null,
+      dimensionData: { value },
+      type: 'dimension',
+    })
+  })
+}
+
+function pushMeasureField(
+  fields: SubsetFilterFormField[],
+  measure: SubsetMeasureField,
+  operator: string,
+  value: string
+) {
+  fields.push({
+    id: 0,
+    field: measure.subset_column ?? '',
+    operator,
+    value,
+    officeData: null,
+    dimensionData: null,
+    type: 'number',
+  })
 }
 
 const initSubsetFilterFormFields = (
@@ -91,109 +116,79 @@ const initSubsetFilterFormFields = (
   const fields: SubsetFilterFormField[] = []
 
   Object.keys(filters).forEach((key) => {
+    // Handle dates
     dates.forEach((date) => {
       dateOperations.forEach((dateOperation) => {
-        //*TOdo find opeatation,
-        // TODO insert to datesList
+        const op = dateOperation.value
         if (
-          key === `${date.subset_column}${dateOperation.value === '=' ? '' : dateOperation.value}`
+          (op === '=' && key === `${date.subset_column}`) ||
+          (op !== '=' && isKeyOfOperator(key, date.subset_column, op))
         ) {
-          addDateFilter(fields, date, {
-            operator: dateOperation.value,
-            value: filters[key],
-            type: date.use_expression === 1 ? 'string' : 'date',
-          })
+          pushDateField(fields, date, op, filters[key] ?? '')
         }
       })
-      handleInNotIn(
-        key,
-        date,
-        '_in',
-        '==',
-        filters,
-        fields,
-        date.use_expression === 1 ? 'string' : 'date',
-        () => null
-      )
-      handleInNotIn(
-        key,
-        date,
-        '_not_in',
-        '_not',
-        filters,
-        fields,
-        date.use_expression === 1 ? 'string' : 'date',
-        () => null
-      )
-    })
 
-    dimensions.forEach((dimension) => {
-      if (key === dimension.subset_column) {
-        addFilterField(fields, {
-          field: dimension.subset_column ?? '',
-          operator: '==',
-          value: filters[key],
-          type: 'dimension',
-          dimensionData: { value: filters[key] ?? '' },
+      if (isKeyOfOperator(key, date.subset_column, '_in')) {
+        pushDateField(fields, date, '==', (filters[key]?.split(',') ?? []).join(','))
+        filters[key]?.split(',').forEach((value) => {
+          pushDateField(fields, date, '==', value)
         })
       }
-      dimensionOperations.forEach((dimensionOperation) => {
-        if (dimension.subset_column == 'month') {
-          if (month) {
-            addFilterField(fields, {
-              field: 'month',
-              operator: '=',
-              value: filters[key],
-              type: 'dimension',
-              dimensionData: { value: filters[key] ?? '' },
-            })
-          }
-          return
-        }
-        const columnName =
-          dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
-        if (
-          key === `${columnName}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
-        ) {
-          if (columnName === 'office_code') {
-            const office = offices?.find((office) => office.office_code === filters[key])
-            const officeName = (office?.office_name as string) ?? filters[key]
-            const officeCode = (office?.office_code as string) ?? filters[key]
-            addFilterField(fields, {
-              field: columnName,
-              operator: dimensionOperation.value,
-              type: 'office',
-              officeData: { office_name: officeName, office_code: officeCode },
-            })
-            return
-          }
-          addFilterField(fields, {
-            field: dimension.subset_column ?? '',
-            operator: dimensionOperation.value,
+
+      if (isKeyOfOperator(key, date.subset_column, '_not_in')) {
+        filters[key]?.split(',').forEach((value) => {
+          pushDateField(fields, date, '_not', value)
+        })
+      }
+    })
+
+    // Handle dimensions
+    dimensions.forEach((dimension) => {
+      if (dimension.subset_column === 'month' && key === 'month') {
+        if (month) {
+          fields.push({
+            id: 0,
+            field: 'month',
+            operator: '=',
+            value: filters[key] ?? '',
             type: 'dimension',
+            officeData: null,
             dimensionData: { value: filters[key] ?? '' },
           })
         }
+        return
+      }
+      dimensionOperations.forEach((dimensionOperation) => {
+        const op = dimensionOperation.value
+        const columnName =
+          dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
+
+        if (
+          (op === '=' && key === `${columnName}`) ||
+          (op !== '=' && isKeyOfOperator(key, columnName, op))
+        ) {
+          pushDimensionField(fields, dimension, op, filters[key] ?? '', offices)
+        }
       })
-      handleInNotIn(key, dimension, '_in', '==', filters, fields, 'dimension', (value) => ({
-        value,
-      }))
-      handleInNotIn(key, dimension, '_not_in', '_not', filters, fields, 'dimension', (value) => ({
-        value,
-      }))
+
+      if (isKeyOfOperator(key, dimension.subset_column, '_in')) {
+        pushDimensionMultiValueField(fields, dimension, '==', filters[key]?.split(',') ?? [])
+      }
+
+      if (isKeyOfOperator(key, dimension.subset_column, '_not_in')) {
+        pushDimensionMultiValueField(fields, dimension, '_not', filters[key]?.split(',') ?? [])
+      }
     })
+
+    // Handle measures
     measures.forEach((measure) => {
       measureOperations.forEach((measureOperation) => {
+        const op = measureOperation.value
         if (
-          key ===
-          `${measure.subset_column}${measureOperation.value == '=' ? '' : measureOperation.value}`
+          (op === '=' && key === `${measure.subset_column}`) ||
+          (op !== '=' && isKeyOfOperator(key, measure.subset_column, op))
         ) {
-          addFilterField(fields, {
-            field: measure.subset_column ?? '',
-            operator: measureOperation.value,
-            value: filters[key],
-            type: 'number',
-          })
+          pushMeasureField(fields, measure, op, filters[key] ?? '')
         }
       })
     })
