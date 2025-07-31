@@ -1,7 +1,6 @@
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
-import DataTableExcelImport from '@/Components/DataDetail/DataTableExcelImport/DataTableExcelImport'
 import DataTableFields from '@/Components/DataDetail/DataTableFields'
-import DataSetTable from '@/Components/DataExplorer/DataSetTable'
+import DataDetailTableSection from '@/Components/DataDetail/DataDetailTableSection'
 import CardGridView from '@/Components/ListingPage/CardGridView'
 import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import SubsetList from '@/Components/Subset/SubsetList'
@@ -17,12 +16,10 @@ import DashboardPadding from '@/Layouts/DashboardPadding'
 import { DisplayTime, monthList } from '@/libs/dates'
 import CardHeader from '@/ui/Card/CardHeader'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import Pagination from '@/ui/Pagination/Pagination'
 import Tab from '@/ui/Tabs/Tab'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import { useCallback, useMemo, useState } from 'react'
-import DataDetailFIlter from '@/Components/DataDetail/Filter/DataDetailFIlter'
 
 interface Props {
   detail: DataDetail
@@ -142,9 +139,15 @@ export default function DataDetailShow({
   }
 
   const handleSubmit = useCallback(
-    (query: string | null) => {
-      console.log(query)
-      router.get(route('data-detail.show', detail.id) + '?' + query)
+    (filters: Record<string, any>) => {
+      const queryParams = new URLSearchParams()
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value != null && value !== '') {
+          queryParams.set(key, String(value))
+        }
+      })
+      const queryString = queryParams.toString()
+      router.get(route('data-detail.show', detail.id) + (queryString ? `?${queryString}` : ''))
     },
     [detail]
   )
@@ -168,31 +171,12 @@ export default function DataDetailShow({
             setActiveTab={setActiveTab}
           />
           {activeTab === 'data' && (
-            <>
-              <DataDetailFIlter
-                details={detail}
-                onSubmit={handleSubmit}
-                filters={filters}
-              />
-              <div className='my-5 flex items-center justify-end gap-5'>
-                <a
-                  target='_blank'
-                  href={route('export-data-table', detail.id)}
-                  className='link'
-                  rel='noreferrer'
-                >
-                  Export Data
-                </a>
-                <DataTableExcelImport dataDetail={detail} />
-              </div>
-              <div className='snap-y snap-mandatory'>
-                <DataSetTable
-                  dataDetail={detail}
-                  dataTableItems={dataTableItems.data}
-                />
-              </div>
-              <Pagination pagination={dataTableItems} />
-            </>
+            <DataDetailTableSection
+              detail={detail}
+              filters={filters}
+              dataTableItems={dataTableItems}
+              onSubmit={handleSubmit}
+            />
           )}
           {activeTab == 'jobs' && (
             <CardGridView

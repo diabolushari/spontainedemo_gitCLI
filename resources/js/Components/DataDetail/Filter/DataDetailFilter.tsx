@@ -11,10 +11,7 @@ import ComboBox from '@/ui/form/ComboBox'
 import { XIcon } from 'lucide-react'
 import Button from '@/ui/button/Button'
 import { showError } from '@/ui/alerts'
-import {
-  SubsetFilterFormField,
-  SubsetFilterFormType,
-} from '@/Components/Subset/AdminSubsetFilterForm'
+import { SubsetFilterFormField, SubsetFilterFormType, } from '@/Components/Subset/AdminSubsetFilterForm'
 import { router } from '@inertiajs/react'
 
 interface Props {
@@ -24,7 +21,7 @@ interface Props {
   offices?: OfficeData[]
 }
 
-export default function DataDetailFIlter({ details, filters, onSubmit, offices }: Readonly<Props>) {
+export default function DataDetailFilter({ details, filters, onSubmit, offices }: Readonly<Props>) {
   const availableFilters = useAvailableFiltersFromDataDetail(details)
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState(

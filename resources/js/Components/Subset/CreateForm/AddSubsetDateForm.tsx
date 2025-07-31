@@ -12,9 +12,9 @@ import React, { useMemo } from 'react'
 
 interface Props {
   dataDetail: DataDetail
-  selectedField: Omit<SubsetDateField, 'id' | 'subset_detail_id'> | null
+  selectedField: Omit<SubsetDateField, 'subset_detail_id'> | null
   dateFields: TableDateField[]
-  onSubmit: (data: Omit<SubsetDateField, 'id' | 'subset_detail_id'>) => void
+  onSubmit: (data: Omit<SubsetDateField, 'subset_detail_id'>) => void
   removeField: (subsetColumn: string) => void
 }
 
@@ -62,6 +62,7 @@ export default function AddSubsetDateForm({
   removeField,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
+    id: selectedField?.id ?? null,
     field_id: selectedField?.field_id.toString() ?? '',
     subset_field_name: selectedField?.subset_field_name ?? '',
     use_expression: selectedField?.use_expression === 1,
@@ -219,6 +220,7 @@ export default function AddSubsetDateForm({
     }
 
     onSubmit({
+      id: formData.id ?? null,
       field_id: Number(formData.field_id),
       subset_field_name: formData.subset_field_name,
       subset_column: generateSnakeCaseName(formData.subset_field_name),
