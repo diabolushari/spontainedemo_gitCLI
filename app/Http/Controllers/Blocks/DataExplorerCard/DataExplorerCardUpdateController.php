@@ -18,9 +18,10 @@ class DataExplorerCardUpdateController extends Controller
         $data['subset_group_id'] = $request->subsetGroupId;
         $data['default_subset_id'] = $request->defaultSubsetId;
         $data['data_table_id'] = $request->dataTableId;
+        $data['default_view'] = $request->defaultView;
         $block->update(['data' => $data]);
         $block->save();
 
-        return redirect()->back()->with('success', 'Block updated successfully');
+        return redirect()->back()->with('message', 'Block updated successfully');
     }
 }

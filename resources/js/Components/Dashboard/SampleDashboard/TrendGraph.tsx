@@ -30,6 +30,7 @@ interface Props {
   }
   dimensions?: BlockDimension
   color?: string
+  editMode?: boolean
 }
 
 export default function TrendGraph({
@@ -49,6 +50,7 @@ export default function TrendGraph({
   tooltipIndicator,
   dimensions,
   color,
+  editMode,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -130,7 +132,6 @@ export default function TrendGraph({
           />
         )}
       </div>
-
       <div className='w-full'>
         {isLoading ? (
           <Skeleton

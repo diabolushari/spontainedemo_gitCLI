@@ -20,5 +20,7 @@ class DataExplorerFormRequest extends Data
         public int $defaultSubsetId,
 
         public int $dataTableId,
+
+        public string $defaultView,
     ) {}
 }

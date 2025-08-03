@@ -72,11 +72,11 @@ export function CustomLineChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className={fontSize}
+      className={`${fontSize} max-h-[400px] min-h-[200px]`}
     >
       <ResponsiveContainer
         width='100%'
-        height={300}
+        height={400}
       >
         <LineChart
           data={processedData}

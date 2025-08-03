@@ -5,6 +5,7 @@ import AddGridItemModal from './OverviewComponent/AddGridItemModal'
 import AddChartModal from './OverviewComponent/AddChartModal'
 import { OverviewChart } from '@/interfaces/data_interfaces'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+import OverviewChartEditDrawer from '@/Components/PageBuilder/CardEditors/OverviewChartEditDrawer'
 
 interface Props {
   selectedMonth: Date | null
@@ -13,6 +14,7 @@ interface Props {
   subsetGroupId: number
   blockId: number
   editMode?: boolean
+  blockContent?: any
 }
 
 export default function Overview({
@@ -22,16 +24,17 @@ export default function Overview({
   subsetGroupId,
   blockId,
   editMode = false,
+  blockContent,
 }: Props) {
   const { title, card_type, overview_chart, overview_table } = content || {}
 
   const [isGridModalOpen, setGridModalOpen] = useState(false)
   const [isChartModalOpen, setChartModalOpen] = useState(false)
   const [editingChart, setEditingChart] = useState<OverviewChart | null>(null)
-  const [editingGridItem, setEditingGridItem] = useState<any | null>(null)
   const [chartDeleteModal, setChartDeleteModal] = useState(false)
   const [overviewChart, setOverviewChart] = useState<OverviewChart | null>(overview_chart)
   const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
+  const [isChartEditDrawerOpen, setChartEditDrawerOpen] = useState(false)
 
   // --- Chart Handlers ---
   function handleOpenAddChartModal() {
@@ -40,25 +43,7 @@ export default function Overview({
   }
 
   function handleOpenEditChartModal() {
-    setEditingChart(overviewChart) // Set the current chart to be edited
-    setChartModalOpen(true)
-  }
-
-  function handleEditGridItem(id: number) {
-    setGridModalOpen(true)
-    setEditingGridItem(gridItems.find((item) => item.id === id))
-  }
-
-  function handleSaveChart(newOrUpdatedChart: OverviewChart) {
-    setOverviewChart(newOrUpdatedChart)
-    setChartModalOpen(false)
-    setEditingChart(null) // Clear editing state
-  }
-
-  // --- Grid Item Handlers ---
-  function handleAddNewGridItem(newItemConfig: any) {
-    setGridItems((prev) => [...prev, newItemConfig])
-    setGridModalOpen(false)
+    setChartEditDrawerOpen(true)
   }
 
   const showTable = card_type === 'chart_and_table' || card_type === 'table'
@@ -82,7 +67,6 @@ export default function Overview({
         <div
           className={`grid ${showTable && showChart ? 'grid-cols-1 gap-4 md:grid-cols-2' : 'grid-cols-1'}`}
         >
-          {/* --- Table / Grid Section --- */}
           {showTable && (
             <div className='grid grid-cols-2 gap-2'>
               {Array.isArray(gridItems) &&
@@ -192,6 +176,13 @@ export default function Overview({
           )}
         </div>
       </div>
+      {isChartEditDrawerOpen && (
+        <OverviewChartEditDrawer
+          open={isChartEditDrawerOpen}
+          setOpen={setChartEditDrawerOpen}
+          initialData={blockContent}
+        />
+      )}
       {chartDeleteModal && (
         <DeleteModal
           setShowModal={setChartDeleteModal}

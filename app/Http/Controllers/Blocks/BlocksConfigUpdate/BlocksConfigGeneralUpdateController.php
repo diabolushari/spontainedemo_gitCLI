@@ -41,39 +41,15 @@ class BlocksConfigGeneralUpdateController extends Controller
         }
 
         $updatedData['title'] = $request->title;
-        $updatedData['description'] = $request->description;
+        $updatedData['subtitle'] = $request->subtitle;
         $updatedData['data_table_id'] = $request->dataTableId;
         $updatedData['subset_group_id'] = $request->subsetGroupId;
-        $updatedData['default_view'] = $request->defaultView;
-        $updatedData['trend_selected'] = $request->trendSelected;
-        $updatedData['ranking_selected'] = $request->rankingSelected;
-        $updatedData['explore_button_group'] = $request->exploreButtonGroup;
-        $updatedData['overview_selected'] = $request->overviewSelected;
 
-        $overviewArray = [];
+        if ($subsetGroupChanged) {
 
-        if (is_array($request->overview)) {
-            $overviewArray = $request->overview;
-        } elseif (!is_null($request->overview) && method_exists($request->overview, 'toArray')) {
-            $overviewArray = $request->overview->toArray();
-        }
-
-        $cardTypeChanged = isset($existingData['overview']['card_type']) &&
-            isset($overviewArray['card_type']) &&
-            $existingData['overview']['card_type'] !== $overviewArray['card_type'];
-
-        if ($subsetGroupChanged || $cardTypeChanged) {
             if (isset($updatedData['overview']) && is_array($updatedData['overview'])) {
                 unset($updatedData['overview']['overview_chart']);
                 unset($updatedData['overview']['overview_table']);
-            }
-        }
-
-        if (!$subsetGroupChanged) {
-            if (!empty($existingData['overview'])) {
-                // Do nothing
-            } elseif (!empty($overviewArray)) {
-                $updatedData['overview'] = $overviewArray;
             }
         }
 

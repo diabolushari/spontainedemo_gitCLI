@@ -430,7 +430,7 @@ export interface OverviewTable {
 export interface Config {
   title: string
   data_table_id: string
-  description: string
+  subtitle: string
   default_date?: string
   default_view?: string
   subset_group_id: string

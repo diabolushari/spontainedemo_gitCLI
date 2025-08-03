@@ -11,7 +11,6 @@ import {
 } from '@/Components/ui/chart'
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import { label } from 'framer-motion/client'
 
 interface Props {
   data: Record<string, number | string>[]
@@ -69,11 +68,11 @@ export function CustomBarChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className={`${fontSize}`}
+      className={`${fontSize} max-h-[400px] min-h-[200px]`}
     >
       <ResponsiveContainer
         width='100%'
-        height={300}
+        height={400}
       >
         <BarChart
           data={processedData}
@@ -85,6 +84,7 @@ export function CustomBarChart({
             tickLine={false}
             tickMargin={10}
             axisLine={false}
+            angle={0}
           />
           <YAxis
             tickFormatter={(value) => (formatNumber(value as number) ?? '').toString()}

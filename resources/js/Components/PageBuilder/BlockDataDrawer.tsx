@@ -5,13 +5,10 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from '@/Components/ui/drawer'
-import { Edit } from 'lucide-react'
+import { Edit, X } from 'lucide-react'
 import { ReactNode } from 'react'
 
 interface BlockDataDrawerProps {
@@ -31,14 +28,20 @@ export function BlockDataDrawer({ children, open, setOpen }: BlockDataDrawerProp
           <Edit />
         </Button>
       </DrawerTrigger>
+
       <DrawerContent>
-        <div className='mx-auto flex h-full w-full max-w-3xl flex-col md:max-h-[80vh]'>
-          <div className='flex justify-center overflow-y-auto'>{children}</div>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button variant='outline'>Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
+        <div className='relative mx-auto flex h-full w-full flex-col md:max-h-[80vh]'>
+          {/* Close button on top-right */}
+          <DrawerClose asChild>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='absolute right-2 top-2 mr-4 rounded-full bg-red-300 hover:bg-red-500 hover:text-white'
+            >
+              <X className='h-5 w-5' />
+            </Button>
+          </DrawerClose>
+          {children}
         </div>
       </DrawerContent>
     </Drawer>

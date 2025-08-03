@@ -67,7 +67,7 @@ export default function DataExplorerCard({ dataExplorerData }: { dataExplorerDat
 
   // Other state
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-  const [activeViewTab, setActiveViewTab] = useState('map')
+  const [activeViewTab, setActiveViewTab] = useState(dataExplorerData?.default_view ?? 'map')
   const [activeTab, setActiveTab] = useState('region')
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     dataExplorerData ? dataExplorerData?.default_subset_id : exampleData.default_subset_id

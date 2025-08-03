@@ -9,7 +9,6 @@ export default function ConfigFormField({
   data,
   onUpdate,
   errors,
-  showUnit = true,
 }: {
   isSelected: boolean
   field: any
@@ -27,7 +26,6 @@ export default function ConfigFormField({
     selected: boolean
   }) => void
   errors?: any
-  showUnit?: boolean
 }) {
   const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     selected: isSelected,
@@ -58,7 +56,7 @@ export default function ConfigFormField({
   }, [formData.label, formData.value, formData.unit, formData.show_label, formData.selected])
 
   return (
-    <div className='flex flex-col gap-2 border-b pb-2'>
+    <div className='grid gap-2 border-b pb-2 md:grid md:grid-cols-2'>
       <CheckBox
         label={field.subset_field_name}
         value={formData.selected}
@@ -66,7 +64,7 @@ export default function ConfigFormField({
       />
 
       {formData.selected && (
-        <div className='mt-2 flex flex-col gap-2'>
+        <div className='mt-2 grid grid-cols-2 gap-2'>
           <div className='flex flex-col'>
             <Input
               label='Label'
@@ -75,19 +73,10 @@ export default function ConfigFormField({
               error={errors?.label}
             />
           </div>
-          <div className='flex flex-col'>
-            {showUnit && (
-              <Input
-                label='Unit'
-                value={formData.unit}
-                setValue={setFormValue('unit')}
-                error={errors?.unit}
-              />
-            )}
-          </div>
+
           <div className='flex flex-col'>
             <CheckBox
-              label='Show Label'
+              label='Enable Label'
               value={formData.show_label}
               toggleValue={toggleBoolean('show_label')}
             />

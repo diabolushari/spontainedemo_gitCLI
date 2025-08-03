@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartDeleteController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableDeleteController;
@@ -126,6 +127,7 @@ Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableU
 Route::delete('block/config/overview/table/update/{id}/{blockId}', BlocksConfigOverviewTableDeleteController::class)->name('config.overview.table.destroy');
 Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOverviewChartDeleteController::class)->name('config.overview.chart.destroy');
 Route::put('block/config/data-explorer/update/{id}', DataExplorerCardUpdateController::class)->name('config.data-explorer.update');
+Route::put('block/config/layout/update/{id}', BlocksConfigLayoutUpdateController::class)->name('config.layout.update');
 
 
 
@@ -147,6 +149,7 @@ Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDime
 Route::get('/api/data-explorer/{subsetGroup}', DataExplorerDataController::class)
     ->name('data-explorer');
 Route::get('/api/data-detail/subset-group/{dataDetailId}', DataDetailSubsetGroupController::class);
+
 
 //testing
 Route::get('/test', function () {

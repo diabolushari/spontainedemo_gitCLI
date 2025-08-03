@@ -11,6 +11,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import Overview from '../Dashboard/SampleDashboard/Overview'
 import { Link } from '@inertiajs/react'
 import NormalText from '@/typography/NormalText'
+import AddButton from '@/ui/button/AddButton'
 
 export function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
@@ -77,7 +78,7 @@ export function EmptyCardBlock({
       <Card className='min-h-18 rounded-md'>
         <CardHeader title={block?.data?.title ?? ''} />
         <div className='px-4'>
-          <NormalText>{block?.data?.description}</NormalText>
+          <NormalText>{block?.data?.subtitle}</NormalText>
         </div>
         <div className='mt-4 flex flex-col'>
           <BlockRadioGroup
@@ -96,37 +97,44 @@ export function EmptyCardBlock({
               subsetGroupId={block?.data?.subset_group_id}
               blockId={block?.id}
               editMode={overviewEditMode}
+              blockContent={block?.data}
             />
           )}
 
           {selectedView === 'trend' &&
             block?.data?.trend_selected == true &&
-            block?.data?.trend?.subset_id &&
-            selectedMonth && (
-              <TrendGraph
-                cardTitle={block.data.trend.title}
-                dataKey={block.data.trend.data_field.x_axis.value}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                subsetId={block.data.trend.subset_id}
-                dataField={block.data.trend.data_field.y_axis.value}
-                dataFieldName={block.data.trend.data_field.y_axis.label}
-                xAxisLabel={
-                  block.data.trend.data_field.x_axis.show_label
-                    ? block.data.trend.data_field.x_axis.label
-                    : ''
-                }
-                yAxisLabel={
-                  block.data.trend.data_field.y_axis.show_label
-                    ? block.data.trend.data_field.y_axis.label
-                    : ''
-                }
-                chartType='area'
-                tooltipIndicator={block.data.trend.tooltip_field}
-                dimensions={block.dimensions}
-                color={block.data.trend.color}
-              />
-            )}
+            (block?.data?.trend?.subset_id ? (
+              selectedMonth && (
+                <TrendGraph
+                  cardTitle={block.data.trend.title}
+                  dataKey={block.data.trend.data_field.x_axis.value}
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                  subsetId={block.data.trend.subset_id}
+                  dataField={block.data.trend.data_field.y_axis.value}
+                  dataFieldName={block.data.trend.data_field.y_axis.label}
+                  xAxisLabel={
+                    block.data.trend.data_field.x_axis.show_label
+                      ? block.data.trend.data_field.x_axis.label
+                      : ''
+                  }
+                  yAxisLabel={
+                    block.data.trend.data_field.y_axis.show_label
+                      ? block.data.trend.data_field.y_axis.label
+                      : ''
+                  }
+                  chartType='area'
+                  tooltipIndicator={block.data.trend.tooltip_field}
+                  dimensions={block.dimensions}
+                  color={block.data.trend.color}
+                  editMode={overviewEditMode}
+                />
+              )
+            ) : (
+              <div className='flex items-center justify-center'>
+                <AddButton onClick={() => alert('Add Trend Graph')} />
+              </div>
+            ))}
 
           {selectedView === 'ranking' &&
             block?.data?.ranking_selected == true &&

@@ -1,5 +1,6 @@
-import { Block } from '@/interfaces/data_interfaces'
 import React from 'react'
+import { Grid, List, BarChart2 } from 'lucide-react'
+import { Block } from '@/interfaces/data_interfaces'
 
 interface BlockRadioGroupProps {
   selectedView: string
@@ -12,18 +13,28 @@ export function BlockRadioGroup({ block, selectedView, setSelectedView }: BlockR
     {
       value: 'overview',
       label: 'Overview',
+      icon: <Grid className='h-4 w-4' />,
       show:
         block?.data?.overview?.overview_chart ||
         block?.data?.overview?.overview_table ||
         block?.data?.overview_selected,
     },
-    { value: 'trend', label: 'Trend', show: !!block?.data?.trend_selected },
-    { value: 'ranking', label: 'Ranking', show: !!block?.data?.ranking_selected },
+    {
+      value: 'trend',
+      label: 'Trend',
+      icon: <List className='h-4 w-4' />,
+      show: !!block?.data?.trend_selected,
+    },
+    {
+      value: 'ranking',
+      label: 'Ranking',
+      icon: <BarChart2 className='h-4 w-4' />,
+      show: !!block?.data?.ranking_selected,
+    },
   ]
 
   const visibleTabs = tabs.filter((tab) => tab.show)
 
-  // If no data exists for any tab, show message instead of buttons
   if (visibleTabs.length === 0) {
     return (
       <div className='rounded border bg-gray-50 px-2 py-1 text-sm text-gray-500'>
@@ -33,19 +44,28 @@ export function BlockRadioGroup({ block, selectedView, setSelectedView }: BlockR
   }
 
   return (
-    <div className='flex w-max gap-2 rounded-md bg-gray-100 p-1'>
+    <div className='absolute right-2 top-2 flex gap-2 rounded-md bg-gray-100 p-1'>
       {visibleTabs.map((tab) => (
-        <button
+        <div
           key={tab.value}
-          onClick={() => setSelectedView(tab.value)}
-          className={`rounded-md px-4 py-1 text-sm font-medium transition-colors ${
-            selectedView === tab.value
-              ? 'bg-blue-500 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-200'
-          }`}
+          className='group relative'
         >
-          {tab.label}
-        </button>
+          <button
+            onClick={() => setSelectedView(tab.value)}
+            className={`flex items-center justify-center rounded-md p-2 transition-colors ${
+              selectedView === tab.value
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {tab.icon}
+          </button>
+
+          {/* Tooltip */}
+          <div className='absolute -top-8 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100'>
+            {tab.label}
+          </div>
+        </div>
       ))}
     </div>
   )

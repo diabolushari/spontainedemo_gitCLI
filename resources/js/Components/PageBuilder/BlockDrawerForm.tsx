@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { Check } from 'lucide-react'
-
-import { Block, Config } from '@/interfaces/data_interfaces'
+import { Block } from '@/interfaces/data_interfaces'
 import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStepGeneral'
-import ConfigFormStepTrend from './PageBlockConfigFormComponent/ConfigFormStepTrend'
-import ConfigFormStepRanking from './PageBlockConfigFormComponent/ConfigFormStepRanking'
-import { cn } from '@/lib/utils' // Optional utility for conditional classNames
 import { DrawerDescription, DrawerHeader, DrawerTitle } from '../ui/drawer'
+import { cn } from '@/utils'
+import { Check } from 'lucide-react'
+import ConfigFormLayout from './PageBlockConfigFormComponent/ConfigFormLayout'
 
 interface BlockFormProps {
   initialData: any
@@ -15,17 +13,15 @@ interface BlockFormProps {
   setCloseDrawer: (value: boolean) => void
 }
 
-const steps = [{ title: 'General' }, { title: 'Trend' }, { title: 'Ranking' }]
+const steps = [{ title: 'General' }, { title: 'Layout' }]
 
 export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: BlockFormProps) {
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)
-  const chartDataExists = !!stepData?.overview?.overview_chart?.chart_type
-  const tableDataExists = !!stepData?.overview?.overview_table?.subset_id
   const isStepOneComplete = !!(
     stepData?.title &&
     stepData?.data_table_id &&
-    stepData?.description &&
+    stepData?.subtitle &&
     stepData?.subset_group_id
   )
   const handleStepClick = (stepNumber: number) => {
@@ -43,30 +39,13 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
           <DrawerDescription>Customize your card here.</DrawerDescription>
         </div>
 
-        <div className='mt-2 flex items-center justify-between'>
+        <div className='mt-2 flex w-[50%] items-center justify-between'>
           {steps.map((s, index) => {
             const currentStep = index + 1
             const isActive = step === currentStep
             const isCompleted = step > currentStep
 
-            const overview = stepData?.overview
-            const cardType = overview?.card_type
-
-            let isAllowed = false
-
-            // Step 1 is always allowed
-            if (currentStep === 1) {
-              isAllowed = true
-            }
-
-            // Steps 2–4 require general config (Step 1) completion
-            else if (currentStep >= 2 && currentStep <= 4 && isStepOneComplete) {
-              if (currentStep === 2 && stepData?.trend_selected === true) {
-                isAllowed = true
-              } else if (currentStep === 3 && stepData?.ranking_selected === true) {
-                isAllowed = true
-              }
-            }
+            let isAllowed = true
 
             return (
               <div
@@ -116,18 +95,7 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                 block={block}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  if (validatedData.trend_selected) {
-                    setStep(2)
-                  } else if (validatedData.ranking_selected) {
-                    setStep(3)
-                  }
-                  if (
-                    validatedData.overview_selected &&
-                    !validatedData.trend_selected &&
-                    !validatedData.ranking_selected
-                  ) {
-                    setCloseDrawer(false)
-                  }
+                  setStep(2)
                 }}
               />
             )}
@@ -136,39 +104,14 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
           {/* Step 2 */}
           <div className='w-full shrink-0'>
             {step === 2 && (
-              <ConfigFormStepTrend
+              <ConfigFormLayout
                 initialData={stepData}
                 block={block}
+                onNext={(validatedData: any) => {
+                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
+                  setStep(3)
+                }}
                 onBack={() => setStep(1)}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  if (stepData.ranking_selected) {
-                    setStep(3)
-                  } else {
-                    setCloseDrawer(false)
-                  }
-                }}
-              />
-            )}
-          </div>
-
-          {/* Step 3 */}
-          <div className='w-full shrink-0'>
-            {step === 3 && (
-              <ConfigFormStepRanking
-                initialData={stepData}
-                block={block}
-                onBack={() => {
-                  if (stepData.trend_selected) {
-                    setStep(2)
-                  } else {
-                    setStep(1)
-                  }
-                }}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setCloseDrawer(false)
-                }}
               />
             )}
           </div>

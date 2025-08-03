@@ -14,6 +14,7 @@ import { blockForm } from '@/Pages/PageBuilder/PageShow'
 import { Page } from '@/interfaces/data_interfaces'
 import { useCallback, useState } from 'react'
 import DataExplorerCard from './DataExplorerCard'
+import Spinner from '@/ui/Spinner'
 
 type Props = {
   page: Page
@@ -29,7 +30,7 @@ export function AddPageBlock({ page }: Readonly<Props>) {
     setOpen(false)
   }, [])
 
-  const { post } = useInertiaPost<blockForm>(route('blocks.store'), {
+  const { post, loading } = useInertiaPost<blockForm>(route('blocks.store'), {
     showErrorToast: true,
     onComplete: closeModal,
   })
@@ -50,7 +51,6 @@ export function AddPageBlock({ page }: Readonly<Props>) {
       page_id: page.id,
       position: 0,
     } as any)
-    setOpen(false)
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -66,35 +66,49 @@ export function AddPageBlock({ page }: Readonly<Props>) {
       onOpenChange={setOpen}
     >
       <SheetTrigger asChild>
-        <Button
-          type='button'
-          label='Add Block'
-          onClick={() => setOpen(true)}
-        />
+        {loading ? (
+          <Spinner
+            svgStyle='spinner'
+            svgSize='w-16 h-16'
+          />
+        ) : (
+          <Button
+            type='button'
+            label='Add Block'
+            onClick={() => setOpen(true)}
+            disabled={loading}
+          />
+        )}
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add Block</SheetTitle>
           <SheetDescription>Select a block to add to this page.</SheetDescription>
         </SheetHeader>
-        <div className='flex justify-center py-4'>
-          <div className='grid grid-cols-1 gap-4'>
-            {pageBuilderCharts.map((chart) => (
-              <div
-                key={chart.id}
-                role='button'
-                tabIndex={0}
-                onClick={() => handleClick(chart.name)}
-                onKeyDown={handleKeyDown}
-                className='group flex h-64 w-64 transform cursor-pointer flex-col justify-between rounded-md border border-solid p-4 text-sm shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-              >
-                <div className='text-center font-medium'>{chart.name}</div>
-                <div className='mt-2 overflow-hidden'>{chart.component}</div>
-              </div>
-            ))}
+        {loading ? (
+          <Spinner
+            svgStyle='spinner'
+            svgSize='w-16 h-16'
+          />
+        ) : (
+          <div className='flex justify-center py-4'>
+            <div className='grid grid-cols-1 gap-4'>
+              {pageBuilderCharts.map((chart) => (
+                <div
+                  key={chart.id}
+                  role='button'
+                  tabIndex={0}
+                  onClick={() => handleClick(chart.name)}
+                  onKeyDown={handleKeyDown}
+                  className='group flex h-64 w-64 transform cursor-pointer flex-col justify-between rounded-md border border-solid p-4 text-sm shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                >
+                  <div className='text-center font-medium'>{chart.name}</div>
+                  <div className='mt-2 overflow-hidden'>{chart.component}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-
+        )}
         <SheetFooter className='mt-4'></SheetFooter>
       </SheetContent>
     </Sheet>
