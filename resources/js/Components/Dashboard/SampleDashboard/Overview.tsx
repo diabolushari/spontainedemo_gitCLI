@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import OverviewChartComponent from './OverviewComponent/OverviewChart'
-import OverviewGrid from './OverviewComponent/OverviewGrid'
 import AddGridItemModal from './OverviewComponent/AddGridItemModal'
-import AddChartModal from './OverviewComponent/AddChartModal'
-import { OverviewChart } from '@/interfaces/data_interfaces'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import OverviewChartEditDrawer from '@/Components/PageBuilder/CardEditors/OverviewChartEditDrawer'
+import OverviewBarChartDemo from '@/Cards/Demo/OverviewBarChartDemo'
+import Button from '@/ui/button/Button'
 
 interface Props {
   selectedMonth: Date | null
@@ -32,22 +30,18 @@ export default function Overview({
   const [isChartModalOpen, setChartModalOpen] = useState(false)
   const [editingChart, setEditingChart] = useState<OverviewChart | null>(null)
   const [chartDeleteModal, setChartDeleteModal] = useState(false)
-  const [overviewChart, setOverviewChart] = useState<OverviewChart | null>(overview_chart)
+  const [overviewChart, setOverviewChart] = useState<any | null>(overview_chart)
   const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
   const [isChartEditDrawerOpen, setChartEditDrawerOpen] = useState(false)
 
   // --- Chart Handlers ---
   function handleOpenAddChartModal() {
-    setEditingChart(null) // Ensure we are in "add" mode
-    setChartModalOpen(true)
+    setChartEditDrawerOpen(true)
   }
 
   function handleOpenEditChartModal() {
     setChartEditDrawerOpen(true)
   }
-
-  const showTable = card_type === 'chart_and_table' || card_type === 'table'
-  const showChart = card_type === 'chart_and_table' || card_type === 'chart'
 
   useEffect(() => {
     setOverviewChart(overview_chart)
@@ -57,6 +51,9 @@ export default function Overview({
     setGridItems(overview_table)
   }, [overview_table])
 
+  console.log('Overview Chart:', overviewChart)
+  console.log('Overview Table:', gridItems)
+
   return (
     <>
       <div className='flex min-h-56 w-full flex-col pr-4 transition-all duration-300'>
@@ -64,39 +61,8 @@ export default function Overview({
           <span className='subheader-sm-1stop'>{title}</span>
         </div>
 
-        <div
-          className={`grid ${showTable && showChart ? 'grid-cols-1 gap-4 md:grid-cols-2' : 'grid-cols-1'}`}
-        >
-          {showTable && (
-            <div className='grid grid-cols-2 gap-2'>
-              {Array.isArray(gridItems) &&
-                gridItems?.slice(0, 6).map((item, idx) => (
-                  <div
-                    key={item.id || idx}
-                    className={item.col_span ? 'col-span-2' : ''}
-                  >
-                    <OverviewGrid
-                      config={item}
-                      selectedMonth={selectedMonth}
-                      blockId={blockId}
-                      editMode={editMode}
-                    />
-                  </div>
-                ))}
-              {(gridItems?.length < 6 || !gridItems) && editMode && (
-                <button
-                  onClick={() => setGridModalOpen(true)}
-                  className='flex h-full min-h-[60px] w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 text-center text-indigo-600 shadow outline-none transition hover:border-indigo-500 hover:text-indigo-800 hover:shadow-lg'
-                  style={{ fontSize: '1.25rem', fontWeight: 600 }}
-                >
-                  + Add Cell
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* --- Chart Section --- */}
-          {showChart && (
+        <div className='grid grid-cols-1'>
+          {
             <div className='group relative flex-1 rounded-md border border-gray-200'>
               {overviewChart ? (
                 <>
@@ -156,10 +122,12 @@ export default function Overview({
                       </button>
                     </div>
                   )}
-                  <OverviewChartComponent
-                    chart_content={overviewChart}
-                    selectedMonth={selectedMonth}
-                    setSelectedMonth={setSelectedMonth}
+                  <OverviewBarChartDemo
+                    title={overviewChart?.title}
+                    discription={overviewChart?.discription}
+                    dimensions={overviewChart?.dimensions}
+                    measures={overviewChart?.measures}
+                    subsetId={overviewChart?.subset_id}
                   />
                 </>
               ) : (
@@ -173,7 +141,7 @@ export default function Overview({
                 </div>
               )}
             </div>
-          )}
+          }
         </div>
       </div>
       {isChartEditDrawerOpen && (
@@ -181,6 +149,7 @@ export default function Overview({
           open={isChartEditDrawerOpen}
           setOpen={setChartEditDrawerOpen}
           initialData={blockContent}
+          blockId={blockId}
         />
       )}
       {chartDeleteModal && (
@@ -197,13 +166,6 @@ export default function Overview({
         isModalOpen={isGridModalOpen}
         setIsModalOpen={setGridModalOpen}
         subsetGroupId={subsetGroupId}
-        blockId={blockId}
-      />
-      <AddChartModal
-        isModalOpen={isChartModalOpen}
-        setIsModalOpen={setChartModalOpen}
-        subsetGroupId={subsetGroupId}
-        chartToEdit={overviewChart ? overviewChart : null}
         blockId={blockId}
       />
     </>

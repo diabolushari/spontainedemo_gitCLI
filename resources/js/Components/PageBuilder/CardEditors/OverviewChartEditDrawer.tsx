@@ -24,12 +24,14 @@ interface OverviewChartEditDrawerProps {
   open: boolean
   setOpen: (value: boolean) => void
   initialData?: any
+  blockId: string | number
 }
 
 export default function OverviewChartEditDrawer({
   open,
   setOpen,
   initialData,
+  blockId,
 }: OverviewChartEditDrawerProps) {
   const [carouselIndex, setCarouselIndex] = useState(0)
 
@@ -43,6 +45,7 @@ export default function OverviewChartEditDrawer({
         <OverviewChartGeneralEdit
           ref={generalEditRef}
           initialData={initialData}
+          blockId={blockId}
         />
       ),
     },
@@ -57,7 +60,6 @@ export default function OverviewChartEditDrawer({
       setCarouselIndex((prev) => Math.min(prev + 1, editItems.length - 1))
     } catch (err) {
       alert('Form submission failed. Please check and try again.')
-      console.error(err)
     }
   }
 
@@ -75,7 +77,7 @@ export default function OverviewChartEditDrawer({
       }}
     >
       <DrawerContent
-        className='transition-all duration-300'
+        className='h-full duration-300'
         style={{
           height: '85vh',
           minHeight: '5vh',
@@ -92,49 +94,53 @@ export default function OverviewChartEditDrawer({
           </DrawerClose>
         </div>
 
-        <div className='flex w-full flex-col items-center justify-center overflow-y-auto p-4'>
-          <DrawerHeader>
+        <div className='flex w-full flex-col items-center justify-center p-4'>
+          <DrawerHeader className='sticky top-0 z-10 bg-white pb-2'>
             <DrawerTitle>Overview Chart Edit</DrawerTitle>
             <DrawerDescription>Customize your overview chart here.</DrawerDescription>
           </DrawerHeader>
-
-          <Carousel
-            index={carouselIndex}
-            onIndexChange={setCarouselIndex}
-            className='w-full'
+          <div
+            className='w-full overflow-y-auto'
+            style={{ maxHeight: 'calc(85vh - 100px)' }}
           >
-            <CarouselContent className='w-full'>
-              {editItems.map((_, index) => (
-                <CarouselItem key={index}>
-                  <div className='w-full p-1'>
-                    <Card>
-                      <CardContent className='flex w-full p-6'>
-                        {editItems[index].component}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
+            <Carousel
+              index={carouselIndex}
+              onIndexChange={setCarouselIndex}
+              className='w-full'
+            >
+              <CarouselContent className='w-full'>
+                {editItems.map((_, index) => (
+                  <CarouselItem key={index}>
+                    <div className='w-full p-1'>
+                      <Card>
+                        <CardContent className='flex w-full p-6'>
+                          {editItems[index].component}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
 
-            <div className='flex w-full justify-between'>
-              {/* Replace CarouselPrevious and CarouselNext with buttons to intercept clicks */}
-              <button
-                onClick={handlePrevious}
-                disabled={carouselIndex === 0}
-                className='btn btn-secondary'
-              >
-                Previous
-              </button>
-              <button
-                onClick={handleNext}
-                className='btn btn-primary'
-                disabled={editItems.length > 1 ? carouselIndex === editItems.length - 1 : false}
-              >
-                Next
-              </button>
-            </div>
-          </Carousel>
+              <div className='flex w-full justify-between'>
+                {/* Replace CarouselPrevious and CarouselNext with buttons to intercept clicks */}
+                <button
+                  onClick={handlePrevious}
+                  disabled={carouselIndex === 0}
+                  className='btn btn-secondary'
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={handleNext}
+                  className='btn btn-primary'
+                  disabled={editItems.length > 1 ? carouselIndex === editItems.length - 1 : false}
+                >
+                  Next
+                </button>
+              </div>
+            </Carousel>
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

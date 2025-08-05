@@ -29,39 +29,44 @@ export default function OverviewBarChartDemo({
   title,
   discription,
   dimensions = [],
-  measures: inputMeasures,
+  measures = [],
   subsetId,
 }: Props) {
   const [selectedView, setSelectedView] = useState('overview')
 
-  const dimensionFields = dimensions.map((d) => d.field)
+  // Safe filter for dimensions
+  const validDimensions = useMemo(
+    () =>
+      (dimensions ?? []).filter((d): d is { field: string } => d && typeof d.field === 'string'),
+    [dimensions]
+  )
+  const dimensionFields = validDimensions.map((d) => d.field)
+
+  // Safe filter for measures
+  const validMeasures = useMemo(
+    () => (measures ?? []).filter((m): m is { field: string } => m && typeof m.field === 'string'),
+    [measures]
+  )
 
   const allFieldsForQuery = useMemo(() => {
-    if (inputMeasures && inputMeasures.length > 0) {
-      return [...dimensionFields, ...inputMeasures.map((m) => m.field)].join(',')
+    if (validMeasures.length > 0) {
+      return [...dimensionFields, ...validMeasures.map((m) => m.field)].join(',')
     }
     return [...dimensionFields, 'total_demand'].join(',')
-  }, [dimensionFields, inputMeasures])
+  }, [dimensionFields, validMeasures])
 
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(`/subset/${subsetId}?latest=month&fields=${allFieldsForQuery}`)
 
-  useEffect(() => {
-    console.log('Loading:', loading)
-    console.log('Raw API Data:', data)
-    console.log('Measures:', measures)
-    console.log('Dimensions:', dimensions)
-  }, [data, loading])
-
-  const measures = useMemo(() => {
-    if (inputMeasures && inputMeasures.length > 0) return inputMeasures
-    if (!data?.data || data.data.length === 0) return [{ field: 'total_demand' }]
+  const detectedMeasures = useMemo(() => {
+    if (validMeasures.length > 0) return validMeasures
+    if (!data?.data || data.data.length === 0) return []
 
     const keys = Object.keys(data.data[0])
     const dims = dimensionFields
 
-    const detectedMeasures = keys
+    const detected = keys
       .filter((key) => !dims.includes(key))
       .filter((key) =>
         data.data.some((row) => {
@@ -71,40 +76,36 @@ export default function OverviewBarChartDemo({
       )
       .map((field) => ({ field }))
 
-    return detectedMeasures.length > 0 ? detectedMeasures : [{ field: 'total_demand' }]
-  }, [inputMeasures, data, dimensionFields])
+    return detected.length > 0 ? detected : []
+  }, [validMeasures, data, dimensionFields])
 
   const chartData = useMemo(() => {
     if (!data?.data) return []
 
-    const mapped = data.data.map((row) => {
-      const name = dimensions.map((dim) => row[dim.field]).join(' - ')
+    return data.data.map((row) => {
+      const name = validDimensions.map((dim) => row[dim.field]).join(' - ')
       const obj: Record<string, any> = { name }
 
-      measures.forEach((m) => {
+      detectedMeasures.forEach((m) => {
         const raw = row[m.field]
         const num = raw === null || raw === undefined ? 0 : parseFloat(raw as string)
         obj[m.field] = isNaN(num) ? 0 : num
       })
 
-      dimensions.forEach((dim) => {
+      validDimensions.forEach((dim) => {
         obj[dim.field] = row[dim.field]
       })
 
       return obj
     })
+  }, [data, validDimensions, detectedMeasures])
 
-    console.log('Chart Data:', mapped)
-    return mapped
-  }, [data, dimensions, measures])
-
-  // Find dimension with least distinct values for color
   const colorDimension = useMemo(() => {
-    if (!chartData || chartData.length === 0 || dimensions.length === 0) return ''
-    let chosen = dimensions[0].field
+    if (!chartData.length || validDimensions.length === 0) return ''
+    let chosen = validDimensions[0].field
     let minCount = Infinity
 
-    dimensions.forEach((dim) => {
+    validDimensions.forEach((dim) => {
       const distinct = new Set(chartData.map((d) => d[dim.field]))
       if (distinct.size < minCount) {
         minCount = distinct.size
@@ -112,17 +113,13 @@ export default function OverviewBarChartDemo({
       }
     })
 
-    console.log('Chosen Color Dimension:', chosen)
     return chosen
-  }, [chartData, dimensions])
+  }, [chartData, validDimensions])
 
   const distinctValues = Array.from(new Set(chartData.map((d) => d[colorDimension])))
-  console.log('Distinct Values for Coloring:', distinctValues)
 
-  // Base color
   const base = '#6434A3'
 
-  // Generate lighter shades of base color
   const generateShade = (hex: string, factor: number) => {
     let r = parseInt(hex.slice(1, 3), 16)
     let g = parseInt(hex.slice(3, 5), 16)
@@ -135,7 +132,7 @@ export default function OverviewBarChartDemo({
     return `rgb(${r},${g},${b})`
   }
 
-  const useSingleColor = dimensions.length === 1 || distinctValues.length === 1
+  const useSingleColor = validDimensions.length === 1 || distinctValues.length === 1
 
   const colorMap: Record<string, string> = {}
   if (useSingleColor) {
@@ -151,7 +148,6 @@ export default function OverviewBarChartDemo({
 
   const getBarColor = (value: string) => colorMap[value] || base
 
-  // Custom Tooltip with formatted numbers
   function CustomTooltip({ active, payload, label }: any) {
     if (active && payload && payload.length) {
       return (
@@ -170,6 +166,7 @@ export default function OverviewBarChartDemo({
     }
     return null
   }
+  console.log(dimensions)
 
   return (
     <div className='relative w-full rounded-2xl bg-white p-10 shadow'>
@@ -213,7 +210,6 @@ export default function OverviewBarChartDemo({
                 tickLine={false}
                 tick={false}
                 axisLine={false}
-                tickFormatter={(value) => value}
               />
               <YAxis
                 domain={[0, 'dataMax']}
@@ -223,7 +219,7 @@ export default function OverviewBarChartDemo({
                 axisLine={false}
               />
               <Tooltip content={<CustomTooltip />} />
-              {measures.map((m) => (
+              {detectedMeasures.map((m) => (
                 <Bar
                   key={m.field}
                   dataKey={m.field}

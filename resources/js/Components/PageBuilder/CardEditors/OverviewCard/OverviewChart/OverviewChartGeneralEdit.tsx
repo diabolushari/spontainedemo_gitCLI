@@ -1,3 +1,5 @@
+'use client'
+
 import useCustomForm from '@/hooks/useCustomForm'
 import Input from '@/ui/form/Input'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
@@ -12,6 +14,8 @@ import { ForwardedRef, useEffect, useMemo } from 'react'
 import React, { useImperativeHandle, forwardRef } from 'react'
 import ConfigFormMeasureFields from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
 import ConfigFormField from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
+import useInertiaPost from '@/hooks/useInertiaPost'
+
 interface OverviewChartGeneralEditHandle {
   submit: () => Promise<void>
 }
@@ -25,8 +29,10 @@ interface Dimension {
 export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChartGeneralEdit(
   {
     initialData,
+    blockId,
   }: {
     initialData?: any
+    blockId: string
   },
   ref: ForwardedRef<OverviewChartGeneralEditHandle>
 ) {
@@ -34,32 +40,32 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
     title: initialData?.overview?.overview_chart?.title ?? '',
     discription: initialData?.overview?.overview_chart?.discription ?? '',
     subsetId: initialData?.overview?.overview_chart?.subset_id ?? '',
-    chartType: initialData?.overview?.overview_chart?.chart_type ?? '',
-    dimensions: initialData?.overview?.overview_chart?.dimensions
-      ? [initialData?.overview_chart?.dimensions]
+    chartType: initialData?.overview?.overview_chart?.chart_type ?? 'bar',
+    dimensions: Array.isArray(initialData?.overview?.overview_chart?.dimensions)
+      ? initialData?.overview?.overview_chart?.dimensions
       : [],
-    measures: initialData?.overview?.overview_chart?.measures ?? [],
+    measures: Array.isArray(initialData?.overview?.overview_chart?.measures)
+      ? initialData?.overview?.overview_chart?.measures
+      : [],
   })
+
+  const { post, errors } = useInertiaPost(route('config.overview.chart.update', blockId))
 
   const selectChartType = (type: string) => {
     setFormValue('chartType')(formData.chartType === type ? '' : type)
   }
-  const [data, loading] = useFetchRecord<{
-    data: Record<string, number | string>[]
-  }>(`/subset/${formData.subsetId}?latest=month`)
 
-  const [subsetDimensionFields, subsetDimensionFieldsLoading] = useFetchRecord<Dimension[]>(
-    formData.subsetId ? `/api/subset/dimension/${formData.subsetId}` : null
-  )
+  const [subsetDimensionFields, subsetDimensionFieldsLoading] = formData.subsetId
+    ? useFetchRecord<Dimension[]>(`/api/subset/dimension/${formData.subsetId}`)
+    : []
 
-  const [measures, measuresLoading] = useFetchRecord<Dimension[]>(
-    formData.subsetId ? `/api/subset/${formData.subsetId}` : null
-  )
+  const [measures, measuresLoading] = formData.subsetId
+    ? useFetchRecord<Dimension[]>(`/api/subset/${formData.subsetId}`)
+    : []
 
   useImperativeHandle(ref, () => ({
     submit: async () => {
-      console.log('Submitting form with data:', formData)
-      await new Promise((resolve) => setTimeout(resolve, 300))
+      await post({ overviewChart: { ...formData }, _method: 'PUT' })
     },
   }))
 
@@ -149,14 +155,14 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
             />
           )}
           {formData.chartType === 'pie' && <PieChartBlock />}
-          <div className='flex justify-between'>
+          <div className='grid grid-cols-2 gap-2'>
             {subsetDimensionFields && subsetDimensionFields.length > 0 && (
               <div>
                 <StrongText>Dimensions</StrongText>
                 <div className='flex flex-col gap-2'>
                   {subsetDimensionFields.map((dimension: any) => {
-                    const selectedDimension = formData.dimensions.find(
-                      (d: any) => d.field === dimension?.subset_column
+                    const selectedDimension = formData.dimensions?.find(
+                      (d: any) => d?.field === dimension?.subset_column
                     )
 
                     return (
@@ -164,7 +170,7 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
                         key={dimension?.id}
                         field={dimension}
                         isSelected={!!selectedDimension}
-                        showUnit={false} // Dimensions usually don't have units
+                        showUnit={false}
                         data={{
                           value: dimension?.subset_column,
                           label: selectedDimension?.label || dimension?.subset_field_name,
@@ -173,12 +179,12 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
                         }}
                         onUpdate={(updated) => {
                           if (updated.selected) {
-                            const existing = formData.dimensions.findIndex(
-                              (d: any) => d.field === dimension?.subset_column
+                            const index = formData.dimensions.findIndex(
+                              (d: any) => d?.field === dimension?.subset_column
                             )
-                            if (existing > -1) {
+                            if (index > -1) {
                               const newDims = [...formData.dimensions]
-                              newDims[existing] = {
+                              newDims[index] = {
                                 field: dimension?.subset_column,
                                 label: updated.label,
                                 show_label: updated.show_label,
@@ -197,7 +203,7 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
                           } else {
                             setFormValue('dimensions')(
                               formData.dimensions.filter(
-                                (d: any) => d.field !== dimension?.subset_column
+                                (d: any) => d?.field !== dimension?.subset_column
                               )
                             )
                           }
@@ -214,9 +220,8 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
                 <StrongText>Measures</StrongText>
                 <div className='flex flex-col gap-2'>
                   {measures.map((measure: any) => {
-                    // Check if this measure is already selected
-                    const selectedMeasure = formData.measures.find(
-                      (m: any) => m.field === measure?.subset_column
+                    const selectedMeasure = formData.measures?.find(
+                      (m: any) => m?.field === measure?.subset_column
                     )
 
                     return (
@@ -232,13 +237,12 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
                         }}
                         onUpdate={(updated) => {
                           if (updated.selected) {
-                            // Add or update measure
-                            const existing = formData.measures.findIndex(
-                              (m: any) => m.field === measure?.subset_column
+                            const index = formData.measures.findIndex(
+                              (m: any) => m?.field === measure?.subset_column
                             )
-                            if (existing > -1) {
+                            if (index > -1) {
                               const newMeasures = [...formData.measures]
-                              newMeasures[existing] = {
+                              newMeasures[index] = {
                                 field: measure?.subset_column,
                                 label: updated.label,
                                 unit: updated.unit,
@@ -257,10 +261,9 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
                               ])
                             }
                           } else {
-                            // Remove measure
                             setFormValue('measures')(
                               formData.measures.filter(
-                                (m: any) => m.field !== measure?.subset_column
+                                (m: any) => m?.field !== measure?.subset_column
                               )
                             )
                           }

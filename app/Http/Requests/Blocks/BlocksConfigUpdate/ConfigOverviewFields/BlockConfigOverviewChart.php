@@ -27,36 +27,19 @@ class BlockConfigOverviewChart extends Data
         public ?string $title,
 
         #[Max(255)]
+        public ?string $discription,
+
+        #[Max(255)]
         #[RequiredWith('subset_id')]
         public ?string $chartType,
 
-        #[Max(255)]
         #[RequiredWith('subset_id')]
-        public ?string $colorScheme,
-
-        #[RequiredWith('subset_id')]
-        #[Max(255)]
-        public ?string $xAxisLabel,
-
-        #[RequiredWith('subset_id')]
-        #[Max(255)]
-        public ?string $xAxis,
-
-        #[RequiredWith('subset_id')]
-        public ?bool $xAxisEnable,
-
-        #[RequiredWith('subset_id')]
-        #[Min(0)]
-        #[Max(100)]
-        public ?int $xAxisCount,
-
-        #[RequiredWith('subset_id')]
-        #[Max(255)]
-        public ?string $xAxisOrder,
+        #[DataCollectionOf(BlockConfigDimensionField::class)]
+        public ?DataCollection $dimensions,
 
         #[RequiredWith('subset_id')]
         #[DataCollectionOf(BlockConfigMeasureField::class)]
-        public ?DataCollection $yAxis,
+        public ?DataCollection $measures,
 
 
     ) {}
@@ -66,13 +49,8 @@ class BlockConfigOverviewChart extends Data
         return [
             'title.required_with' => 'Please provide a title.',
             'chart_type.required_with' => 'Please select a chart type.',
-            'color_scheme.required_with' => 'Please select a color scheme.',
-            'x_axis_label.required_with' => 'Please enter a label for the x axis.',
-            'x_axis.required_with' => 'Please enter a value for the x axis.',
-            'x_axis_enable.required_with' => 'Please specify if x axis should be enabled.',
-            'x_axis_count.required_with' => 'Please select a count for the x axis.',
-            'x_axis_order.required_with' => 'Please select an order for the x axis.',
-            'y_axis.required_with' => 'Please select a y axis.',
+            'dimensions.required_with' => 'Please select a dimension.',
+            'measures.required_with' => 'Please select a measure.',
         ];
     }
 }

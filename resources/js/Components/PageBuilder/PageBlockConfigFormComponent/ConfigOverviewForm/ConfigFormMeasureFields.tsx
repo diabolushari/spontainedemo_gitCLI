@@ -66,7 +66,7 @@ export default function ConfigFormField({
       />
 
       {formData.selected && (
-        <div className='mt-2 flex flex-col gap-2'>
+        <div className='mt-2 grid grid-cols-2 gap-2'>
           <div className='flex flex-col'>
             <Input
               label='Label'
@@ -75,16 +75,7 @@ export default function ConfigFormField({
               error={errors?.label}
             />
           </div>
-          <div className='flex flex-col'>
-            {showUnit && (
-              <Input
-                label='Unit'
-                value={formData.unit}
-                setValue={setFormValue('unit')}
-                error={errors?.unit}
-              />
-            )}
-          </div>
+
           <div className='flex flex-col'>
             <CheckBox
               label='Show Label'

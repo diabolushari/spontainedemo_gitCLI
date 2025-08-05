@@ -1,7 +1,14 @@
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 
-export default function OverviewChartDemo({ chartContent }: { chartContent: any }) {
-  console.log('chartContent', chartContent)
+export default function OverviewChartDemo({
+  chartContent,
+  selectedMonth,
+  setSelectedMonth,
+}: {
+  chartContent: any
+  selectedMonth: Date | null
+  setSelectedMonth: (month: Date | null) => void
+}) {
   return (
     <div>
       <h1>Overview Chart Demo</h1>
