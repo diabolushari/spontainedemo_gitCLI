@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
-use App\Services\Subset\SubsetFilterBuilder;
+use App\Services\Subset\QueryBuilder\SubsetFilterBuilder;
 use App\Services\Subset\SubsetGroupedByColumn;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

@@ -25,6 +25,7 @@ use App\Http\Controllers\ChartData\SubsetGroupListController;
 use App\Http\Controllers\ChartData\SubsetGroupNameController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
+use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
@@ -344,7 +345,6 @@ Route::get('test', function (JoinDataTable $joinDataTable) {
         ->first();
 });
 
-require __DIR__ . '/auth.php';
 Route::get('/insight-gen', InsightsGen::class)
     ->name('insight-gen');
 
@@ -353,4 +353,8 @@ Route::get('/get-insights', GetInsights::class)
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
-require __DIR__ . '/auth.php';
+
+Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
+    ->name('data-detail-column-search');
+
+require __DIR__.'/auth.php';

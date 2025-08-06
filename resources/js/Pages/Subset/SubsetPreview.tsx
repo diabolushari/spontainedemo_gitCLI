@@ -11,8 +11,8 @@ import DeleteModal from '@/ui/Modal/DeleteModal'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import SubsetTable from '@/Components/DataExplorer/SubsetTable'
-import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import { router } from '@inertiajs/react'
+import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 
 interface Props {
   subset: SubsetDetail
@@ -30,6 +30,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
   const handleSubmit = useCallback(
     (query: string | null) => {
       console.log(query)
+      // empty string on null query
       router.get(route('subset.preview', subset.id) + '?' + query)
     },
     [subset]
@@ -44,6 +45,14 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
       editUrl={route('subset.edit', subset.id)}
     >
       <div className='flex w-full flex-col md:w-1/2'>
+        {/*<AdminSubsetFilterForm*/}
+        {/*  dates={subset.dates as SubsetDateField[]}*/}
+        {/*  measures={subset.measures as SubsetMeasureField[]}*/}
+        {/*  dimensions={subset.dimensions as SubsetDimensionField[]}*/}
+        {/*  subset={subset}*/}
+        {/*  filters={filters}*/}
+        {/*  onSubmit={handleSubmit}*/}
+        {/*/>*/}
         <SubsetFilterForm
           dates={subset.dates as SubsetDateField[]}
           measures={subset.measures as SubsetMeasureField[]}
@@ -51,6 +60,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
           subset={subset}
           filters={filters}
           onSubmit={handleSubmit}
+          month={true}
         />
       </div>
       <div className='snap-y'>

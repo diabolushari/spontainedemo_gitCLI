@@ -64,14 +64,16 @@ readonly class DeleteDataTable
             $archivedTableName = 'archived_'.time().'_'.$dataDetail->table_name;
             Schema::rename($dataDetail->table_name, $archivedTableName);
 
-            // Re-add foreign keys to the archived table
-            Schema::table($archivedTableName, function (Blueprint $table) use ($foreignKeys) {
+            Schema::table($archivedTableName, function (Blueprint $table) use ($foreignKeys, $archivedTableName) {
                 foreach ($foreignKeys as $foreignKey) {
-                    // Add index first
-                    $table->index($foreignKey['column']);
+                    $column = $foreignKey['column'];
 
-                    // Then add foreign key constraint to existing column
-                    $table->foreign($foreignKey['column'])
+                    $indexName = 'idx_'.hash('crc32b', "{$archivedTableName}_{$column}");
+
+                    $foreignName = 'fk_'.hash('crc32b', "{$archivedTableName}_{$column}");
+
+                    $table->index($column, $indexName);
+                    $table->foreign($column, $foreignName)
                         ->references('id')
                         ->on($foreignKey['related_table']);
                 }

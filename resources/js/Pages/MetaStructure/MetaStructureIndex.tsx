@@ -4,7 +4,6 @@ import { MetaStructure } from '@/interfaces/meta_interfaces'
 import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
-import { describe } from 'node:test'
 import { router } from '@inertiajs/react'
 
 interface Props {
@@ -21,7 +20,7 @@ interface Props {
 export default function MetaStructureIndex({ structures, type, subtype, oldValues }: Props) {
   //holds data
   const { formData, setFormValue } = useCustomForm({
-    search: '',
+    search: oldValues?.search ?? '',
     type: 'definitions',
     subtype: 'blocks',
   })
@@ -66,7 +65,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         actions: [
           {
             title: `Members ${structure.meta_data_count}`,
-            url: route('meta-data.index', { structure: structure.structure_name }, false),
+            url: route('meta-data.index', { structure: structure.id }, false),
             textStyles: 'hover:scale-105 transition',
           },
           // {

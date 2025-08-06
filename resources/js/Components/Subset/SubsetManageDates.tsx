@@ -10,10 +10,8 @@ import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
 interface Props {
   dataDetail: DataDetail
   dateFields: TableDateField[]
-  addedDateFields: Omit<SubsetDateField, 'id' | 'subset_detail_id'>[]
-  setAddedDateFields: React.Dispatch<
-    SetStateAction<Omit<SubsetDateField, 'id' | 'subset_detail_id'>[]>
-  >
+  addedDateFields: Omit<SubsetDateField, 'subset_detail_id'>[]
+  setAddedDateFields: React.Dispatch<SetStateAction<Omit<SubsetDateField, 'subset_detail_id'>[]>>
 }
 
 function SubsetManageDates({
@@ -52,7 +50,7 @@ function SubsetManageDates({
 
   const [selectedField, setSelectedField] = useState<Omit<
     SubsetDateField,
-    'id' | 'subset_detail_id'
+    'subset_detail_id'
   > | null>(null)
 
   const keys = useMemo(() => {
@@ -103,7 +101,7 @@ function SubsetManageDates({
   }
 
   const handleNewField = useCallback(
-    (newField: Omit<SubsetDateField, 'id' | 'subset_detail_id'>) => {
+    (newField: Omit<SubsetDateField, 'subset_detail_id'>) => {
       setShowDateForm(false)
       upsertSubsetFields(selectedField, newField, setAddedDateFields)
     },

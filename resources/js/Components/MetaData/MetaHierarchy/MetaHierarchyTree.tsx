@@ -21,7 +21,7 @@ export default function MetaHierarchyTree({
   metaHierarchy,
   levelInfos,
 }: Readonly<Props>) {
-  const { tree, toggleNode } = useMetaTree(hierarchyList)
+  const { tree, toggleNode } = useMetaTree(hierarchyList, metaHierarchy)
 
   const [selectedNode, setSelectedNode] = useState<MetaHierarchyItem | null>(null)
   const [showModal, setShowModal] = useState(false)

@@ -7,6 +7,7 @@ use App\Http\Requests\Meta\MetaDataFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaData;
 use App\Models\Meta\MetaGroup;
+use App\Models\Meta\MetaGroupItem;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Meta\MetaStructure;
@@ -45,7 +46,7 @@ class MetaDataController extends Controller implements HasMiddleware
             })
             ->when($request->filled('structure'), function (Builder $builder) use ($request) {
                 $builder->whereHas('metaStructure', function (Builder $query) use ($request) {
-                    $query->where('structure_name', 'like', '%'.$request->input('structure').'%');
+                    $query->where('id', $request->input('structure'));
                 });
             })
             ->withCount('hierarchyPrimaryField', 'hierarchySecondaryField', 'groupItem')
@@ -53,12 +54,17 @@ class MetaDataController extends Controller implements HasMiddleware
             ->withPath(route('meta-data.index'))
             ->withQueryString();
 
+        $oldStructure = $request->filled('structure') ? MetaStructure::find($request->structure) : null;
+
         return Inertia::render('MetaData/MetaDataIndex', [
             'metaData' => $records,
             'structures' => $structures,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all(),
+            'oldValues' => [
+                'search' => $request->search ?? '',
+                'structure' => $oldStructure,
+            ],
         ]);
     }
 
@@ -141,6 +147,7 @@ class MetaDataController extends Controller implements HasMiddleware
     public function destroy(MetaData $metaData): RedirectResponse
     {
         try {
+            MetaGroupItem::where('meta_data_id', $metaData->id)->delete();
             $metaData->delete();
         } catch (Exception $e) {
             return back()

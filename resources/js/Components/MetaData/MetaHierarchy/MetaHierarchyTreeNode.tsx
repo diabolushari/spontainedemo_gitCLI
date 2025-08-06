@@ -24,7 +24,6 @@ export default function MetaHierarchyTreeNode({
   }, [])
 
   return (
-    // eslint-disable-next-line sonarjs/jsx-no-useless-fragment
     <>
       {node.visible && (
         <div
@@ -49,7 +48,7 @@ export default function MetaHierarchyTreeNode({
               className='tree-node-content flex grow cursor-pointer hover:text-1stop-highlight'
             >
               <StrongText>
-                {node.nodePrimaryValue} | {node.nodeSecondaryValue}
+                {node.nodePrimaryValue} | {node.nodeSecondaryValue} | {node.levelName}
               </StrongText>
             </div>
             <div className='flex gap-2'>

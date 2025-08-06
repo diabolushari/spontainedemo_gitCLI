@@ -8,16 +8,26 @@ import { router } from '@inertiajs/react'
 
 interface Props {
   dataLoaderAPIs: Paginator<DataLoaderAPI>
+  type?: string
+  subtype?: string
+  oldValues?: Record<string, string>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function DataLoaderAPIIndex({ dataLoaderAPIs }: Readonly<Props>) {
+export default function DataLoaderAPIIndex({
+  dataLoaderAPIs,
+  type,
+  subtype,
+  oldValues,
+}: Readonly<Props>) {
+  //TODO : oldvalues is undefined
+  console.log(oldValues)
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
-    search: '',
+    search: oldValues?.search ?? '',
   })
 
   //input elements list

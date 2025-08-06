@@ -15,7 +15,7 @@ interface Props {
 
 export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
-    search: '',
+    search: oldValues?.search ?? '',
     type: 'definitions',
     subtype: 'groups',
   })
@@ -41,16 +41,10 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Rea
     return groups.data.map((group) => {
       return {
         id: group.id,
-        // items_count: 'Members ' + group.items_count,
+        items_count: 'Members ' + group.items_count,
         name: group.name,
         description: group.description,
-        actions: [
-          {
-            title: `Members ${group.items_count}`,
-            url: route('meta-data.index', { search: group.name }, false),
-            textStyles: 'hover:scale-105 transition',
-          },
-        ],
+        actions: [],
       }
     })
   }, [groups])
@@ -68,6 +62,11 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Rea
         isShownInCard: true,
         boxStyles: 'items-center gap-0 line-clamp-1',
         textStyles: 'small-1stop ',
+      },
+      {
+        key: 'items_count',
+        isShownInCard: true,
+        boxStyles: 'items-center gap-0',
       },
     ] as ListItemKeys<{
       name: string

@@ -5,11 +5,10 @@ import {
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 
-export default function useAvailableSubsetFilters(
+export default function useAdminAvailableSubsetFilters(
   dates: SubsetDateField[],
   dimensions: SubsetDimensionField[],
-  measures: SubsetMeasureField[],
-  month: boolean = false
+  measures: SubsetMeasureField[]
 ) {
   return useMemo(() => {
     const fields: {
@@ -30,14 +29,12 @@ export default function useAvailableSubsetFilters(
 
     dimensions.forEach((dimension) => {
       if (dimension.subset_column == 'month') {
-        if (month) {
-          fields.push({
-            fieldId: dimension.id,
-            fieldName: 'Month',
-            column: 'month',
-            type: 'dimension',
-          })
-        }
+        fields.push({
+          fieldId: dimension.field_id,
+          fieldName: 'Month',
+          column: 'month',
+          type: 'dimension',
+        })
         return
       }
       if (dimension.subset_column === 'section_code') {

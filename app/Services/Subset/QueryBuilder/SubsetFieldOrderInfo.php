@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Subset;
+namespace App\Services\Subset\QueryBuilder;
 
 use Spatie\LaravelData\Data;
 

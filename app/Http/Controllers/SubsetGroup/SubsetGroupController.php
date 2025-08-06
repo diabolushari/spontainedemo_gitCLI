@@ -34,6 +34,7 @@ class SubsetGroupController extends Controller implements HasMiddleware
 
         return Inertia::render('SubsetGroup/SubsetGroupIndex', [
             'subsetGroups' => $subsetGroups,
+            'oldValues' => $request->all(),
         ]);
     }
 

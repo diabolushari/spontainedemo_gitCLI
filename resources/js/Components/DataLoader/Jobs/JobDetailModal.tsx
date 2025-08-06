@@ -5,9 +5,10 @@ import React from 'react'
 interface Properties {
   selectedStatus: JobStatuses | null
 }
-export default function JobDetailModal({ selectedStatus }: Properties) {
+
+export default function JobDetailModal({ selectedStatus }: Readonly<Properties>) {
   return (
-    <div className='pt-5'>
+    <div className='pt-4'>
       <Card>
         <div
           className={`rounded-lg p-3 ${selectedStatus?.is_successful === 1 ? 'bg-1stop-highlight' : 'bg-[#DA999A]'} `}

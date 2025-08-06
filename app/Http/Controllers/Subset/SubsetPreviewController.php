@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Subset;
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\GetSubsetData;
-use App\Services\Subset\SubsetFilterBuilder;
+use App\Services\Subset\QueryBuilder\SubsetFilterBuilder;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;

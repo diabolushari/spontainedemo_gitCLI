@@ -15,7 +15,7 @@ interface Props {
 
 export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValues }: Props) {
   const { formData, setFormValue } = useCustomForm({
-    search: '',
+    search: oldValues?.search ?? '',
     type: 'definitions',
     subtype: 'heirarchies',
   })
@@ -51,11 +51,11 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         isShownInCard: true,
         boxStyles: 'items-center gap-0 line-clamp-1',
       },
-      // {
-      //   key: 'items_count',
-      //   isShownInCard: true,
-      //   boxStyles: 'items-center gap-0',
-      // },
+      {
+        key: 'items_count',
+        isShownInCard: true,
+        boxStyles: 'items-center gap-0',
+      },
     ] as ListItemKeys<{ name: string; items_count: string }>[]
   }, [])
 
@@ -66,13 +66,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         name: hierarchy.name,
         description: hierarchy.description,
         items_count: 'Members ' + hierarchy.items_count,
-        actions: [
-          {
-            title: `Members ${hierarchy.items_count}`,
-            url: route('meta-data.index', { search: hierarchy.name }, false),
-            textStyles: 'hover:scale-105 transition',
-          },
-        ],
+        actions: [],
       }
     })
   }, [hierarchies])

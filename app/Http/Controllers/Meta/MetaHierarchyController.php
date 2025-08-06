@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Meta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Meta\MetaHierarchyFormRequest;
 use App\Libs\ExceptionMessage;
+use App\Models\Meta\MetaData;
 use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Meta\MetaHierarchyLevelInfo;
 use App\Models\Meta\MetaStructure;
 use App\Services\MetaData\Hierarchy\HierarchyList;
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Log;
 
 class MetaHierarchyController extends Controller implements HasMiddleware
 {
@@ -31,13 +34,45 @@ class MetaHierarchyController extends Controller implements HasMiddleware
 
     public function index(Request $request): Response
     {
-        $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), function (Builder $query) use ($request) {
-            $query->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%')
-                ->orWhereHas('items.metaHierarchy', function (Builder $query) use ($request) {
-                    return $query->where('name', 'like', "%$request->search%");
+        $hierarchiesQuery = MetaHierarchy::query();
+
+        $hierarchiesQuery->when($request->filled('search'), function (Builder $query) use ($request) {
+            $searchTerm = $request->input('search');
+            $subtype = $request->input('subtype');
+
+            if ($subtype === 'heirarchies') {
+                $query->where('name', 'like', '%'.$searchTerm.'%');
+
+            } elseif (! $subtype || ! $request->filled('type')) {
+                $matchedMetadataIds = MetaData::where('name', $searchTerm)->pluck('id');
+
+                $metaHierarchyIds = MetaHierarchyItem::whereIn('primary_field_id', $matchedMetadataIds)
+                    ->orWhereIn('secondary_field_id', $matchedMetadataIds)
+                    ->pluck('meta_hierarchy_id')
+                    ->unique();
+
+                $query->where(function (Builder $subQuery) use ($searchTerm, $metaHierarchyIds) {
+                    $subQuery->where('name', $searchTerm) // Exact match on hierarchy name
+                        ->orWhereIn('id', $metaHierarchyIds);
                 });
-        })
-            ->withCount('items')
+
+            } else {
+                $searchTermWithWildcards = '%'.$searchTerm.'%';
+                $matchedMetadataIds = MetaData::where('name', 'like', $searchTermWithWildcards)->pluck('id');
+
+                $metaHierarchyIds = MetaHierarchyItem::whereIn('primary_field_id', $matchedMetadataIds)
+                    ->orWhereIn('secondary_field_id', $matchedMetadataIds)
+                    ->pluck('meta_hierarchy_id')
+                    ->unique();
+
+                $query->where(function (Builder $subQuery) use ($searchTermWithWildcards, $metaHierarchyIds) {
+                    $subQuery->where('name', 'like', $searchTermWithWildcards)
+                        ->orWhereIn('id', $metaHierarchyIds);
+                });
+            }
+        });
+
+        $hierarchies = $hierarchiesQuery->withCount('items')
             ->paginate(20)
             ->withPath(route('meta-hierarchy.index'))
             ->withQueryString();
@@ -109,6 +144,7 @@ class MetaHierarchyController extends Controller implements HasMiddleware
             foreach ($hierarchyLevels as &$tempLevel) {
                 $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
             }
+
             MetaHierarchyLevelInfo::upsert(
                 $hierarchyLevels,
                 ['level', 'meta_hierarchy_id'],

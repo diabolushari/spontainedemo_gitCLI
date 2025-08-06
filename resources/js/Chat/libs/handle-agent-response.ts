@@ -1,10 +1,9 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import extractJsonMarkdown from './extract-json-markdown'
 
 export interface AgentAction {
   tool: string
-  tool_input: string
+  tool_input: string | Record<string, unknown>
   log: string
 }
 
@@ -31,19 +30,21 @@ function handleOutputResponse(
 
   if ('output' in response) {
     try {
-      const extractedJSON = extractJsonMarkdown(response.output)
-      if (extractedJSON == null) {
-        messages.push({
-          id: currentIdRef.current++,
-          role: 'assistant',
-          content: response.output,
-          contentType: 'text',
-          suggestions: [],
-        })
-        return messages
-      }
-      const parsedOutput = JSON.parse(extractedJSON[1])
+      // commented out the JSON markdown extraction since 4.1 returns JSON directly
+      //   const extractedJSON = extractJsonMarkdown(response.output)
+      //   if (extractedJSON == null) {
+      //     messages.push({
+      //       id: currentIdRef.current++,
+      //       role: 'assistant',
+      //       content: response.output,
+      //       contentType: 'text',
+      //       suggestions: [],
+      //     })
+      //     return messages
+      //   }
+      //   const parsedOutput = JSON.parse(extractedJSON[1])
       // Add text output message if available
+      const parsedOutput = JSON.parse(response.output)
       if (parsedOutput.output != null) {
         messages.push({
           id: currentIdRef.current++,
@@ -51,6 +52,7 @@ function handleOutputResponse(
           content: parsedOutput.output,
           contentType: 'text',
           suggestions: parsedOutput.suggestions ?? [],
+          data_table: parsedOutput.data_table ?? [],
         })
       }
       // Add visualization message if available
@@ -107,7 +109,10 @@ function agentResponseToChatMessages(
         id: currentIdRef.current++,
         role: 'action',
         content: action.tool,
-        description: action.tool_input,
+        description:
+          typeof action.tool_input === 'string'
+            ? action.tool_input
+            : JSON.stringify(action.tool_input),
         contentType: 'text',
         suggestions: [],
       })
@@ -140,10 +145,9 @@ export function parseAndConvertAgentResponse(
   currentIdRef: MutableRefObject<number>,
   setLoading?: Dispatch<SetStateAction<boolean>>
 ): ChatMessage[] {
-  console.log(`Raw response from fastapi  : \n${responseString}`)
   try {
+    console.log('raw responseString:', responseString)
     const json = JSON.parse(responseString) as AgentResponse
-    console.log(json)
     // If there's output property, this is the final response, so set loading to false
     if (('output' in json || 'error' in json) && setLoading != null) {
       setLoading(false)

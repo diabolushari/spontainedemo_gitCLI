@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Services\Subset;
+namespace App\Services\Subset\QueryBuilder;
 
 use App\Models\DataDetail\DataDetail;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyLevelInfo;
 use App\Models\Subset\SubsetDetail;
-use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
-use App\Models\Subset\SubsetDetailMeasure;
 use App\Services\DataTable\JoinDataTable;
 use App\Services\DistributionHierarchy\GetHierarchyTableDetail;
 use App\Services\MetaData\Hierarchy\FlattenHierarchyAtLevel;
 use App\Services\MetaData\Hierarchy\HierarchySubQuery;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\Subset\SubsetApplyDefaultFilters;
 use Illuminate\Database\Query\Builder;
 
 readonly class SubsetQueryBuilder
@@ -25,6 +23,9 @@ readonly class SubsetQueryBuilder
 
     public function __construct(
         private JoinDataTable $joinDataTable,
+        private AddDatesToQuery $addDatesToQuery,
+        private AddDimensionsToQuery $addDimensionsToQuery,
+        private AddMeasuresToQuery $addMeasuresToQuery
     ) {}
 
     public function query(
@@ -45,14 +46,14 @@ readonly class SubsetQueryBuilder
         $orderColumns = [];
 
         if (! $excludeNonMeasurements) {
-            $this->addDateFields(
+            $this->addDatesToQuery->addDateFields(
                 $subsetDetail->dates,
                 $groupingColumns,
                 $selectColumns,
                 $orderColumns,
                 $fields
             );
-            $this->addDimensionFields(
+            $this->addDimensionsToQuery->addDimensionFields(
                 $subsetDetail->dimensions,
                 $groupingColumns,
                 $selectColumns,
@@ -62,7 +63,13 @@ readonly class SubsetQueryBuilder
             );
         }
 
-        $this->addMeasureFields($subsetDetail->measures, $measureColumns, $groupingColumns, $orderColumns);
+        $this->addMeasuresToQuery->addMeasureFields(
+            $subsetDetail->measures,
+            $measureColumns,
+            $groupingColumns,
+            $orderColumns,
+            $fields
+        );
 
         $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
             ->where('id', $subsetDetail->data_detail_id)
@@ -113,153 +120,10 @@ readonly class SubsetQueryBuilder
         }
 
         foreach ($orderColumns as $order) {
-            $query->orderByRaw($order->column . ' ' . $order->sortOrder);
+            $query->orderByRaw($order->column.' '.$order->sortOrder);
         }
 
         return $query->selectRaw($selectStatement);
-    }
-
-    /**
-     * @param  Collection<int, SubsetDetailDate>  $dates
-     * @param  string[]  $groupingColumns
-     * @param  string[]  $selectColumns
-     * @param  SubsetFieldOrderInfo[]  $orderColumns
-     * @param  string[]|null  $fields
-     */
-    private function addDateFields(
-        Collection $dates,
-        array &$groupingColumns,
-        array &$selectColumns,
-        array &$orderColumns,
-        ?array $fields
-    ): void {
-        $dates->each(function (SubsetDetailDate $date) use (&$groupingColumns, &$selectColumns, &$orderColumns, $fields) {
-            if ($date->info == null) {
-                return;
-            }
-
-            // Skip if fields is provided and this field is not in the list
-            if ($fields !== null && ! in_array($date->subset_column, $fields)) {
-                return;
-            }
-
-            if ($date->date_field_expression != null) {
-                $column = $date->date_field_expression;
-            } else {
-                $column = '`' . $date->info->column . '`';
-            }
-            $groupingColumns[] = $column;
-            $selectColumns[] = $column . ' as `' . $date->subset_column . '`';
-            if ($date->sort_order != null) {
-                $sortOrder = $date->sort_order;
-                $orderColumns[] = new SubsetFieldOrderInfo(
-                    $column,
-                    strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
-                );
-            }
-        });
-    }
-
-    /**
-     * @param  Collection<int, SubsetDetailDimension>  $dimensions
-     * @param  string[]  $groupingColumns
-     * @param  string[]  $selectColumns
-     * @param  SubsetFieldOrderInfo[]  $orderColumns
-     * @param  string[]|null  $fields
-     */
-    private function addDimensionFields(
-        Collection $dimensions,
-        array &$groupingColumns,
-        array &$selectColumns,
-        array &$orderColumns,
-        bool $isSummary,
-        ?array $fields
-    ): void {
-        $dimensions->each(function (SubsetDetailDimension $dimension) use (&$groupingColumns, &$selectColumns, &$orderColumns, $isSummary, $fields) {
-            if ($dimension->info == null) {
-                return;
-            }
-            if ($dimension->filter_only == 1) {
-                return;
-            }
-
-            // Skip if fields is provided and this field is not in the list
-            if ($fields !== null && ! in_array($dimension->subset_column, $fields)) {
-                return;
-            }
-
-            //if is summary then section info is included in as office_code, office_name
-            if ($isSummary && $dimension->info->column === 'section_code') {
-                return;
-            }
-            if ($dimension->column_expression != null) {
-                $groupingColumns[] = $dimension->column_expression;
-                $selectColumns[] = $dimension->column_expression . ' as `' . $dimension->subset_column . '`';
-                if ($dimension->sort_order != null) {
-                    $orderColumns[] = new SubsetFieldOrderInfo($dimension->column_expression, $dimension->sort_order);
-                }
-
-                return;
-            }
-
-            $groupingColumns[] = '`' . $dimension->info->column . '`';
-            $selectColumns[] = $dimension->info->column . '_record.name as `' . $dimension->subset_column . '`';
-
-            if ($dimension->sort_order != null) {
-                $sortOrder = $dimension->sort_order;
-                $orderColumns[] = new SubsetFieldOrderInfo(
-                    $dimension->info->column . '_record.name',
-                    strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
-                );
-            }
-        });
-    }
-
-    /**
-     * @param  Collection<int, SubsetDetailMeasure>  $measures
-     * @param  string[]  $measureColumns
-     * @param  string[]  $groupingColumns
-     * @param  SubsetFieldOrderInfo[]  $orderColumns
-     */
-    private function addMeasureFields(
-        Collection $measures,
-        array &$measureColumns,
-        array &$groupingColumns,
-        array &$orderColumns
-    ): void {
-        $measures->each(function (SubsetDetailMeasure $measure) use (&$measureColumns, &$groupingColumns, &$orderColumns) {
-            if ($measure->info == null) {
-                return;
-            }
-            if ($measure->info->unit_column != null) {
-                $measureColumns[] = '`' . $measure->info->unit_column . '` as `' . $measure->subset_column . '`';
-                $groupingColumns[] = '`' . $measure->info->unit_column . '`';
-            }
-            $column = '`' . $measure->info->column . '`';
-            if ($measure->expression != null) {
-                $column = $measure->expression;
-            } elseif ($measure->aggregation != null) {
-                //if weighted avg then use weight aggregation
-                if ($measure->aggregation === 'WEIGHTED_AVG') {
-                    if ($measure->weightInfo == null) {
-                        return;
-                    }
-                    $column = 'SUM(' . $measure->info->column . ' * ' . $measure->weightInfo->column . ') / SUM('
-                        . $measure->weightInfo->column . ')';
-                } else {
-                    $column = $measure->aggregation . '(' . $measure->info->column . ')';
-                }
-            }
-
-            $measureColumns[] = $column . ' as `' . $measure->subset_column . '`';
-            if ($measure->sort_order != null) {
-                $sortOrder = $measure->sort_order;
-                $orderColumns[] = new SubsetFieldOrderInfo(
-                    $column,
-                    strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
-                );
-            }
-        });
     }
 
     /**

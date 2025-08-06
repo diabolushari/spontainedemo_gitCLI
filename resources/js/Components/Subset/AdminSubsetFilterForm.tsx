@@ -8,14 +8,14 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import Input from '@/ui/form/Input'
 import Button from '@/ui/button/Button'
-import initSubsetFilterFormFields from '@/Components/DataExplorer/SubsetFilter/initSubsetFilterFormFields'
 import ComboBox from '@/ui/form/ComboBox'
 import { XIcon } from 'lucide-react'
 import { availableOperators } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
-import useAvailableSubsetFilters from '@/Components/DataExplorer/SubsetFilter/useAvailableSubsetFilters'
 import DatePicker from '@/ui/form/DatePicker'
 import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 import { showError } from '@/ui/alerts'
+import useAdminAvailableSubsetFilters from '@/Components/Subset/hooks/useAdminAvailableSubsetFilters'
+import generateInitialFilterFields from '@/Components/Subset/hooks/generateInitialFilterFields'
 
 interface Props {
   dates: SubsetDateField[]
@@ -25,12 +25,10 @@ interface Props {
   filters: Record<string, string | undefined | null>
   onSubmit: (querystring: string | null) => void
   offices?: OfficeData[]
-  month?: boolean
 }
 
 export type SubsetFilterFormType = 'date' | 'dimension' | 'number' | 'office' | 'month' | 'string'
 
-//
 export interface SubsetFilterFormField {
   id: number
   field: string
@@ -39,7 +37,6 @@ export interface SubsetFilterFormField {
   dimensionData: { value: string } | null
   officeData: { office_name: string; office_code: string } | null
   type: SubsetFilterFormType
-  month?: boolean
 }
 
 function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
@@ -62,8 +59,7 @@ function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
   return true
 }
 
-//TODO show reset button to clear all filters
-export default function SubsetFilterForm({
+export default function AdminSubsetFilterForm({
   subset,
   dates,
   measures,
@@ -71,18 +67,15 @@ export default function SubsetFilterForm({
   filters,
   offices,
   onSubmit,
-  month = false,
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState<SubsetFilterFormField[]>(
-    initSubsetFilterFormFields(filters, dates, measures, dimensions, offices, month).map(
-      (formField) => {
-        return {
-          ...formField,
-          id: uuidRef.current++,
-        }
+    generateInitialFilterFields(filters, dates, measures, dimensions, offices).map((formField) => {
+      return {
+        ...formField,
+        id: uuidRef.current++,
       }
-    )
+    })
   )
 
   //to add or remove new fields at end
@@ -139,7 +132,7 @@ export default function SubsetFilterForm({
     }
   }, [formFields])
 
-  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures, month)
+  const availableFields = useAdminAvailableSubsetFilters(dates, dimensions, measures)
 
   const setField = (id: number, value: string) => {
     const field = availableFields.find((field) => field.column === value)
@@ -398,8 +391,8 @@ export default function SubsetFilterForm({
         <Button label='Search' />
         <Button
           type={'button'}
-          onClick={() => onSubmit('')}
-          label={'Reset'}
+          label='Reset'
+          onClick={() => onSubmit(null)}
         />
       </div>
     </form>

@@ -128,6 +128,7 @@ class MetaDataGroupController extends Controller implements HasMiddleware
     public function destroy(MetaGroup $metaDataGroup): RedirectResponse
     {
         try {
+            MetaGroupItem::where('meta_group_id', $metaDataGroup->id)->delete();
             $metaDataGroup->delete();
         } catch (Exception $e) {
             return back()

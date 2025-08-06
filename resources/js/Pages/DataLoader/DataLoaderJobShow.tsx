@@ -2,15 +2,19 @@ import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResour
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderJob, JobStatuses } from '@/interfaces/data_interfaces'
+import { Paginator } from '@/ui/ui_interfaces'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import JobStatusesTable from '@/Components/DataLoader/Jobs/JobStatusesTable'
 import JobDetailModal from '@/Components/DataLoader/Jobs/JobDetailModal'
+import Modal from '@/ui/Modal/Modal'
+import Pagination from '@/ui/Pagination/Pagination'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
+  statuses: Paginator<JobStatuses>
 }
 
-export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
+export default function MetaGroupShow({ dataLoaderJob, statuses }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showStatusModal, setShowStatusModal] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<JobStatuses | null>(null)
@@ -97,10 +101,17 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
       subtype='data-tables'
       breadCrumbs={breadCrumb}
     >
-      {showStatusModal && <JobDetailModal selectedStatus={selectedStatus} />}
+      {showStatusModal && (
+        <Modal
+          setShowModal={setShowStatusModal}
+          title={selectedStatus?.executed_at}
+        >
+          <JobDetailModal selectedStatus={selectedStatus} />
+        </Modal>
+      )}
 
       <JobStatusesTable
-        statuses={dataLoaderJob.statuses}
+        statuses={statuses.data}
         showDetails={showDetails}
       />
       {/**more content**/}
@@ -113,6 +124,7 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
           <p>Are you sure you want to delete record?</p>
         </DeleteModal>
       )}
+      <Pagination pagination={statuses} />
     </ShowResourcePage>
   )
 }

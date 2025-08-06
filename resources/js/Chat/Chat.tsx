@@ -1,7 +1,7 @@
 import AIInsights from './components/AiInsights'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useChat from './components/useChat'
 import axios from 'axios'
 

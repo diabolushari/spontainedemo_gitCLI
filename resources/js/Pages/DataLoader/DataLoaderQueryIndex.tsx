@@ -25,7 +25,7 @@ export default function DataLoaderQueryIndex({
 }: Readonly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
-    search: '',
+    search: oldValues?.search ?? '',
   })
 
   //input elements list

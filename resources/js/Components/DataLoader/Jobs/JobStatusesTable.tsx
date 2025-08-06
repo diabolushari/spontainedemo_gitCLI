@@ -9,8 +9,9 @@ interface Properties {
   statuses?: JobStatuses[]
   showDetails: (status: JobStatuses) => void
 }
+
 const heads = ['DATE', 'RAN AT', 'STATUS', 'ROWS']
-export default function JobStatusesTable({ statuses, showDetails }: Properties) {
+export default function JobStatusesTable({ statuses, showDetails }: Readonly<Properties>) {
   return (
     <div className='py-10'>
       <Card className='px-10'>
@@ -31,12 +32,12 @@ export default function JobStatusesTable({ statuses, showDetails }: Properties) 
                   </td>
                   <td className='standard-td'>{status.total_records}</td>
                   <td className='standard-td small-1stop text-1stop-link'>
-                    <span
+                    <button
                       className='cursor-pointer'
                       onClick={() => showDetails(status)}
                     >
-                      SELECT
-                    </span>
+                      Details
+                    </button>
                   </td>
                 </tr>
               )

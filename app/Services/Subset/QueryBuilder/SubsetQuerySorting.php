@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Subset;
+namespace App\Services\Subset\QueryBuilder;
 
 use App\Models\Subset\SubsetDetail;
 use Illuminate\Database\Query\Builder;

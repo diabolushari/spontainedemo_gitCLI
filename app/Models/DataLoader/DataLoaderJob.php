@@ -90,7 +90,8 @@ class DataLoaderJob extends Model
      */
     public function statuses(): HasMany
     {
-        return $this->hasMany(DataLoaderJobStatus::class, 'loader_job_id', 'id');
+        return $this->hasMany(DataLoaderJobStatus::class, 'loader_job_id', 'id')
+            ->orderBy('executed_at', 'desc');
     }
 
     /**

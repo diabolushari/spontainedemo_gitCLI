@@ -9,11 +9,12 @@ import { useCallback, useMemo } from 'react'
 interface Props {
   details: Paginator<DataDetail>
   types: ReferenceData[]
+  oldValues?: Record<string, string>
 }
 
-export default function DataDetailIndex({ details, types }: Readonly<Props>) {
+export default function DataDetailIndex({ details, types, oldValues }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
-    search: '',
+    search: oldValues?.search ?? '',
     type: '',
   })
 
