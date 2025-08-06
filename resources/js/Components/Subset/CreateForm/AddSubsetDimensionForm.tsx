@@ -14,10 +14,10 @@ import { useCallback, useMemo, useState } from 'react'
 interface Props {
   dataDetail: DataDetail
   dimensionFields: TableDimensionField[]
-  onSubmit: (data: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>) => void
-  selectedField: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'> | null
+  onSubmit: (data: Omit<SubsetDimensionField, 'subset_detail_id'>) => void
+  selectedField: Omit<SubsetDimensionField, 'subset_detail_id'> | null
   removeSelectedField: (subsetColumn: string) => void
-  hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
+  hierarchies: Pick<MetaHierarchy, 'name'>[]
 }
 
 export default function AddSubsetDimensionForm({
@@ -28,6 +28,7 @@ export default function AddSubsetDimensionForm({
   hierarchies,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
+    id: selectedField?.id ?? null,
     field_id: selectedField?.field_id.toString() ?? '',
     subset_field_name: selectedField?.subset_field_name ?? '',
     sort_order: selectedField?.sort_order ?? '',
@@ -149,6 +150,7 @@ export default function AddSubsetDimensionForm({
       return
     }
     onSubmit({
+      id: formData.id ?? null,
       field_id: Number(formData.field_id),
       subset_field_name: formData.subset_field_name,
       subset_column: generateSnakeCaseName(formData.subset_field_name),

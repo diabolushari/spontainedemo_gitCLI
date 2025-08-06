@@ -25,6 +25,7 @@ class SubsetEditController extends Controller implements HasMiddleware
 
     public function __invoke(SubsetDetail $subsetDetail)
     {
+        $subsetDetail->load(['dates', 'dimensions', 'measures', 'dataDetail']);
 
         $dataDetail = DataDetail::findOrFail($subsetDetail->data_detail_id);
 
