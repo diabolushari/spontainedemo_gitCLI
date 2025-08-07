@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   Dispatch,
   SetStateAction,
@@ -15,19 +15,18 @@ import {
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 
-import Card from '@/ui/Card/Card'
-import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
-import { showError } from '@/ui/alerts'
-import Modal from '@/ui/Modal/Modal'
-import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import DataExplorerTabs from '@/Components/DataExplorer/DataExplorerTabs'
-import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
+import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import useFetchList from '@/hooks/useFetchList'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { parseMonthYearString } from './EmptyCardBlock'
-import Heading from '@/typography/Heading'
-import CardHeader from '@/ui/Card/CardHeader'
 import NormalText from '@/typography/NormalText'
+import { showError } from '@/ui/alerts'
+import Card from '@/ui/Card/Card'
+import CardHeader from '@/ui/Card/CardHeader'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import Modal from '@/ui/Modal/Modal'
+import { parseMonthYearString } from './EmptyCardBlock'
 
 // Define the shape of OfficeData
 export interface OfficeData {
@@ -35,13 +34,25 @@ export interface OfficeData {
   office_name: string | number
   level?: string
 }
+
 const exampleData = {
-  subset_group_id: '9',
-  default_subset_id: '310',
+  subset_group_id: 9,
+  default_subset_id: 310,
   title: 'Sample Data',
   description: 'Sample Data Description',
-  data_table_id: '35',
+  data_table_id: 35,
 }
+
+// Define the shape of DataExplorerData
+export interface DataExplorerData {
+  title: string
+  description: string
+  default_view: 'map' | 'table' | 'chart'
+  data_table_id: number
+  subset_group_id: number
+  default_subset_id: number
+}
+
 // Context for selected office values and setters
 export const SelectedOfficeContext = createContext<{
   region?: OfficeData | null
@@ -54,8 +65,12 @@ export const SelectedOfficeContext = createContext<{
   setSubdivision?: Dispatch<SetStateAction<OfficeData | null>>
 }>({})
 
+interface Props {
+  dataExplorerData: DataExplorerData | null
+}
+
 // Component
-export default function DataExplorerCard({ dataExplorerData }: { dataExplorerData: any }) {
+export default function DataExplorerCard({ dataExplorerData }: Readonly<Props>) {
   const [isLoading, setIsLoading] = useState(true)
   const [showSearchModal, setShowSearchModal] = useState(false)
 
@@ -67,9 +82,11 @@ export default function DataExplorerCard({ dataExplorerData }: { dataExplorerDat
 
   // Other state
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-  const [activeViewTab, setActiveViewTab] = useState(dataExplorerData?.default_view ?? 'map')
+  const [activeViewTab, setActiveViewTab] = useState<'map' | 'table' | 'chart'>(
+    dataExplorerData?.default_view ?? 'map'
+  )
   const [activeTab, setActiveTab] = useState('region')
-  const [selectedSubsetId, setSelectedSubsetId] = useState(
+  const [selectedSubsetId, setSelectedSubsetId] = useState<number>(
     dataExplorerData ? dataExplorerData?.default_subset_id : exampleData.default_subset_id
   )
   const [searchParams, setSearchParams] = useState<Record<string, string>>({
@@ -78,7 +95,9 @@ export default function DataExplorerCard({ dataExplorerData }: { dataExplorerDat
 
   // Fetch data
 
-  const [date] = useFetchRecord(
+  const [date] = useFetchRecord<{
+    max_value?: string | null
+  }>(
     dataExplorerData?.data_table_id
       ? route('data-detail.date', dataExplorerData.data_table_id)
       : route('data-detail.date', exampleData.data_table_id)
@@ -93,14 +112,16 @@ export default function DataExplorerCard({ dataExplorerData }: { dataExplorerDat
       }
     }
   }, [date])
+
   const [data] = useFetchList(
     `/api/data-explorer/${dataExplorerData?.subset_group_id ? dataExplorerData.subset_group_id : exampleData.subset_group_id}`
   )
+
   const { offices, subsetItems, subsetGroup } = data
 
   // Memoized selected subset
   const { selectedSubset, selectedSubsetItem } = useMemo(() => {
-    if (selectedSubsetId === '') {
+    if (!selectedSubsetId) {
       return {
         selectedSubset: '',
         selectedSubsetItem: null,

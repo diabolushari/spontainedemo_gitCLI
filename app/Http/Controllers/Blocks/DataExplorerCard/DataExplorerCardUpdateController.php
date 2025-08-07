@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Blocks\DataExplorerCard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\DataExplorer\DataExplorerFormRequest;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use Illuminate\Http\Request;
 
 class DataExplorerCardUpdateController extends Controller
 {
     public function __invoke(DataExplorerFormRequest $request, $id)
     {
-        $block = Block::findOrFail($id);
+        $block = PageBlock::findOrFail($id);
         $data = $block->data ?? [];
         $data['title'] = $request->title;
         $data['description'] = $request->description;

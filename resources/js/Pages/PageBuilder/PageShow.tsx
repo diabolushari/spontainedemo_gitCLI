@@ -8,7 +8,6 @@ import Button from '@/ui/button/Button'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import { router } from '@inertiajs/react'
 import { useState } from 'react'
 
 interface Props {
@@ -45,6 +44,10 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
     page_id: page.id,
   })
 
+  const openPreview = () => {
+    window.open(`/${page.url}`, '_blank')
+  }
+
   return (
     <AnalyticsDashboardLayout
       type='data'
@@ -77,17 +80,14 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
             <div>
               <Button
                 label='Preview'
-                onClick={() => {
-                  router.get(`/${page.url}`)
-                }}
+                onClick={openPreview}
               />
             </div>
           </div>
         </Card>
         <div className='grid'>
-          {blocks.length === 0 ? (
-            <p>No blocks available.</p>
-          ) : (
+          {blocks.length === 0 && <p>No blocks available.</p>}{' '}
+          {blocks.length > 0 && (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
               {blocks.map((block) => (
                 <div

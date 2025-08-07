@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use Illuminate\Http\Request;
 
 
@@ -11,7 +11,7 @@ class BlocksConfigOverviewTableDeleteController extends Controller
 {
     public function __invoke($id, $blockId)
     {
-        $block = Block::findOrFail($blockId);
+        $block = PageBlock::findOrFail($blockId);
         $blockData = $block->data ?? [];
 
         // Ensure the target data exists and is an array

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateRequest;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateRequest;
 use App\Models\DataDetail\DataDetail;
@@ -17,7 +17,7 @@ class BlocksConfigRankingUpdateController extends Controller
     public function __invoke(BlocksConfigRankingUpdateRequest $request, $id): RedirectResponse
     {
 
-        $block = Block::findOrFail($id);
+        $block = PageBlock::findOrFail($id);
         $blockData = $block->data ?? [];
         $blockData['ranking'] = $request->ranking;
         $block->data = $blockData;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Blocks;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use App\Models\DataDetail\DataDetail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class BlocksUpdateDimensionController extends Controller
     public function __invoke(Request $request, $id): RedirectResponse
     {
 
-        $block = Block::findOrFail($id);
+        $block = PageBlock::findOrFail($id);
 
         if ($request->dimensions) {
             $block->update([

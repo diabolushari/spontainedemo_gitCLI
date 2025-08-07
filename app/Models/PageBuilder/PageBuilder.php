@@ -2,12 +2,12 @@
 
 namespace App\Models\PageBuilder;
 
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Blocks\Block[] $blocks
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Blocks\PageBlock[] $blocks
  */
 class PageBuilder extends Model
 {
@@ -28,6 +28,6 @@ class PageBuilder extends Model
 
     public function blocks()
     {
-        return $this->hasMany(Block::class, 'page_id');
+        return $this->hasMany(PageBlock::class, 'page_id');
     }
 }

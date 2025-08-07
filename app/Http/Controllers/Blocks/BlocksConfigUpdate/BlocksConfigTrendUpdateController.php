@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateRequest;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class BlocksConfigTrendUpdateController extends Controller
 
     public function __invoke(BlocksConfigTrendUpdateRequest $request, $id): RedirectResponse
     {
-        $block = Block::findOrFail($id);
+        $block = PageBlock::findOrFail($id);
         $data = $block->data ?? [];
         $data['trend'] = $request->trend->toArray();
         $block->data = $data;

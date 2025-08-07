@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Blocks;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksConfigUpdateRequest;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataTable\DataTableDimension;
 use App\Services\DataTable\QueryDataTable;
@@ -18,7 +18,7 @@ class BlocksUpdateConfigController extends Controller
     public function __invoke(BlocksConfigUpdateRequest $request, $id): RedirectResponse
     {
         $data = $request->data;
-        $block = Block::findOrFail($id);
+        $block = PageBlock::findOrFail($id);
         $dataDetail = DataDetail::findOrFail($data['data_table_id']);
         $queryDataTable = new QueryDataTable();
         $builder = $queryDataTable->query($dataDetail);

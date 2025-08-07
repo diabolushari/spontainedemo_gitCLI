@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateRequest;
-use App\Models\Blocks\Block;
+use App\Models\Blocks\PageBlock;
 use App\Models\DataDetail\DataDetail;
 use App\Services\DataTable\QueryDataTable;
 use Illuminate\Http\RedirectResponse;
@@ -28,7 +28,7 @@ class BlocksConfigGeneralUpdateController extends Controller
             ]);
         }
 
-        $block = Block::findOrFail($id);
+        $block = PageBlock::findOrFail($id);
         $existingData = $block->data ?? [];
         $subsetGroupChanged = isset($existingData['subset_group_id']) &&
             $existingData['subset_group_id'] != $request->subsetGroupId;
