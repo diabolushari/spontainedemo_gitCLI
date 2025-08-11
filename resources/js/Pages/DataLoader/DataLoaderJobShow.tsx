@@ -89,10 +89,11 @@ export default function MetaGroupShow({ dataLoaderJob, statuses }: Readonly<Prop
     <ShowResourcePage
       title={''}
       items={displayedValues}
-      backUrl={route('data-detail.show', {
-        dataDetail: dataLoaderJob.data_detail_id,
-        tab: 'jobs',
-      })}
+      // backUrl={route('data-detail.show', {
+      //   dataDetail: dataLoaderJob.data_detail_id,
+      //   tab: 'jobs',
+      // })}
+      onBackClick={() => history.back()}
       editUrl={route('loader-jobs.edit', dataLoaderJob.id)}
       onDeleteClick={() => {
         setShowDeleteModal(true)
