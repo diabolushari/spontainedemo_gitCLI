@@ -1,6 +1,5 @@
 import { AddPageBlock } from '@/Components/PageBuilder/AddPageBlock'
 import { BlockEditor } from '@/Components/PageBuilder/BlockEditor'
-import useCustomForm from '@/hooks/useCustomForm'
 import { Block, BlockDimension, Page } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
@@ -22,27 +21,8 @@ export type blockForm = {
   dimensions: BlockDimension
 }
 
-const defaultBlockConfiguration = {
-  padding_top: '',
-  padding_bottom: '',
-  margin_top: '',
-  margin_bottom: '',
-  mobile_width: '',
-  tablet_width: '',
-  laptop_width: '',
-  desktop_width: '',
-}
-
 export default function PageShow({ page, blocks }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const { formData, setFormValue } = useCustomForm<blockForm>({
-    name: '',
-    position: 0,
-    dimensions: {
-      ...defaultBlockConfiguration,
-    },
-    page_id: page.id,
-  })
 
   const openPreview = () => {
     window.open(`/${page.url}`, '_blank')

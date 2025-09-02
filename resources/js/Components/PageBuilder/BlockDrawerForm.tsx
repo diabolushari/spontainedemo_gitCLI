@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { Block } from '@/interfaces/data_interfaces'
-import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStepGeneral'
-import { DrawerDescription, DrawerHeader, DrawerTitle } from '../ui/drawer'
 import { cn } from '@/utils'
 import { Check } from 'lucide-react'
+import { useState } from 'react'
+import { DrawerDescription, DrawerHeader, DrawerTitle } from '../ui/drawer'
 import ConfigFormLayout from './PageBlockConfigFormComponent/ConfigFormLayout'
+import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStepGeneral'
 
 interface BlockFormProps {
   initialData: any
@@ -15,7 +15,9 @@ interface BlockFormProps {
 
 const steps = [{ title: 'General' }, { title: 'Layout' }]
 
-export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: BlockFormProps) {
+export default function BlockDrawerForm({ initialData, block }: BlockFormProps) {
+  console.log(initialData)
+
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)
   const isStepOneComplete = !!(

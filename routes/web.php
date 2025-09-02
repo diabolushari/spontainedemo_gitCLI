@@ -6,9 +6,9 @@ use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartDele
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableDeleteController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
-use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewUpdateController;
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
@@ -93,17 +93,31 @@ use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use App\Services\DataTable\JoinDataTable;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    if (! auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    return redirect()->route('data-detail.index');
+});
+
+// TEMP DEBUG: remove after troubleshooting
+Route::get('/debug-session', function () {
+    return response()->json([
+        'session_id' => session()->getId(),
+        'authenticated' => auth()->check(),
+        'user_id' => optional(auth()->user())->id,
+        'intended_url' => session()->get('url.intended'),
+        'all_session_keys' => array_keys(session()->all()),
+    ]);
 });
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 // Page building
 Route::resource('page-builder', PageBuilderController::class);
@@ -130,8 +144,6 @@ Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOvervi
 Route::put('block/config/data-explorer/update/{id}', DataExplorerCardUpdateController::class)->name('config.data-explorer.update');
 Route::put('block/config/layout/update/{id}', BlocksConfigLayoutUpdateController::class)->name('config.layout.update');
 
-
-
 //chart
 
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
@@ -150,7 +162,6 @@ Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDime
 Route::get('/api/data-explorer/{subsetGroup}', DataExplorerDataController::class)
     ->name('data-explorer');
 Route::get('/api/data-detail/subset-group/{dataDetailId}', DataDetailSubsetGroupController::class);
-
 
 //testing
 Route::get('/test', function () {

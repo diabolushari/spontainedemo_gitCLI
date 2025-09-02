@@ -1,17 +1,17 @@
 import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
 import TrendGraph from '@/Components/Dashboard/SampleDashboard/TrendGraph'
-import { Block, BlockDimension } from '@/interfaces/data_interfaces'
-import Card from '@/ui/Card/Card'
-import CardHeader from '@/ui/Card/CardHeader'
-import { useEffect, useMemo, useState } from 'react'
-import { BlockRadioGroup } from './BlockRadioGroup'
-import MonthPicker from '@/ui/form/MonthPicker'
-import MoreButton from '../MoreButton'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import Overview from '../Dashboard/SampleDashboard/Overview'
-import { Link } from '@inertiajs/react'
+import { Block, BlockDimension } from '@/interfaces/data_interfaces'
 import NormalText from '@/typography/NormalText'
 import AddButton from '@/ui/button/AddButton'
+import Card from '@/ui/Card/Card'
+import CardHeader from '@/ui/Card/CardHeader'
+import MonthPicker from '@/ui/form/MonthPicker'
+import { Link } from '@inertiajs/react'
+import { useEffect, useMemo, useState } from 'react'
+import Overview from '../Dashboard/SampleDashboard/Overview'
+import MoreButton from '../MoreButton'
+import { BlockRadioGroup } from './BlockRadioGroup'
 
 export function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
@@ -25,19 +25,17 @@ export function dateToYearMonth(date?: Date | null) {
   return `${date.getFullYear()}${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}`
 }
 
-export function EmptyCardBlock({
-  block,
-  dimensions,
-  overviewEditMode = false,
-}: {
+interface Props {
   block?: Block
-  dimensions?: Record<string, string>
+  dimensions?: BlockDimension
   overviewEditMode?: boolean
-}) {
+}
+
+export function EmptyCardBlock({ block, dimensions, overviewEditMode = false }: Readonly<Props>) {
   const [selectedView, setSelectedView] = useState<string>('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
-  const [date] = useFetchRecord(
+  const [date] = useFetchRecord<{ max_value: string | null }>(
     block?.data?.data_table_id ? route('data-detail.date', block.data.data_table_id) : ''
   )
 
@@ -71,6 +69,7 @@ export function EmptyCardBlock({
     })
     return classes.join(' ')
   }, [block])
+
   const fullUrl = window.location.href
 
   return (

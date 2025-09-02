@@ -24,7 +24,6 @@ class PageBuilderController extends Controller implements HasMiddleware
         ];
     }
 
-
     public function index(): Response
     {
         $pages = PageBuilder::orderBy('created_at', 'desc')->paginate(10);
@@ -60,6 +59,7 @@ class PageBuilderController extends Controller implements HasMiddleware
 
         $page = PageBuilder::findOrFail($id);
         $blocks = $page->blocks()->orderBy('position')->get();
+
         return Inertia::render('PageBuilder/PageShow', [
             'page' => $page,
             'blocks' => $blocks,
@@ -108,7 +108,7 @@ class PageBuilderController extends Controller implements HasMiddleware
                 ->route('page-builder.index')
                 ->with(['message' => 'Page Builder Deleted Successfully']);
         } catch (Exception $e) {
-            return redirect()->back()->with(['error' => 'Failed to delete: ' . $e->getMessage()]);
+            return redirect()->back()->with(['error' => 'Failed to delete: '.$e->getMessage()]);
         }
     }
 }
