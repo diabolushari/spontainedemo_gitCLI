@@ -1,9 +1,9 @@
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import AIInsights from './components/AiInsights'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
-import { useEffect, useState } from 'react'
 import useChat from './components/useChat'
-import axios from 'axios'
 
 export interface ChatMessage {
   id: number
@@ -27,7 +27,6 @@ interface ChatProps {
 }
 
 export default function Chat({ chatHistory, currentSession }: ChatProps) {
-  const [mode, setMode] = useState<'chat' | 'agent'>('agent')
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -37,7 +36,7 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
     setInput,
     setMessageFromHistory,
     handleRetryConnection,
-  } = useChat(mode, _currentSession)
+  } = useChat(_currentSession)
 
   // Listen for AI Insights custom event to send a message
   useEffect(() => {
@@ -75,8 +74,6 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
         isLoading={isLoading}
         input={input}
         setInput={setInput}
-        mode={mode}
-        onModeChange={setMode}
         onRetry={handleRetryConnection}
       />
       <AIInsights />

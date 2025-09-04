@@ -27,8 +27,6 @@ interface MainAreaProps {
   isLoading: boolean
   input: string
   setInput: (input: string) => void
-  mode: 'chat' | 'agent'
-  onModeChange: (newMode: 'chat' | 'agent') => void
   onRetry: () => void
 }
 
@@ -38,8 +36,6 @@ export default function MainArea({
   isLoading,
   input,
   setInput,
-  mode,
-  onModeChange,
   onRetry,
 }: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
@@ -65,14 +61,6 @@ export default function MainArea({
   useEffect(() => {
     adjustTextareaHeight()
   }, [input, adjustTextareaHeight])
-
-  const handleModeChange = useCallback(
-    (value: string) => {
-      onModeChange(value as 'chat' | 'agent')
-      setInput('') // Clear input when switching modes
-    },
-    [onModeChange, setInput]
-  )
 
   const onSendMessage = useCallback(() => {
     handleSendMessage(input)
@@ -173,13 +161,11 @@ export default function MainArea({
           {/* Input Area - Bottom Position */}
           <div className='p-3'>
             <ChatInput
-              mode={mode}
               isLoading={isLoading}
               input={input}
               isFocused={isFocused}
               setIsFocused={setIsFocused}
               handleInputChange={handleInputChange}
-              handleModeChange={handleModeChange}
               onSendMessage={onSendMessage}
               textareaRef={textareaRef}
             />
@@ -193,13 +179,11 @@ export default function MainArea({
           </div>
           <div className='w-full max-w-2xl'>
             <ChatInput
-              mode={mode}
               isLoading={isLoading}
               input={input}
               isFocused={isFocused}
               setIsFocused={setIsFocused}
               handleInputChange={handleInputChange}
-              handleModeChange={handleModeChange}
               onSendMessage={onSendMessage}
               textareaRef={textareaRef}
             />

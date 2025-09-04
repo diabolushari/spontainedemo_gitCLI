@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx'
 import { ChatMessage } from '@/Chat/components/MainArea'
 import {
   Accordion,
@@ -6,15 +5,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/Components/ui/accordion'
+import { Download } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+import * as XLSX from 'xlsx'
 import styles from './ChatMessageContent.module.css'
 import ChatVisualization from './ChatVisualization'
-import { Download } from 'lucide-react'
 
 interface Props {
   message: ChatMessage
+}
+
+interface ContentTagInfo {
+  tag: string
+  start: number
+  end: number
 }
 
 function stripCodeFencesAndIndent(content: string): string {
@@ -26,6 +32,34 @@ function stripCodeFencesAndIndent(content: string): string {
   return cleaned
 }
 
+function findTags(content?: string | null) {
+  const positions: ContentTagInfo[] = []
+
+  if (content == null) {
+    return positions
+  }
+
+  const tagName = '<tool_call>'
+
+  let position = 0
+  while (position < content.length) {
+    position = content.indexOf(tagName)
+    if (position === -1) {
+      break
+    }
+
+    positions.push({
+      tag: tagName,
+      start: position,
+      end: content.indexOf(`</${tagName.slice(1)}`),
+    })
+
+    content = content.slice(position + tagName.length)
+  }
+
+  return positions
+}
+
 const ChatMessageContent = ({ message }: Readonly<Props>) => {
   const downloadAsExcel = (data: object[], filename: string = 'data') => {
     const worksheet = XLSX.utils.json_to_sheet(data)
@@ -33,6 +67,10 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
     XLSX.writeFile(workbook, `${filename}.xlsx`)
   }
+
+  const tags = findTags(message.content)
+
+  console.log('tags found', tags)
 
   return (
     <div className={styles.container}>

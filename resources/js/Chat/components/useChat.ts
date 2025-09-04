@@ -1,5 +1,4 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
@@ -98,21 +97,9 @@ interface currentSession {
   messages: ChatMessage[]
 }
 
-// const INITIAL_MESSAGES: ChatMessage[] = [
-//   {
-//     id: 0,
-//     role: 'assistant',
-//     content: 'Hello! How can I assist you today?',
-//     contentType: 'text',
-//     suggestions: [
-//       'Show me the revenue trends for this quarter',
-//       'Compare billing vs collection performance',
-//       'Analyze customer satisfaction metrics',
-//     ],
-//   },
-// ]
-//
-export default function useChat(mode: 'chat' | 'agent', currentSession: currentSession) {
+const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
+
+export default function useChat(currentSession: currentSession) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
     chatURL: string
@@ -124,62 +111,104 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
   const [input, setInput] = useState('')
   const uuid = useRef(1)
   const isBeingStreamed = useRef(false)
-  const chartIsBeingStreamed = useRef(false)
-  const isExpectingFollowup = useRef(false)
+  const tempMetaInfo = useRef('')
+  const isCollectingMeta = useRef(false)
   const [reconnectTrigger, setReconnectTrigger] = useState(0)
 
+  const contentBuffer = useRef('')
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+
   useEffect(() => {
-    const url = mode === 'agent' ? agentURL : chatURL
+    const url = agentURL
     const ws = new WebSocket(`${url}?token=${chatToken}`)
     ws.onopen = () => console.log('✅ WebSocket Connected')
 
+    const flushBuffer = () => {
+      if (contentBuffer.current == '') {
+        return
+      }
+      const contentToFlush = contentBuffer.current
+      contentBuffer.current = ''
+
+      setMessages((oldValues) => {
+        if (oldValues.length === 0) {
+          return oldValues
+        }
+        const lastItem = oldValues[oldValues.length - 1]
+        //check if the message contains end of answer marker
+        const contentStremedSoFar = lastItem.content + contentToFlush
+        let lastMessageContent = contentStremedSoFar
+        if (contentStremedSoFar.includes(END_OF_ANSWER_MARKER)) {
+          const parts = contentStremedSoFar.split(END_OF_ANSWER_MARKER)
+          if (parts.length === 2) {
+            isCollectingMeta.current = true
+            tempMetaInfo.current = parts[1].trim()
+            lastMessageContent = parts[0]
+          }
+        }
+        return oldValues.map((oldMessage) => {
+          if (oldMessage.id === lastItem.id) {
+            return {
+              ...oldMessage,
+              content: lastMessageContent,
+            }
+          }
+          return oldMessage
+        })
+      })
+    }
+
     ws.onmessage = (event) => {
       try {
-        if (mode === 'agent') {
-          // Parse and push agent responses as text messages
-          const newMessages = parseAndConvertAgentResponse(event.data, uuid, setIsLoading)
-          setMessages((prev) => [...prev, ...newMessages])
+        console.log(event.data)
+        // Validate event data
+        if (!event.data || typeof event.data !== 'string') {
+          console.warn('⚠️ Invalid websocket message data:', event.data)
           return
         }
+
+        // Parse and push agent responses as text messages
+        //   const newMessages = parseAndConvertAgentResponse(event.data, uuid, setIsLoading)
+        //   setMessages((prev) => [...prev, ...newMessages])
         if (event.data === '<start>') {
           isBeingStreamed.current = true
+          isCollectingMeta.current = false
+          contentBuffer.current = ''
+          tempMetaInfo.current = ''
           startNewChat(uuid.current++, 'text', setMessages)
         } else if (event.data === '<stop>') {
+          console.log('🛑 Stopping chat stream')
+          console.log('Buffer before flush:', contentBuffer.current)
           isBeingStreamed.current = false
-          stopLastChat(setMessages)
-        } else if (event.data === '<chart>') {
-          chartIsBeingStreamed.current = true
-          startNewChat(uuid.current++, 'chart', setMessages)
-        } else if (event.data === '<followup>') {
-          isExpectingFollowup.current = true
-        } else if (event.data === '<clear>') {
-          setMessages([
-            {
-              id: uuid.current++,
-              role: 'assistant',
-              content: 'Chat history cleared.',
-              contentType: 'text',
-            },
-          ])
-          isBeingStreamed.current = false
-          chartIsBeingStreamed.current = false
-          isExpectingFollowup.current = false
-        } else if (isExpectingFollowup.current) {
-          addSuggestionsToLastChat(event.data, setMessages)
-          isExpectingFollowup.current = false
-        } else if (isBeingStreamed.current) {
-          updateLastChat(event.data, setMessages)
-        } else if (chartIsBeingStreamed.current) {
-          chartIsBeingStreamed.current = false
-          const jsonBlockMatch = event.data.match(/```json([\s\S]*?)```/i)
-          if (jsonBlockMatch == null) {
-            updateLastChat(event.data, setMessages)
-            return
+          if (tempMetaInfo.current) {
+            console.log('Meta Information:', tempMetaInfo.current)
           }
-          updateLastChat(jsonBlockMatch[1], setMessages)
+          isCollectingMeta.current = false
+          tempMetaInfo.current = ''
+          stopLastChat(setMessages)
+        } else if (isBeingStreamed.current && !isCollectingMeta.current) {
+          contentBuffer.current += event.data
+          //   if (debounceTimer.current) {
+          //     clearTimeout(debounceTimer.current)
+          //   }
+          //   debounceTimer.current = setTimeout(() => {
+          //     flushBuffer()
+          //     debounceTimer.current = null
+          //   }, 300)
+        } else if (isCollectingMeta.current) {
+          tempMetaInfo.current += event.data
         }
       } catch (error) {
-        console.error('❌ JSON Parse Error:', error)
+        console.error('❌ WebSocket Message Processing Error:', error)
+        console.error('❌ Event data that caused error:', event.data)
+
+        // Reset streaming state
+        isBeingStreamed.current = false
+        isCollectingMeta.current = false
+        tempMetaInfo.current = ''
+        contentBuffer.current = ''
+        setIsLoading(false)
+
         setMessages((prev) => [
           ...prev,
           {
@@ -190,9 +219,6 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
             suggestions: [],
           },
         ])
-        isBeingStreamed.current = false
-        chartIsBeingStreamed.current = false
-        isExpectingFollowup.current = false
       }
       setIsLoading(false)
     }
@@ -202,7 +228,7 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
     socketRef.current = ws
 
     return () => ws.close()
-  }, [chatToken, chatURL, agentURL, mode, reconnectTrigger])
+  }, [chatToken, chatURL, agentURL, reconnectTrigger])
 
   const handleSendMessage = (messageContent: string) => {
     const trimmedContent = messageContent.trim()
@@ -249,7 +275,7 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
     } else {
       console.log('socket not ready')
     }
-  }, [currentSession, reconnectTrigger])
+  }, [currentSession, reconnectTrigger, messages])
 
   const setMessageFromHistory = (History: ChatMessage[]) => {
     setMessages(History)
@@ -268,6 +294,7 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
         console.error('Error saving chat history from useChat:', err)
       })
   }, [messages, currentSession])
+
   const handleRetryConnection = () => {
     const lastUserMessageIndex = messages.findLastIndex((msg) => msg.role === 'user')
 
@@ -279,11 +306,9 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
 
     setIsLoading(false)
     isBeingStreamed.current = false
-    chartIsBeingStreamed.current = false
-    isExpectingFollowup.current = false
-
     setReconnectTrigger((prev) => prev + 1)
   }
+
   return {
     messages,
     handleSendMessage,
