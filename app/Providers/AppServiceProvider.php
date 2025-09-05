@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         //     ScheduledDataLoadEvent::class,
         //     ScheduledDataLoadListener::class
         // );
-        if (config('app.url') !== 'http://localhost:8000' && config('app.url') !== 'http://1stopkseb.xocortx.com') {
+        if (! config('app.debug')) {
             URL::forceScheme('https');
             URL::forceRootUrl(config('app.url'));
         }

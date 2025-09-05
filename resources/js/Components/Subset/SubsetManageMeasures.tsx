@@ -10,9 +10,9 @@ import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
 interface Props {
   dataDetail: DataDetail
   measureFields: TableMeasureField[]
-  addedMeasureFields: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]
+  addedMeasureFields: Omit<SubsetMeasureField, 'subset_detail_id'>[]
   setAddedMeasureFields: React.Dispatch<
-    SetStateAction<Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]>
+    SetStateAction<Omit<SubsetMeasureField, 'subset_detail_id'>[]>
   >
   usingGroup: boolean
 }
@@ -69,7 +69,7 @@ export default function SubsetManageMeasures({
   const [showDateForm, setShowDateForm] = useState(false)
   const [selectedField, setSelectedField] = useState<Omit<
     SubsetMeasureField,
-    'id' | 'subset_detail_id'
+    'subset_detail_id'
   > | null>(null)
 
   const onAddClick = () => {
@@ -78,7 +78,7 @@ export default function SubsetManageMeasures({
   }
 
   const handleNewField = useCallback(
-    (newField: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>) => {
+    (newField: Omit<SubsetMeasureField, 'subset_detail_id'>) => {
       setShowDateForm(false)
       upsertSubsetFields(selectedField, newField, setAddedMeasureFields)
     },

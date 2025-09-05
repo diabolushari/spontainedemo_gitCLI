@@ -9,11 +9,12 @@ import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 interface Props {
+  id?: number
   dataDetail: DataDetail
   dimensionFields: TableDimensionField[]
-  addedDimensionFields: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>[]
+  addedDimensionFields: Omit<SubsetDimensionField, 'subset_detail_id'>[]
   setAddedDimensionFields: React.Dispatch<
-    SetStateAction<Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>[]>
+    SetStateAction<Omit<SubsetDimensionField, 'subset_detail_id'>[]>
   >
   hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
 }
@@ -27,7 +28,7 @@ export default function SubsetManageDimensions({
 }: Readonly<Props>) {
   const [selectedField, setSelectedField] = useState<Omit<
     SubsetDimensionField,
-    'id' | 'subset_detail_id'
+    'subset_detail_id'
   > | null>(null)
 
   const data = useMemo(() => {
@@ -98,7 +99,7 @@ export default function SubsetManageDimensions({
   }
 
   const handleNewField = useCallback(
-    (newField: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>) => {
+    (newField: Omit<SubsetDimensionField, 'subset_detail_id'>) => {
       setShowDateForm(false)
       upsertSubsetFields(selectedField, newField, setAddedDimensionFields)
     },

@@ -8,7 +8,7 @@ import {
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import { Dispatch, FormEvent, SetStateAction, useCallback, useEffect, useMemo } from 'react'
+import { Dispatch, FormEvent, SetStateAction, useCallback, useMemo } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import useFetchRecord from '@/hooks/useFetchRecord'
 
@@ -114,7 +114,8 @@ export default function SubsetGroupItemForm({
         list: fields?.measures ?? [],
         showAllOption: true,
         allOptionText: 'Do Not Show Trend',
-        disabled: totalFields !== 1 || !hasMonthDimension,
+        disabled: totalFields <= 1 || !hasMonthDimension,
+        // disabled: totalFields !== 1 || !hasMonthDimension,
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, formData.subset_detail, fields])
