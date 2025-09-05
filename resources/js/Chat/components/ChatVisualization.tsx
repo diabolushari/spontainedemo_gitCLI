@@ -1,7 +1,6 @@
-import SimpleAreaChart from '@/Components/Charts/SimpleAreaChart'
-import SimpleBarChart from '@/Components/Charts/SimpleBarChart'
-import SimpleLineChart from '@/Components/Charts/SimpleLineChart'
-import SimplePieChart from '@/Components/Charts/SimplePieChart'
+import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
+import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
+import { CustomPieChart } from '@/Components/Charts/SampleChart/SamplePieChart'
 import { useMemo, useRef, useState } from 'react'
 import { ChatMessage } from './MainArea'
 import * as XLSX from 'xlsx'
@@ -10,6 +9,7 @@ import html2canvas from 'html2canvas'
 import OfficeClusterMap, {
   MapDataItem,
 } from '@/Components/DataExplorer/OfficeRanking/Map/OfficeClusterMap'
+import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 
 export interface ChartData {
   key?: 'line' | 'bar' | 'pie' | 'area' | 'map'
@@ -304,44 +304,78 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
           {viewMode === 'chart' && (
             <>
               {selectedChart.key === 'bar' && (
-                <SimpleBarChart
-                  chartData={selectedChart.data ?? []}
+                <CustomBarChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
                   dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  color={'#3b82f6'}
-                  title={selectedChart.visualization_title ?? ''}
-                  xLabel={selectedChart.label_field_title ?? ''}
-                  yLabel={selectedChart.value_field_title ?? ''}
+                  keysToPlot={
+                    selectedChart.value_field
+                      ? [
+                          {
+                            key: selectedChart.value_field,
+                            label: selectedChart.value_field_title || selectedChart.value_field,
+                            unit: '',
+                          },
+                        ]
+                      : []
+                  }
+                  colors='boldWarm'
+                  fontSize=''
                 />
               )}
               {selectedChart.key === 'area' && (
-                <SimpleAreaChart
-                  chartData={selectedChart.data ?? []}
+                <CustomAreaChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
                   dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  title={selectedChart.visualization_title ?? ''}
-                  xLabel={selectedChart.label_field_title ?? ''}
-                  yLabel={selectedChart.value_field_title ?? ''}
+                  keysToPlot={
+                    selectedChart.value_field
+                      ? [
+                          {
+                            key: selectedChart.value_field,
+                          },
+                        ]
+                      : []
+                  }
+                  color='hsl(var(--chart-1))'
+                  xAxisLabel={selectedChart.label_field_title}
+                  yAxisLabel={selectedChart.value_field_title}
                 />
               )}
               {selectedChart.key === 'pie' && (
-                <SimplePieChart
-                  chartData={selectedChart.data ?? []}
-                  dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  color={'#3b82f6'}
-                  title={selectedChart.visualization_title ?? ''}
+                <CustomPieChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
+                  dataKey={selectedChart.value_field ?? ''}
+                  nameKey={selectedChart.label_field ?? ''}
+                  keysToPlot={
+                    selectedChart.value_field
+                      ? [
+                          {
+                            key: selectedChart.value_field,
+                            label: selectedChart.value_field_title || selectedChart.value_field,
+                          },
+                        ]
+                      : []
+                  }
+                  colors='boldWarm'
+                  fontSize=''
                 />
               )}
               {selectedChart.key === 'line' && (
-                <SimpleLineChart
-                  chartData={selectedChart.data ?? []}
+                <CustomLineChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
                   dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  color={'#3b82f6'}
-                  title={selectedChart.visualization_title ?? ''}
-                  xLabel={selectedChart.label_field_title ?? ''}
-                  yLabel={selectedChart.value_field_title ?? ''}
+                  keysToPlot={
+                    selectedChart.value_field
+                      ? [
+                          {
+                            key: selectedChart.value_field,
+                            label: selectedChart.value_field_title || selectedChart.value_field,
+                          },
+                        ]
+                      : []
+                  }
+                  colors={'boldWarm'}
+                  displayKey={selectedChart.label_field_title ?? ''}
+                  displayKeyShow={!!selectedChart.label_field_title}
                 />
               )}
               {selectedChart.key === 'map' && (
