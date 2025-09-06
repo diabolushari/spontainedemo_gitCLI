@@ -1,10 +1,5 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/Components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from '@/Components/ui/accordion'
 import { Download } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -30,6 +25,15 @@ function stripCodeFencesAndIndent(content: string): string {
     .map((line) => line.trimStart())
     .join('\n')
   return cleaned
+}
+
+function formatJsonDescription(description: string): string {
+  try {
+    const parsed = JSON.parse(description)
+    return JSON.stringify(parsed, null, 2)
+  } catch {
+    return description
+  }
 }
 
 function findTags(content?: string | null) {
@@ -68,12 +72,8 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
     XLSX.writeFile(workbook, `${filename}.xlsx`)
   }
 
-  const tags = findTags(message.content)
-
-  console.log('tags found', tags)
-
   return (
-    <div className={styles.container}>
+    <div className={styles.messageWrapper}>
       {message.contentType === 'text' && (
         <div>
           {/* Display action messages with description in an accordion */}
@@ -85,7 +85,11 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
             >
               <AccordionItem value={String(message.id)}>
                 <AccordionTrigger>{message.content}</AccordionTrigger>
-                <AccordionContent>{message.description ?? ''}</AccordionContent>
+                <AccordionContent>
+                  <pre className='max-h-96 overflow-auto rounded bg-gray-100 p-3 font-mono text-sm'>
+                    {formatJsonDescription(message.description ?? '')}
+                  </pre>
+                </AccordionContent>
               </AccordionItem>
             </Accordion>
           )}
