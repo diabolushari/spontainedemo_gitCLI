@@ -1,7 +1,15 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
+import extractJsonMarkdown from '@/Chat/libs/extract-json-markdown'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { handleAgentMetaResponse } from '../libs/handle-agent-response'
+
+export interface AgentResponseMetaData {
+  suggestions?: string[]
+  visualization?: object[]
+  data_explore?: { subsetID: number }
+}
 
 function startNewChat(
   newId: number,
@@ -22,76 +30,11 @@ function startNewChat(
   })
 }
 
-function stopLastChat(setMessages: Dispatch<SetStateAction<ChatMessage[]>>) {
-  setMessages((oldValues) => {
-    if (oldValues.length === 0) {
-      return oldValues
-    }
-    const lastItem = oldValues[oldValues.length - 1]
-    return oldValues.map((oldMessage) => {
-      if (oldMessage.id === lastItem.id) {
-        return {
-          ...oldMessage,
-          suggestions: ['/visualize', '/newtopic', '/followup', '/rephrase'],
-        }
-      }
-      return oldMessage
-    })
-  })
+function stopLastChat() {
+  //nothing happens here for now
 }
 
-const updateLastChat = (content: string, setMessages: Dispatch<SetStateAction<ChatMessage[]>>) => {
-  setMessages((oldValues) => {
-    if (oldValues.length === 0) {
-      return oldValues
-    }
-    const lastItem = oldValues[oldValues.length - 1]
-    return oldValues.map((oldMessage) => {
-      if (oldMessage.id === lastItem.id) {
-        return {
-          ...oldMessage,
-          content: oldMessage.content + content,
-        }
-      }
-      return oldMessage
-    })
-  })
-}
-
-const addSuggestionsToLastChat = (
-  suggestionsJson: string,
-  setMessages: Dispatch<SetStateAction<ChatMessage[]>>
-) => {
-  try {
-    const parsedData = JSON.parse(suggestionsJson)
-    const suggestions = parsedData.suggestions as string[]
-
-    if (!Array.isArray(suggestions)) {
-      console.error('❌ Suggestions data is not an array:', suggestions)
-      return
-    }
-
-    setMessages((oldValues) => {
-      if (oldValues.length === 0) {
-        return oldValues
-      }
-      const lastItem = oldValues[oldValues.length - 1]
-      return oldValues.map((oldMessage) => {
-        if (oldMessage.id === lastItem.id) {
-          return {
-            ...oldMessage,
-            suggestions: suggestions,
-          }
-        }
-        return oldMessage
-      })
-    })
-  } catch (error) {
-    console.error('❌ Error parsing suggestions JSON:', error, suggestionsJson)
-  }
-}
-
-interface currentSession {
+interface CurrentSession {
   id: number
   title: string
   messages: ChatMessage[]
@@ -99,7 +42,7 @@ interface currentSession {
 
 const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
 
-export default function useChat(currentSession: currentSession) {
+export default function useChat(currentSession: CurrentSession) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
     chatURL: string
@@ -127,6 +70,7 @@ export default function useChat(currentSession: currentSession) {
       if (contentBuffer.current == '') {
         return
       }
+      console.log('flushing buffer:', contentBuffer.current)
       const contentToFlush = contentBuffer.current
       contentBuffer.current = ''
 
@@ -160,43 +104,101 @@ export default function useChat(currentSession: currentSession) {
 
     ws.onmessage = (event) => {
       try {
-        console.log(event.data)
         // Validate event data
         if (!event.data || typeof event.data !== 'string') {
           console.warn('⚠️ Invalid websocket message data:', event.data)
           return
         }
 
-        // Parse and push agent responses as text messages
-        //   const newMessages = parseAndConvertAgentResponse(event.data, uuid, setIsLoading)
-        //   setMessages((prev) => [...prev, ...newMessages])
-        if (event.data === '<start>') {
-          isBeingStreamed.current = true
-          isCollectingMeta.current = false
-          contentBuffer.current = ''
-          tempMetaInfo.current = ''
-          startNewChat(uuid.current++, 'text', setMessages)
-        } else if (event.data === '<stop>') {
-          console.log('🛑 Stopping chat stream')
-          console.log('Buffer before flush:', contentBuffer.current)
-          isBeingStreamed.current = false
-          if (tempMetaInfo.current) {
-            console.log('Meta Information:', tempMetaInfo.current)
-          }
-          isCollectingMeta.current = false
-          tempMetaInfo.current = ''
-          stopLastChat(setMessages)
-        } else if (isBeingStreamed.current && !isCollectingMeta.current) {
-          contentBuffer.current += event.data
-          //   if (debounceTimer.current) {
-          //     clearTimeout(debounceTimer.current)
-          //   }
-          //   debounceTimer.current = setTimeout(() => {
-          //     flushBuffer()
-          //     debounceTimer.current = null
-          //   }, 300)
-        } else if (isCollectingMeta.current) {
-          tempMetaInfo.current += event.data
+        // Parse structured message format
+        const messageData = JSON.parse(event.data)
+
+        // Handle new structured message format
+        switch (messageData.type) {
+          case 'start':
+            flushBuffer()
+            isBeingStreamed.current = true
+            isCollectingMeta.current = false
+            contentBuffer.current = ''
+            tempMetaInfo.current = ''
+            startNewChat(uuid.current++, 'text', setMessages)
+            break
+
+          case 'token':
+            if (isCollectingMeta.current && messageData.content != null) {
+              tempMetaInfo.current += messageData.content
+            } else if (isBeingStreamed.current && messageData.content) {
+              contentBuffer.current += messageData.content
+              if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current)
+              }
+              debounceTimer.current = setTimeout(() => {
+                flushBuffer()
+                debounceTimer.current = null
+              }, 50)
+            }
+            break
+
+          case 'tool_call_start':
+            console.log('🔧 Tool call started:', messageData.tool_name, messageData.tool_input)
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: uuid.current++,
+                role: 'action',
+                content: messageData.tool_name,
+                description: JSON.stringify(messageData.tool_input),
+                contentType: 'text',
+                suggestions: [],
+              },
+              {
+                id: uuid.current++,
+                role: 'assistant',
+                content: '',
+                contentType: 'text',
+                suggestions: [],
+              },
+            ])
+            break
+
+          case 'tool_call_end':
+            console.log('✅ Tool call completed')
+            // Tool call finished, continue with normal flow
+            break
+
+          case 'error':
+            console.error('❌ Agent error:', messageData.message)
+            setIsLoading(false)
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: uuid.current++,
+                role: 'error',
+                content: `❌ Error: ${messageData.message}`,
+                contentType: 'text',
+                suggestions: [],
+              },
+            ])
+            isBeingStreamed.current = false
+            break
+
+          case 'stop':
+            console.log('🛑 Stopping chat stream')
+            setIsLoading(false)
+            flushBuffer()
+            isBeingStreamed.current = false
+            if (tempMetaInfo.current != null && tempMetaInfo.current != '') {
+              const parsedMetaInfo = extractJsonMarkdown(tempMetaInfo.current)
+              console.log('Meta Information:', parsedMetaInfo)
+              handleAgentMetaResponse(parsedMetaInfo as AgentResponseMetaData, uuid, setMessages)
+            }
+            isCollectingMeta.current = false
+            tempMetaInfo.current = ''
+            stopLastChat()
+            break
+
+          default:
+            console.warn('⚠️ Unknown message type:', messageData.type)
         }
       } catch (error) {
         console.error('❌ WebSocket Message Processing Error:', error)
@@ -220,14 +222,15 @@ export default function useChat(currentSession: currentSession) {
           },
         ])
       }
-      setIsLoading(false)
     }
 
     ws.onerror = (error) => console.error('❌ WebSocket Error:', error)
     ws.onclose = () => console.log('❌ WebSocket Disconnected')
     socketRef.current = ws
 
-    return () => ws.close()
+    return () => {
+      ws.close()
+    }
   }, [chatToken, chatURL, agentURL, reconnectTrigger])
 
   const handleSendMessage = (messageContent: string) => {
@@ -282,7 +285,6 @@ export default function useChat(currentSession: currentSession) {
   }
 
   useEffect(() => {
-    console.log('messsage from history: ', messages)
     axios
       .patch(`/chat-history/${currentSession.id}`, {
         messages: messages,
