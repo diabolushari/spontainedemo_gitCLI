@@ -30,8 +30,23 @@ function startNewChat(
   })
 }
 
-function stopLastChat() {
-  //nothing happens here for now
+const STATUS_SEARCH_VECTOR = 'Searching Knowledge Base'
+const STATUS_FETCH_DATA = 'Retrieving Relevant Data'
+const STATUS_AFTER_FETCH = 'Finalizing Result'
+const STATUS_AFTER_VECTOR = 'Constructing Search'
+const STATUS_START = 'Analyzing User Query'
+const STATUS_STREAMING_META = 'Processing Results'
+
+function updateStatus(status: string, setStatus: Dispatch<SetStateAction<string>>): void {
+  setStatus((oldStatus) => {
+    if (oldStatus === STATUS_FETCH_DATA && status === 'Tool Call End') {
+      return STATUS_AFTER_FETCH
+    }
+    if (oldStatus === STATUS_SEARCH_VECTOR && status === 'Tool Call End') {
+      return STATUS_AFTER_VECTOR
+    }
+    return status
+  })
 }
 
 interface CurrentSession {
@@ -51,6 +66,7 @@ export default function useChat(currentSession: CurrentSession) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const socketRef = useRef<WebSocket | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<string>('')
   const [input, setInput] = useState('')
   const uuid = useRef(1)
   const isBeingStreamed = useRef(false)
@@ -62,8 +78,7 @@ export default function useChat(currentSession: CurrentSession) {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    const url = agentURL
-    const ws = new WebSocket(`${url}?token=${chatToken}`)
+    const ws = new WebSocket(`${agentURL}?token=${chatToken}`)
     ws.onopen = () => console.log('✅ WebSocket Connected')
 
     const flushBuffer = () => {
@@ -79,14 +94,15 @@ export default function useChat(currentSession: CurrentSession) {
         }
         const lastItem = oldValues[oldValues.length - 1]
         //check if the message contains end of answer marker
-        const contentStremedSoFar = lastItem.content + contentToFlush
-        let lastMessageContent = contentStremedSoFar
-        if (contentStremedSoFar.includes(END_OF_ANSWER_MARKER)) {
-          const parts = contentStremedSoFar.split(END_OF_ANSWER_MARKER)
+        const contentStreamedSoFar = lastItem.content + contentToFlush
+        let lastMessageContent = contentStreamedSoFar
+        if (contentStreamedSoFar.includes(END_OF_ANSWER_MARKER)) {
+          const parts = contentStreamedSoFar.split(END_OF_ANSWER_MARKER)
           if (parts.length === 2) {
             isCollectingMeta.current = true
             tempMetaInfo.current = parts[1].trim()
             lastMessageContent = parts[0]
+            setStatus(STATUS_STREAMING_META)
           }
         }
         return oldValues.map((oldMessage) => {
@@ -120,6 +136,7 @@ export default function useChat(currentSession: CurrentSession) {
             isCollectingMeta.current = false
             contentBuffer.current = ''
             tempMetaInfo.current = ''
+            updateStatus(STATUS_START, setStatus)
             startNewChat(uuid.current++, 'text', setMessages)
             break
 
@@ -140,6 +157,17 @@ export default function useChat(currentSession: CurrentSession) {
 
           case 'tool_call_start':
             console.log('🔧 Tool call started:', messageData.tool_name, messageData.tool_input)
+
+            if (messageData.tool_name?.toLowerCase().includes('vector')) {
+              updateStatus(STATUS_SEARCH_VECTOR, setStatus)
+            } else if (
+              messageData.tool_name &&
+              (messageData.tool_name.toLowerCase().includes('data') ||
+                messageData.tool_name.toLowerCase().includes('fetch'))
+            ) {
+              updateStatus(STATUS_FETCH_DATA, setStatus)
+            }
+
             setMessages((prev) => [
               ...prev,
               {
@@ -162,12 +190,14 @@ export default function useChat(currentSession: CurrentSession) {
 
           case 'tool_call_end':
             console.log('✅ Tool call completed')
+            updateStatus('Tool Call End', setStatus)
             // Tool call finished, continue with normal flow
             break
 
           case 'error':
             console.error('❌ Agent error:', messageData.message)
             setIsLoading(false)
+            setStatus('')
             setMessages((prev) => [
               ...prev,
               {
@@ -184,6 +214,7 @@ export default function useChat(currentSession: CurrentSession) {
           case 'stop':
             console.log('🛑 Stopping chat stream')
             setIsLoading(false)
+            setStatus('')
             flushBuffer()
             isBeingStreamed.current = false
             if (tempMetaInfo.current != null && tempMetaInfo.current != '') {
@@ -193,7 +224,6 @@ export default function useChat(currentSession: CurrentSession) {
             }
             isCollectingMeta.current = false
             tempMetaInfo.current = ''
-            stopLastChat()
             break
 
           default:
@@ -209,6 +239,7 @@ export default function useChat(currentSession: CurrentSession) {
         tempMetaInfo.current = ''
         contentBuffer.current = ''
         setIsLoading(false)
+        setStatus('')
 
         setMessages((prev) => [
           ...prev,
@@ -267,7 +298,6 @@ export default function useChat(currentSession: CurrentSession) {
       const filteredMessages = messages.filter(
         (message) => message.role === 'user' || message.role === 'assistant'
       )
-      console.log('update server history : ', messages)
       socketRef.current.send(
         JSON.stringify({
           type: 'history',
@@ -306,6 +336,7 @@ export default function useChat(currentSession: CurrentSession) {
     }
 
     setIsLoading(false)
+    setStatus('')
     isBeingStreamed.current = false
     setReconnectTrigger((prev) => prev + 1)
   }
@@ -314,6 +345,7 @@ export default function useChat(currentSession: CurrentSession) {
     messages,
     handleSendMessage,
     isLoading,
+    status,
     input,
     setInput,
     setMessageFromHistory,

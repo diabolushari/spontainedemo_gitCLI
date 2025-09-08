@@ -25,6 +25,7 @@ interface MainAreaProps {
   messages: ChatMessage[]
   handleSendMessage: (messageContent: string) => void
   isLoading: boolean
+  status: string
   input: string
   setInput: (input: string) => void
   onRetry: () => void
@@ -34,6 +35,7 @@ export default function MainArea({
   messages,
   handleSendMessage,
   isLoading,
+  status,
   input,
   setInput,
   onRetry,
@@ -149,7 +151,7 @@ export default function MainArea({
               <div className='flex justify-start'>
                 <div className='flex items-center gap-2 rounded-2xl bg-white p-3 shadow-sm'>
                   <FiLoader className='animate-spin text-blue-500' />
-                  <span className='text-sm text-gray-600'>Thinking...</span>
+                  <span className='text-sm text-gray-600'>{status || 'Thinking'}...</span>
                 </div>
               </div>
             )}

@@ -26,12 +26,13 @@ interface ChatProps {
   currentSession: ChatHistory
 }
 
-export default function Chat({ chatHistory, currentSession }: ChatProps) {
+export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
     handleSendMessage,
     isLoading,
+    status,
     input,
     setInput,
     setMessageFromHistory,
@@ -72,6 +73,7 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
         messages={messages}
         handleSendMessage={handleSendMessage}
         isLoading={isLoading}
+        status={status}
         input={input}
         setInput={setInput}
         onRetry={handleRetryConnection}
