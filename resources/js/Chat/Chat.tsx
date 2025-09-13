@@ -61,7 +61,7 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
   }
 
   return (
-    <div className='flex h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40'>
+    <div className='flex h-screen bg-gradient-to-br from-slate-50/80 via-blue-50/40 to-indigo-50/30'>
       {/* Sidebar with enhanced visual separation */}
       <div className='relative'>
         <Sidebar
@@ -70,7 +70,7 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
           onSessionChange={switchConversation}
         />
         {/* Subtle separator line */}
-        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent opacity-60' />
+        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/40 to-transparent' />
       </div>
 
       <MainArea
