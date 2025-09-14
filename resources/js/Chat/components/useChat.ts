@@ -39,11 +39,11 @@ const STATUS_STREAMING_META = 'Processing Results'
 
 function updateStatus(status: string, setStatus: Dispatch<SetStateAction<string>>): void {
   setStatus((oldStatus) => {
-    if (oldStatus === STATUS_FETCH_DATA && status === 'Tool Call End') {
-      return STATUS_AFTER_FETCH
-    }
     if (oldStatus === STATUS_SEARCH_VECTOR && status === 'Tool Call End') {
       return STATUS_AFTER_VECTOR
+    }
+    if (status === 'Tool Call End') {
+      return STATUS_AFTER_FETCH
     }
     return status
   })
@@ -57,6 +57,8 @@ interface CurrentSession {
 
 const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
 
+type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+
 export default function useChat(currentSession: CurrentSession) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
@@ -68,19 +70,22 @@ export default function useChat(currentSession: CurrentSession) {
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState<string>('')
   const [input, setInput] = useState('')
+  const [wsStatus, setWsStatus] = useState<WebSocketStatus>('connecting')
   const uuid = useRef(1)
   const isBeingStreamed = useRef(false)
   const tempMetaInfo = useRef('')
   const isCollectingMeta = useRef(false)
   const [reconnectTrigger, setReconnectTrigger] = useState(0)
-
   const contentBuffer = useRef('')
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
+    setWsStatus('connecting')
     const ws = new WebSocket(`${agentURL}?token=${chatToken}`)
-    console.log('🌐 Connecting to WebSocket:', `${agentURL}?token=${chatToken}`)
-    ws.onopen = () => console.log('✅ WebSocket Connected')
+    ws.onopen = () => {
+      console.log('✅ WebSocket Connected')
+      setWsStatus('connected')
+    }
 
     const flushBuffer = () => {
       if (contentBuffer.current == '') {
@@ -116,6 +121,15 @@ export default function useChat(currentSession: CurrentSession) {
           return oldMessage
         })
       })
+    }
+
+    const resetStreamingState = () => {
+      flushBuffer()
+      isBeingStreamed.current = false
+      isCollectingMeta.current = false
+      tempMetaInfo.current = ''
+      setStatus('')
+      setIsLoading(false)
     }
 
     ws.onmessage = (event) => {
@@ -197,8 +211,7 @@ export default function useChat(currentSession: CurrentSession) {
 
           case 'error':
             console.error('❌ Agent error:', messageData.message)
-            setIsLoading(false)
-            setStatus('')
+            resetStreamingState()
             setMessages((prev) => [
               ...prev,
               {
@@ -209,7 +222,6 @@ export default function useChat(currentSession: CurrentSession) {
                 suggestions: [],
               },
             ])
-            isBeingStreamed.current = false
             break
 
           case 'stop':
@@ -235,13 +247,7 @@ export default function useChat(currentSession: CurrentSession) {
         console.error('❌ Event data that caused error:', event.data)
 
         // Reset streaming state
-        isBeingStreamed.current = false
-        isCollectingMeta.current = false
-        tempMetaInfo.current = ''
-        contentBuffer.current = ''
-        setIsLoading(false)
-        setStatus('')
-
+        resetStreamingState()
         setMessages((prev) => [
           ...prev,
           {
@@ -255,8 +261,17 @@ export default function useChat(currentSession: CurrentSession) {
       }
     }
 
-    ws.onerror = (error) => console.error('❌ WebSocket Error:', error)
-    ws.onclose = () => console.log('❌ WebSocket Disconnected')
+    ws.onerror = (error) => {
+      console.error('❌ WebSocket Error:', error)
+
+      resetStreamingState()
+      setWsStatus('disconnected')
+    }
+    ws.onclose = () => {
+      console.log('❌ WebSocket Disconnected')
+      resetStreamingState()
+      setWsStatus('disconnected')
+    }
     socketRef.current = ws
 
     return () => {
@@ -295,7 +310,7 @@ export default function useChat(currentSession: CurrentSession) {
   }
 
   useEffect(() => {
-    if (isBeingStreamed.current) {
+    if (isBeingStreamed.current || wsStatus !== 'connected') {
       return
     }
 
@@ -312,7 +327,7 @@ export default function useChat(currentSession: CurrentSession) {
         history: filteredMessages,
       })
     )
-  }, [currentSession, reconnectTrigger, messages])
+  }, [currentSession, reconnectTrigger, messages, wsStatus])
 
   const setMessageFromHistory = (History: ChatMessage[]) => {
     setMessages(History)
@@ -336,17 +351,13 @@ export default function useChat(currentSession: CurrentSession) {
   }, [messages, currentSession])
 
   const handleRetryConnection = () => {
-    const lastUserMessageIndex = messages.findLastIndex((msg) => msg.role === 'user')
-
-    if (lastUserMessageIndex !== -1) {
-      setMessages((prevMessages) => prevMessages.slice(0, lastUserMessageIndex))
-    } else {
-      setMessages([])
-    }
-
     setIsLoading(false)
     setStatus('')
     isBeingStreamed.current = false
+    isCollectingMeta.current = false
+    tempMetaInfo.current = ''
+    contentBuffer.current = ''
+    setWsStatus('reconnecting')
     setReconnectTrigger((prev) => prev + 1)
   }
 
@@ -359,5 +370,6 @@ export default function useChat(currentSession: CurrentSession) {
     setInput,
     setMessageFromHistory,
     handleRetryConnection,
+    wsStatus,
   }
 }

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FiLoader } from 'react-icons/fi'
-import ChatInput from './ChatInput'
+import ChatInputArea from './ChatInputArea'
 import ChatMessageContent from './ChatMessageContent'
 
 export interface ChatMessage {
@@ -20,6 +20,8 @@ interface ChatHistory {
   id: number
 }
 
+type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+
 interface MainAreaProps {
   currentSession: ChatHistory
   messages: ChatMessage[]
@@ -29,6 +31,7 @@ interface MainAreaProps {
   input: string
   setInput: (input: string) => void
   onRetry: () => void
+  wsStatus: WebSocketStatus
 }
 
 export default function MainArea({
@@ -39,6 +42,7 @@ export default function MainArea({
   input,
   setInput,
   onRetry,
+  wsStatus,
 }: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
@@ -223,7 +227,9 @@ export default function MainArea({
 
           {/* Input Area - Bottom Position */}
           <div className='p-3'>
-            <ChatInput
+            <ChatInputArea
+              wsStatus={wsStatus}
+              onRetry={onRetry}
               isLoading={isLoading}
               input={input}
               isFocused={isFocused}
@@ -241,7 +247,9 @@ export default function MainArea({
             <h1 className='text-3xl font-bold text-gray-700'>Hi, how can I help?</h1>
           </div>
           <div className='w-full max-w-2xl'>
-            <ChatInput
+            <ChatInputArea
+              wsStatus={wsStatus}
+              onRetry={onRetry}
               isLoading={isLoading}
               input={input}
               isFocused={isFocused}
