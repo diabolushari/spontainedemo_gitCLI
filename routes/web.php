@@ -363,9 +363,10 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
-Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
 
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
 
 require __DIR__.'/auth.php';
+
+Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
