@@ -47,23 +47,19 @@ export default function BlockDrawerForm({ initialData, block, setOpenDrawer }: B
             const isActive = step === currentStep
             const isCompleted = step > currentStep
 
-            let isAllowed = true
 
             return (
               <div
                 key={index}
-                onClick={() => isAllowed && handleStepClick(currentStep)}
+                onClick={() => handleStepClick(currentStep)}
                 onKeyDown={(e) => {
-                  if (isAllowed && (e.key === 'Enter' || e.key === ' ')) {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     handleStepClick(currentStep)
                   }
                 }}
                 role='button'
-                tabIndex={isAllowed ? 0 : -1}
-                className={cn(
-                  'flex flex-1 items-center',
-                  !isAllowed && 'cursor-not-allowed opacity-50'
-                )}
+                tabIndex={0}
+                className={'flex flex-1 items-center'}
               >
                 <div
                   className={cn(
