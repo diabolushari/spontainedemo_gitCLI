@@ -66,7 +66,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
     setEditModalOpen(true)
   }
 
-  useEffect(() => {}, [dimensions])
+  // useEffect(() => {}, [dimensions])
 
   return (
     <>

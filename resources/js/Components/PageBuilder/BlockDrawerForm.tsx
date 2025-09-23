@@ -16,7 +16,7 @@ interface BlockFormProps {
 const steps = [{ title: 'General' }, { title: 'Layout' }]
 
 export default function BlockDrawerForm({ initialData, block }: BlockFormProps) {
-  console.log(initialData)
+  console.log("initialData",  initialData)
 
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)

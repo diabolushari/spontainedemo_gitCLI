@@ -54,14 +54,13 @@ class PageBuilderController extends Controller implements HasMiddleware
             ->with(['message' => 'Page Builder Created Successfully']);
     }
 
-    public function show(Request $request, int $id): Response
+    public function show(Request $request, PageBuilder $pageBuilder): Response
     {
 
-        $page = PageBuilder::findOrFail($id);
-        $blocks = $page->blocks()->orderBy('position')->get();
+        $blocks = $pageBuilder->blocks()->orderBy('position')->get();
 
         return Inertia::render('PageBuilder/PageShow', [
-            'page' => $page,
+            'page' => $pageBuilder,
             'blocks' => $blocks,
         ]);
     }
