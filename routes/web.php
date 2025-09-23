@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
+use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
@@ -265,6 +266,9 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
+
+Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
+    ->name('data-detail-column-search');
 
 Route::get('/test-flatten-json', function () {
     $testData = [[

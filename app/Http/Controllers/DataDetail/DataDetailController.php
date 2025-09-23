@@ -10,6 +10,7 @@ use App\Models\DataLoader\DataLoaderJob;
 use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
 use App\Models\Subset\SubsetDetail;
+use App\Services\DataTable\DataTableFilter;
 use App\Services\DataTable\DeleteDataTable;
 use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
@@ -131,8 +132,9 @@ class DataDetailController extends Controller implements HasMiddleware
             ->route('data-detail.show', $dataDetail->id);
     }
 
-    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable, Request $request): RedirectResponse|Response
+    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable, Request $request, DataTableFilter $filter): RedirectResponse|Response
     {
+
         $dataDetail->load(
             'dateFields',
             'dimensionFields.structure',
@@ -141,8 +143,10 @@ class DataDetailController extends Controller implements HasMiddleware
             'textFields'
         );
 
-        $dataTable = $queryDataTable->query($dataDetail)
-            ->paginate(50)
+        $query = $queryDataTable->query($dataDetail);
+        $filter->apply($query, $request, $dataDetail);
+
+        $dataTable = $query->paginate(50)
             ->withPath(route('data-detail.show', $dataDetail->id))
             ->withQueryString();
 
@@ -156,6 +160,7 @@ class DataDetailController extends Controller implements HasMiddleware
             'jobs' => $jobs,
             'tab' => $request->input('tab', 'data'),
             'subsets' => SubsetDetail::where('data_detail_id', $dataDetail->id)->get(),
+            'filters' => request()->all(),
         ]);
     }
 

@@ -8,7 +8,8 @@ import {
 export default function useAvailableSubsetFilters(
   dates: SubsetDateField[],
   dimensions: SubsetDimensionField[],
-  measures: SubsetMeasureField[]
+  measures: SubsetMeasureField[],
+  month: boolean = false
 ) {
   return useMemo(() => {
     const fields: {
@@ -29,6 +30,14 @@ export default function useAvailableSubsetFilters(
 
     dimensions.forEach((dimension) => {
       if (dimension.subset_column == 'month') {
+        if (month) {
+          fields.push({
+            fieldId: dimension.id,
+            fieldName: 'Month',
+            column: 'month',
+            type: 'dimension',
+          })
+        }
         return
       }
       if (dimension.subset_column === 'section_code') {

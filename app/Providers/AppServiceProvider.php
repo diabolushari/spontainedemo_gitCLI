@@ -20,9 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (
-            !config('app.debug')
-        ) {
+        // Event::listen(
+        //     ScheduledDataLoadEvent::class,
+        //     ScheduledDataLoadListener::class
+        // );
+        if (config('app.url') !== 'http://localhost:8000' && config('app.url') !== 'http://1stopkseb.xocortx.com') {
             URL::forceScheme('https');
             URL::forceRootUrl(config('app.url'));
         }

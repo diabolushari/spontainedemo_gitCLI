@@ -13,8 +13,8 @@ import React, { useMemo } from 'react'
 interface Props {
   dataDetail: DataDetail
   measureFields: TableMeasureField[]
-  onSubmit: (data: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>) => void
-  selectedField: Omit<SubsetMeasureField, 'id' | 'subset_detail_id'> | null
+  onSubmit: (data: Omit<SubsetMeasureField, 'subset_detail_id'>) => void
+  selectedField: Omit<SubsetMeasureField, 'subset_detail_id'> | null
   usingGroup: boolean
   removeField: (subsetColumn: string) => void
 }
@@ -39,6 +39,7 @@ export default function AddSubsetMeasure({
   removeField,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
+    id: selectedField?.id ?? null,
     field_id: selectedField?.field_id ?? '',
     subset_field_name: selectedField?.subset_field_name ?? '',
     sort_order: selectedField?.sort_order ?? '',
@@ -133,6 +134,7 @@ export default function AddSubsetMeasure({
       return
     }
     onSubmit({
+      id: formData.id ?? null,
       field_id: Number(formData.field_id),
       subset_field_name: formData.subset_field_name,
       subset_column: generateSnakeCaseName(formData.subset_field_name),

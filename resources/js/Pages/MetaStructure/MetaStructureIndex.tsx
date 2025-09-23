@@ -65,7 +65,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         actions: [
           {
             title: `Members ${structure.meta_data_count}`,
-            url: route('meta-data.index', { structure: structure.structure_name }, false),
+            url: route('meta-data.index', { structure: structure.id }, false),
             textStyles: 'hover:scale-105 transition',
           },
           // {

@@ -1,6 +1,9 @@
 import {
   DataDetail,
+  SubsetDateField,
   SubsetDetail,
+  SubsetDimensionField,
+  SubsetMeasureField,
   TableDateField,
   TableDimensionField,
   TableMeasureField,
@@ -12,7 +15,11 @@ import CardHeader from '@/ui/Card/CardHeader'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import useCustomForm from '@/hooks/useCustomForm'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
+import SubsetManageDates from '@/Components/Subset/SubsetManageDates'
+import SubsetManageDimensions from '@/Components/Subset/SubsetManageDimensions'
+import SubsetManageMeasures from '@/Components/Subset/SubsetManageMeasures'
+import Button from '@/ui/button/Button'
 
 interface Props {
   subsetDetail: SubsetDetail
@@ -29,7 +36,15 @@ const subsetTypes = [
   { name: 'Composite Data', value: 'composite_subset' },
 ]
 
-export default function SubsetEdit({ dataDetail, measureFields, subsetDetail }: Readonly<Props>) {
+export default function SubsetEdit({
+  dataDetail,
+  measureFields,
+  dimensionFields,
+  hierarchies,
+  dateFields,
+  subsetDetail,
+}: Readonly<Props>) {
+  console.log(subsetDetail)
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     group_data: subsetDetail.group_data === 1,
     name: subsetDetail.name,
@@ -42,7 +57,15 @@ export default function SubsetEdit({ dataDetail, measureFields, subsetDetail }: 
     visualization_instructions: subsetDetail.visualization_instructions ?? '',
     type: subsetDetail.type ?? '',
   })
-
+  const [dates, setDates] = useState<Omit<SubsetDateField, 'subset_detail_id'>[]>(
+    subsetDetail.dates as SubsetDateField[]
+  )
+  const [dimensions, setDimensions] = useState<Omit<SubsetDimensionField, 'subset_detail_id'>[]>(
+    subsetDetail.dimensions as SubsetDimensionField[]
+  )
+  const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'subset_detail_id'>[]>(
+    subsetDetail.measures as SubsetMeasureField[]
+  )
   const { post, loading, errors } = useInertiaPost(route('subset.update', subsetDetail.id), {
     showErrorToast: true,
   })
@@ -125,6 +148,7 @@ export default function SubsetEdit({ dataDetail, measureFields, subsetDetail }: 
   const submitForm = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
 
+    console.log(dates, dimensions, measures)
     post({
       _method: 'PATCH',
       ...formData,
@@ -134,6 +158,9 @@ export default function SubsetEdit({ dataDetail, measureFields, subsetDetail }: 
       visualization_instructions: formData.add_visualization_instructions
         ? formData.visualization_instructions
         : '',
+      dates,
+      dimensions,
+      measures,
     })
   }
 
@@ -157,7 +184,34 @@ export default function SubsetEdit({ dataDetail, measureFields, subsetDetail }: 
           loading={loading}
           errors={errors}
           formStyles='md:w-1/2 md:grid-cols-1 gap-5 mb-5'
+          hideSubmitButton
         />
+        <SubsetManageDates
+          dataDetail={dataDetail}
+          dateFields={dateFields}
+          addedDateFields={dates}
+          setAddedDateFields={setDates}
+        />
+        <SubsetManageDimensions
+          addedDimensionFields={dimensions}
+          setAddedDimensionFields={setDimensions}
+          dataDetail={dataDetail}
+          dimensionFields={dimensionFields}
+          hierarchies={hierarchies}
+        />
+        <SubsetManageMeasures
+          addedMeasureFields={measures}
+          setAddedMeasureFields={setMeasures}
+          dataDetail={dataDetail}
+          measureFields={measureFields}
+          usingGroup={formData.group_data}
+        />
+        <div className='flex'>
+          <Button
+            onClick={() => submitForm()}
+            label='Submit'
+          />
+        </div>
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

@@ -8,14 +8,14 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import Input from '@/ui/form/Input'
 import Button from '@/ui/button/Button'
-import generateInitialFields from '@/Components/DataExplorer/SubsetFilter/generateInitialFields'
 import ComboBox from '@/ui/form/ComboBox'
 import { XIcon } from 'lucide-react'
 import { availableOperators } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
-import useAvailableSubsetFilters from '@/Components/DataExplorer/SubsetFilter/useAvailableSubsetFilters'
 import DatePicker from '@/ui/form/DatePicker'
 import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 import { showError } from '@/ui/alerts'
+import useAdminAvailableSubsetFilters from '@/Components/Subset/hooks/useAdminAvailableSubsetFilters'
+import generateInitialFilterFields from '@/Components/Subset/hooks/generateInitialFilterFields'
 
 interface Props {
   dates: SubsetDateField[]
@@ -70,17 +70,13 @@ export default function AdminSubsetFilterForm({
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState<SubsetFilterFormField[]>(
-    generateInitialFields(filters, dates, measures, dimensions, offices).map((formField) => {
+    generateInitialFilterFields(filters, dates, measures, dimensions, offices).map((formField) => {
       return {
         ...formField,
         id: uuidRef.current++,
       }
     })
   )
-
-  useEffect(() => {
-    console.log('formfields :', formFields)
-  }, [formFields])
 
   //to add or remove new fields at end
   useEffect(() => {
@@ -136,7 +132,7 @@ export default function AdminSubsetFilterForm({
     }
   }, [formFields])
 
-  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures)
+  const availableFields = useAdminAvailableSubsetFilters(dates, dimensions, measures)
 
   const setField = (id: number, value: string) => {
     const field = availableFields.find((field) => field.column === value)
@@ -302,8 +298,6 @@ export default function AdminSubsetFilterForm({
     })
   }
 
-  // console.log('formfields :', formFields)
-
   return (
     <form
       className='flex flex-col gap-5 py-5'
@@ -395,6 +389,11 @@ export default function AdminSubsetFilterForm({
       ))}
       <div className='flex gap-2'>
         <Button label='Search' />
+        <Button
+          type={'button'}
+          label='Reset'
+          onClick={() => onSubmit(null)}
+        />
       </div>
     </form>
   )

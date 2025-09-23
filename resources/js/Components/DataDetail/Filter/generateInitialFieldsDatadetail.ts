@@ -1,8 +1,4 @@
-import {
-  SubsetDateField,
-  SubsetDimensionField,
-  SubsetMeasureField,
-} from '@/interfaces/data_interfaces'
+import { DataDetail } from '@/interfaces/data_interfaces' // Adjusted imports for DataDetail
 import { SubsetFilterFormField } from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import {
   dateOperations,
@@ -11,66 +7,89 @@ import {
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
-const generateInitialFields = (
+/**
+ * Parses a filter object (from URL query params) and generates an array of form fields
+ * based on the definitions within a DataDetail object.
+ *
+ * @param filters - A record of active filters, usually from URLSearchParams.
+ * @param dataDetail - The DataDetail object containing field definitions.
+ * @param offices - An optional array of office data for populating office names.
+ * @returns An array of SubsetFilterFormField to be used as the initial state for the filter form.
+ */
+const generateInitalFieldsDataDetail = (
   filters: Record<string, string | undefined | null>,
-  dates: SubsetDateField[],
-  measures: SubsetMeasureField[],
-  dimensions: SubsetDimensionField[],
+  dataDetail: DataDetail | undefined,
   offices?: OfficeData[]
-) => {
+): SubsetFilterFormField[] => {
+  if (!dataDetail) {
+    return []
+  }
+
+  const { date_fields = [], measure_fields = [], dimension_fields = [] } = dataDetail
+  const dates = date_fields
+  const measures = measure_fields
+  const dimensions = dimension_fields
+
   const fields: SubsetFilterFormField[] = []
 
   Object.keys(filters).forEach((key) => {
     dates.forEach((date) => {
       dateOperations.forEach((dateOperation) => {
-        if (
-          key === `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
-        ) {
+        if (key === `${date.column}${dateOperation.value == '=' ? '' : dateOperation.value}`) {
           fields.push({
             id: 0,
-            field: date.subset_column ?? '',
+            field: date.column ?? '',
             operator: dateOperation.value,
             value: filters[key] ?? '',
             officeData: null,
             dimensionData: null,
-            type: date.use_expression === 1 ? 'string' : 'date',
+            type: 'string',
           })
         }
       })
-      if (key === `${date.subset_column}_in`) {
+      if (key === `${date.column}_in`) {
         filters[key]?.split(',').forEach((value) => {
           fields.push({
             id: 0,
-            field: date.subset_column ?? '',
+            field: date.column ?? '',
             operator: '==',
             value,
             officeData: null,
             dimensionData: null,
-            type: date.use_expression === 1 ? 'string' : 'date',
+            type: 'string',
           })
         })
       }
-      if (key === `${date.subset_column}_not_in`) {
+      if (key === `${date.column}_not_in`) {
         filters[key]?.split(',').forEach((value) => {
           fields.push({
             id: 0,
-            field: date.subset_column ?? '',
+            field: date.column ?? '',
             operator: '_not',
             value,
             officeData: null,
             dimensionData: null,
-            type: date.use_expression === 1 ? 'string' : 'date',
+            type: 'string',
           })
         })
       }
     })
     dimensions.forEach((dimension) => {
+      if (dimension.column === 'month' && key === 'month') {
+        fields.push({
+          id: 0,
+          field: 'month',
+          operator: '=',
+          value: filters[key] ?? '',
+          type: 'dimension',
+          officeData: null,
+          dimensionData: { value: filters[key] ?? '' },
+        })
+        return
+      }
+
       dimensionOperations.forEach((dimensionOperation) => {
-        if (dimension.subset_column == 'month') {
-          return
-        }
-        const columnName =
-          dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
+        const columnName = dimension.column === 'section_code' ? 'office_code' : dimension.column
         if (
           key === `${columnName}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
         ) {
@@ -91,7 +110,7 @@ const generateInitialFields = (
           }
           fields.push({
             id: 0,
-            field: dimension.subset_column ?? '',
+            field: dimension.column ?? '',
             operator: dimensionOperation.value,
             value: '',
             officeData: null,
@@ -100,11 +119,11 @@ const generateInitialFields = (
           })
         }
       })
-      if (key === `${dimension.subset_column}_in`) {
+      if (key === `${dimension.column}_in`) {
         filters[key]?.split(',').forEach((value) => {
           fields.push({
             id: 0,
-            field: dimension.subset_column ?? '',
+            field: dimension.column ?? '',
             operator: '==',
             value,
             officeData: null,
@@ -113,11 +132,11 @@ const generateInitialFields = (
           })
         })
       }
-      if (key === `${dimension.subset_column}_not_in`) {
+      if (key === `${dimension.column}_not_in`) {
         filters[key]?.split(',').forEach((value) => {
           fields.push({
             id: 0,
-            field: dimension.subset_column ?? '',
+            field: dimension.column ?? '',
             operator: '_not',
             value,
             officeData: null,
@@ -130,12 +149,11 @@ const generateInitialFields = (
     measures.forEach((measure) => {
       measureOperations.forEach((measureOperation) => {
         if (
-          key ===
-          `${measure.subset_column}${measureOperation.value == '=' ? '' : measureOperation.value}`
+          key === `${measure.column}${measureOperation.value == '=' ? '' : measureOperation.value}`
         ) {
           fields.push({
             id: 0,
-            field: measure.subset_column ?? '',
+            field: measure.column ?? '',
             operator: measureOperation.value,
             value: filters[key] ?? '',
             officeData: null,
@@ -150,4 +168,4 @@ const generateInitialFields = (
   return fields
 }
 
-export default generateInitialFields
+export default generateInitalFieldsDataDetail

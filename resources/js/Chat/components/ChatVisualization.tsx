@@ -1,23 +1,31 @@
-import SimpleAreaChart from '@/Components/Charts/SimpleAreaChart'
-import SimpleBarChart from '@/Components/Charts/SimpleBarChart'
-import SimpleLineChart from '@/Components/Charts/SimpleLineChart'
-import SimplePieChart from '@/Components/Charts/SimplePieChart'
+import {
+  convertChartDataToMapDataItems,
+  downloadChartAsImage,
+  downloadExcel,
+} from '@/Chat/components/chart-helpers'
+import ChartDataTable from '@/Chat/components/ChartDataTable'
+import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
+import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
+import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
+import { CustomPieChart } from '@/Components/Charts/SampleChart/SamplePieChart'
+import OfficeClusterMap from '@/Components/DataExplorer/OfficeRanking/Map/OfficeClusterMap'
+import { Download, Image } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { ChatMessage } from './MainArea'
-import * as XLSX from 'xlsx'
-import { Download, Image } from 'lucide-react'
-import html2canvas from 'html2canvas'
-import OfficeClusterMap, {
-  MapDataItem,
-} from '@/Components/DataExplorer/OfficeRanking/Map/OfficeClusterMap'
 
 export interface ChartData {
   key?: 'line' | 'bar' | 'pie' | 'area' | 'map'
-  label_field?: string
-  value_field?: string
+  category_field?: string
+  category_field_title?: string
+  metrics_to_plot?: {
+    key?: string
+    label?: string
+    unit?: string
+  }[]
   visualization_title?: string
-  label_field_title?: string
-  value_field_title?: string
+  x_axis_label?: string
+  y_axis_label?: string
+  y1_axis_label?: string
   office_level?: 'state' | 'region' | 'circle' | 'division' | 'subdivision' | 'section' | null
   data?: Record<string, number | string | null>[]
 }
@@ -35,146 +43,12 @@ function extractChartDataFromMarkdown(markdown: string): ChartData[] {
       return parsed as ChartData[]
     }
   } catch (e) {
-    // Invalid JSON
-    return []
+    console.error('Failed to parse chart data JSON:', e)
   }
   return []
 }
 
-function downloadExcel(chartData: ChartData, chartIndex: number) {
-  if (!chartData.data || chartData.data.length === 0) {
-    return
-  }
-  const now = new Date()
-
-  const timestamp =
-    String(now.getDate()).padStart(2, '0') +
-    String(now.getMonth() + 1).padStart(2, '0') +
-    String(now.getFullYear()).slice(-2) +
-    String(now.getHours()).padStart(2, '0') +
-    String(now.getMinutes()).padStart(2, '0') +
-    String(now.getSeconds()).padStart(2, '0')
-
-  const workbook = XLSX.utils.book_new()
-
-  const worksheet = XLSX.utils.json_to_sheet(chartData.data)
-
-  const sheetName = 'Chart_' + timestamp
-  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName)
-
-  const filename = `${sheetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_data.xlsx`
-
-  XLSX.writeFile(workbook, filename)
-}
-
-async function downloadChartAsImage(
-  chartRef: React.RefObject<HTMLDivElement>,
-  chartData: ChartData
-) {
-  if (!chartRef.current) {
-    return
-  }
-
-  try {
-    const canvas = await html2canvas(chartRef.current, {
-      backgroundColor: '#ffffff',
-      scale: 2, // Higher resolution
-      useCORS: true,
-      allowTaint: true,
-    })
-
-    // Create timestamp for filename
-    const now = new Date()
-    const timestamp =
-      String(now.getDate()).padStart(2, '0') +
-      String(now.getMonth() + 1).padStart(2, '0') +
-      String(now.getFullYear()).slice(-2) +
-      String(now.getHours()).padStart(2, '0') +
-      String(now.getMinutes()).padStart(2, '0') +
-      String(now.getSeconds()).padStart(2, '0')
-
-    // Create download link
-    const link = document.createElement('a')
-    link.download = `chart_${timestamp}.png`
-    link.href = canvas.toDataURL('image/png')
-
-    // Trigger download
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  } catch (error) {
-    console.error('Error downloading chart as image:', error)
-  }
-}
-
-function convertChartDataToMapDataItems(chartData: ChartData): MapDataItem[] {
-  if (!chartData.data) {
-    return [] // Handle the case where data is missing.
-  }
-
-  const mapDataItems: MapDataItem[] = chartData.data.map((item) => {
-    const mapDataItem: MapDataItem = {
-      office_name: item[chartData.label_field || ''] as string | undefined,
-      office_code: item[chartData.value_field || ''] as string | undefined,
-      ...item,
-    }
-
-    return mapDataItem
-  })
-
-  return mapDataItems
-}
-
 // Component to render data in table format
-function DataTable({ chartData }: { chartData: ChartData }) {
-  if (!chartData.data || chartData.data.length === 0) {
-    return <div className='text-center text-gray-500'>No data available</div>
-  }
-
-  const columns = Object.keys(chartData.data[0])
-
-  return (
-    <div className='w-full overflow-x-auto'>
-      <div className='mb-4'>
-        <h3 className='text-lg font-semibold text-gray-800'>
-          {chartData.visualization_title || 'Data Table'}
-        </h3>
-      </div>
-      <table className='min-w-full divide-y divide-gray-200 border border-gray-200 bg-white shadow-sm'>
-        <thead className='bg-gray-50'>
-          <tr>
-            {columns.map((column) => (
-              <th
-                key={column}
-                className='px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700'
-              >
-                {column.replace(/_/g, ' ')}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className='divide-y divide-gray-200 bg-white'>
-          {chartData.data.map((row, index) => (
-            <tr
-              key={index}
-              className='hover:bg-gray-50'
-            >
-              {columns.map((column) => (
-                <td
-                  key={column}
-                  className='whitespace-nowrap px-4 py-3 text-sm text-gray-900'
-                >
-                  {row[column]?.toString() || '-'}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 export default function ChatVisualization({ message }: Readonly<Props>) {
   const [selectedChartIndex, setSelectedChartIndex] = useState(0)
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart')
@@ -189,49 +63,50 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
 
   const selectedChart = charts && charts.length > 0 ? charts[selectedChartIndex] : null
 
-  if (!charts || charts.length === 0) {
-    return (
-      <div className='h-96 w-full'>
-        <p>Failed to parse chart data</p>
-      </div>
-    )
-  }
+  const fieldsToPlot = useMemo(() => {
+    if (!selectedChart?.metrics_to_plot) return []
+    return selectedChart.metrics_to_plot
+      .filter((metric) => metric.key != null)
+      .map((metric) => ({
+        key: metric.key!,
+        label: metric.label ?? metric.key!,
+        unit: metric.unit ?? '',
+      }))
+  }, [selectedChart?.metrics_to_plot])
 
   return (
     <div className='flex w-full flex-col gap-6'>
+      {charts != null && charts.length > 1 && (
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <div className='flex items-center gap-2'>
+            <select
+              id='chart-select'
+              value={selectedChartIndex}
+              onChange={(e) => setSelectedChartIndex(Number(e.target.value))}
+              className='rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+            >
+              {charts?.map((chart, index) => (
+                <option
+                  key={index}
+                  value={index}
+                >
+                  {chart.visualization_title ?? `Chart ${index + 1}`} ({chart.key})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+      {charts != null && charts.length === 1 && (
+        <div>
+          <h5>{selectedChart?.visualization_title}</h5>
+        </div>
+      )}
       {/* Selection Controls */}
       <div className='flex flex-wrap items-center justify-between gap-4'>
         <div className='flex flex-wrap items-center gap-4'>
-          {/* Chart Selection Menu - Only show if there are multiple charts */}
-          {charts.length > 1 && (
-            <div className='flex items-center gap-2'>
-              <label
-                htmlFor='chart-select'
-                className='text-sm font-medium text-gray-700'
-              >
-                Select Chart:
-              </label>
-              <select
-                id='chart-select'
-                value={selectedChartIndex}
-                onChange={(e) => setSelectedChartIndex(Number(e.target.value))}
-                className='rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
-              >
-                {charts.map((chart, index) => (
-                  <option
-                    key={index}
-                    value={index}
-                  >
-                    {chart.visualization_title || `Chart ${index + 1}`} ({chart.key})
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
           {/* View Mode Toggle */}
           <div className='flex items-center gap-2'>
-            <label className='text-sm font-medium text-gray-700'>View:</label>
             <div className='flex rounded-md border border-gray-300 bg-white'>
               <button
                 onClick={() => setViewMode('chart')}
@@ -285,7 +160,7 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
           {/* Table View */}
           {viewMode === 'table' && (
             <div className='rounded-lg border border-gray-200 bg-white p-4'>
-              <DataTable chartData={selectedChart} />
+              <ChartDataTable chartData={selectedChart} />
               {/* Download button for table view */}
               <div className='mt-4 flex justify-end'>
                 <button
@@ -302,46 +177,42 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
 
           {/* Chart View */}
           {viewMode === 'chart' && (
-            <>
+            <div className='flex w-full items-center justify-center'>
               {selectedChart.key === 'bar' && (
-                <SimpleBarChart
-                  chartData={selectedChart.data ?? []}
-                  dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  color={'#3b82f6'}
-                  title={selectedChart.visualization_title ?? ''}
-                  xLabel={selectedChart.label_field_title ?? ''}
-                  yLabel={selectedChart.value_field_title ?? ''}
+                <CustomBarChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
+                  dataKey={selectedChart.category_field ?? ''}
+                  keysToPlot={fieldsToPlot}
+                  xAxisLabel={selectedChart.x_axis_label ?? selectedChart.category_field_title}
+                  yAxisLabel={selectedChart.y_axis_label ?? fieldsToPlot[0]?.label}
                 />
               )}
               {selectedChart.key === 'area' && (
-                <SimpleAreaChart
-                  chartData={selectedChart.data ?? []}
-                  dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  title={selectedChart.visualization_title ?? ''}
-                  xLabel={selectedChart.label_field_title ?? ''}
-                  yLabel={selectedChart.value_field_title ?? ''}
+                <CustomAreaChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
+                  dataKey={selectedChart.category_field ?? ''}
+                  keysToPlot={fieldsToPlot}
+                  xAxisLabel={selectedChart.x_axis_label ?? selectedChart.category_field_title}
+                  yAxisLabel={selectedChart.y_axis_label ?? fieldsToPlot[0]?.label}
                 />
               )}
               {selectedChart.key === 'pie' && (
-                <SimplePieChart
-                  chartData={selectedChart.data ?? []}
-                  dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  color={'#3b82f6'}
-                  title={selectedChart.visualization_title ?? ''}
+                <CustomPieChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
+                  dataKey={fieldsToPlot[0]?.key ?? ''}
+                  nameKey={selectedChart.category_field ?? ''}
+                  keysToPlot={fieldsToPlot}
+                  fontSize=''
                 />
               )}
               {selectedChart.key === 'line' && (
-                <SimpleLineChart
-                  chartData={selectedChart.data ?? []}
-                  dataKey={selectedChart.label_field ?? ''}
-                  dataFieldName={selectedChart.value_field ?? ''}
-                  color={'#3b82f6'}
-                  title={selectedChart.visualization_title ?? ''}
-                  xLabel={selectedChart.label_field_title ?? ''}
-                  yLabel={selectedChart.value_field_title ?? ''}
+                <CustomLineChart
+                  data={(selectedChart.data as Record<string, string | number>[]) ?? []}
+                  dataKey={selectedChart.category_field ?? ''}
+                  keysToPlot={fieldsToPlot}
+                  displayKey={
+                    selectedChart.x_axis_label ?? selectedChart.category_field_title ?? ''
+                  }
                 />
               )}
               {selectedChart.key === 'map' && (
@@ -350,7 +221,7 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
                   officeLevel={selectedChart.office_level ?? 'section'}
                 />
               )}
-            </>
+            </div>
           )}
         </div>
       )}
