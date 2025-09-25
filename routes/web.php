@@ -65,6 +65,7 @@ use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
 use App\Models\DataLoader\DataLoaderJob;
+use App\Services\DataLoader\JsonStructure\FlattenJsonResponse;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
 
@@ -271,163 +272,22 @@ Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchCont
     ->name('data-detail-column-search');
 
 Route::get('/test-flatten-json', function () {
-    $testData = [[
-        'name' => 'Revenue Summary - All data',
-        'id' => 362,
-        'description' => 'This contains data about month-wise bill generation by office, at various voltage levels and consumer categories.\nThe metrics captured are  total live consumers at a particular office, the number of consumers who owere billed, total consumptions in units,  total value demanded, and average unit rate that was used to calculate the bill. This is important in understanding consumption patterns within various user categories, and determining regions where billing activity is anomalous, and also finding out how consumption patterns are in various categories billed at different average unit rates (for example,  agricultural tariffs are usually lower, and may be sold at a rate lower than it takes for KSEB to produce the electricity, whereas commercial rates may be sold at a positive margin.) this is one way in which average unit rates and categories can provide importanty insights. Also, this subset may be used to determine consumption pattern changes over time.',
-        'hierarchy' => 'Office Hierarchy',
-        'data_family' => 'Revenue Summary',
-        'data_family_description' => 'Category-wise revenue data',
-        'proactive_insight_instructions' => 'Check for pattern anomalies across office levels : \n-  large change in consumption\n- large varience across offices in billed consumers vs live consumers\n- high growth in customer counts that have very high unit rate\n- high growth in customer counts that have very low unit rate',
-        'visualization_instructions' => '-  if user is requesting multiple months, limit to trend chart with one requested metric (live consumers OR billed consumers OR total demand OR average unit rate or total consumption) on the Y axis, and month on the X axis - x axis must be  in ascending order\n\n\n-  if requested data has multiple offices, limit to bar graph with office on the x axis and the requested metric on the y axis.\n\n-  if requested data is a metric by category or voltage, generate a pie chart. Dimension: voltage or category, metric: requested metric.',
-        'dates' => [],
-        'dimensions' => [
-            [
-                'column' => 'month',
-                'name' => 'month',
-                'description' => 'Month and year in MMYYYY format',
-                'values' => [
-                    '202411',
-                    '202410',
-                    '202407',
-                    '202409',
-                    '202408',
-                    '202406',
-                    '202405',
-                    '202412',
-                    '202301',
-                    '202302',
-                    '202303',
-                    '202305',
-                    '202311',
-                    '202310',
-                    '202306',
-                    '202304',
-                    '202403',
-                    '202309',
-                    '202402',
-                    '202401',
-                    '202404',
-                    '202312',
-                    '202308',
-                    '202307',
-                    '202212',
-                    '202501',
-                    '2',
-                    '202503',
-                    'end of file',
-                ],
-            ],
-            [
-                'column' => 'voltage',
-                'name' => 'Voltage',
-                'description' => 'Low Tenssion (LT), High Tension (HT) or Extra High Tension (EHT)',
-                'values' => [
-                    'LT',
-                    'EHT',
-                    'HT',
-                ],
-            ],
-            [
-                'column' => 'consumer_category',
-                'name' => 'Consumer Category',
-                'description' => 'Consumer category that the connection belongs to (e.g. Domestic, commercial, agriculture etc.)',
-                'values' => [
-                    'DOMESTIC',
-                    'STATE GOVERNMENT  DEPARTMENTS',
-                    'NON PAYING GROUP',
-                    'PRIVATE INSTITUTIONS',
-                    'KSEBoard',
-                    'LOCAL BODIES',
-                    'PUBLIC INSTITUTIONS',
-                    'STATE PUBLIC SECTOR UNDERTAKINGS',
-                    'CENTRAL GOVERNMENT DEPARTMENTS',
-                    'CENTRAL PUBLIC SECTOR UNDERTAKINGS',
-                    '0-50 units',
-                    '51-100 units',
-                    '101-150 units',
-                    '151-200 units',
-                    '201-250 units',
-                    'INDUSTRIAL',
-                    'LICENSEE',
-                    'RAILWAY-TRACTION',
-                    'GENERAL',
-                    'METRO RAIL',
-                    'COMMERCIAL',
-                    'ELE.VEHICLES CHARGING STNs',
-                    'AGRICULTURE',
-                    'Commercial',
-                    'Industrial',
-                    'Industrial-PWW',
-                    'Agriculture',
-                    'Public Lighting',
-                    'TEMPORARY CONNECTIONS',
-                    'SPSU',
-                    'Licencees',
-                    'Railways Traction',
-                    'Private',
-                    'CPSU',
-                    'Inter State',
-                    'CPP',
-                    'SEZ',
-                    'State Govt',
-                    'Co.Op Sector',
-                    'KWA',
-                    'Railway Station/Offices',
-                    'Bank',
-                    'Central Govt',
-                    'Self Financing College',
-                    'Govt Medical Collge',
-                    'BSNL',
-                    'Religious Institutions',
-                    'Station Inv',
-                    'Local body',
-                    'Trust',
-                    'Co.Op Society',
-                    'Irrigation',
-                    'Garrison Engineers',
-                    'Power Grid',
-                    'AIDED COLLEGES',
-                    'Doordarshan/AIR',
-                    'NON-INDUSTRIAL',
+    $testData = [
+        [
+            'name' => 'John Doe',
+            'age' => 30,
+            'scores' => [85, 90, 78],
+            'address' => [
+                'street' => '123 Main St',
+                'city' => 'Los Angeles',
+                'points' => [
+                    1, 2, 3,
                 ],
             ],
         ],
-        'measures' => [
-            [
-                'column' => 'live_consumers',
-                'name' => 'Live Consumers',
-                'description' => null,
-                'aggregation' => null,
-            ],
-            [
-                'column' => 'billed_consumers',
-                'name' => 'Billed Consumers',
-                'description' => null,
-                'aggregation' => null,
-            ],
-            [
-                'column' => 'total_consumption__units_',
-                'name' => 'Total Consumption (Units)',
-                'description' => null,
-                'aggregation' => null,
-            ],
-            [
-                'column' => 'total_demand__rs_',
-                'name' => 'Total Demand (Rs)',
-                'description' => null,
-                'aggregation' => null,
-            ],
-            [
-                'column' => 'average_unit_rate__rs_',
-                'name' => 'Average Unit Rate (Rs)',
-                'description' => null,
-                'aggregation' => null,
-            ],
-        ],
-    ]];
+    ];
 
-    $flattenService = new \App\Services\DataLoader\JsonStructure\FlattenJsonResponse;
+    $flattenService = new FlattenJsonResponse;
     $flattened = $flattenService->flatten($testData, '.', 'response');
 
     return response()->json($flattened);
