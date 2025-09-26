@@ -9,10 +9,14 @@ export default function ConfigFormField({
   data,
   onUpdate,
   errors,
-  showUnit = true,
-}: {
+}: Readonly<{
   isSelected: boolean
-  field: any
+  field: {
+    subset_field_name: string
+    id?: string
+    type?: string
+    description?: string
+  }
   data: {
     value: string
     label: string
@@ -28,7 +32,7 @@ export default function ConfigFormField({
   }) => void
   errors?: any
   showUnit?: boolean
-}) {
+}>) {
   const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     selected: isSelected,
     label: data.label,

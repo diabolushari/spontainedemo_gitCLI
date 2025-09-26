@@ -3,15 +3,33 @@ import AddGridItemModal from './OverviewComponent/AddGridItemModal'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import OverviewChartEditDrawer from '@/Components/PageBuilder/CardEditors/OverviewChartEditDrawer'
 import OverviewBarChartDemo from '@/Cards/Demo/OverviewBarChartDemo'
+import { Config } from '@/interfaces/data_interfaces'
 
 interface Props {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  content: any
+  content: {
+    overview_chart: {
+      title: string
+      subset_id: number
+      chart_type: string
+      description: string
+      dimensions: {
+        field: string
+        label: string
+        show_label: boolean
+      }[]
+      measures: {
+        field: string
+        label: string
+        show_label: boolean
+      }[]
+    }
+  }
   subsetGroupId: number
   blockId: number
   editMode?: boolean
-  blockContent?: any
+  blockContent: Config
 }
 
 export default function Overview({
@@ -23,14 +41,13 @@ export default function Overview({
   editMode = false,
   blockContent,
 }: Props) {
-  const { title, card_type, overview_chart, overview_table } = content || {}
+  const { overview_chart } = content || {}
 
   const [isGridModalOpen, setGridModalOpen] = useState(false)
   const [isChartModalOpen, setChartModalOpen] = useState(false)
-  const [editingChart, setEditingChart] = useState<OverviewChart | null>(null)
   const [chartDeleteModal, setChartDeleteModal] = useState(false)
   const [overviewChart, setOverviewChart] = useState<any | null>(overview_chart)
-  const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
+  // const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
   const [isChartEditDrawerOpen, setChartEditDrawerOpen] = useState(false)
 
   // --- Chart Handlers ---
@@ -46,24 +63,24 @@ export default function Overview({
     setOverviewChart(overview_chart)
   }, [overview_chart])
 
-  useEffect(() => {
-    setGridItems(overview_table)
-  }, [overview_table])
+  // useEffect(() => {
+  //   setGridItems(overview_table)
+  // }, [overview_table])
 
   console.log('Overview Chart:', overviewChart)
-  console.log('Overview Table:', gridItems)
+  // console.log('Overview Table:', gridItems)
 
   return (
     <>
       <div className='flex min-h-56 w-full flex-col pr-4 transition-all duration-300'>
-        <div className='mt-4 flex w-full justify-start p-2'>
-          <span className='subheader-sm-1stop'>{title}</span>
-        </div>
+        {/*<div className='mt-4 flex w-full justify-start p-2'>*/}
+        {/*  <span className='subheader-sm-1stop'>{title} </span>*/}
+        {/*</div>*/}
 
         <div className='grid grid-cols-1'>
           {
             <div className='group relative flex-1 rounded-md border border-gray-200'>
-              {overviewChart ? (
+              {overviewChart && (
                 <>
                   {editMode && (
                     <div className='absolute right-2 top-2 z-10 flex gap-x-1 rounded-md bg-white bg-opacity-75 p-1 opacity-0 shadow-sm transition-opacity group-hover:opacity-100'>
@@ -129,7 +146,8 @@ export default function Overview({
                     subsetId={overviewChart?.subset_id}
                   />
                 </>
-              ) : (
+              )}
+              {overviewChart == null && (
                 <div className='flex h-full min-h-[300px] w-full items-center justify-center rounded-md bg-gray-50'>
                   <button
                     onClick={handleOpenAddChartModal}

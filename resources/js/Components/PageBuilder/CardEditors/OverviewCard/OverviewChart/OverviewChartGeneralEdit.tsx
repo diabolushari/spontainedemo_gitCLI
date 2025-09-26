@@ -50,6 +50,82 @@ export default forwardRef<OverviewChartGeneralEditHandle, OverviewChartGeneralEd
       setFormValue('chartType')(formData.chartType === type ? '' : type)
     }
 
+    const handleDimensionUpdate = (
+      dimension: Dimension,
+      updated: {
+        value: string
+        label: string
+        unit?: string
+        show_label: boolean
+        selected: boolean
+      }
+    ) => {
+      if (updated.selected) {
+        const index = formData.dimensions.findIndex((d) => d?.field === dimension?.subset_column)
+        if (index > -1) {
+          const newDims = [...formData.dimensions]
+          newDims[index] = {
+            field: dimension?.subset_column,
+            label: updated.label,
+            show_label: updated.show_label,
+          }
+          setFormValue('dimensions')(newDims)
+        } else {
+          setFormValue('dimensions')([
+            ...formData.dimensions,
+            {
+              field: dimension?.subset_column,
+              label: updated.label,
+              show_label: updated.show_label,
+            },
+          ])
+        }
+      } else {
+        setFormValue('dimensions')(
+          formData.dimensions.filter((d) => d?.field !== dimension?.subset_column)
+        )
+      }
+    }
+
+    const handleMeasureUpdate = (
+      measure: Dimension,
+      updated: {
+        value: string
+        label: string
+        unit?: string
+        show_label: boolean
+        selected: boolean
+      }
+    ) => {
+      if (updated.selected) {
+        const index = formData.measures.findIndex((m) => m?.field === measure?.subset_column)
+        if (index > -1) {
+          const newMeasures = [...formData.measures]
+          newMeasures[index] = {
+            field: measure?.subset_column,
+            label: updated.label,
+            unit: updated.unit,
+            show_label: updated.show_label,
+          }
+          setFormValue('measures')(newMeasures)
+        } else {
+          setFormValue('measures')([
+            ...formData.measures,
+            {
+              field: measure?.subset_column,
+              label: updated.label,
+              unit: updated.unit,
+              show_label: updated.show_label,
+            },
+          ])
+        }
+      } else {
+        setFormValue('measures')(
+          formData.measures.filter((m) => m?.field !== measure?.subset_column)
+        )
+      }
+    }
+
     const [subsetDimensionFields] = useFetchRecord<Dimension[]>(
       formData.subsetId ? `/api/subset/dimension/${formData.subsetId}` : null
     )
@@ -177,37 +253,7 @@ export default forwardRef<OverviewChartGeneralEditHandle, OverviewChartGeneralEd
                               unit: '',
                               show_label: selectedDimension?.show_label ?? false,
                             }}
-                            onUpdate={(updated) => {
-                              if (updated.selected) {
-                                const index = formData.dimensions.findIndex(
-                                  (d) => d?.field === dimension?.subset_column
-                                )
-                                if (index > -1) {
-                                  const newDims = [...formData.dimensions]
-                                  newDims[index] = {
-                                    field: dimension?.subset_column,
-                                    label: updated.label,
-                                    show_label: updated.show_label,
-                                  }
-                                  setFormValue('dimensions')(newDims)
-                                } else {
-                                  setFormValue('dimensions')([
-                                    ...formData.dimensions,
-                                    {
-                                      field: dimension?.subset_column,
-                                      label: updated.label,
-                                      show_label: updated.show_label,
-                                    },
-                                  ])
-                                }
-                              } else {
-                                setFormValue('dimensions')(
-                                  formData.dimensions.filter(
-                                    (d) => d?.field !== dimension?.subset_column
-                                  )
-                                )
-                              }
-                            }}
+                            onUpdate={(updated) => handleDimensionUpdate(dimension, updated)}
                           />
                         )
                       }
@@ -236,37 +282,7 @@ export default forwardRef<OverviewChartGeneralEditHandle, OverviewChartGeneralEd
                             unit: selectedMeasure?.unit || '',
                             show_label: selectedMeasure?.show_label ?? false,
                           }}
-                          onUpdate={(updated) => {
-                            if (updated.selected) {
-                              const index = formData.measures.findIndex(
-                                (m) => m?.field === measure?.subset_column
-                              )
-                              if (index > -1) {
-                                const newMeasures = [...formData.measures]
-                                newMeasures[index] = {
-                                  field: measure?.subset_column,
-                                  label: updated.label,
-                                  unit: updated.unit,
-                                  show_label: updated.show_label,
-                                }
-                                setFormValue('measures')(newMeasures)
-                              } else {
-                                setFormValue('measures')([
-                                  ...formData.measures,
-                                  {
-                                    field: measure?.subset_column,
-                                    label: updated.label,
-                                    unit: updated.unit,
-                                    show_label: updated.show_label,
-                                  },
-                                ])
-                              }
-                            } else {
-                              setFormValue('measures')(
-                                formData.measures.filter((m) => m?.field !== measure?.subset_column)
-                              )
-                            }
-                          }}
+                          onUpdate={(updated) => handleMeasureUpdate(measure, updated)}
                         />
                       )
                     })}
