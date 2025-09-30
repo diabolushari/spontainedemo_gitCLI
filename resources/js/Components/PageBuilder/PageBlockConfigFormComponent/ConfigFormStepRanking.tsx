@@ -1,8 +1,8 @@
 import useCustomForm from '@/hooks/useCustomForm'
-import { Block, Config } from '@/interfaces/data_interfaces'
+import { Block } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import Input from '@/ui/form/Input'
-import React, { useCallback } from 'react'
+import React from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import CheckBox from '@/ui/form/CheckBox'
@@ -130,12 +130,7 @@ export default function ConfigFormStepRanking({
         </div>
       )}
 
-      <div className='mt-4 flex justify-between border-t pt-4'>
-        <Button
-          type='button'
-          label='Back'
-          onClick={onBack}
-        />
+      <div className='mt-4 flex justify-center border-t pt-4'>
         <Button
           type='submit'
           variant={formData.subsetId === '' ? 'disabled' : 'primary'}

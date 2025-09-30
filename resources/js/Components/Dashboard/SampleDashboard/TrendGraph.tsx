@@ -31,6 +31,7 @@ interface Props {
   dimensions?: BlockDimension
   color?: string
   editMode?: boolean
+  setOpenDrawer: any
 }
 
 export default function TrendGraph({
@@ -51,6 +52,7 @@ export default function TrendGraph({
   dimensions,
   color,
   editMode,
+  setOpenDrawer,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -118,7 +120,13 @@ export default function TrendGraph({
         <span className='subheader-sm-1stop'>{cardTitle}</span>
       </div>
 
-      <div className='flex w-full justify-between gap-2 px-2 pb-2'>
+      <div className='relative flex w-full justify-between gap-2 px-2 pb-2'>
+        <button
+          className={'absolute right-0 top-0 z-10 p-2'}
+          onClick={() => setOpenDrawer(true)}
+        >
+          Edit
+        </button>
         <SampleMonthSelector
           selectedValue={selectedMonthValue}
           setSelectedValue={setSelectedMonthValue}

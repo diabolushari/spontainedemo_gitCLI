@@ -12,6 +12,8 @@ import Overview from '../Dashboard/SampleDashboard/Overview'
 import MoreButton from '../MoreButton'
 import { BlockRadioGroup } from './BlockRadioGroup'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
+import TrendEditDrawer from '@/Components/PageBuilder/CardEditors/TrendEditDrawer'
+import RankingEditDrawer from '@/Components/PageBuilder/CardEditors/RankingEditDrawer'
 
 export function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
@@ -33,6 +35,8 @@ interface Props {
 export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Props>) {
   const [selectedView, setSelectedView] = useState<string>('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [openTrendDrawer, setOpenTrendDrawer] = useState<boolean>(false)
+  const [openRankingDrawer, setOpenRankingDrawer] = useState<boolean>(false)
 
   const [date] = useFetchRecord<{ max_value: string | null }>(
     block?.data?.data_table_id ? route('data-detail.date', block.data.data_table_id) : ''
@@ -63,7 +67,9 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
   const monthYear = useMemo(() => dateToYearMonth(selectedMonth), [selectedMonth])
 
   const fullUrl = window.location.href
-
+  const handleDataUpdate = (updatedData: any) => {
+    console.log('Block data updated:', updatedData)
+  }
   return (
     <div>
       <Card className='min-h-18 rounded-md'>
@@ -119,18 +125,19 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
                   dimensions={block.dimensions}
                   color={block.data.trend.color}
                   editMode={overviewEditMode}
+                  setOpenDrawer={setOpenTrendDrawer}
                 />
               )
             ) : (
               <div className='flex items-center justify-center'>
-                <AddButton onClick={() => alert('Add Trend Graph')} />
+                <AddButton onClick={() => setOpenTrendDrawer(true)} />
               </div>
             ))}
 
           {selectedView === 'ranking' &&
             block?.data?.ranking_selected &&
             selectedMonth &&
-            block?.data?.ranking?.subset_id && (
+            (block?.data?.ranking?.subset_id ? (
               <RankedList
                 subsetId={block.data.ranking.subset_id}
                 cardTitle={block.data.ranking.title}
@@ -143,8 +150,13 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
                 rankingPageUrl={`/office-rankings/${subsetGroup?.name}?month=${monthYear}&route=${fullUrl}`}
                 timePeriod={monthYear}
                 timePeriodFieldName='month'
+                setOpenDrawer={setOpenRankingDrawer}
               />
-            )}
+            ) : (
+              <div className='flex items-center justify-center'>
+                <AddButton onClick={() => setOpenRankingDrawer(true)} />
+              </div>
+            ))}
         </div>
 
         {block?.data?.data_table_id && (
@@ -171,6 +183,20 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
           </div>
         )}
       </Card>
+      <TrendEditDrawer
+        open={openTrendDrawer}
+        setOpen={setOpenTrendDrawer}
+        block={block}
+        initialData={block?.data}
+        onDataUpdate={handleDataUpdate}
+      />
+      <RankingEditDrawer
+        open={openRankingDrawer}
+        setOpen={setOpenRankingDrawer}
+        block={block}
+        initialData={block?.data}
+        onDataUpdate={handleDataUpdate}
+      />
     </div>
   )
 }

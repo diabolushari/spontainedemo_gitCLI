@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
+import React from 'react'
 import useCustomForm from '@/hooks/useCustomForm'
-import { Block, Config } from '@/interfaces/data_interfaces'
+import { Block } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import CheckBox from '@/ui/form/CheckBox'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
@@ -21,6 +21,7 @@ interface ConfigFormStepTrendProps {
   onNext?: (data: any) => void
   onBack?: () => void
 }
+
 interface FormData {
   subsetId: number | null
   title: string
@@ -266,16 +267,11 @@ export default function ConfigFormStepTrend({
           </div>
         )}
 
-        <div className='flex justify-between gap-2'>
-          <Button
-            type='button'
-            label='Back'
-            onClick={onBack}
-          />
+        <div className='flex justify-center gap-2'>
           <Button
             type='submit'
             variant={formData.subsetId === '' ? 'disabled' : 'primary'}
-            label={loading ? 'Saving...' : initialData.ranking_selected ? 'Next' : 'Submit'}
+            label={loading ? 'Saving...' : 'Submit'}
             disabled={loading || formData.subsetId === ''}
           />
         </div>

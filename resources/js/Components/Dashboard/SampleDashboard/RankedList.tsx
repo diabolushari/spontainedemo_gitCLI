@@ -25,6 +25,7 @@ interface Props {
     subset_field_name: string
     subset_column: string
   }[]
+  setOpenDrawer: (open: boolean) => void
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -52,6 +53,7 @@ export default function RankedList({
   filterFieldName,
   onFilterChange,
   availableFields,
+  setOpenDrawer,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
@@ -121,7 +123,26 @@ export default function RankedList({
   )
 
   return (
-    <div className='flex w-full flex-col'>
+    <div className='relative flex w-full flex-col'>
+      <button
+        onClick={() => setOpenDrawer(true)}
+        className={'absolute right-0 top-0 z-10 p-2'}
+      >
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='20'
+          height='20'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          <path d='M12 20h9' />
+          <path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z' />
+        </svg>
+      </button>
       <div className='mt-4 flex w-full justify-end gap-2 pb-2 pr-4 pt-4'>
         <span className='subheader-sm-1stop'>{cardTitle}</span>
       </div>
