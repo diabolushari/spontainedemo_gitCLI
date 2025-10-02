@@ -51,7 +51,6 @@ export default function TrendGraph({
   tooltipIndicator,
   dimensions,
   color,
-  editMode,
   setOpenDrawer,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
@@ -77,13 +76,14 @@ export default function TrendGraph({
       params[filterFieldName] = filterValue
     }
 
-    return route('subset.show', { ...params })
+    return route('office-level-summary', { ...params })
   }, [subsetId, selectedMonth, selectedMonthValue, filterValue, filterFieldName, setSelectedMonth])
 
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
   }>(fetchUrl)
+  console.log(graphValues)
 
   useEffect(() => {
     if (setSelectedMonth == null || selectedMonth != null) return

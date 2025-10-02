@@ -46,7 +46,6 @@ export default function ConfigFormStepTrend({
   initialData,
   onNext,
   block,
-  onBack,
 }: ConfigFormStepTrendProps) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     subsetId: initialData.trend?.subset_id ?? '',

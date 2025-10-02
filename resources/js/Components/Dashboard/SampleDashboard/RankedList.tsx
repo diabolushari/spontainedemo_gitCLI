@@ -102,6 +102,7 @@ export default function RankedList({
   ])
 
   const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
+  console.log('Ranking graphvalues : ', graphValues)
 
   const headers = useMemo(() => {
     const selectedLevel = levelTypes.find((value) => value.value == officeLevel)
