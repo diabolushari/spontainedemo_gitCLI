@@ -31,7 +31,7 @@ interface Props {
   dimensions?: BlockDimension
   color?: string
   editMode?: boolean
-  setOpenDrawer: any
+  setOpenDrawer: (open: boolean) => void
 }
 
 export default function TrendGraph({
@@ -163,7 +163,17 @@ export default function TrendGraph({
           <CustomBarChart
             data={chartData}
             dataKey='month'
-            keysToPlot={[{ key: dataFieldName }]}
+            keysToPlot={[
+              {
+                key: dataFieldName,
+                label: tooltipIndicator?.label ?? dataFieldName,
+                unit: tooltipIndicator?.unit,
+              },
+            ]}
+            colors={'softNeutral'}
+            fontSize='text-sm'
+            sliceCount={undefined}
+            sortOrder='descending'
           />
         )}
       </div>

@@ -122,7 +122,7 @@ export function CustomAreaChart({
             <Area
               key={plotKey.key}
               dataKey={plotKey.key}
-              type='natural'
+              type='monotone'
               fill={color || chartColors[index % chartColors.length]}
               fillOpacity={0.4}
               stroke={color || chartColors[index % chartColors.length]}
