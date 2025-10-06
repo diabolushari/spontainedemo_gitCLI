@@ -8,6 +8,7 @@ import WidgetLayout from '@/Components/WidgetsEditor/WidgetLayout'
 import React from 'react'
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { BarChart3, LineChart, PieChart } from 'lucide-react'
+import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
 
 interface Props {
   widget?: any
@@ -153,16 +154,30 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
                 />
               </div>
 
-              <div>
-                <DynamicSelectList
-                  label='Measure'
-                  url={`/api/subset/${formData.subset_id}`}
-                  dataKey='subset_column'
-                  displayKey='subset_field_name'
-                  value={formData.measure ?? ''}
-                  setValue={setFormValue('measure')}
+              {/*<div>*/}
+              {/*  <DynamicSelectList*/}
+              {/*    label='Measure'*/}
+              {/*    url={`/api/subset/${formData.subset_id}`}*/}
+              {/*    dataKey='subset_column'*/}
+              {/*    displayKey='subset_field_name'*/}
+              {/*    value={formData.measure ?? ''}*/}
+              {/*    setValue={setFormValue('measure')}*/}
+              {/*  />*/}
+              {/*</div>*/}
+              {formData.chart_type === 'pie' && (
+                <MeasureFieldSelector
+                  block={formData}
+                  onMeasuresChange={(measures) => setFormValue('measure')(measures)}
+                  allowMultiple={false}
                 />
-              </div>
+              )}
+              {formData.chart_type != 'pie' && (
+                <MeasureFieldSelector
+                  block={formData}
+                  onMeasuresChange={(measures) => setFormValue('measure')(measures)}
+                />
+              )}
+
               <div>
                 <DynamicSelectList
                   label='Dimension'

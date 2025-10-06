@@ -8,63 +8,92 @@ interface OverviewProps {
   selectedMonth: Date
 }
 
+interface SelectedMeasure {
+  subset_column: string
+  subset_field_name: string
+}
+
 export default function Overview({ block, selectedMonth }: Readonly<OverviewProps>) {
   console.log(selectedMonth)
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
+
+  // Extract measure columns and join them for API query
+  const measureColumns = Array.isArray(block?.measure)
+    ? block.measure.map((m: SelectedMeasure) => m.subset_column).join(',')
+    : ''
+
+  // Build fields parameter: dimension + all measure columns
+  const fieldsParam =
+    block?.dimension && measureColumns ? `${block.dimension},${measureColumns}` : ''
+
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(
-    `/subset/${block?.subset_id}?month=${formattedMonth}&fields=${block?.dimension},${block?.measure}`
+    block?.subset_id && fieldsParam
+      ? `/subset/${block.subset_id}?month=${formattedMonth}&fields=${fieldsParam}`
+      : null
   )
+
+  // Create keysToPlot array from measures
+  const keysToPlot = Array.isArray(block?.measure)
+    ? block.measure.map((m: SelectedMeasure) => ({
+        key: m.subset_column,
+        label: m.subset_field_name,
+        unit: '', // You can add unit to the measure object if needed
+      }))
+    : []
+
+  // Get first measure for pie chart (pie charts typically show one measure)
+  const firstMeasure =
+    Array.isArray(block?.measure) && block.measure.length > 0 ? block.measure[0] : null
+
   console.log(data)
+
+  // Don't render if data is not ready or no measures selected
+  if (!data?.data || !Array.isArray(block?.measure) || block.measure.length === 0) {
+    return (
+      <div className='flex h-64 items-center justify-center text-slate-400'>
+        {loading ? 'Loading...' : 'Please select measures and dimension to display chart'}
+      </div>
+    )
+  }
+
   return (
     <div>
-      {block?.chart_type == 'bar' && (
+      {block?.chart_type === 'bar' && (
         <div>
           <CustomBarChart
-            data={data?.data as Record<string, number | string>[]}
+            data={data.data}
             dataKey={block.dimension}
-            keysToPlot={[
-              {
-                key: block.measure,
-                label: 'test',
-                unit: 'tt',
-              },
-            ]}
+            keysToPlot={keysToPlot}
             colors={block?.color_palette}
             fontSize={'text-sm'}
           />
         </div>
       )}
-      {block?.chart_type == 'line' && (
+      {block?.chart_type === 'line' && (
         <div>
           <CustomLineChart
-            data={data?.data as Record<string, number | string>[]}
+            data={data.data}
             dataKey={block.dimension}
-            keysToPlot={[
-              {
-                key: block.measure,
-                label: 'test',
-                unit: 'tt',
-              },
-            ]}
+            keysToPlot={keysToPlot}
             colors={block?.color_palette}
           />
         </div>
       )}
-      {block?.chart_type == 'pie' && (
+      {block?.chart_type === 'pie' && firstMeasure && (
         <div>
           <CustomPieChart
-            data={data?.data}
-            dataKey={block.measure}
+            data={data.data}
+            dataKey={firstMeasure.subset_column}
             nameKey={block.dimension}
             keysToPlot={[
               {
-                key: block.measure,
-                label: 'test',
-                unit: 'tt',
+                key: firstMeasure.subset_column,
+                label: firstMeasure.subset_field_name,
+                unit: '',
               },
             ]}
             colors={block?.color_palette}
