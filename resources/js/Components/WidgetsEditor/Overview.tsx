@@ -12,11 +12,11 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
   console.log(selectedMonth)
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
-  const formattedMonth = `${month}${year}`
+  const formattedMonth = `${year}${month}`
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(
-    `/subset/${block?.subset_id}?latest=${formattedMonth}&fields=${block?.dimension},${block?.measure}`
+    `/subset/${block?.subset_id}?month=${formattedMonth}&fields=${block?.dimension},${block?.measure}`
   )
   console.log(data)
   return (
