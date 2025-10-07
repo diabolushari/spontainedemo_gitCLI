@@ -18,14 +18,14 @@ export default function WidgetLayout({
 }: Readonly<WidgetLayoutProps>) {
   return (
     <Card>
-      <div className='flex items-center justify-between border-b px-4 py-3'>
+      <div className='flex items-center justify-between px-4 py-3'>
         <CardHeader title={block?.title} />
         <PageBuilderMonthPicker
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
         />
       </div>
-      <div className='px-4 pt-4'>
+      <div className='px-4'>
         <NormalText className='mb-2 text-gray-500'>{block?.subtitle}</NormalText>
       </div>
       <div>{children}</div>

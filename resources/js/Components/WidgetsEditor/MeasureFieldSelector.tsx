@@ -43,7 +43,7 @@ export default function MeasureFieldSelector({
     } else {
       setSelectedMeasures([{ subset_column: '', subset_field_name: '' }])
     }
-  }, [block?.measure, block?.subset_id])
+  }, [block?.subset_id])
 
   // Get already selected measure columns
   const selectedColumns = selectedMeasures.map((m) => m.subset_column).filter((col) => col !== '')

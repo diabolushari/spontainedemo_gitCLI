@@ -2,6 +2,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
+import HighlightBar from '@/Components/WidgetsEditor/HighlightBar'
 
 interface OverviewProps {
   block: any
@@ -36,6 +37,7 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
       : null
   )
 
+  console.log(data)
   // Create keysToPlot array from measures
   const keysToPlot = Array.isArray(block?.measure)
     ? block.measure.map((m: SelectedMeasure) => ({
@@ -49,8 +51,6 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
   const firstMeasure =
     Array.isArray(block?.measure) && block.measure.length > 0 ? block.measure[0] : null
 
-  console.log(data)
-
   // Don't render if data is not ready or no measures selected
   if (!data?.data || !Array.isArray(block?.measure) || block.measure.length === 0) {
     return (
@@ -62,6 +62,10 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
 
   return (
     <div>
+      <HighlightBar
+        data={data.data}
+        subsetColumn={firstMeasure.subset_column}
+      />
       {block?.chart_type === 'bar' && (
         <div>
           <CustomBarChart
