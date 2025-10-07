@@ -4,25 +4,67 @@ import useCustomForm from '@/hooks/useCustomForm'
 import Overview from '@/Components/WidgetsEditor/Overview'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetLayout'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
-import React from 'react'
+import React, { useEffect } from 'react'
+
+interface Widget {
+  title: string
+  subtitle: string
+  data_table_id: number
+  subset_group_id: number
+  overview: {
+    chart_type: string
+    measure: {
+      subset_field_name: string
+      subset_column: string
+    }[]
+    dimension: string
+    color_palette: string
+    subset_id: number
+  }
+  trend: {
+    subset_id: number
+    chart_type: 'area' | 'bar'
+    measure: {
+      subset_field_name: string
+      subset_column: string
+    }
+    dimension: string
+    color: string
+  }
+}
 
 interface Props {
-  widget?: any
+  widget?: Widget
 }
 
 export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
+  const [cardState, setCardState] = React.useState<string>('overview')
+  const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedMonth, setSelectedMonth] = React.useState(new Date())
   const { formData, setFormValue } = useCustomForm({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
     data_table_id: widget?.data_table_id ?? null,
     subset_group_id: widget?.subset_group_id ?? null,
-    chart_type: widget?.chart_type ?? 'bar',
-    subset_id: widget?.subset_id ?? null,
-    measure: widget?.measure ?? null,
-    dimension: widget?.dimension ?? null,
-    color_palette: widget?.color_palette ?? 'boldWarm',
+    chart_type: widget?.overview?.chart_type ?? 'bar',
+    subset_id: widget?.overview?.subset_id ?? null,
+    measure: widget?.overview?.measure ?? null,
+    dimension: widget?.overview?.dimension ?? null,
+    color_palette: widget?.overview?.color_palette ?? 'boldWarm',
+    trend_subset_id: widget?.trend?.subset_id ?? null,
+    trend_chart_type: widget?.trend?.chart_type ?? 'area',
+    trend_measure: widget?.trend?.measure ?? null,
+    trend_dimension: widget?.trend?.dimension ?? 'month',
+    trend_color: widget?.trend?.color ?? null,
   })
+
+  useEffect(() => {
+    if (openItem === 'chart') {
+      setCardState('overview')
+    } else if (openItem === 'trend') {
+      setCardState('trend')
+    }
+  }, [openItem])
 
   const handleSubmit = () => {
     console.log(formData)
@@ -31,11 +73,13 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
-        <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>
           <div className='lg:col-span-1'>
             <WidgetSettingsForm
               formData={formData}
               setFormValue={setFormValue}
+              openItem={openItem}
+              setOpenItem={setOpenItem}
             />
             <button onClick={() => handleSubmit()}>submit</button>
           </div>
@@ -45,11 +89,17 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
               block={formData}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
+              selectedView={cardState}
+              onViewChange={setCardState}
             >
-              <Overview
-                block={formData}
-                selectedMonth={selectedMonth}
-              />
+              {cardState === 'overview' && (
+                <Overview
+                  block={formData}
+                  selectedMonth={selectedMonth}
+                />
+              )}
+              {cardState === 'trend' && <div>Trend</div>}
+              {cardState === 'ranking' && <div>Ranking</div>}
             </WidgetLayout>
           </div>
         </div>

@@ -3,15 +3,20 @@ import { BarChart3, LineChart, PieChart } from 'lucide-react'
 interface ChartTypeSelectorProps {
   selectedType: string
   onTypeChange: (type: string) => void
+  chartTypes?: { value: string; label: string; icon: React.FC }[]
 }
 
-const chartTypes = [
+const defaultChartTypes = [
   { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
   { value: 'pie', label: 'Pie Chart', icon: PieChart },
   { value: 'line', label: 'Line Chart', icon: LineChart },
 ]
 
-export default function ChartTypeSelector({ selectedType, onTypeChange }: ChartTypeSelectorProps) {
+export default function ChartTypeSelector({
+  selectedType,
+  onTypeChange,
+  chartTypes = defaultChartTypes,
+}: ChartTypeSelectorProps) {
   return (
     <div className='flex flex-col'>
       <label className='mb-3 text-sm font-medium text-slate-700'>Chart type</label>

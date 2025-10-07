@@ -2,13 +2,21 @@ import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
 import OverviewChartSection from '@/Components/WidgetsEditor/ConfigSection/OverviewChartSelector'
+import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 
 interface WidgetSettingsFormProps {
   formData: any
   setFormValue: (key: string) => (value: any) => void
+  openItem?: string
+  setOpenItem?: (item: string) => void
 }
 
-export default function WidgetSettingsForm({ formData, setFormValue }: WidgetSettingsFormProps) {
+export default function WidgetSettingsForm({
+  formData,
+  setFormValue,
+  openItem,
+  setOpenItem,
+}: WidgetSettingsFormProps) {
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>
@@ -17,9 +25,11 @@ export default function WidgetSettingsForm({ formData, setFormValue }: WidgetSet
       </div>
 
       <Accordion.Root
-        type='multiple'
-        defaultValue={['basic', 'chart']}
+        type='single'
+        collapsible={true}
         className='space-y-3'
+        value={openItem}
+        onValueChange={setOpenItem}
       >
         <Accordion.Item
           value='basic'
@@ -41,6 +51,18 @@ export default function WidgetSettingsForm({ formData, setFormValue }: WidgetSet
           <AccordionTrigger>Overview Chart</AccordionTrigger>
           <AccordionContent>
             <OverviewChartSection
+              formData={formData}
+              setFormValue={setFormValue}
+            />
+          </AccordionContent>
+        </Accordion.Item>
+        <Accordion.Item
+          value={'trend'}
+          className='rounded-lg border border-slate-200'
+        >
+          <AccordionTrigger>Trend Section</AccordionTrigger>
+          <AccordionContent>
+            <TrendConfigSection
               formData={formData}
               setFormValue={setFormValue}
             />
