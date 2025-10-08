@@ -138,7 +138,6 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
             (block?.data?.ranking?.subset_id ? (
               <RankedList
                 subsetId={block.data.ranking.subset_id}
-                cardTitle={block.data.ranking.title}
                 dataField={block.data.ranking.data_field.value}
                 dataFieldName={
                   block.data.ranking.data_field.show_label
@@ -148,7 +147,6 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
                 rankingPageUrl={`/office-rankings/${subsetGroup?.name}?month=${monthYear}&route=${fullUrl}`}
                 timePeriod={monthYear}
                 timePeriodFieldName='month'
-                setOpenDrawer={setOpenRankingDrawer}
               />
             ) : (
               <div className='flex items-center justify-center'>

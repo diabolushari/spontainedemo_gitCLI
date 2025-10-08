@@ -6,6 +6,7 @@ import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayo
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
 import React, { useEffect } from 'react'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
+import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 
 interface Widget {
   title: string
@@ -32,6 +33,10 @@ interface Widget {
     dimension: string
     color: string
   }
+  rank: {
+    subset_id: number
+    ranking_field: string
+  }
 }
 
 interface Props {
@@ -57,6 +62,8 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
     trend_measure: widget?.trend?.measure ?? null,
     trend_dimension: widget?.trend?.dimension ?? 'month',
     trend_color: widget?.trend?.color ?? '#5A0F35',
+    rank_subset_id: widget?.rank?.subset_id ?? null,
+    rank_ranking_field: widget?.rank?.ranking_field ?? null,
   })
 
   useEffect(() => {
@@ -64,6 +71,8 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
       setCardState('overview')
     } else if (openItem === 'trend') {
       setCardState('trend')
+    } else if (openItem === 'ranking') {
+      setCardState('ranking')
     }
   }, [openItem])
 
@@ -106,7 +115,12 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
                   setSelectedMonth={setSelectedMonth}
                 />
               )}
-              {cardState === 'ranking' && <div>Ranking</div>}
+              {cardState === 'ranking' && (
+                <RankingWidget
+                  formData={formData}
+                  selectedMonth={selectedMonth}
+                />
+              )}
             </WidgetLayout>
           </div>
         </div>

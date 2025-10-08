@@ -3,6 +3,7 @@ import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/A
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
 import OverviewChartSection from '@/Components/WidgetsEditor/ConfigSection/OverviewChartSelector'
 import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
+import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
 
 interface WidgetSettingsFormProps {
   formData: any
@@ -63,6 +64,18 @@ export default function WidgetSettingsForm({
           <AccordionTrigger>Trend Section</AccordionTrigger>
           <AccordionContent>
             <TrendConfigSection
+              formData={formData}
+              setFormValue={setFormValue}
+            />
+          </AccordionContent>
+        </Accordion.Item>
+        <Accordion.Item
+          value={'ranking'}
+          className='rounded-lg border border-slate-200'
+        >
+          <AccordionTrigger>Ranking Section</AccordionTrigger>
+          <AccordionContent>
+            <RankingConfigSection
               formData={formData}
               setFormValue={setFormValue}
             />
