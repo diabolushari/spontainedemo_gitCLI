@@ -2,7 +2,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
-import HighlightBar from '@/Components/WidgetsEditor/HighlightBar'
+import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 
 interface OverviewProps {
   block: any

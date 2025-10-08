@@ -1,5 +1,5 @@
 import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
-import TrendGraph from '@/Components/Dashboard/SampleDashboard/TrendGraph'
+import TrendGraph from '@/Components/WidgetsEditor/WidgetComponents/TrendGraph'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Block } from '@/interfaces/data_interfaces'
 import NormalText from '@/typography/NormalText'
@@ -104,8 +104,6 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
             (block?.data?.trend?.subset_id ? (
               selectedMonth && (
                 <TrendGraph
-                  cardTitle={block.data.trend.title}
-                  dataKey={block.data.trend.data_field.x_axis.value}
                   selectedMonth={selectedMonth}
                   setSelectedMonth={setSelectedMonth}
                   subsetId={block.data.trend.subset_id}
@@ -126,7 +124,6 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
                   dimensions={block.dimensions}
                   color={block.data.trend.color}
                   editMode={overviewEditMode}
-                  setOpenDrawer={setOpenTrendDrawer}
                 />
               )
             ) : (

@@ -5,13 +5,11 @@ import dayjs from 'dayjs'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
-import SampleMonthSelector from '../SampleMonthSelector'
+import SampleMonthSelector from '../../Dashboard/SampleMonthSelector'
 import { BlockDimension } from '@/interfaces/data_interfaces'
 
 interface Props {
   subsetId: number
-  cardTitle: string
-  dataKey: string
   dataField: string
   dataFieldName: string
   selectedMonth: Date | null
@@ -31,11 +29,9 @@ interface Props {
   dimensions?: BlockDimension
   color?: string
   editMode?: boolean
-  setOpenDrawer: (open: boolean) => void
 }
 
 export default function TrendGraph({
-  cardTitle,
   selectedMonth,
   setSelectedMonth,
   subsetId,
@@ -51,7 +47,6 @@ export default function TrendGraph({
   tooltipIndicator,
   dimensions,
   color,
-  setOpenDrawer,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -116,17 +111,7 @@ export default function TrendGraph({
 
   return (
     <div className='flex w-full flex-col pr-4'>
-      <div className='mt-4 flex w-full justify-end p-2'>
-        <span className='subheader-sm-1stop'>{cardTitle}</span>
-      </div>
-
       <div className='relative flex w-full justify-between gap-2 px-2 pb-2'>
-        <button
-          className={'absolute right-0 top-0 z-10 p-2'}
-          onClick={() => setOpenDrawer(true)}
-        >
-          Edit
-        </button>
         <SampleMonthSelector
           selectedValue={selectedMonthValue}
           setSelectedValue={setSelectedMonthValue}

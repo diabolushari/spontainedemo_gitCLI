@@ -1,10 +1,11 @@
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import useCustomForm from '@/hooks/useCustomForm'
-import Overview from '@/Components/WidgetsEditor/Overview'
-import WidgetLayout from '@/Components/WidgetsEditor/WidgetLayout'
+import Overview from '@/Components/WidgetsEditor/WidgetComponents/Overview'
+import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
 import React, { useEffect } from 'react'
+import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 
 interface Widget {
   title: string
@@ -55,7 +56,7 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
     trend_chart_type: widget?.trend?.chart_type ?? 'area',
     trend_measure: widget?.trend?.measure ?? null,
     trend_dimension: widget?.trend?.dimension ?? 'month',
-    trend_color: widget?.trend?.color ?? null,
+    trend_color: widget?.trend?.color ?? '#5A0F35',
   })
 
   useEffect(() => {
@@ -98,7 +99,13 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
                   selectedMonth={selectedMonth}
                 />
               )}
-              {cardState === 'trend' && <div>Trend</div>}
+              {cardState === 'trend' && (
+                <TrendWidget
+                  formData={formData}
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                />
+              )}
               {cardState === 'ranking' && <div>Ranking</div>}
             </WidgetLayout>
           </div>

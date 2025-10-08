@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
-import TrendGraph from '@/Components/Dashboard/SampleDashboard/TrendGraph'
+import TrendGraph from '@/Components/WidgetsEditor/WidgetComponents/TrendGraph'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 function dateToYearMonth(date?: Date | null) {
