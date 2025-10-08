@@ -35,7 +35,10 @@ interface Widget {
   }
   rank: {
     subset_id: number
-    ranking_field: string
+    ranking_field: {
+      subset_field_name: string
+      subset_column: string
+    }
   }
 }
 

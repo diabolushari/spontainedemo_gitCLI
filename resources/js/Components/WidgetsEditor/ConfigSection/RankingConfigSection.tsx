@@ -1,4 +1,5 @@
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
 
 export function RankingConfigSection({ formData, setFormValue }) {
   return (
@@ -15,13 +16,11 @@ export function RankingConfigSection({ formData, setFormValue }) {
       </div>
 
       <div>
-        <DynamicSelectList
-          label={'Measure'}
-          url={`/api/subset/${formData.rank_subset_id}?filter_only=0`}
-          dataKey='subset_column'
-          displayKey='subset_field_name'
-          value={formData.rank_ranking_field}
-          setValue={setFormValue('rank_ranking_field')}
+        <MeasureFieldSelector
+          subsetId={formData.rank_subset_id}
+          measures={formData.rank_ranking_field}
+          onMeasuresChange={(measures) => setFormValue('rank_ranking_field')(measures)}
+          allowMultiple={false}
         />
       </div>
     </div>

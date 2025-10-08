@@ -6,6 +6,7 @@ import { AreaChart, BarChart3 } from 'lucide-react'
 import { graphColorPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { camelToNormal } from '@/formaters/NameFormater'
 import NormalText from '@/typography/NormalText'
+import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
 
 export default function TrendConfigSection({ formData, setFormValue }) {
   const chartTypes = [
@@ -49,13 +50,11 @@ export default function TrendConfigSection({ formData, setFormValue }) {
       </div>
 
       <div>
-        <DynamicSelectList
-          label={'Measure'}
-          url={`/api/subset/${formData.trend_subset_id}?filter_only=0`}
-          dataKey='subset_column'
-          displayKey='subset_field_name'
-          value={formData.trend_measure}
-          setValue={setFormValue('trend_measure')}
+        <MeasureFieldSelector
+          subsetId={formData.trend_subset_id}
+          measures={formData.trend_measure}
+          onMeasuresChange={(measures) => setFormValue('trend_measure')(measures)}
+          allowMultiple={false}
         />
       </div>
 

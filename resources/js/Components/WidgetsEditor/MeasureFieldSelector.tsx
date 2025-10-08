@@ -4,46 +4,51 @@ import { Dimension } from '@/interfaces/data_interfaces'
 import { Plus, X } from 'lucide-react'
 
 interface MeasureFieldSelectorProps {
-  block: any
+  subsetId: number
+  measures?: SelectedMeasure[]
   onMeasuresChange?: (measures: SelectedMeasure[]) => void
   allowMultiple?: boolean
+  showUnit?: boolean
 }
 
 interface SelectedMeasure {
   subset_column: string
   subset_field_name: string
+  unit?: string
 }
 
 export default function MeasureFieldSelector({
-  block,
+  subsetId,
+  measures,
   onMeasuresChange,
   allowMultiple = true,
+  showUnit = false,
 }: MeasureFieldSelectorProps) {
-  const [measures] = useFetchRecord<Dimension[]>(
-    block.subset_id ? `/api/subset/${block.subset_id}` : null
+  const [availableMeasures] = useFetchRecord<Dimension[]>(
+    subsetId ? `/api/subset/${subsetId}` : null
   )
 
   const [selectedMeasures, setSelectedMeasures] = useState<SelectedMeasure[]>([
-    { subset_column: '', subset_field_name: '' },
+    { subset_column: '', subset_field_name: '', unit: '' },
   ])
 
-  // Initialize from block data when component mounts or block changes
+  // Initialize from measures prop when component mounts or measures/subsetId changes
   useEffect(() => {
-    if (block?.measure && Array.isArray(block.measure) && block.measure.length > 0) {
+    if (measures && Array.isArray(measures) && measures.length > 0) {
       // Filter out any empty measures
-      const validMeasures = block.measure.filter(
+      const validMeasures = measures.filter(
         (m: SelectedMeasure) => m.subset_column && m.subset_field_name
       )
 
       if (validMeasures.length > 0) {
         setSelectedMeasures(validMeasures)
       } else {
-        setSelectedMeasures([{ subset_column: '', subset_field_name: '' }])
+        setSelectedMeasures([{ subset_column: '', subset_field_name: '', unit: '' }])
       }
     } else {
-      setSelectedMeasures([{ subset_column: '', subset_field_name: '' }])
+      setSelectedMeasures([{ subset_column: '', subset_field_name: '', unit: '' }])
     }
-  }, [block?.subset_id])
+  }, [subsetId, measures])
 
   // Get already selected measure columns
   const selectedColumns = selectedMeasures.map((m) => m.subset_column).filter((col) => col !== '')
@@ -51,7 +56,7 @@ export default function MeasureFieldSelector({
   // Filter out already selected measures
   const getAvailableMeasures = (currentIndex: number) => {
     const currentSelection = selectedMeasures[currentIndex]?.subset_column
-    return measures?.filter(
+    return availableMeasures?.filter(
       (measure) =>
         !selectedColumns.includes(measure.subset_column) ||
         measure.subset_column === currentSelection
@@ -59,13 +64,14 @@ export default function MeasureFieldSelector({
   }
 
   const handleMeasureChange = (index: number, subset_column: string) => {
-    const selectedMeasure = measures?.find((m) => m.subset_column === subset_column)
+    const selectedMeasure = availableMeasures?.find((m) => m.subset_column === subset_column)
 
     const updatedMeasures = selectedMeasures.map((measure, i) =>
       i === index && selectedMeasure
         ? {
             subset_column: selectedMeasure.subset_column,
             subset_field_name: selectedMeasure.subset_field_name,
+            unit: measure.unit || '',
           }
         : measure
     )
@@ -88,8 +94,25 @@ export default function MeasureFieldSelector({
     onMeasuresChange?.(updatedMeasures)
   }
 
+  const handleUnitChange = (index: number, unit: string) => {
+    const updatedMeasures = selectedMeasures.map((measure, i) =>
+      i === index
+        ? {
+            ...measure,
+            unit: unit,
+          }
+        : measure
+    )
+
+    setSelectedMeasures(updatedMeasures)
+    onMeasuresChange?.(updatedMeasures)
+  }
+
   const handleAddMeasure = () => {
-    const newMeasures = [...selectedMeasures, { subset_column: '', subset_field_name: '' }]
+    const newMeasures = [
+      ...selectedMeasures,
+      { subset_column: '', subset_field_name: '', unit: '' },
+    ]
     setSelectedMeasures(newMeasures)
     onMeasuresChange?.(newMeasures)
   }
@@ -161,21 +184,42 @@ export default function MeasureFieldSelector({
               )}
             </div>
 
-            {/* Editable field name input - only show if a measure is selected */}
+            {/* Editable field name and unit inputs - only show if a measure is selected */}
             {selectedMeasure.subset_column && (
-              <input
-                type='text'
-                value={selectedMeasure.subset_field_name}
-                onChange={(e) => handleFieldNameChange(index, e.target.value)}
-                placeholder='Custom label (optional)'
-                className='w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
-              />
+              <>
+                {showUnit ? (
+                  <div className='flex items-center gap-2'>
+                    <input
+                      type='text'
+                      value={selectedMeasure.subset_field_name}
+                      onChange={(e) => handleFieldNameChange(index, e.target.value)}
+                      placeholder='Custom label (optional)'
+                      className='flex-1 appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
+                    />
+                    <input
+                      type='text'
+                      value={selectedMeasure.unit || ''}
+                      onChange={(e) => handleUnitChange(index, e.target.value)}
+                      placeholder='Unit'
+                      className='w-24 appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type='text'
+                    value={selectedMeasure.subset_field_name}
+                    onChange={(e) => handleFieldNameChange(index, e.target.value)}
+                    placeholder='Custom label (optional)'
+                    className='w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
+                  />
+                )}
+              </>
             )}
           </div>
         ))}
 
         {/* Plus button - show only if multiple measures allowed and there are available measures */}
-        {allowMultiple && selectedColumns.length < (measures?.length || 0) && (
+        {allowMultiple && selectedColumns.length < (availableMeasures?.length || 0) && (
           <button
             type='button'
             onClick={handleAddMeasure}

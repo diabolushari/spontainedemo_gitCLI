@@ -32,14 +32,17 @@ export default function OverviewChartSection({
       <div className='flex flex-col'>
         {formData.chart_type === 'pie' ? (
           <MeasureFieldSelector
-            block={formData}
+            subsetId={formData.subset_id}
+            measures={formData.measure}
             onMeasuresChange={(measures) => setFormValue('measure')(measures)}
             allowMultiple={false}
           />
         ) : (
           <MeasureFieldSelector
-            block={formData}
+            subsetId={formData.subset_id}
+            measures={formData.measure}
             onMeasuresChange={(measures) => setFormValue('measure')(measures)}
+            showUnit={true}
           />
         )}
       </div>

@@ -12,6 +12,7 @@ interface OverviewProps {
 interface SelectedMeasure {
   subset_column: string
   subset_field_name: string
+  unit: string
 }
 
 export default function Overview({ block, selectedMonth }: Readonly<OverviewProps>) {
@@ -43,7 +44,7 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
     ? block.measure.map((m: SelectedMeasure) => ({
         key: m.subset_column,
         label: m.subset_field_name,
-        unit: '', // You can add unit to the measure object if needed
+        unit: m.unit, // You can add unit to the measure object if needed
       }))
     : []
 
@@ -97,7 +98,7 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
               {
                 key: firstMeasure.subset_column,
                 label: firstMeasure.subset_field_name,
-                unit: '',
+                unit: firstMeasure.unit,
               },
             ]}
             colors={block?.color_palette}

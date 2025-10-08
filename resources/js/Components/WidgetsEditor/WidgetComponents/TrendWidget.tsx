@@ -12,8 +12,8 @@ export default function TrendWidget({ formData, selectedMonth, setSelectedMonth 
       <div>
         <TrendGraph
           subsetId={formData.trend_subset_id}
-          dataField={formData.trend_measure}
-          dataFieldName={formData.trend_measure}
+          dataField={formData.trend_measure[0].subset_column}
+          dataFieldName={formData.trend_measure[0].subset_field_name}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
           chartType={formData.trend_chart_type || 'area'}

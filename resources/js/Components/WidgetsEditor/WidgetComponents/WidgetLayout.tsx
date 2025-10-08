@@ -28,7 +28,7 @@ export default function WidgetLayout({
 
   return (
     <Card>
-      <div className='grid grid-cols-[auto_1fr]'>
+      <div className='grid min-h-[500px] grid-cols-[auto_1fr]'>
         {/* Sidebar */}
         <div className='flex flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>
           {/* Overview Icon */}

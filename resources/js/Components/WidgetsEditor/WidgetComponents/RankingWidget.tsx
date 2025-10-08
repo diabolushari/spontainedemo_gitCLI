@@ -15,8 +15,8 @@ export default function RankingWidget({ formData, selectedMonth }) {
       <div>
         <RankedList
           subsetId={formData.rank_subset_id}
-          dataField={formData.rank_ranking_field}
-          dataFieldName={formData.rank_ranking_field}
+          dataField={formData.rank_ranking_field[0].subset_column}
+          dataFieldName={formData.rank_ranking_field[0].subset_field_name}
           rankingPageUrl={'#'}
           timePeriod={formattedMonth}
           timePeriodFieldName={'month'}
