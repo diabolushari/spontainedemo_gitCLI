@@ -10,6 +10,7 @@ interface WidgetSettingsFormProps {
   setFormValue: (key: string) => (value: any) => void
   openItem?: string
   setOpenItem?: (item: string) => void
+  handleSubmit: () => void
 }
 
 export default function WidgetSettingsForm({
@@ -17,6 +18,7 @@ export default function WidgetSettingsForm({
   setFormValue,
   openItem,
   setOpenItem,
+  handleSubmit,
 }: WidgetSettingsFormProps) {
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
@@ -82,6 +84,7 @@ export default function WidgetSettingsForm({
           </AccordionContent>
         </Accordion.Item>
       </Accordion.Root>
+      <button onClick={() => handleSubmit()}>submit</button>
     </div>
   )
 }

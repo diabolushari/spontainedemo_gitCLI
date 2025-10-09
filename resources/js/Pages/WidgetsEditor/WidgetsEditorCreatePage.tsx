@@ -7,6 +7,7 @@ import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetS
 import React, { useEffect } from 'react'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
+import useInertiaPost from '@/hooks/useInertiaPost'
 
 interface Widget {
   title: string
@@ -18,6 +19,7 @@ interface Widget {
     measure: {
       subset_field_name: string
       subset_column: string
+      unit?: string
     }[]
     dimension: string
     color_palette: string
@@ -29,6 +31,7 @@ interface Widget {
     measure: {
       subset_field_name: string
       subset_column: string
+      unit?: string
     }
     dimension: string
     color: string
@@ -42,15 +45,83 @@ interface Widget {
   }
 }
 
+interface WidgetFormData {
+  title: string
+  subtitle: string
+  data_table_id: number | null
+  subset_group_id: number | null
+  chart_type: string
+  subset_id: number | null
+  measure:
+    | {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }[]
+    | null
+  dimension: string | null
+  color_palette: string
+  trend_subset_id: number | null
+  trend_chart_type: 'area' | 'bar'
+  trend_measure: {
+    subset_field_name: string
+    subset_column: string
+    unit?: string
+  } | null
+  trend_dimension: string
+  trend_color: string
+  rank_subset_id: number | null
+  rank_ranking_field: {
+    subset_field_name: string
+    subset_column: string
+  } | null
+}
+
 interface Props {
   widget?: Widget
+}
+
+/**
+ * Parse form data to Widget format
+ */
+function parseFormDataToWidget(formData: WidgetFormData): Widget {
+  return {
+    title: formData.title,
+    subtitle: formData.subtitle,
+    data_table_id: formData.data_table_id!,
+    subset_group_id: formData.subset_group_id!,
+    overview: {
+      chart_type: formData.chart_type,
+      measure: formData.measure || [],
+      dimension: formData.dimension || '',
+      color_palette: formData.color_palette,
+      subset_id: formData.subset_id!,
+    },
+    trend: {
+      subset_id: formData.trend_subset_id!,
+      chart_type: formData.trend_chart_type,
+      measure: formData.trend_measure || {
+        subset_field_name: '',
+        subset_column: '',
+      },
+      dimension: formData.trend_dimension,
+      color: formData.trend_color,
+    },
+    rank: {
+      subset_id: formData.rank_subset_id!,
+      ranking_field: formData.rank_ranking_field || {
+        subset_field_name: '',
+        subset_column: '',
+      },
+    },
+  }
 }
 
 export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
   const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedMonth, setSelectedMonth] = React.useState(new Date())
-  const { formData, setFormValue } = useCustomForm({
+  const { formData, setFormValue } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
     data_table_id: widget?.data_table_id ?? null,
@@ -69,6 +140,10 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
     rank_ranking_field: widget?.rank?.ranking_field ?? null,
   })
 
+  const { post, error } = useInertiaPost(route('widget-editor.store'), {
+    showErrorToast: true,
+  })
+
   useEffect(() => {
     if (openItem === 'chart') {
       setCardState('overview')
@@ -80,7 +155,9 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
   }, [openItem])
 
   const handleSubmit = () => {
-    console.log(formData)
+    const widgetData = parseFormDataToWidget(formData)
+    console.log('Parsed Widget Data:', widgetData)
+    post(widgetData)
   }
 
   return (
@@ -93,8 +170,8 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
               setFormValue={setFormValue}
               openItem={openItem}
               setOpenItem={setOpenItem}
+              handleSubmit={handleSubmit}
             />
-            <button onClick={() => handleSubmit()}>submit</button>
           </div>
 
           <div className='lg:col-span-2'>

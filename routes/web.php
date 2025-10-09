@@ -368,7 +368,7 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
 
-Route::resource('/widget-editor', WidgetsEditorController::class);
+Route::resource('widget-editor', WidgetsEditorController::class)->parameters(['widget-editor' => 'widgetEditor']);
 
 require __DIR__.'/auth.php';
 
