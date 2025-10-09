@@ -89,6 +89,7 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
@@ -369,6 +370,7 @@ Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchCont
     ->name('data-detail-column-search');
 
 Route::resource('widget-editor', WidgetsEditorController::class)->parameters(['widget-editor' => 'widgetEditor']);
+Route::resource('widget-collection', WidgetCollectionController::class)->parameters(['widget-collection' => 'widgetCollection']);
 
 require __DIR__.'/auth.php';
 
