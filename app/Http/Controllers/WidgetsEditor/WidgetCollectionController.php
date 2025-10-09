@@ -22,6 +22,16 @@ class WidgetCollectionController extends Controller
         ]);
     }
 
+    public function show(WidgetCollection $widgetCollection)
+    {
+        // Eager load widgets relationship to avoid N+1 queries
+        $widgetCollection->load('widgets');
+
+        return Inertia::render('WidgetsEditor/WidgetCollectionShowPage', [
+            'collection' => $widgetCollection,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -31,7 +41,7 @@ class WidgetCollectionController extends Controller
 
         $collection = WidgetCollection::create($validated);
 
-        return redirect()->route('widget-collection.index')
+        return redirect()->route('widget-collections.index')
             ->with('success', 'Collection created successfully');
     }
 }

@@ -12,10 +12,8 @@ class WidgetEditorFormRequest extends Data
     public function __construct(
         public readonly string $title,
         public readonly string $subtitle,
-        public readonly int $dataTableId,
-        public readonly int $subsetGroupId,
-        public readonly array $overview,
-        public readonly array $trend,
-        public readonly array $rank,
+        public readonly string $type,
+        public readonly int $collectionId,
+        public readonly array $data,
     ) {}
 }

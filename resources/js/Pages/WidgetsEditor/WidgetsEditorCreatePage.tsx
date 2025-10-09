@@ -12,35 +12,39 @@ import useInertiaPost from '@/hooks/useInertiaPost'
 interface Widget {
   title: string
   subtitle: string
-  data_table_id: number
-  subset_group_id: number
-  overview: {
-    chart_type: string
-    measure: {
-      subset_field_name: string
-      subset_column: string
-      unit?: string
-    }[]
-    dimension: string
-    color_palette: string
-    subset_id: number
-  }
-  trend: {
-    subset_id: number
-    chart_type: 'area' | 'bar'
-    measure: {
-      subset_field_name: string
-      subset_column: string
-      unit?: string
+  type: string
+  collection_id: number
+  data: {
+    data_table_id: number
+    subset_group_id: number
+    overview: {
+      chart_type: string
+      measure: {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }[]
+      dimension: string
+      color_palette: string
+      subset_id: number
     }
-    dimension: string
-    color: string
-  }
-  rank: {
-    subset_id: number
-    ranking_field: {
-      subset_field_name: string
-      subset_column: string
+    trend: {
+      subset_id: number
+      chart_type: 'area' | 'bar'
+      measure: {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }
+      dimension: string
+      color: string
+    }
+    rank: {
+      subset_id: number
+      ranking_field: {
+        subset_field_name: string
+        subset_column: string
+      }
     }
   }
 }
@@ -79,65 +83,70 @@ interface WidgetFormData {
 
 interface Props {
   widget?: Widget
+  collectionId: number
 }
 
 /**
- * Parse form data to Widget format
+ * Parse form data to Widget format matching Laravel Widget model
  */
-function parseFormDataToWidget(formData: WidgetFormData): Widget {
+function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): Widget {
   return {
     title: formData.title,
     subtitle: formData.subtitle,
-    data_table_id: formData.data_table_id!,
-    subset_group_id: formData.subset_group_id!,
-    overview: {
-      chart_type: formData.chart_type,
-      measure: formData.measure || [],
-      dimension: formData.dimension || '',
-      color_palette: formData.color_palette,
-      subset_id: formData.subset_id!,
-    },
-    trend: {
-      subset_id: formData.trend_subset_id!,
-      chart_type: formData.trend_chart_type,
-      measure: formData.trend_measure || {
-        subset_field_name: '',
-        subset_column: '',
+    type: 'standard',
+    collection_id: collectionId,
+    data: {
+      data_table_id: formData.data_table_id!,
+      subset_group_id: formData.subset_group_id!,
+      overview: {
+        chart_type: formData.chart_type,
+        measure: formData.measure || [],
+        dimension: formData.dimension || '',
+        color_palette: formData.color_palette,
+        subset_id: formData.subset_id!,
       },
-      dimension: formData.trend_dimension,
-      color: formData.trend_color,
-    },
-    rank: {
-      subset_id: formData.rank_subset_id!,
-      ranking_field: formData.rank_ranking_field || {
-        subset_field_name: '',
-        subset_column: '',
+      trend: {
+        subset_id: formData.trend_subset_id!,
+        chart_type: formData.trend_chart_type,
+        measure: formData.trend_measure || {
+          subset_field_name: '',
+          subset_column: '',
+        },
+        dimension: formData.trend_dimension,
+        color: formData.trend_color,
+      },
+      rank: {
+        subset_id: formData.rank_subset_id!,
+        ranking_field: formData.rank_ranking_field || {
+          subset_field_name: '',
+          subset_column: '',
+        },
       },
     },
   }
 }
 
-export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
+export default function WidgetsEditorCreatePage({ widget, collectionId }: Readonly<Props>) {
   const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedMonth, setSelectedMonth] = React.useState(new Date())
   const { formData, setFormValue } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
-    data_table_id: widget?.data_table_id ?? null,
-    subset_group_id: widget?.subset_group_id ?? null,
-    chart_type: widget?.overview?.chart_type ?? 'bar',
-    subset_id: widget?.overview?.subset_id ?? null,
-    measure: widget?.overview?.measure ?? null,
-    dimension: widget?.overview?.dimension ?? null,
-    color_palette: widget?.overview?.color_palette ?? 'boldWarm',
-    trend_subset_id: widget?.trend?.subset_id ?? null,
-    trend_chart_type: widget?.trend?.chart_type ?? 'area',
-    trend_measure: widget?.trend?.measure ?? null,
-    trend_dimension: widget?.trend?.dimension ?? 'month',
-    trend_color: widget?.trend?.color ?? '#5A0F35',
-    rank_subset_id: widget?.rank?.subset_id ?? null,
-    rank_ranking_field: widget?.rank?.ranking_field ?? null,
+    data_table_id: widget?.data?.data_table_id ?? null,
+    subset_group_id: widget?.data?.subset_group_id ?? null,
+    chart_type: widget?.data?.overview?.chart_type ?? 'bar',
+    subset_id: widget?.data?.overview?.subset_id ?? null,
+    measure: widget?.data?.overview?.measure ?? null,
+    dimension: widget?.data?.overview?.dimension ?? null,
+    color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
+    trend_subset_id: widget?.data?.trend?.subset_id ?? null,
+    trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
+    trend_measure: widget?.data?.trend?.measure ?? null,
+    trend_dimension: widget?.data?.trend?.dimension ?? 'month',
+    trend_color: widget?.data?.trend?.color ?? '#5A0F35',
+    rank_subset_id: widget?.data?.rank?.subset_id ?? null,
+    rank_ranking_field: widget?.data?.rank?.ranking_field ?? null,
   })
 
   const { post, error } = useInertiaPost(route('widget-editor.store'), {
@@ -155,7 +164,7 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
   }, [openItem])
 
   const handleSubmit = () => {
-    const widgetData = parseFormDataToWidget(formData)
+    const widgetData = parseFormDataToWidget(formData, collectionId)
     console.log('Parsed Widget Data:', widgetData)
     post(widgetData)
   }

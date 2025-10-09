@@ -4,6 +4,8 @@ namespace App\Http\Controllers\WidgetsEditor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WidgetEditor\WidgetEditorFormRequest;
+use App\Models\WidgetEditor\Widget;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class WidgetsEditorController extends Controller
@@ -13,13 +15,20 @@ class WidgetsEditorController extends Controller
         return Inertia::render('WidgetsEditor/WidgetsEditorIndexPage');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage');
+        $collectionId = $request->get('collection_id');
+
+        return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
+            'collection_id' => $collectionId,
+        ]);
     }
 
     public function store(WidgetEditorFormRequest $request)
     {
-        dd($request->all());
+        $widget = Widget::create($request->toArray());
+
+        return to_route('widget-collection.show', ['widgetCollection' => $request->collectionId])
+            ->with('success', 'Widget created successfully');
     }
 }

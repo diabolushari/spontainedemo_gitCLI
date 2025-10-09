@@ -1,4 +1,5 @@
 import { AnimatePresence } from 'framer-motion'
+import { Link } from '@inertiajs/react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import useCustomForm from '@/hooks/useCustomForm'
@@ -17,7 +18,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
   const filteredCollections = formData.collections.filter(
     (collection) =>
       collection.name.toLowerCase().includes(formData.searchQuery.toLowerCase()) ||
-      collection.description.toLowerCase().includes(formData.searchQuery.toLowerCase())
+      collection.description?.toLowerCase().includes(formData.searchQuery.toLowerCase())
   )
 
   const handleCreateCollection = (newCollectionData) => {
@@ -25,8 +26,8 @@ export default function WidgetCollectionIndexPage({ collections }) {
       id: formData.collections.length + 1,
       name: newCollectionData.name,
       description: newCollectionData.description,
-      widgetCount: 0,
-      lastUpdated: 'Just now',
+      widgets_count: 0,
+      last_updated: 'Just now',
     }
 
     setFormValue('collections')([...formData.collections, newCollection])
@@ -163,7 +164,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
               <div>
                 <p className='text-sm text-gray-600'>Total Widgets</p>
                 <p className='mt-1 text-3xl font-bold text-gray-900'>
-                  {formData.collections.reduce((sum, col) => sum + col.widgetCount, 0)}
+                  {formData.collections.reduce((sum, col) => sum + (col.widgets_count || 0), 0)}
                 </p>
               </div>
               <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100'>
@@ -191,8 +192,10 @@ export default function WidgetCollectionIndexPage({ collections }) {
                 <p className='mt-1 text-3xl font-bold text-gray-900'>
                   {formData.collections.length > 0
                     ? (
-                        formData.collections.reduce((sum, col) => sum + col.widgetCount, 0) /
-                        formData.collections.length
+                        formData.collections.reduce(
+                          (sum, col) => sum + (col.widgets_count || 0),
+                          0
+                        ) / formData.collections.length
                       ).toFixed(1)
                     : 0}
                 </p>
@@ -220,7 +223,8 @@ export default function WidgetCollectionIndexPage({ collections }) {
         {formData.viewMode === 'grid' ? (
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {filteredCollections.map((collection) => (
-              <div
+              <Link
+                href={`/widget-collection/${collection.id}`}
                 key={collection.id}
                 className='cursor-pointer rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-gray-300 hover:shadow-md'
               >
@@ -240,7 +244,10 @@ export default function WidgetCollectionIndexPage({ collections }) {
                       />
                     </svg>
                   </div>
-                  <button className='text-gray-600 hover:text-gray-900'>
+                  <button
+                    onClick={(e) => e.preventDefault()}
+                    className='text-gray-600 hover:text-gray-900'
+                  >
                     <svg
                       className='h-5 w-5'
                       fill='none'
@@ -275,17 +282,18 @@ export default function WidgetCollectionIndexPage({ collections }) {
                         d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
                       />
                     </svg>
-                    <span>{collection.widgetCount} widgets</span>
+                    <span>{collection.widgets_count || 0} widgets</span>
                   </div>
-                  <span className='text-xs text-gray-500'>{collection.lastUpdated}</span>
+                  <span className='text-xs text-gray-500'>{collection.last_updated}</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (
           <div className='space-y-4'>
             {filteredCollections.map((collection) => (
-              <div
+              <Link
+                href={`/widget-collections/${collection.id}`}
                 key={collection.id}
                 className='flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-white p-6 transition-all hover:shadow-md'
               >
@@ -313,13 +321,18 @@ export default function WidgetCollectionIndexPage({ collections }) {
                 <div className='flex items-center gap-8'>
                   <div className='text-right'>
                     <p className='text-sm text-gray-600'>Widgets</p>
-                    <p className='text-lg font-semibold text-gray-900'>{collection.widgetCount}</p>
+                    <p className='text-lg font-semibold text-gray-900'>
+                      {collection.widgets_count || 0}
+                    </p>
                   </div>
                   <div className='text-right'>
                     <p className='text-sm text-gray-600'>Last Updated</p>
-                    <p className='text-sm text-gray-900'>{collection.lastUpdated}</p>
+                    <p className='text-sm text-gray-900'>{collection.last_updated}</p>
                   </div>
-                  <button className='text-gray-600 hover:text-gray-900'>
+                  <button
+                    onClick={(e) => e.preventDefault()}
+                    className='text-gray-600 hover:text-gray-900'
+                  >
                     <svg
                       className='h-5 w-5'
                       fill='none'
@@ -335,7 +348,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
                     </svg>
                   </button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
