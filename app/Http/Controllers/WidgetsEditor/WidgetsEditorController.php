@@ -37,10 +37,12 @@ class WidgetsEditorController extends Controller
     public function edit(Widget $widget)
     {
         $collectionId = $widget->collection_id;
+        $type = $widget->type;
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'widget' => $widget,
             'collection_id' => $collectionId,
+            'type' => $type,
         ]);
     }
 

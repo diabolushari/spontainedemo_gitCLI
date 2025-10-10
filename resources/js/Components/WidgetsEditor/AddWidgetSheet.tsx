@@ -25,7 +25,7 @@ export function AddWidgetSheet({ collectionId }) {
         </SheetHeader>
 
         <div>
-          <Link href={`/widget-editor/create?collection_id=${collectionId}?type=standard`}>
+          <Link href={`/widget-editor/create?collection_id=${collectionId}&type=overview`}>
             <div className='h-50 w-36 rounded-md border border-gray-200 bg-white p-3'>
               {/* Mini header */}
               <div className='mb-2 flex items-center justify-between'>

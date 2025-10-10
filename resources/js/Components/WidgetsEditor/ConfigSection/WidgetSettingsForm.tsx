@@ -84,7 +84,12 @@ export default function WidgetSettingsForm({
           </AccordionContent>
         </Accordion.Item>
       </Accordion.Root>
-      <button onClick={() => handleSubmit()}>submit</button>
+      <button
+        onClick={() => handleSubmit()}
+        className='w-full rounded-lg border border-blue-500 bg-white px-4 py-3 text-center font-medium text-blue-500 transition-colors hover:bg-blue-50'
+      >
+        Save
+      </button>
     </div>
   )
 }
