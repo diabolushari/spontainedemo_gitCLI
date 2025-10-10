@@ -44,4 +44,12 @@ class WidgetCollectionController extends Controller
         return redirect()->route('widget-collections.index')
             ->with('success', 'Collection created successfully');
     }
+
+    public function destroy(WidgetCollection $widgetCollection)
+    {
+        $widgetCollection->delete();
+
+        return redirect()->route('widget-collection.index')
+            ->with('success', 'Collection deleted successfully');
+    }
 }

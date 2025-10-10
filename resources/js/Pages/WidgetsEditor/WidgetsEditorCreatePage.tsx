@@ -8,8 +8,10 @@ import React, { useEffect } from 'react'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import { router } from '@inertiajs/react'
 
 interface Widget {
+  id?: number
   title: string
   subtitle: string
   type: string
@@ -83,7 +85,8 @@ interface WidgetFormData {
 
 interface Props {
   widget?: Widget
-  collectionId: number
+  collection_id: number
+  type: string
 }
 
 /**
@@ -126,10 +129,12 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
   }
 }
 
-export default function WidgetsEditorCreatePage({ widget, collectionId }: Readonly<Props>) {
+export default function WidgetsEditorCreatePage({ widget, collection_id, type }: Readonly<Props>) {
+  const isEditMode = !!widget
   const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedMonth, setSelectedMonth] = React.useState(new Date())
+
   const { formData, setFormValue } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
@@ -149,9 +154,16 @@ export default function WidgetsEditorCreatePage({ widget, collectionId }: Readon
     rank_ranking_field: widget?.data?.rank?.ranking_field ?? null,
   })
 
-  const { post, error } = useInertiaPost(route('widget-editor.store'), {
-    showErrorToast: true,
-  })
+  console.log('Widget:', widget)
+  console.log('Form Data:', formData)
+  console.log('Mode:', isEditMode ? 'Edit' : 'Create')
+
+  const { post, error } = useInertiaPost(
+    isEditMode ? route('widget-editor.update', widget!.id) : route('widget-editor.store'),
+    {
+      showErrorToast: true,
+    }
+  )
 
   useEffect(() => {
     if (openItem === 'chart') {
@@ -164,9 +176,23 @@ export default function WidgetsEditorCreatePage({ widget, collectionId }: Readon
   }, [openItem])
 
   const handleSubmit = () => {
-    const widgetData = parseFormDataToWidget(formData, collectionId)
+    const widgetData = parseFormDataToWidget(formData, collection_id)
     console.log('Parsed Widget Data:', widgetData)
-    post(widgetData)
+
+    if (isEditMode) {
+      // Use PUT method for updating
+      router.put(route('widget-editor.update', widget!.id), widgetData, {
+        onSuccess: () => {
+          console.log('Widget updated successfully')
+        },
+        onError: (errors) => {
+          console.error('Update failed:', errors)
+        },
+      })
+    } else {
+      // Use POST method for creating
+      post(widgetData)
+    }
   }
 
   return (
@@ -180,6 +206,7 @@ export default function WidgetsEditorCreatePage({ widget, collectionId }: Readon
               openItem={openItem}
               setOpenItem={setOpenItem}
               handleSubmit={handleSubmit}
+              isEditMode={isEditMode}
             />
           </div>
 

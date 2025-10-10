@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import useCustomForm from '@/hooks/useCustomForm'
@@ -31,6 +31,21 @@ export default function WidgetCollectionIndexPage({ collections }) {
     }
 
     setFormValue('collections')([...formData.collections, newCollection])
+  }
+
+  const handleDelete = (e, collectionId, collectionName) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${collectionName}"? This will also delete all widgets in this collection.`
+      )
+    ) {
+      router.delete(route('widget-collection.destroy', collectionId), {
+        preserveScroll: true,
+      })
+    }
   }
 
   return (
@@ -131,173 +146,89 @@ export default function WidgetCollectionIndexPage({ collections }) {
           </div>
         </div>
 
-        {/* Stats Overview */}
-        <div className='mb-8 grid grid-cols-1 gap-4 md:grid-cols-3'>
-          <div className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600'>Total Collections</p>
-                <p className='mt-1 text-3xl font-bold text-gray-900'>
-                  {formData.collections.length}
-                </p>
-              </div>
-              <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100'>
-                <svg
-                  className='h-6 w-6 text-blue-600'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600'>Total Widgets</p>
-                <p className='mt-1 text-3xl font-bold text-gray-900'>
-                  {formData.collections.reduce((sum, col) => sum + (col.widgets_count || 0), 0)}
-                </p>
-              </div>
-              <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100'>
-                <svg
-                  className='h-6 w-6 text-purple-600'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className='rounded-lg border border-gray-200 bg-white p-6 shadow-sm'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-gray-600'>Avg. per Collection</p>
-                <p className='mt-1 text-3xl font-bold text-gray-900'>
-                  {formData.collections.length > 0
-                    ? (
-                        formData.collections.reduce(
-                          (sum, col) => sum + (col.widgets_count || 0),
-                          0
-                        ) / formData.collections.length
-                      ).toFixed(1)
-                    : 0}
-                </p>
-              </div>
-              <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-green-100'>
-                <svg
-                  className='h-6 w-6 text-green-600'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Collections Grid/List */}
         {formData.viewMode === 'grid' ? (
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {filteredCollections.map((collection) => (
-              <Link
-                href={`/widget-collection/${collection.id}`}
+              <div
                 key={collection.id}
-                className='cursor-pointer rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-gray-300 hover:shadow-md'
+                className='group relative rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-gray-300 hover:shadow-md'
               >
-                <div className='mb-4 flex items-start justify-between'>
-                  <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100'>
-                    <svg
-                      className='h-6 w-6 text-gray-600'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
+                <Link href={`/widget-collection/${collection.id}`}>
+                  <div className='mb-4 flex items-start justify-between'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100'>
+                      <svg
+                        className='h-6 w-6 text-gray-600'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
+                        />
+                      </svg>
+                    </div>
+                    <button
+                      onClick={(e) => handleDelete(e, collection.id, collection.name)}
+                      className='rounded p-1.5 opacity-0 transition-all hover:bg-red-50 group-hover:opacity-100'
+                      title='Delete collection'
                     >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
-                      />
-                    </svg>
+                      <svg
+                        className='h-5 w-5 text-red-600'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                        />
+                      </svg>
+                    </button>
                   </div>
-                  <button
-                    onClick={(e) => e.preventDefault()}
-                    className='text-gray-600 hover:text-gray-900'
-                  >
-                    <svg
-                      className='h-5 w-5'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z'
-                      />
-                    </svg>
-                  </button>
-                </div>
 
-                <h3 className='mb-2 text-xl font-semibold text-gray-900'>{collection.name}</h3>
-                <p className='mb-4 text-sm text-gray-600'>{collection.description}</p>
+                  <h3 className='mb-2 text-xl font-semibold text-gray-900'>{collection.name}</h3>
+                  <p className='mb-4 text-sm text-gray-600'>{collection.description}</p>
 
-                <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
-                  <div className='flex items-center gap-2 text-sm text-gray-600'>
-                    <svg
-                      className='h-4 w-4'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
-                      />
-                    </svg>
-                    <span>{collection.widgets_count || 0} widgets</span>
+                  <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
+                    <div className='flex items-center gap-2 text-sm text-gray-600'>
+                      <svg
+                        className='h-4 w-4'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
+                        />
+                      </svg>
+                      <span>{collection.widgets_count || 0} widgets</span>
+                    </div>
+                    <span className='text-xs text-gray-500'>{collection.last_updated}</span>
                   </div>
-                  <span className='text-xs text-gray-500'>{collection.last_updated}</span>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </div>
         ) : (
           <div className='space-y-4'>
             {filteredCollections.map((collection) => (
-              <Link
-                href={`/widget-collections/${collection.id}`}
+              <div
                 key={collection.id}
-                className='flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-white p-6 transition-all hover:shadow-md'
+                className='group flex items-center justify-between rounded-xl border border-gray-200 bg-white p-6 transition-all hover:shadow-md'
               >
-                <div className='flex items-center gap-4'>
+                <Link
+                  href={`/widget-collection/${collection.id}`}
+                  className='flex flex-1 items-center gap-4'
+                >
                   <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100'>
                     <svg
                       className='h-6 w-6 text-gray-600'
@@ -317,7 +248,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
                     <h3 className='text-lg font-semibold text-gray-900'>{collection.name}</h3>
                     <p className='text-sm text-gray-600'>{collection.description}</p>
                   </div>
-                </div>
+                </Link>
                 <div className='flex items-center gap-8'>
                   <div className='text-right'>
                     <p className='text-sm text-gray-600'>Widgets</p>
@@ -330,11 +261,12 @@ export default function WidgetCollectionIndexPage({ collections }) {
                     <p className='text-sm text-gray-900'>{collection.last_updated}</p>
                   </div>
                   <button
-                    onClick={(e) => e.preventDefault()}
-                    className='text-gray-600 hover:text-gray-900'
+                    onClick={(e) => handleDelete(e, collection.id, collection.name)}
+                    className='rounded p-2 opacity-0 transition-all hover:bg-red-50 group-hover:opacity-100'
+                    title='Delete collection'
                   >
                     <svg
-                      className='h-5 w-5'
+                      className='h-5 w-5 text-red-600'
                       fill='none'
                       stroke='currentColor'
                       viewBox='0 0 24 24'
@@ -343,12 +275,12 @@ export default function WidgetCollectionIndexPage({ collections }) {
                         strokeLinecap='round'
                         strokeLinejoin='round'
                         strokeWidth={2}
-                        d='M9 5l7 7-7 7'
+                        d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
                       />
                     </svg>
                   </button>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}

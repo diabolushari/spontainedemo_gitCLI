@@ -1,8 +1,21 @@
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
+import { AddWidgetSheet } from '@/Components/WidgetsEditor/AddWidgetSheet'
 
 export default function WidgetCollectionShowPage({ collection }) {
+  // Delete handler with confirmation
+  const handleDelete = (widgetId, widgetTitle) => {
+    if (window.confirm(`Are you sure you want to delete "${widgetTitle}"?`)) {
+      router.delete(route('widget-editor.destroy', widgetId), {
+        preserveScroll: true,
+        onSuccess: () => {
+          // Optional: You can add a toast notification here
+        },
+      })
+    }
+  }
+
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
@@ -74,25 +87,26 @@ export default function WidgetCollectionShowPage({ collection }) {
                 </svg>
                 Edit
               </button>
-              <Link
-                href={`/widget-editor/create?collection_id=${collection.id}`}
-                className='flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700'
-              >
-                <svg
-                  className='h-4 w-4'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M12 4v16m8-8H4'
-                  />
-                </svg>
-                Add Widget
-              </Link>
+              {/*<Link*/}
+              {/*  href={`/widget-editor/create?collection_id=${collection.id}`}*/}
+              {/*  className='flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700'*/}
+              {/*>*/}
+              {/*  <svg*/}
+              {/*    className='h-4 w-4'*/}
+              {/*    fill='none'*/}
+              {/*    stroke='currentColor'*/}
+              {/*    viewBox='0 0 24 24'*/}
+              {/*  >*/}
+              {/*    <path*/}
+              {/*      strokeLinecap='round'*/}
+              {/*      strokeLinejoin='round'*/}
+              {/*      strokeWidth={2}*/}
+              {/*      d='M12 4v16m8-8H4'*/}
+              {/*    />*/}
+              {/*  </svg>*/}
+              {/*  Add Widget*/}
+              {/*</Link>*/}
+              <AddWidgetSheet collectionId={collection.id} />
             </div>
           </div>
 
@@ -149,7 +163,7 @@ export default function WidgetCollectionShowPage({ collection }) {
               {collection.widgets.map((widget) => (
                 <div
                   key={widget.id}
-                  className='group cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-blue-300 hover:shadow-md'
+                  className='group rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-blue-300 hover:shadow-md'
                 >
                   <div className='mb-3 flex items-start justify-between'>
                     <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100'>
@@ -167,34 +181,61 @@ export default function WidgetCollectionShowPage({ collection }) {
                         />
                       </svg>
                     </div>
-                    <button className='opacity-0 transition-opacity group-hover:opacity-100'>
-                      <svg
-                        className='h-5 w-5 text-gray-400 hover:text-gray-600'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'
+                    <div className='flex gap-1 opacity-0 transition-opacity group-hover:opacity-100'>
+                      <Link
+                        href={`/widget-editor/${widget.id}/edit`}
+                        className='rounded p-1 hover:bg-gray-100'
+                        title='Edit widget'
                       >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z'
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          className='h-5 w-5 text-gray-600'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                          />
+                        </svg>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(widget.id, widget.title)}
+                        className='rounded p-1 hover:bg-red-50'
+                        title='Delete widget'
+                      >
+                        <svg
+                          className='h-5 w-5 text-red-600'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
-                  <h3 className='mb-1 text-base font-semibold text-gray-900'>{widget.title}</h3>
-                  <p className='mb-3 text-sm text-gray-600'>{widget.subtitle}</p>
+                  <Link href={`/widget-editor/${widget.id}/edit`}>
+                    <h3 className='mb-1 text-base font-semibold text-gray-900'>{widget.title}</h3>
+                    <p className='mb-3 text-sm text-gray-600'>{widget.subtitle}</p>
 
-                  <div className='flex items-center justify-between border-t border-gray-200 pt-3'>
-                    <span className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800'>
-                      {widget.type}
-                    </span>
-                    <span className='text-xs text-gray-500'>
-                      {new Date(widget.updated_at).toLocaleDateString()}
-                    </span>
-                  </div>
+                    <div className='flex items-center justify-between border-t border-gray-200 pt-3'>
+                      <span className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800'>
+                        {widget.type}
+                      </span>
+                      <span className='text-xs text-gray-500'>
+                        {new Date(widget.updated_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               ))}
             </div>
