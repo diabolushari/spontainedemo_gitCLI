@@ -29,6 +29,25 @@ interface Props {
   fieldMapping: unknown[]
 }
 
+interface DataTableFormData {
+  name: string
+  description: string
+  subject_area: string
+  table_name: string
+  is_active: boolean
+  job_name: string
+  job_description: string
+  start_date: string
+  end_date: string
+  cron_type: string
+  schedule_time: string
+  day_of_week: string
+  day_of_month: string
+  month_of_year: string
+  delete_existing_data: boolean
+  duplicate_identification_field: string
+}
+
 export default function SetupDataTableForm({
   fields,
   types,
@@ -55,7 +74,7 @@ export default function SetupDataTableForm({
     duplicate_identification_field: '',
   })
 
-  const { post, loading } = useInertiaPost(route('data-detail.store'), {
+  const { post, loading, errors } = useInertiaPost<DataTableFormData>(route('data-detail.store'), {
     showErrorToast: true,
   })
 
@@ -160,7 +179,7 @@ export default function SetupDataTableForm({
             is_long_text: field.is_long_text,
           }
         }),
-    })
+    } as DataTableFormData)
   }
 
   return (
@@ -182,6 +201,7 @@ export default function SetupDataTableForm({
               value={formData.name}
               label='Name'
               setValue={setFormValue('name')}
+              error={errors.name}
             />
           </div>
           <div className='flex flex-col'>
@@ -194,6 +214,7 @@ export default function SetupDataTableForm({
               dataKey='value_one'
               showAllOption={true}
               allOptionText='Select Type'
+              error={errors.subject_area}
             />
           </div>
           <div className='flex flex-col md:col-span-2'>
@@ -201,6 +222,7 @@ export default function SetupDataTableForm({
               value={formData.description}
               label='Description'
               setValue={setFormValue('description')}
+              error={errors.description}
             />
           </div>
           <div className='flex flex-col'>
@@ -235,6 +257,7 @@ export default function SetupDataTableForm({
               value={formData.job_name}
               label='Job Name'
               setValue={setFormValue('job_name')}
+              error={errors.job_name}
             />
           </div>
           <div className='flex flex-col md:col-span-2'>
@@ -242,6 +265,7 @@ export default function SetupDataTableForm({
               value={formData.job_description}
               label='Job Description'
               setValue={setFormValue('job_description')}
+              error={errors.job_description}
             />
           </div>
         </div>
@@ -263,6 +287,7 @@ export default function SetupDataTableForm({
               displayKey='label'
               dataKey='value'
               allOptionText='Select a schedule type'
+              error={errors.cron_type}
             />
           </div>
           <div className='flex flex-col'>
@@ -270,6 +295,7 @@ export default function SetupDataTableForm({
               value={formData.start_date}
               label='Start Date'
               setValue={setFormValue('start_date')}
+              error={errors.start_date}
             />
           </div>
           <div className='flex flex-col'>
@@ -277,6 +303,7 @@ export default function SetupDataTableForm({
               value={formData.end_date}
               label='End Date'
               setValue={setFormValue('end_date')}
+              error={errors.end_date}
             />
           </div>
           {formData.cron_type !== HOURLY_CRON && (
@@ -285,6 +312,7 @@ export default function SetupDataTableForm({
                 value={formData.schedule_time}
                 label='Time'
                 setValue={setFormValue('schedule_time')}
+                error={errors.schedule_time}
               />
             </div>
           )}
@@ -297,6 +325,7 @@ export default function SetupDataTableForm({
                 list={daysOfWeek}
                 displayKey='name'
                 dataKey='name'
+                error={errors.day_of_week}
               />
             </div>
           )}
@@ -306,6 +335,7 @@ export default function SetupDataTableForm({
                 value={formData.day_of_month}
                 label='Day of Month'
                 setValue={setFormValue('day_of_month')}
+                error={errors.day_of_month}
               />
             </div>
           )}
@@ -318,6 +348,7 @@ export default function SetupDataTableForm({
                 list={monthList}
                 displayKey='name'
                 dataKey='id'
+                error={errors.month_of_year}
               />
             </div>
           )}

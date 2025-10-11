@@ -9,6 +9,7 @@ use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataDetail\GetAllFieldsController;
 use App\Http\Controllers\DataExplorer\DataExplorerController;
+use App\Http\Controllers\DataLoader\CreateLoaderQueryWithConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIDataController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
@@ -65,6 +66,7 @@ use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
 use App\Http\Controllers\Utils\LoaderAPIListController;
+use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
@@ -277,6 +279,12 @@ Route::get('loader-apis-list', LoaderAPIListController::class)
 
 Route::get('loader-queries-list', LoaderQueryListController::class)
     ->name('loader-queries-list');
+
+Route::get('loader-connections-list', LoaderConnectionListController::class)
+    ->name('loader-connections-list');
+
+Route::post('api/create-loader-query', CreateLoaderQueryWithConnectionController::class)
+    ->name('api.create.loader.query');
 
 Route::get('mock-api', function () {
     return response()->json([

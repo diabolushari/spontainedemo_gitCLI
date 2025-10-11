@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { FiCheck, FiDatabase, FiPlus, FiSearch } from 'react-icons/fi'
 import { cn } from '@/utils'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import CreateQueryModal from './CreateQueryModal'
 
 interface LoaderQueryPickerProps {
   onSelect: (query: DataLoaderQuery) => void
@@ -14,6 +15,7 @@ interface LoaderQueryPickerProps {
 const LoaderQueryPicker = ({ onSelect, selectedId }: LoaderQueryPickerProps) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [search, setSearch] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   const url = `/loader-queries-list?page=${currentPage}${search ? `&search=${encodeURIComponent(search)}` : ''}`
   const [pagination, loading] = useFetchPagination<DataLoaderQuery>(url)
@@ -27,11 +29,15 @@ const LoaderQueryPicker = ({ onSelect, selectedId }: LoaderQueryPickerProps) => 
     setCurrentPage(1)
   }
 
+  const handleQueryCreated = (query: DataLoaderQuery) => {
+    onSelect(query)
+  }
+
   return (
     <div className='flex flex-col gap-4'>
       <button
-        disabled
-        className='flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
+        onClick={() => setShowCreateModal(true)}
+        className='flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600'
       >
         <FiPlus className='h-5 w-5' />
         Create New Query
@@ -102,6 +108,13 @@ const LoaderQueryPicker = ({ onSelect, selectedId }: LoaderQueryPickerProps) => 
         <RestPagination
           pagination={pagination}
           onNewPage={handlePageChange}
+        />
+      )}
+
+      {showCreateModal && (
+        <CreateQueryModal
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={handleQueryCreated}
         />
       )}
     </div>

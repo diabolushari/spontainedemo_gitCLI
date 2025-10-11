@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Libs\ExceptionMessage;
 use App\Libs\OperationResult;
 use App\Models\DataLoader\DataLoaderQuery;
+use App\Services\DataLoader\Connection\RunLoaderQuery;
 use App\Services\DataLoader\DataSource\DataLoaderSource;
-use App\Services\DataLoader\Factory\DataLoaderFactory;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -23,7 +23,7 @@ class DataLoaderQueryDataController extends Controller implements HasMiddleware
 
     public function __invoke(
         DataLoaderQuery $dataLoaderQuery,
-        DataLoaderFactory $dataLoaderFactory
+        RunLoaderQuery $runLoaderQuery
     ): JsonResponse {
         $error = new OperationResult(false, '');
 
@@ -34,7 +34,7 @@ class DataLoaderQueryDataController extends Controller implements HasMiddleware
         } else {
             try {
                 $dataSource = DataLoaderSource::fromLoaderSourceModel($dataLoaderQuery);
-                $result = $dataLoaderFactory->createFetcher($dataSource->type)->fetchData($dataSource);
+                $result = $runLoaderQuery->fetchData($dataSource);
                 $noOfRecords = count($result);
                 $error->message = "Query executed successfully, $noOfRecords records found.";
             } catch (Exception $e) {

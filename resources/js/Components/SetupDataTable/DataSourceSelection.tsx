@@ -158,7 +158,7 @@ function DataSourceSelection({
             </>
           )}
 
-          {selectedQuery && (
+          {selectedQuery != null && (
             <>
               <div className='mb-4 rounded-lg bg-white p-4'>
                 <div className='mb-2 flex items-center gap-2'>
