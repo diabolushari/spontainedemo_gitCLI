@@ -3,14 +3,17 @@ import CardHeader from '@/ui/Card/CardHeader'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { DataLoaderAPI, DataLoaderQuery, ReferenceData } from '@/interfaces/data_interfaces'
 import DataSourceSelection, { DataSource } from './DataSourceSelection'
-import ManageDataTableFields, {
-  DataTableFieldConfig,
-} from '@/Components/SetupDataTable/ManageDataTableFields'
+import ManageDataTableFields, { DataTableFieldConfig, } from '@/Components/SetupDataTable/ManageDataTableFields'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import SetupDataTableForm from './SetupDataTableForm'
+import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 
 interface Props {
   types: ReferenceData[]
+}
+
+export interface FieldErrors {
+  [fieldColumn: string]: string[]
 }
 
 const SetupDataTable = ({ types }: Readonly<Props>) => {
@@ -21,23 +24,39 @@ const SetupDataTable = ({ types }: Readonly<Props>) => {
   const [sourceResponseStructure, setSourceResponseStructure] =
     useState<JSONStructureDefinition | null>(null)
   const [fields, setFields] = useState<DataTableFieldConfig[]>([])
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+
+  useEffect(() => {
+    setFields([])
+  }, [selectedAPI, selectedQuery])
+
+  const sourceName = useMemo(() => {
+    switch (selectedSource) {
+      case 'api':
+        return 'REST API'
+      case 'sql':
+        return 'SQL Query'
+      case 'excel':
+        return 'Excel File'
+      default:
+        return null
+    }
+  }, [selectedSource])
 
   const fieldMapping = useMemo(() => {
     return fields
       .filter((field) => field.source_field_path != null)
-      .map((field) => ({
-        column: field.column,
-        field_name: field.field_name,
-        field_type: field.type,
-        json_field_path: field.source_field_path,
-        date_format:
-          field.type === 'date' ? (field.source_field_date_format ?? 'Y-m-d') : undefined,
-      }))
+      .map((field) => {
+        return {
+          column: field.column,
+          field_name: field.field_name,
+          field_type: field.type as 'date' | 'dimension' | 'measure' | 'text' | 'relation',
+          json_field_path: field.source_field_path,
+          date_format:
+            field.type === 'date' ? (field.source_field_date_format ?? 'Y-m-d') : undefined,
+        } as DataTableFieldMapping
+      })
   }, [fields])
-
-  useEffect(() => {
-    console.log(fieldMapping)
-  }, [fieldMapping])
 
   const handleSourceSelect = useCallback((source: Exclude<DataSource, null>) => {
     setSelectedSource(source)
@@ -84,6 +103,7 @@ const SetupDataTable = ({ types }: Readonly<Props>) => {
             selectedAPI={selectedAPI}
             selectedQuery={selectedQuery}
             isSheetOpen={isSheetOpen}
+            sourceName={sourceName}
             onSourceSelect={handleSourceSelect}
             onSheetOpenChange={setIsSheetOpen}
             onAPISelect={handleAPISelect}
@@ -106,6 +126,8 @@ const SetupDataTable = ({ types }: Readonly<Props>) => {
                 setFields={setFields}
                 responseStructure={sourceResponseStructure}
                 selectedAPI={selectedAPI}
+                sourceName={sourceName}
+                fieldErrors={fieldErrors}
               />
             </div>
 
@@ -123,6 +145,7 @@ const SetupDataTable = ({ types }: Readonly<Props>) => {
                   selectedAPI={selectedAPI}
                   selectedQuery={selectedQuery}
                   fieldMapping={fieldMapping}
+                  onErrorsChange={setFieldErrors}
                 />
               </div>
             )}
