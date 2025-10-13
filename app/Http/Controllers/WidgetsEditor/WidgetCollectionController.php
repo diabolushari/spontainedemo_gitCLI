@@ -41,8 +41,20 @@ class WidgetCollectionController extends Controller
 
         $collection = WidgetCollection::create($validated);
 
-        return redirect()->route('widget-collection.index')
+        return redirect()->route('widget-collection.show', $collection)
             ->with('success', 'Collection created successfully');
+    }
+
+    public function update(Request $request, WidgetCollection $widgetCollection)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+        ]);
+        $widgetCollection->update($validated);
+
+        return redirect()->route('widget-collection.show', $widgetCollection)
+            ->with('success', 'Collection updated successfully');
     }
 
     public function destroy(WidgetCollection $widgetCollection)
