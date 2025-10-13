@@ -83,7 +83,7 @@ export default function WidgetCollectionShowPage({
         />
 
         {/* Stats Section */}
-        <div className='mt-6 rounded-lg border border-gray-200 bg-white px-4 py-6 shadow-sm'>
+        <div className='mx-3 mt-6 rounded-lg border border-gray-200 bg-white px-4 py-6 shadow-sm'>
           <div className='grid grid-cols-3 gap-4'>
             <div>
               <p className='text-xs font-medium text-gray-500'>Total Widgets</p>
