@@ -5,6 +5,7 @@ import DashboardPadding from '@/Layouts/DashboardPadding'
 import useCustomForm from '@/hooks/useCustomForm'
 import { useState } from 'react'
 import WidgetCollectionCreateModal from '@/Components/WidgetsEditor/WidgetCollections/WidgetCollectionCreateModal'
+import CardHeader from '@/ui/Card/CardHeader'
 
 export default function WidgetCollectionIndexPage({ collections }) {
   const { formData, setFormValue } = useCustomForm({
@@ -51,16 +52,43 @@ export default function WidgetCollectionIndexPage({ collections }) {
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
-        {/* Header Section */}
-        <div className='mb-8'>
-          <div className='mb-4 flex items-center justify-between'>
-            <div>
-              <h1 className='text-3xl font-bold text-gray-900'>Collections</h1>
-              <p className='mt-1 text-gray-600'>Manage and organize your widget collections</p>
-            </div>
+        {/* Header Section using CardHeader */}
+        <CardHeader
+          title='Widget Collections'
+          subheading='Manage and organize your widget collections'
+          onAddClick={() => setShowModal(true)}
+        />
+
+        {/* Search and Filter Bar */}
+        <div className='mt-6 flex items-center gap-4 px-4'>
+          <div className='relative flex-1'>
+            <svg
+              className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+              />
+            </svg>
+            <input
+              type='text'
+              placeholder='Search collections...'
+              value={formData.searchQuery}
+              onChange={(e) => setFormValue('searchQuery')(e.target.value)}
+              className='w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500'
+            />
+          </div>
+
+          {/* View Mode Toggle */}
+          <div className='flex items-center gap-1 rounded-lg bg-gray-100 p-1'>
             <button
-              onClick={() => setShowModal(true)}
-              className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
+              onClick={() => setFormValue('viewMode')('grid')}
+              className={`rounded p-2 ${formData.viewMode === 'grid' ? 'bg-white shadow' : 'text-gray-600'}`}
             >
               <svg
                 className='h-5 w-5'
@@ -72,18 +100,16 @@ export default function WidgetCollectionIndexPage({ collections }) {
                   strokeLinecap='round'
                   strokeLinejoin='round'
                   strokeWidth={2}
-                  d='M12 4v16m8-8H4'
+                  d='M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'
                 />
               </svg>
-              New Collection
             </button>
-          </div>
-
-          {/* Search and Filter Bar */}
-          <div className='mt-6 flex items-center gap-4'>
-            <div className='relative flex-1'>
+            <button
+              onClick={() => setFormValue('viewMode')('list')}
+              className={`rounded p-2 ${formData.viewMode === 'list' ? 'bg-white shadow' : 'text-gray-600'}`}
+            >
               <svg
-                className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400'
+                className='h-5 w-5'
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -92,63 +118,16 @@ export default function WidgetCollectionIndexPage({ collections }) {
                   strokeLinecap='round'
                   strokeLinejoin='round'
                   strokeWidth={2}
-                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                  d='M4 6h16M4 12h16M4 18h16'
                 />
               </svg>
-              <input
-                type='text'
-                placeholder='Search collections...'
-                value={formData.searchQuery}
-                onChange={(e) => setFormValue('searchQuery')(e.target.value)}
-                className='w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500'
-              />
-            </div>
-
-            {/* View Mode Toggle */}
-            <div className='flex items-center gap-1 rounded-lg bg-gray-100 p-1'>
-              <button
-                onClick={() => setFormValue('viewMode')('grid')}
-                className={`rounded p-2 ${formData.viewMode === 'grid' ? 'bg-white shadow' : 'text-gray-600'}`}
-              >
-                <svg
-                  className='h-5 w-5'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={() => setFormValue('viewMode')('list')}
-                className={`rounded p-2 ${formData.viewMode === 'list' ? 'bg-white shadow' : 'text-gray-600'}`}
-              >
-                <svg
-                  className='h-5 w-5'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M4 6h16M4 12h16M4 18h16'
-                  />
-                </svg>
-              </button>
-            </div>
+            </button>
           </div>
         </div>
 
         {/* Collections Grid/List */}
         {formData.viewMode === 'grid' ? (
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+          <div className='mt-8 grid grid-cols-1 gap-6 px-4 md:grid-cols-2 lg:grid-cols-3'>
             {filteredCollections.map((collection) => (
               <div
                 key={collection.id}
@@ -171,25 +150,6 @@ export default function WidgetCollectionIndexPage({ collections }) {
                         />
                       </svg>
                     </div>
-                    <button
-                      onClick={(e) => handleDelete(e, collection.id, collection.name)}
-                      className='rounded p-1.5 opacity-0 transition-all hover:bg-red-50 group-hover:opacity-100'
-                      title='Delete collection'
-                    >
-                      <svg
-                        className='h-5 w-5 text-red-600'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                        />
-                      </svg>
-                    </button>
                   </div>
 
                   <h3 className='mb-2 text-xl font-semibold text-gray-900'>{collection.name}</h3>
@@ -219,7 +179,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
             ))}
           </div>
         ) : (
-          <div className='space-y-4'>
+          <div className='mt-8 space-y-4 px-4'>
             {filteredCollections.map((collection) => (
               <div
                 key={collection.id}
@@ -287,7 +247,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
 
         {/* Empty State */}
         {filteredCollections.length === 0 && (
-          <div className='py-16 text-center'>
+          <div className='px-4 py-16 text-center'>
             <div className='mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100'>
               <svg
                 className='h-12 w-12 text-gray-400'

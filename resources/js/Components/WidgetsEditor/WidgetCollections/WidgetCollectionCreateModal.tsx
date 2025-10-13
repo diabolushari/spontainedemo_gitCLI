@@ -1,8 +1,9 @@
 import Modal from '@/ui/Modal/Modal'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import { router } from '@inertiajs/react'
 
 interface CollectionFormData {
   name: string
@@ -14,16 +15,39 @@ interface OptionType {
   label: string
 }
 
-export default function WidgetCollectionCreateModal({ setShowModal }) {
-  const { formData, setFormValue } = useCustomForm<CollectionFormData>({
+interface Collection {
+  id: number
+  name: string
+  description: string
+}
+
+interface Props {
+  setShowModal: (show: boolean) => void
+  collection?: Collection // Optional prop for edit mode
+}
+
+export default function WidgetCollectionCreateModal({ setShowModal, collection }: Props) {
+  const isEditMode = !!collection
+
+  const { formData, setFormValue, setAll } = useCustomForm<CollectionFormData>({
     name: '',
     description: '',
   })
 
   const [loading, setLoading] = useState(false)
 
+  // Initialize form with existing data in edit mode
+  useEffect(() => {
+    if (isEditMode && collection) {
+      setAll({
+        name: collection.name,
+        description: collection.description,
+      })
+    }
+  }, [collection, isEditMode, setAll])
+
   const formItems: Record<keyof CollectionFormData, FormItem<any, 'id', 'label', OptionType>> = {
-    collectionName: {
+    name: {
       label: 'Collection Name',
       type: 'text',
       setValue: setFormValue('name'),
@@ -39,19 +63,41 @@ export default function WidgetCollectionCreateModal({ setShowModal }) {
     },
   }
 
-  const { post, errors } = useInertiaPost(route('widget-collection.store'), {
-    showErrorToast: true,
-  })
+  // Use different hook/route based on mode
+  const { post, errors } = useInertiaPost(
+    isEditMode
+      ? route('widget-collection.update', collection.id)
+      : route('widget-collection.store'),
+    {
+      showErrorToast: true,
+    }
+  )
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(formData)
-    post(formData)
+    setLoading(true)
+
+    if (isEditMode) {
+      // For edit mode, use PUT/PATCH method
+      router.put(route('widget-collection.update', collection.id), formData, {
+        onSuccess: () => {
+          setShowModal(false)
+          setLoading(false)
+        },
+        onError: () => {
+          setLoading(false)
+        },
+      })
+    } else {
+      // For create mode, use POST
+      post(formData)
+    }
   }
 
   return (
     <Modal
       setShowModal={setShowModal}
-      title={'Create Collection'}
+      title={isEditMode ? 'Edit Collection' : 'Create Collection'}
       showClosButton={true}
     >
       <FormBuilder
@@ -59,7 +105,7 @@ export default function WidgetCollectionCreateModal({ setShowModal }) {
         formItems={formItems}
         onFormSubmit={handleSubmit}
         loading={loading}
-        buttonText='Create Collection'
+        buttonText={isEditMode ? 'Update Collection' : 'Create Collection'}
         buttonAlignment='start'
         showSecondaryButton={true}
         secondaryButtonLabel='Cancel'
