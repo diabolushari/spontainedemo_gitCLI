@@ -1,52 +1,28 @@
-import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import React from 'react'
 import { FiSend } from 'react-icons/fi'
 
 interface ChatInputProps {
-  mode: 'chat' | 'agent'
   isLoading: boolean
   input: string
   isFocused: boolean
   textareaRef: React.RefObject<HTMLTextAreaElement>
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-  handleModeChange: (value: string) => void
   setIsFocused: (focused: boolean) => void
   onSendMessage: () => void
 }
 
 const ChatInput = React.memo(
   ({
-    mode,
     isLoading,
     input,
     isFocused,
     textareaRef,
     handleInputChange,
-    handleModeChange,
     setIsFocused,
     onSendMessage,
   }: ChatInputProps) => {
     return (
       <div className='flex flex-col gap-2'>
-        <ToggleGroup
-          type='single'
-          value={mode}
-          onValueChange={handleModeChange}
-          className='flex justify-center gap-2'
-        >
-          <ToggleGroupItem
-            value='chat'
-            className='data-[state=on]:bg-blue-600 data-[state=on]:text-white'
-          >
-            Chat
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value='agent'
-            className='data-[state=on]:bg-blue-600 data-[state=on]:text-white'
-          >
-            Agent
-          </ToggleGroupItem>
-        </ToggleGroup>
         <div className='flex items-center gap-3'>
           <div className='relative flex-1'>
             <textarea

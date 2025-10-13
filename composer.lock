@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d08256c96200b955e4584fd28932de00",
+    "content-hash": "9a8a98ef46541203fae79c49503b250c",
     "packages": [
         {
             "name": "amphp/amp",
@@ -9029,16 +9029,16 @@
         },
         {
             "name": "laravel/boost",
-            "version": "v1.0.18",
+            "version": "v1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/boost.git",
-                "reference": "df2a62b5864759ea8cce8a4b7575b657e9c7d4ab"
+                "reference": "4bd1692c064b2135eb2f8f7bd8bcb710e5e75f86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/boost/zipball/df2a62b5864759ea8cce8a4b7575b657e9c7d4ab",
-                "reference": "df2a62b5864759ea8cce8a4b7575b657e9c7d4ab",
+                "url": "https://api.github.com/repos/laravel/boost/zipball/4bd1692c064b2135eb2f8f7bd8bcb710e5e75f86",
+                "reference": "4bd1692c064b2135eb2f8f7bd8bcb710e5e75f86",
                 "shasum": ""
             },
             "require": {
@@ -9047,13 +9047,13 @@
                 "illuminate/contracts": "^10.0|^11.0|^12.0",
                 "illuminate/routing": "^10.0|^11.0|^12.0",
                 "illuminate/support": "^10.0|^11.0|^12.0",
-                "laravel/mcp": "^0.1.0",
+                "laravel/mcp": "^0.1.1",
                 "laravel/prompts": "^0.1.9|^0.3",
-                "laravel/roster": "^0.2",
-                "php": "^8.1|^8.2"
+                "laravel/roster": "^0.2.5",
+                "php": "^8.1"
             },
             "require-dev": {
-                "laravel/pint": "^1.14|^1.23",
+                "laravel/pint": "^1.14",
                 "mockery/mockery": "^1.6",
                 "orchestra/testbench": "^8.22.0|^9.0|^10.0",
                 "pestphp/pest": "^2.0|^3.0",
@@ -9090,7 +9090,7 @@
                 "issues": "https://github.com/laravel/boost/issues",
                 "source": "https://github.com/laravel/boost"
             },
-            "time": "2025-08-16T09:10:03+00:00"
+            "time": "2025-09-18T07:33:27+00:00"
         },
         {
             "name": "laravel/breeze",
@@ -9285,16 +9285,16 @@
         },
         {
             "name": "laravel/roster",
-            "version": "v0.2.3",
+            "version": "v0.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/roster.git",
-                "reference": "caeed7609b02c00c3f1efec52812d8d87c5d4096"
+                "reference": "832a6db43743bf08a58691da207f977ec8dc43aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/roster/zipball/caeed7609b02c00c3f1efec52812d8d87c5d4096",
-                "reference": "caeed7609b02c00c3f1efec52812d8d87c5d4096",
+                "url": "https://api.github.com/repos/laravel/roster/zipball/832a6db43743bf08a58691da207f977ec8dc43aa",
+                "reference": "832a6db43743bf08a58691da207f977ec8dc43aa",
                 "shasum": ""
             },
             "require": {
@@ -9342,7 +9342,7 @@
                 "issues": "https://github.com/laravel/roster/issues",
                 "source": "https://github.com/laravel/roster"
             },
-            "time": "2025-08-13T15:00:25+00:00"
+            "time": "2025-09-22T13:28:47+00:00"
         },
         {
             "name": "laravel/sail",

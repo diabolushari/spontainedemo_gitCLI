@@ -12,7 +12,9 @@ class GetPrimaryFieldData implements DataFetcherInterface
 {
     public function __construct(
         private readonly FetchJSONAPI $fetchJSONAPI,
-        private readonly FindJsonPrimaryField $findJsonPrimaryField
+        private readonly FindJsonPrimaryField $findJsonPrimaryField,
+        private readonly FlattenJsonResponse $flattenJsonResponse,
+        private readonly PerformJSONProcessing $performFieldMapping
     ) {}
 
     /**
@@ -56,7 +58,15 @@ class GetPrimaryFieldData implements DataFetcherInterface
         // Fetch the data
         $data = $this->fetchJSONAPI->getData();
 
-        return $this->traverseStructure($data, $pathToPrimary);
+        $result = $this->traverseStructure($data, $pathToPrimary);
+
+        if ($dataSource->hasFieldMapping()) {
+            $flattenedData = $this->flattenJsonResponse->flatten($result, '.', 'response', $dataSource->fieldMapping);
+
+            return $this->performFieldMapping->handle($flattenedData, $dataSource->fieldMapping, $body);
+        }
+
+        return $result;
     }
 
     /**
@@ -70,14 +80,14 @@ class GetPrimaryFieldData implements DataFetcherInterface
             return $data;
         }
         $currentPathPosition = array_shift($pathToPrimary);
-        if ($currentPathPosition->fieldName === 'root' && $currentPathPosition->fieldType !== 'array') {
+        if ($currentPathPosition->fieldName === 'response' && $currentPathPosition->fieldType !== 'array') {
             return $this->traverseStructure($data, $pathToPrimary);
         }
 
-        if ($currentPathPosition->fieldName !== 'root' && ! isset($data[$currentPathPosition->fieldName])) {
+        if ($currentPathPosition->fieldName !== 'response' && ! isset($data[$currentPathPosition->fieldName])) {
             throw new Exception($currentPathPosition->fieldName.' is not present in the data');
         }
-        $currentLevelData = $currentPathPosition->fieldName === 'root' ? $data : $data[$currentPathPosition->fieldName];
+        $currentLevelData = $currentPathPosition->fieldName === 'response' ? $data : $data[$currentPathPosition->fieldName];
 
         if ($currentPathPosition->fieldType === 'array') {
             if (! $this->isSequential($currentLevelData)) {

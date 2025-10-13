@@ -40,7 +40,7 @@ export default function MetaGroupShow({ dataLoaderAPI }: Readonly<Props>) {
       type={'loaders'}
       subtype={'json-apis'}
     >
-      <DataSourcePreview url={route('loader-query-api-data', dataLoaderAPI.id)} />
+      <DataSourcePreview url={route('loader-json-api-data', dataLoaderAPI.id)} />
       {/**more content**/}
       {showDeleteModal && (
         <DeleteModal

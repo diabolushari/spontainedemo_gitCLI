@@ -65,7 +65,7 @@ class DataDetailController extends Controller implements HasMiddleware
             ->where('parameter', 'Type')
             ->get();
 
-        return Inertia::render('DataDetail/DataDetailCreate', [
+        return Inertia::render('SetupDatatable/SetupDatatablePage', [
             'types' => $referenceData,
         ]);
     }

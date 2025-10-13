@@ -32,12 +32,14 @@ use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataDetail\GetAllFieldsController;
 use App\Http\Controllers\DataExplorer\DataExplorerController;
+use App\Http\Controllers\DataLoader\CreateLoaderQueryWithConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIController;
 use App\Http\Controllers\DataLoader\DataLoaderAPIDataController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
+use App\Http\Controllers\DataLoader\LoaderAPIRecordController;
 use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
@@ -92,6 +94,9 @@ use App\Http\Controllers\TabController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataDetail\DataDetail;
+use App\Http\Controllers\Utils\LoaderAPIListController;
+use App\Http\Controllers\Utils\LoaderConnectionListController;
+use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use App\Services\DataTable\JoinDataTable;
@@ -319,15 +324,17 @@ Route::get('subset-documentation', SubsetDocumentationController::class)
 Route::resource('loader-apis', DataLoaderAPIController::class)
     ->parameters(['loader-apis' => 'dataLoaderAPI']);
 
-Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
-    ->name('loader-query-api-data');
+Route::get('loader-json-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
+    ->name('loader-json-api-data');
+
+Route::get('loader-api-record/{loaderAPI}', LoaderAPIRecordController::class)
+    ->name('loader-api-record');
 
 //autocomplete apis
 Route::get('data-detail-search', DataDetailSearchController::class)
     ->name('data-detail.search');
 
 Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJob $runScheduledJob) {
-
     $loaderJob
         ->load(
             'loaderQuery.loaderConnection',
@@ -368,6 +375,81 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
+
+//Util APIS
+Route::get('loader-apis-list', LoaderAPIListController::class)
+    ->name('loader-apis-list');
+
+Route::get('loader-queries-list', LoaderQueryListController::class)
+    ->name('loader-queries-list');
+
+Route::get('loader-connections-list', LoaderConnectionListController::class)
+    ->name('loader-connections-list');
+
+Route::post('api/create-loader-query', CreateLoaderQueryWithConnectionController::class)
+    ->name('api.create.loader.query');
+
+Route::get('mock-api', function () {
+    return response()->json([
+        'request' => [
+            'type' => 'City',
+            'query' => 'New York, United States of America',
+            'language' => 'en',
+            'unit' => 'm',
+        ],
+        'location' => [
+            'name' => 'New York',
+            'country' => 'United States of America',
+            'region' => 'New York',
+            'lat' => '40.714',
+            'lon' => '-74.006',
+            'timezone_id' => 'America/New_York',
+            'localtime' => '2025-10-10 13:59',
+            'localtime_epoch' => 1760104740,
+            'utc_offset' => '-4.0',
+        ],
+        'current' => [
+            'observation_time' => '05:59 PM',
+            'temperature' => 16,
+            'weather_code' => 122,
+            'weather_icons' => [
+                'https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png',
+            ],
+            'weather_descriptions' => [
+                'Overcast',
+            ],
+            'astro' => [
+                'sunrise' => '07:02 AM',
+                'sunset' => '06:23 PM',
+                'moonrise' => '08:30 PM',
+                'moonset' => '11:33 AM',
+                'moon_phase' => 'Waning Gibbous',
+                'moon_illumination' => 88,
+            ],
+            'air_quality' => [
+                'co' => '163.85',
+                'no2' => '12.15',
+                'o3' => '77',
+                'so2' => '3.75',
+                'pm2_5' => '8.85',
+                'pm10' => '11.45',
+                'us-epa-index' => '1',
+                'gb-defra-index' => '1',
+            ],
+            'wind_speed' => 16,
+            'wind_degree' => 163,
+            'wind_dir' => 'SSE',
+            'pressure' => 1032,
+            'precip' => 0,
+            'humidity' => 42,
+            'cloudcover' => 100,
+            'feelslike' => 16,
+            'uv_index' => 4,
+            'visibility' => 16,
+            'is_day' => 'yes',
+        ],
+    ]);
+})->name('mock-api');
 
 Route::resource('widget-editor', WidgetsEditorController::class)->parameters(['widget-editor' => 'widget']);
 Route::resource('widget-collection', WidgetCollectionController::class)->parameters(['widget-collection' => 'widgetCollection']);

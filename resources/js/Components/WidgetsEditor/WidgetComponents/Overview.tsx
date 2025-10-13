@@ -1,8 +1,8 @@
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
-import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
+import { WidgetBarChart } from '@/Components/WidgetsEditor/Charts/WidgetBarChart'
+import { WidgetLineChart } from '@/Components/WidgetsEditor/Charts/WidgetLineChart'
 
 interface OverviewProps {
   block: any
@@ -69,7 +69,7 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
       />
       {block?.chart_type === 'bar' && (
         <div>
-          <CustomBarChart
+          <WidgetBarChart
             data={data.data}
             dataKey={block.dimension}
             keysToPlot={keysToPlot}
@@ -80,7 +80,7 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
       )}
       {block?.chart_type === 'line' && (
         <div>
-          <CustomLineChart
+          <WidgetLineChart
             data={data.data}
             dataKey={block.dimension}
             keysToPlot={keysToPlot}

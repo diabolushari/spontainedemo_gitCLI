@@ -24,13 +24,16 @@ return new class extends Migration
             $table->text('description')->nullable();
         });
 
+        // description column already exists in subset_detail_measures table
         Schema::table('subset_detail_measures', function (Blueprint $table) {
+            $table->dropColumn('description');
             $table->text('description')->nullable();
         });
 
-        Schema::table('subset_detail_dates', function (Blueprint $table) {
-            $table->text('description')->nullable();
-        });
+        // description column already exists in subset_detail_dates table as text
+        // Schema::table('subset_detail_dates', function (Blueprint $table) {
+        //     $table->text('description')->nullable();
+        // });
     }
 
     /**
@@ -52,12 +55,15 @@ return new class extends Migration
             $table->dropColumn('description');
         });
 
-        Schema::table('subset_detail_dates', function (Blueprint $table) {
-            $table->dropColumn('description');
-        });
+        // description column belongs to original subset_detail_dates table creation
+        // Schema::table('subset_detail_dates', function (Blueprint $table) {
+        //     $table->dropColumn('description');
+        // });
 
+        // description column belongs to original subset_detail_measures table creation
         Schema::table('subset_detail_measures', function (Blueprint $table) {
             $table->dropColumn('description');
+            $table->string('description')->nullable();
         });
     }
 };

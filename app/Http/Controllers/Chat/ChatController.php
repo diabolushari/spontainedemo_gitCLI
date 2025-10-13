@@ -28,7 +28,13 @@ class ChatController extends Controller implements HasMiddleware
             'title' => 'Chat',
             'messages' => [],
         ]);
-        $chatHistory = ChatHistory::where('user_id', $userId)->select('id', 'title', 'created_at')->orderBy('created_at', 'desc')->get();
+
+        $chatHistory = ChatHistory::where('user_id', $userId)
+            ->select('id', 'title', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         foreach ($chatHistory as $chat) {
             $chat->timestamp = $chat->created_at->diffForHumans();
         }

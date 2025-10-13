@@ -53,9 +53,17 @@ export interface DataDetail extends Model {
   dimension_fields?: Partial<TableDimensionField>[]
   measure_fields?: Partial<TableMeasureField>[]
   relation_fields?: Partial<DataTableRelation>[]
-  text_fields?: Partial<DataTableText>[]
+  text_fields?: Partial<TableTextField>[]
   jobs?: Partial<DataLoaderJob>[]
   is_active: 0 | 1
+}
+
+export interface DataDetailFields {
+  dates: TableDateField[]
+  dimensions: TableDimensionField[]
+  measures: TableMeasureField[]
+  texts: TableTextField[]
+  relations: DataDetail[]
 }
 
 export interface TableDateField extends Model {
@@ -346,7 +354,7 @@ export interface DataTableRelation extends Model {
   related_table?: Partial<DataDetail> | null
 }
 
-export interface DataTableText extends Model {
+export interface TableTextField extends Model {
   data_detail_id: number
   column: string
   field_name: string

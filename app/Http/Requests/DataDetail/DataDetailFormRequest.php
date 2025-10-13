@@ -4,6 +4,7 @@ namespace App\Http\Requests\DataDetail;
 
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -32,5 +33,25 @@ class DataDetailFormRequest extends Data
         public ?array $measures,
         public ?array $texts,
         public ?array $relations,
+        // Job-related fields
+        #[Max(255)]
+        public ?string $jobName,
+        #[Max(1000)]
+        public ?string $jobDescription,
+        public ?string $cronType,
+        public ?string $startDate,
+        public ?string $endDate,
+        public ?string $scheduleTime,
+        public ?string $dayOfWeek,
+        public ?string $monthOfYear,
+        public ?int $dayOfMonth,
+        public ?string $duplicateIdentificationField,
+        public bool $deleteExistingData,
+        #[RequiredIf('sourceType', 'sql')]
+        public ?int $queryId,
+        #[RequiredIf('sourceType', 'api')]
+        public ?int $apiId,
+        public ?string $sourceType,
+        public ?array $fieldMapping,
     ) {}
 }

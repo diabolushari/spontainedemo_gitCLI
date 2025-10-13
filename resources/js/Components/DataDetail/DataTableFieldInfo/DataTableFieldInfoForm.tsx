@@ -4,9 +4,16 @@ import { DataDetail } from '@/interfaces/data_interfaces'
 import { MetaStructure } from '@/interfaces/meta_interfaces'
 import { showError } from '@/ui/alerts'
 import { FormEvent, useMemo } from 'react'
+import { COMMON_DATE_FORMATS } from '@/Components/DataLoader/useDataTableToJsonMapping'
 
 interface Props {
-  selectedField: DataTableFieldInfo | null
+  selectedField:
+    | (DataTableFieldInfo & {
+        source_path?: string | null
+        source_field_date_format?: string | null
+      })
+    | null
+  dataSourceFieldPath?: { path: string; name: string } | null
   onFormSubmit: (data: DataTableFieldInfo) => void
   onDelete?: () => void
 }
@@ -19,6 +26,7 @@ export interface DataTableFieldInfo {
   meta_structure: MetaStructure | null
   parent_table: Pick<DataDetail, 'id' | 'name'> | null
   is_long_text: boolean
+  source_field_date_format?: string | null
 }
 
 const types = [
@@ -26,14 +34,16 @@ const types = [
   { value: 'dimension', structure_name: 'Dimension' },
   { value: 'measure', structure_name: 'Measure' },
   { value: 'text', structure_name: 'Text' },
-  { value: 'parent_relation', structure_name: 'Parent Relation' },
 ]
 
 export default function DataTableFieldInfoForm({
   onFormSubmit,
   selectedField,
+  dataSourceFieldPath,
   onDelete,
 }: Readonly<Props>) {
+  const sourcePath = selectedField?.source_path ?? dataSourceFieldPath?.path
+
   const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
     type: selectedField?.type ?? 'date',
     field_name: selectedField?.field_name ?? '',
@@ -42,6 +52,7 @@ export default function DataTableFieldInfoForm({
     create_unit_column: selectedField?.create_unit_column ?? false,
     parent_table: selectedField?.parent_table ?? null, // for parent relation fields
     is_long_text: selectedField?.is_long_text ?? false, // for text fields
+    source_field_date_format: selectedField?.source_field_date_format ?? 'Y-m-d', // for date fields with source path
   })
 
   const formItems = useMemo(<
@@ -67,6 +78,7 @@ export default function DataTableFieldInfoForm({
             create_unit_column: false,
             parent_table: null,
             is_long_text: false,
+            source_field_date_format: 'Y-m-d',
           })
         },
       },
@@ -97,35 +109,23 @@ export default function DataTableFieldInfoForm({
         setValue: setFormValue('meta_structure'),
         hidden: formData.type !== 'dimension',
       },
-      parent_table: {
-        type: 'autocomplete',
-        label: 'Parent Table',
-        autoCompleteSelection: formData.parent_table,
-        dataKey: 'id',
-        displayKey: 'name',
-        linkText: 'Data Tables',
-        redirectLink: route('data-detail.index'),
-        selectListUrl: route('data-detail.search', {
-          search: '',
-        }),
-        setValue: setFormValue('parent_table'),
-        hidden: formData.type !== 'parent_relation',
-      },
       is_long_text: {
         type: 'checkbox',
         label: 'Long Text Field',
         setValue: toggleBoolean('is_long_text'),
         hidden: formData.type !== 'text',
       },
+      source_field_date_format: {
+        type: 'select',
+        label: 'Source Date Format',
+        list: COMMON_DATE_FORMATS,
+        displayKey: 'label',
+        dataKey: 'value',
+        setValue: setFormValue('source_field_date_format'),
+        hidden: formData.type !== 'date' || sourcePath == null,
+      },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [
-    setFormValue,
-    formData.type,
-    formData.meta_structure,
-    formData.parent_table,
-    toggleBoolean,
-    setAll,
-  ])
+  }, [setFormValue, formData.type, formData.meta_structure, toggleBoolean, setAll, sourcePath])
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -146,7 +146,17 @@ export default function DataTableFieldInfoForm({
   }
 
   return (
-    <div className='flex flex-col p-2'>
+    <div className='flex flex-col gap-3 p-2'>
+      {sourcePath && (
+        <div className='rounded-lg border border-blue-200 bg-blue-50 p-3'>
+          <div className='flex items-start gap-2'>
+            <div className='flex-1'>
+              <h4 className='text-sm font-semibold text-blue-900'>Mapped to</h4>
+              <p className='mt-1 break-all font-mono text-xs text-blue-700'>{sourcePath}</p>
+            </div>
+          </div>
+        </div>
+      )}
       <FormBuilder
         formItems={formItems}
         formData={formData}

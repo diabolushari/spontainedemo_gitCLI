@@ -37,6 +37,9 @@ readonly class RunScheduledJob
         return $this->fetchAndInsertJob($dataLoaderJob, $startTime);
     }
 
+    /**
+     * Checks if data table is valid and if the predecessor job has finished running
+     */
     private function validateJob(DataLoaderJob $dataLoaderJob, string $startTime): OperationResult
     {
         if ($dataLoaderJob->detail == null) {
@@ -96,7 +99,6 @@ readonly class RunScheduledJob
                 $data,
                 $dataLoaderJob->delete_existing_data == 1,
                 $dataLoaderJob->duplicate_identification_field,
-                $dataLoaderJob->field_mapping
             );
         } catch (Exception $exception) {
             $result = [

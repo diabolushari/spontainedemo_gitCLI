@@ -23,7 +23,7 @@
         "barryvdh/laravel-ide-helper": "^3.1",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^2.0",
-        "laravel/boost": "^1.0",
+        "laravel/boost": "^1.1",
         "laravel/breeze": "^2.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",

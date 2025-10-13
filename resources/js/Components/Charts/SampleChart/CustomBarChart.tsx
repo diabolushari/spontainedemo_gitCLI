@@ -1,16 +1,15 @@
 'use client'
 
-import { useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/Components/ui/chart'
-import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
 interface Props {
   data: Record<string, number | string>[]
@@ -20,106 +19,78 @@ interface Props {
     label: string
     unit?: string
   }[]
-  colors: string
-  fontSize: string
+  colorScheme?: string
+  xAxisLabel?: string
+  yAxisLabel?: string
   sliceCount?: number
   sortOrder?: 'ascending' | 'descending'
+}
+
+const tickFormatter = (value: number | string) => {
+  const str = String(value)
+  return str.length > 10 ? str.substring(0, 7) + '...' : str
 }
 
 export function CustomBarChart({
   data,
   dataKey,
   keysToPlot,
-  colors,
-  fontSize,
-  sliceCount,
-  sortOrder = 'descending',
-}: Props) {
-  const chartColors: string[] = chartPallet[colors]
+  colorScheme = 'boldWarm',
+}: Readonly<Props>) {
+  const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
+    const unit = plotKey.unit ? ` (${plotKey.unit})` : ''
     acc[plotKey.key] = {
-      label: `${plotKey.label}${plotKey.unit ? ` (${plotKey.unit})` : ''}`,
+      label: `${plotKey.label}${unit}`,
       color: chartColors[index % chartColors.length],
     }
     return acc
   }, {} as ChartConfig)
 
-  const processedData = useMemo(() => {
-    if (!data || data.length === 0) return []
-
-    const sorted = [...data].sort((a, b) => {
-      const valA = Number(a[keysToPlot[0].key] || 0)
-      const valB = Number(b[keysToPlot[0].key] || 0)
-      return sortOrder === 'ascending' ? valA - valB : valB - valA
-    })
-
-    if (sliceCount && sorted.length > sliceCount) {
-      return sorted.slice(0, sliceCount)
-    }
-
-    return sorted
-  }, [data, keysToPlot, sliceCount, sortOrder])
-
-  if (!processedData || processedData.length === 0) {
-    return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
-  }
-
   return (
     <ChartContainer
       config={chartConfig}
-      className={`${fontSize} max-h-[400px] min-h-[200px]`}
+      className='aspect-video w-full transition-all xl:w-10/12'
     >
       <ResponsiveContainer
         width='100%'
-        height={400}
+        height='100%'
       >
         <BarChart
-          data={processedData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+          maxBarSize={60}
+          barCategoryGap='20%'
         >
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey={dataKey}
             tickLine={false}
-            tickMargin={10}
+            tickMargin={15}
             axisLine={false}
-            angle={0}
+            type='category'
+            interval='preserveStartEnd'
+            angle={-45}
+            textAnchor='end'
+            height={70}
+            tick={{ fontSize: 12 }}
+            tickFormatter={tickFormatter}
           />
           <YAxis
             tickFormatter={(value) => (formatNumber(value as number) ?? '').toString()}
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            label={{
-              value:
-                keysToPlot.length === 1
-                  ? `${keysToPlot[0].label}${keysToPlot[0].unit ? ` (${keysToPlot[0].unit})` : ''}`
-                  : 'Value',
-              angle: -90,
-              position: 'insideLeft',
-            }}
           />
-
-          <ChartTooltip
-            cursor={false}
-            formatter={(value: number | string, name: string) => {
-              const matchingKey = keysToPlot.find((k) => k.label === name)
-              const formattedValue = formatNumber(Number(value))
-              const label = matchingKey
-                ? `${matchingKey.label}${matchingKey.unit ? ` (${matchingKey.unit})` : ''}`
-                : name
-              return [formattedValue, label]
-            }}
-            content={<ChartTooltipContent indicator='dashed' />}
-          />
+          <ChartTooltip content={<ChartTooltipContent />} />
           {keysToPlot.map((plotKey, index) => (
             <Bar
               key={plotKey.key}
               dataKey={plotKey.key}
               name={plotKey.label}
               fill={chartColors[index % chartColors.length]}
-              radius={[4, 4, 0, 0]}
+              radius={[8, 8, 8, 8]}
             />
           ))}
         </BarChart>

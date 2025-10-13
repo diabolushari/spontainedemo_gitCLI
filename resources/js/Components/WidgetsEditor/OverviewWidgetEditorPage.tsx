@@ -44,6 +44,7 @@ export interface WidgetFormData {
 interface Props {
   widget?: Widget
   collection_id: number
+  type: string
 }
 
 /**

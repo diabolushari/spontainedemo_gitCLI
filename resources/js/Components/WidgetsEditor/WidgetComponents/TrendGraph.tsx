@@ -3,10 +3,10 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import Skeleton from 'react-loading-skeleton'
 import dayjs from 'dayjs'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
-import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
-import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
 import SampleMonthSelector from '../../Dashboard/SampleMonthSelector'
 import { BlockDimension } from '@/interfaces/data_interfaces'
+import { WidgetAreaChart } from '@/Components/WidgetsEditor/Charts/WidgetAreaChart'
+import { WidgetBarChart } from '@/Components/WidgetsEditor/Charts/WidgetBarChart'
 
 interface Props {
   subsetId: number
@@ -73,12 +73,13 @@ export default function TrendGraph({
 
     return route('office-level-summary', { ...params })
   }, [subsetId, selectedMonth, selectedMonthValue, filterValue, filterFieldName, setSelectedMonth])
+  console.log('fetchUrl :', fetchUrl)
 
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
   }>(fetchUrl)
-  console.log(graphValues)
+  console.log('graphValues :', graphValues)
 
   useEffect(() => {
     if (setSelectedMonth == null || selectedMonth != null) return
@@ -133,7 +134,7 @@ export default function TrendGraph({
           />
         ) : chartType === 'area' ? (
           <div style={{ border: '1px solid var(--tw-prose-body)' }}>
-            <CustomAreaChart
+            <WidgetAreaChart
               data={chartData}
               dataKey='month'
               keysToPlot={[{ key: dataFieldName }]}
@@ -145,7 +146,7 @@ export default function TrendGraph({
             />
           </div>
         ) : (
-          <CustomBarChart
+          <WidgetBarChart
             data={chartData}
             dataKey='month'
             keysToPlot={[

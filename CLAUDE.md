@@ -1,3 +1,218 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Development Commands
+
+### Frontend (React with Vite)
+
+- `npm install` - Install JavaScript dependencies
+- `npm run dev` - Start Vite development server
+- `npm run build` - Build for production
+- `npm run tsc-check` - Run TypeScript type checking
+
+### Backend (Laravel)
+
+- `composer install` - Install PHP dependencies
+- `php artisan serve` - Start Laravel development server (or use Laravel Sail)
+- `php artisan migrate` - Run database migrations
+- `php artisan test` - Run tests using Pest
+- `vendor/bin/pint` - Format PHP code using Laravel Pint
+- `vendor/bin/phpstan analyse` - Run static analysis (level 5, see `phpstan.neon`)
+- `php artisan ide-helper:generate` - Generate IDE helper files
+
+### Code Generation
+
+- `php artisan make:data {name}` - Create Laravel Data DTO
+- `php artisan make:service {name}` - Create service class
+- `php artisan make:react {name}` - Create React component
+
+## Architecture Overview
+
+Laravel + React (Inertia.js) full-stack application for KSEB (Kerala State Electricity Board) analytics with dynamic
+data ingestion, subset filtering, and multi-format exports.
+
+### Tech Stack
+
+- **Backend**: Laravel 11 with Inertia.js, Spatie Laravel Data for DTOs
+- **Frontend**: React 18 with TypeScript, Vite
+- **UI**: Radix UI primitives, Tailwind CSS, shadcn/ui components
+- **Charts**: Recharts
+- **Maps**: Leaflet with react-leaflet
+- **Testing**: Pest (PHP with `RefreshDatabase`), ESLint + Prettier (JS/TS)
+- **Static Analysis**: PHPStan (Larastan), TypeScript compiler
+- **Route Management**: Ziggy for named routes in TypeScript
+
+### Core Data Flow Architecture
+
+**Data Ingestion Pipeline**:
+
+1. `DataLoaderConnection` (REST API, WebSocket, Database) → Connection configuration with credentials
+2. `DataLoaderQuery` → SQL/API query definitions with cron scheduling
+3. `RunScheduledJob` → Orchestrates fetch/import via factories
+4. Fetchers (in `app/Services/DataLoader/Fetchers`) → Execute queries and stream JSON responses
+5. `ImportToDataTable` service → Flattens JSON, syncs metadata, creates dynamic tables
+6. `DataLoaderJobStatus` → Tracks execution history, errors, and row counts
+
+**Content Organization**:
+
+- `SubjectArea` → Top-level analytics domains (Finance, Operations, Service Delivery)
+- `DataDetail` (aka data tables) → Typed dimensions/measures/dates with dynamic table creation
+- `Subset` → Filtered views of data details with default filters and field selections
+- `SubsetGroup` → Collections of subsets for dashboard composition
+
+**Metadata & Hierarchies**:
+
+- `MetaStructure` → Defines dimension taxonomies (e.g., office types, categories)
+- `MetaData` → Individual values within structures, auto-synced from imports
+- `MetaGroup` → Custom groupings of metadata values
+- `DistributionHierarchy` services → KSEB office hierarchy (Circle → Division → Subdivision → Section)
+
+### Project Structure
+
+#### Backend (Laravel)
+
+**Feature-based organization within Laravel directories**:
+
+- `app/Http/Controllers/{Feature}/` - Controllers grouped by domain
+- `app/Models/{Feature}/` - Eloquent models organized by feature
+- `app/Services/{Feature}/` - Business logic services (prefer service injection over direct model queries in
+  controllers)
+- `app/Http/Requests/{Feature}/` - Form request validation (search requests and form requests)
+- `app/Data/` - Spatie Laravel Data DTOs with attribute-based validation
+- `app/Libs/` - Shared utilities (`OperationResult`, `ArrayPagination`, `SaveFile`, `GetRelativeTime`)
+- `app/Exports/` - Maatwebsite Excel export classes
+- `app/Imports/` - Maatwebsite Excel import classes
+
+**Key patterns**:
+
+- Controllers implement `HasMiddleware` to enforce `auth` middleware
+- Return Inertia views with paginated Eloquent data
+- Long-running jobs persist execution metadata via `DataLoaderJobStatus`
+- Use `OperationResult` for standardized error propagation in services
+
+#### Frontend (React)
+
+**Organized in `resources/js/`**:
+
+- `Pages/{Feature}/` - Inertia.js page components (auto-resolved by `resolvePageComponent` in `app.tsx`)
+- `Components/{Feature}/` - Feature-specific React components
+- `Components/ListingPage/ListResourcePage.tsx` - Reusable admin CRUD list view
+- `FormBuilder/` - `FormBuilder` and `FormPage` for strongly-typed CRUD forms
+- `Layouts/` - Layout components (`AuthenticatedLayout`, `DashboardSidebar`)
+- `hooks/` - Custom React hooks (`useCustomForm`, `useInertiaPost`, `useFetchPagination`, `useFetchList`)
+- `ui/` - shadcn/ui primitives and form components
+- `types/` - TypeScript type definitions
+- `interfaces/` - TypeScript interfaces (keep aligned with backend DTOs)
+- `lib/` - Utility libraries
+
+**Key patterns**:
+
+- Admin CRUD screens extend `ListResourcePage` + `FormBuilder` + `useCustomForm` rather than custom form logic
+- Axios configured globally in `bootstrap.ts`; prefer Inertia form helpers (`router.get`, `useInertiaPost`) over manual
+  fetch
+- File paths must align with route names for Inertia auto-resolution
+- Backend responses should use camelCase keys or be normalized in page components
+
+### Key Conventions
+
+#### Laravel
+
+- **DTOs**: Use Spatie Laravel Data with PHP attribute annotations for validation (e.g., `CreateDataTable`,
+  `#[Required]`, `#[Max(255)]`)
+- **Requests**: Form requests for validation (search + CRUD forms) in `app/Http/Requests/{Feature}/`
+- **Services**: Business logic in dedicated services; inject services, don't query models directly in controllers
+- **Error Handling**: Bubble errors through `OperationResult` or structured arrays
+- **Dynamic Tables**: `CreateDataTable` service scaffolds tables for new data details; roll back on failure
+- **Testing**: Pest with `RefreshDatabase` trait; use factories instead of manual inserts
+- **Code Style**: Laravel Pint (run `vendor/bin/pint` before commits)
+- **Static Analysis**: PHPStan level 5 (run `vendor/bin/phpstan analyse`)
+
+#### React/TypeScript
+
+- **Props**: Use object destructuring; treat as immutable/readonly
+- **Naming**: PascalCase for components/pages, camelCase for hooks/utilities
+- **Forms**: Extend `FormBuilder` and `useCustomForm` for CRUD forms
+- **UI Components**: Follow shadcn/ui patterns in `resources/js/ui/`
+- **State**: Inertia.js handles client-server state; Ziggy provides typed `route()` helper
+- **Types**: Mirror backend DTOs in `interfaces/`; ensure camelCase keys match backend responses
+
+### Dependencies & Integrations
+
+**Backend**:
+
+- `spatie/laravel-data` - DTOs with validation attributes
+- `maatwebsite/excel` - Excel import/export
+- `textalk/websocket` - WebSocket connections for data loading
+- `tightenco/ziggy` - Laravel routes in JavaScript/TypeScript
+- `barryvdh/laravel-ide-helper` - IDE autocompletion
+- `larastan/larastan` - PHPStan for Laravel
+
+**Frontend**:
+
+- `@inertiajs/react` - Server-driven client-side rendering
+- `recharts` - Data visualization
+- `leaflet`, `react-leaflet` - Interactive maps
+- `dayjs` - Date manipulation
+- `lucide-react`, `react-icons` - Icon libraries
+- `framer-motion` - Animations
+- `react-markdown`, `rehype-raw`, `remark-gfm` - Markdown rendering
+- `xlsx` - Client-side Excel operations
+
+### Critical Workflows
+
+#### Creating New Subject Areas or Data Details
+
+1. `SubjectAreaController::store` or `DataDetailController::store` triggers `CreateDataTable`
+2. Dynamic table scaffolding creates typed columns (dimensions, measures, dates)
+3. Metadata structures are auto-created and synced
+4. On failure, tables must be rolled back (see existing try/catch patterns)
+
+#### Data Loading Jobs
+
+1. `DataLoaderQuery` defines fetch logic (REST API, WebSocket, Database)
+2. `RunScheduledJob` orchestrates execution
+3. Fetchers stream JSON responses to avoid memory issues
+4. `ImportToDataTable` flattens JSON via `FlattenJsonResponse`, syncs metadata via `SyncColumnMetaData`
+5. Job status and errors logged to `DataLoaderJobStatus`
+
+#### Subset Documentation
+
+- Generated by `SubsetDocumentationGenerator`
+- Ensure new subset fields include descriptions to avoid empty docs
+- Uses Gemini integration (`GeminiService`) with `.env` config (`app.gemini_*`)
+
+### Environment & Setup
+
+1. Copy `.env.example` to `.env` and configure database, Gemini API keys
+2. `composer install && npm install`
+3. `php artisan key:generate`
+4. `php artisan migrate`
+5. Seed data: `php artisan db:seed` (uses `database/seeders/` and `database/data/`)
+6. Development: `npm run dev` (Vite) + `php artisan serve` (or Sail)
+
+### Testing & Quality
+
+**Mandatory checks before commits**:
+
+- `php artisan test` - Pest tests with `RefreshDatabase`
+- `vendor/bin/pint` - PHP code formatting
+- `vendor/bin/phpstan analyse` - Static analysis
+- `npm run tsc-check` - TypeScript type checking
+- ESLint + Prettier (configured in `package.json`)
+
+### Security & Validation
+
+- **Always validate**: Use Laravel Data DTOs or Form Requests; never use raw request data
+- **Authentication**: Most routes require `auth` middleware via `HasMiddleware`
+- **API Authentication**: Laravel Sanctum for API tokens
+- **Large imports**: Stream through DataLoader fetchers; avoid loading unbounded arrays
+- **Public APIs**: Ensure authenticated; follow resource route conventions in `routes/web.php`
+
+This ensures consistency across the codebase and reduces boilerplate.
+
+===
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
@@ -12,10 +227,17 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - inertiajs/inertia-laravel (INERTIA) - v1
 - laravel/framework (LARAVEL) - v11
 - laravel/prompts (PROMPTS) - v0
+- laravel/sanctum (SANCTUM) - v4
 - tightenco/ziggy (ZIGGY) - v2
 - larastan/larastan (LARASTAN) - v2
+- laravel/breeze (BREEZE) - v2
+- laravel/mcp (MCP) - v0
 - laravel/pint (PINT) - v1
+- laravel/sail (SAIL) - v1
 - pestphp/pest (PEST) - v2
+- phpunit/phpunit (PHPUNIT) - v10
+- eslint (ESLINT) - v8
+- prettier (PRETTIER) - v3
 - @inertiajs/react (INERTIA) - v1
 - react (REACT) - v18
 - tailwindcss (TAILWINDCSS) - v3
@@ -118,6 +340,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 - Inertia.js components should be placed in the `resources/js/Pages` directory unless specified differently in the JS bundler (vite.config.js).
 - Use `Inertia::render()` for server-side routing instead of traditional Blade views.
+- Use `search-docs` for accurate guidance on all things Inertia.
 
 <code-snippet lang="php" name="Inertia::render Example">
 // routes/web.php example
@@ -283,15 +506,22 @@ it('has emails', function (string $email) {
 
 - Use `router.visit()` or `<Link>` for navigation instead of traditional links.
 
-<code-snippet lang="react" name="Inertia Client Navigation">
-    import { Link } from '@inertiajs/react'
+<code-snippet name="Inertia Client Navigation" lang="react">
 
-    <Link href="/">Home</Link>
+import { Link } from '@inertiajs/react'
+<Link href="/">Home</Link>
+
 </code-snippet>
 
-- For form handling, use `router.post` and related methods. Do not use regular forms.
 
-<code-snippet lang="react" name="Inertia React Form Example">
+=== inertia-react/v1/forms rules ===
+
+## Inertia + React Forms
+
+- For form handling in Inertia pages, use `router.post` and related methods. Do not use regular forms.
+
+
+<code-snippet name="Inertia React Form Example" lang="react">
 import { useState } from 'react'
 import { router } from '@inertiajs/react'
 
@@ -365,10 +595,162 @@ export default function Edit() {
 - Always use Tailwind CSS v3 - verify you're using only classes supported by this version.
 
 
-=== tests rules ===
+=== .ai/backend-guidelines rules ===
 
-## Test Enforcement
+<h2>Project Structure & Architecture</h2>
+<ul>
+    <li>Group backend classes by feature inside default Laravel folders (Controllers, Models, Services, Requests,
+        Policies, etc.).</li>
+    <li>Use final classes for controllers, services, actions, requests, models to prevent unintended inheritance.</li>
+    <li>Prefer read-only promoted constructor properties for dependencies; avoid public mutable state.</li>
+    <li>No business logic inside controllers; delegate to small single-purpose service/action classes.</li>
+    <li>Keep classes focused: max ~300 lines; methods &lt;= 80 lines (strive for much smaller).</li>
+</ul>
 
-- Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
-- Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
+<h2>Naming & Conventions</h2>
+<ul>
+    <li>PascalCase class names; singular nouns (e.g. <code>ProjectInstance</code>, <code>ReferenceDataParameter</code>).
+    </li>
+    <li>Method names in camelCase starting with a verb (e.g. <code>storeRecord</code>, <code>verifySecondValue</code>).
+    </li>
+    <li>Boolean method prefixes: is / has / can / should (e.g. <code>isAuthorized</code>, <code>hasSecondValue</code>).
+    </li>
+    <li>Constants in UPPER_SNAKE_CASE.</li>
+    <li>Use imported class names instead of fully-qualified inline references.</li>
+</ul>
+
+<h2>Class Design & Dependencies</h2>
+<ul>
+    <li>Inject dependencies via constructor (property promotion) — never instantiate heavy collaborators inline.</li>
+    <li>Prefer interfaces for abstractions that may change (e.g. external gateways, complex domain services).</li>
+    <li>Keep service classes single-action; compose multiple services for orchestration.</li>
+    <li>Use value objects or enums for constrained primitives instead of raw strings/ints.</li>
+</ul>
+
+<h2>Type Safety & Data Handling</h2>
+<ul>
+    <li>Explicitly type every parameter & return; if impossible, document using PHPDoc with precise shapes.</li>
+    <li>Document array shapes with PHPDoc; extract DTOs (Spatie Data) for multi-dimensional structures.</li>
+    <li>Prefer DTOs over associative arrays for request/response boundaries.</li>
+    <li>Use enums for fixed sets; value objects (e.g. Money, Email) for domain invariants.</li>
+</ul>
+
+<h2>Validation & Authorization</h2>
+<ul>
+    <li>Never consume request input before validation.</li>
+    <li>Use Spatie Data attribute validation for structured form/data requests; Form Requests only for simple or legacy
+        cases.</li>
+    <li>Centralize authorization via policies / Gate::allows inside Data::authorize when following project pattern.</li>
+    <li>Prefer <code>Gate::authorize()</code> or policy helpers over manual conditionals.</li>
+</ul>
+
+<h2>Error Handling</h2>
+<ul>
+    <li>Wrap persistence mutations in try/catch; convert user-facing validation branches into ErrorResponse objects.
+    </li>
+    <li>Surface unexpected exceptions through <code>ExceptionMessage::getMessage()</code> for production safety.</li>
+</ul>
+
+<h2>Database & Performance</h2>
+<ul>
+    <li>Use Eloquent ORM and relationships; avoid raw queries unless justified for performance.</li>
+    <li>Prevent N+1 via eager loading (select only required columns).</li>
+    <li>Chunk large data operations; queue long-running tasks instead of blocking HTTP cycle.</li>
+    <li>Add indexes for frequently filtered columns; analyze slow queries before optimizing code paths.</li>
+    <li>Use caching strategically for read-heavy, slow-to-compute aggregates.</li>
+</ul>
+
+<h2>Security</h2>
+<ul>
+    <li>Route groups must enforce authentication for any state-changing endpoint.</li>
+    <li>Avoid using <code>env()</code> outside config files; read via <code>config()</code>.</li>
+    <li>Validate file uploads and use centralized FileSaver abstraction.</li>
+</ul>
+
+<h2>Middleware & Cross-Cutting Concerns</h2>
+<ul>
+    <li>Implement custom middleware for recurring concerns (feature flags, subscription state) rather than scattering
+        checks.</li>
+    <li>Keep middleware lean—delegate heavy logic to services.</li>
+</ul>
+
+
+<h2>Documentation & Maintainability</h2>
+<ul>
+    <li>Prefer self-expressive naming over inline comments; reserve comments for clarifying domain rules.</li>
+</ul>
+
+
+=== .ai/frontend-guidelines rules ===
+
+<h2>Structure & Organization</h2>
+<ul>
+    <li>Organize code by feature inside domain folders (Components, Hooks, Pages, Layout, Libs, DataStructures, ui for
+        shadcn).</li>
+    <li>Keep reusable cross-feature components in a shared directory; avoid duplication.</li>
+    <li>All shadcn components live under <code>ui</code> retaining original filenames.</li>
+    <li>Use kebab-case (preferred) or camelCase for file & folder names; components/pages keep PascalCase exports.</li>
+</ul>
+
+<h2>Component Design</h2>
+<ul>
+    <li>Single responsibility per component; extract reusable UI fragments promptly.</li>
+    <li>Do not nest component declarations inside other components; declare at module top scope.</li>
+    <li>Prefer logical <code>&amp;&amp;</code> operator for conditional rendering instead of ternary operators or switch
+        statements; extract complex conditions into separate functions/components.</li>
+    <li>Props must be readonly (TypeScript <code>readonly</code> or inferred immutability).</li>
+    <li>Co-locate feature interfaces/types in a single <code>types.ts</code> (or similar) file per feature.</li>
+</ul>
+
+<h2>Hooks & State</h2>
+<ul>
+    <li>Encapsulate data fetching / complex state in custom hooks instead of inline useEffect logic in components.</li>
+    <li>Custom hook names start with <code>use</code> and describe purpose (e.g. <code>useProjectMetrics</code>).</li>
+    <li>Call hooks only at top level of components or other hooks (never in conditions/loops).</li>
+    <li>Don't pass hook functions themselves as props—expose derived callbacks/state values instead.</li>
+    <li>Use Inertia's <code>usePage</code> to access page props.</li>
+</ul>
+
+<h2>Performance</h2>
+<ul>
+    <li>Memoize expensive calculations with <code>useMemo</code>; stable callback props via <code>useCallback</code>.
+    </li>
+    <li>Always supply dependency arrays; never omit them.</li>
+    <li>Wrap pure presentational components with <code>React.memo</code> when prop churn risks re-render cost.</li>
+    <li>Reserve <code>useLayoutEffect</code> only for pre-paint DOM measurements.</li>
+</ul>
+
+<h2>Data & Logic</h2>
+<ul>
+    <li>Use nullish coalescing <code>??</code> instead of logical OR for defaulting.</li>
+    <li>Favor custom hooks over ad-hoc effects for side-effects & fetching.</li>
+    <li>Use <code>useSyncExternalStore</code> for subscription-based external sources.</li>
+    <li>All JSON fields use snake_case; map to camelCase in TypeScript layer if desired (centralize mapping).</li>
+</ul>
+
+<h2>Routing</h2>
+<ul>
+    <li>Use global <code>route()</code> helper (Ziggy) without importing from ziggy-js.</li>
+</ul>
+
+<h2>Styling</h2>
+<ul>
+    <li>Prefer Tailwind <code>gap-*</code> utilities over space-* where layout allows.</li>
+</ul>
+
+<h2>Naming</h2>
+<ul>
+    <li>Components & enums in PascalCase (enum members UPPER_SNAKE_CASE).</li>
+    <li>Variables, functions, and props in camelCase; boolean prefixed with is/has/can/should.</li>
+    <li>Event handlers prefixed with handle / on (e.g. <code>handleSubmit</code>).</li>
+    <li>Context provider files use <code>-context</code> suffix.</li>
+    <li>Use single-letter generic type params (T, U, V...).</li>
+</ul>
+
+<h2>TypeScript</h2>
+<ul>
+    <li>All component props must be typed via interfaces or type aliases.</li>
+    <li>Define hook return types explicitly when not inferred clearly.</li>
+    <li>Use enums for discrete sets; discriminated unions for variant states.</li>
+</ul>
 </laravel-boost-guidelines>

@@ -6,6 +6,7 @@ use App\Http\Requests\DataDetail\DataDetailFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Libs\OperationResult;
 use App\Models\DataDetail\DataDetail;
+use App\Models\DataLoader\DataLoaderJob;
 use App\Models\DataTable\DataTableDate;
 use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
@@ -60,6 +61,15 @@ readonly class SetupDataTable
             return OperationResult::from([
                 'error' => true,
                 'message' => 'here: '.ExceptionMessage::getMessage($exception),
+            ]);
+        }
+
+        try {
+            $this->createLoaderJob($record, $formRequest);
+        } catch (Exception $exception) {
+            return OperationResult::from([
+                'error' => true,
+                'message' => 'On Job Create: '.ExceptionMessage::getMessage($exception),
             ]);
         }
 
@@ -197,5 +207,32 @@ readonly class SetupDataTable
         }
 
         DataTableRelation::insert($relationFields);
+    }
+
+    private function createLoaderJob(DataDetail $dataDetail, DataDetailFormRequest $request): void
+    {
+        if ($request->jobName === null || $request->sourceType === null) {
+            return;
+        }
+
+        DataLoaderJob::create([
+            'name' => $request->jobName,
+            'description' => $request->jobDescription,
+            'cron_type' => $request->cronType,
+            'start_date' => $request->startDate,
+            'end_date' => $request->endDate,
+            'schedule_time' => $request->scheduleTime,
+            'day_of_week' => $request->dayOfWeek,
+            'month_of_year' => $request->monthOfYear,
+            'day_of_month' => $request->dayOfMonth,
+            'duplicate_identification_field' => $request->duplicateIdentificationField,
+            'delete_existing_data' => $request->deleteExistingData,
+            'query_id' => $request->queryId,
+            'api_id' => $request->apiId,
+            'source_type' => $request->sourceType,
+            'data_detail_id' => $dataDetail->id,
+            'field_mapping' => $request->fieldMapping,
+            'created_by' => request()->user()?->id,
+        ]);
     }
 }

@@ -1,8 +1,15 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
+import extractJsonMarkdown from '@/Chat/libs/extract-json-markdown'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { handleAgentMetaResponse } from '../libs/handle-agent-response'
+
+export interface AgentResponseMetaData {
+  suggestions?: string[]
+  visualization?: object[]
+  data_explore?: { subsetID: number }
+}
 
 function startNewChat(
   newId: number,
@@ -23,96 +30,36 @@ function startNewChat(
   })
 }
 
-function stopLastChat(setMessages: Dispatch<SetStateAction<ChatMessage[]>>) {
-  setMessages((oldValues) => {
-    if (oldValues.length === 0) {
-      return oldValues
+const STATUS_SEARCH_VECTOR = 'Searching Knowledge Base'
+const STATUS_FETCH_DATA = 'Retrieving Relevant Data'
+const STATUS_AFTER_FETCH = 'Finalizing Result'
+const STATUS_AFTER_VECTOR = 'Constructing Search'
+const STATUS_START = 'Analyzing User Query'
+const STATUS_STREAMING_META = 'Processing Results'
+
+function updateStatus(status: string, setStatus: Dispatch<SetStateAction<string>>): void {
+  setStatus((oldStatus) => {
+    if (oldStatus === STATUS_SEARCH_VECTOR && status === 'Tool Call End') {
+      return STATUS_AFTER_VECTOR
     }
-    const lastItem = oldValues[oldValues.length - 1]
-    return oldValues.map((oldMessage) => {
-      if (oldMessage.id === lastItem.id) {
-        return {
-          ...oldMessage,
-          suggestions: ['/visualize', '/newtopic', '/followup', '/rephrase'],
-        }
-      }
-      return oldMessage
-    })
+    if (status === 'Tool Call End') {
+      return STATUS_AFTER_FETCH
+    }
+    return status
   })
 }
 
-const updateLastChat = (content: string, setMessages: Dispatch<SetStateAction<ChatMessage[]>>) => {
-  setMessages((oldValues) => {
-    if (oldValues.length === 0) {
-      return oldValues
-    }
-    const lastItem = oldValues[oldValues.length - 1]
-    return oldValues.map((oldMessage) => {
-      if (oldMessage.id === lastItem.id) {
-        return {
-          ...oldMessage,
-          content: oldMessage.content + content,
-        }
-      }
-      return oldMessage
-    })
-  })
-}
-
-const addSuggestionsToLastChat = (
-  suggestionsJson: string,
-  setMessages: Dispatch<SetStateAction<ChatMessage[]>>
-) => {
-  try {
-    const parsedData = JSON.parse(suggestionsJson)
-    const suggestions = parsedData.suggestions as string[]
-
-    if (!Array.isArray(suggestions)) {
-      console.error('❌ Suggestions data is not an array:', suggestions)
-      return
-    }
-
-    setMessages((oldValues) => {
-      if (oldValues.length === 0) {
-        return oldValues
-      }
-      const lastItem = oldValues[oldValues.length - 1]
-      return oldValues.map((oldMessage) => {
-        if (oldMessage.id === lastItem.id) {
-          return {
-            ...oldMessage,
-            suggestions: suggestions,
-          }
-        }
-        return oldMessage
-      })
-    })
-  } catch (error) {
-    console.error('❌ Error parsing suggestions JSON:', error, suggestionsJson)
-  }
-}
-
-interface currentSession {
+interface CurrentSession {
   id: number
   title: string
   messages: ChatMessage[]
 }
 
-// const INITIAL_MESSAGES: ChatMessage[] = [
-//   {
-//     id: 0,
-//     role: 'assistant',
-//     content: 'Hello! How can I assist you today?',
-//     contentType: 'text',
-//     suggestions: [
-//       'Show me the revenue trends for this quarter',
-//       'Compare billing vs collection performance',
-//       'Analyze customer satisfaction metrics',
-//     ],
-//   },
-// ]
-//
-export default function useChat(mode: 'chat' | 'agent', currentSession: currentSession) {
+const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
+
+type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+
+export default function useChat(currentSession: CurrentSession) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
     chatURL: string
@@ -121,65 +68,186 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const socketRef = useRef<WebSocket | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<string>('')
   const [input, setInput] = useState('')
+  const [wsStatus, setWsStatus] = useState<WebSocketStatus>('connecting')
   const uuid = useRef(1)
   const isBeingStreamed = useRef(false)
-  const chartIsBeingStreamed = useRef(false)
-  const isExpectingFollowup = useRef(false)
+  const tempMetaInfo = useRef('')
+  const isCollectingMeta = useRef(false)
   const [reconnectTrigger, setReconnectTrigger] = useState(0)
+  const contentBuffer = useRef('')
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    const url = mode === 'agent' ? agentURL : chatURL
-    const ws = new WebSocket(`${url}?token=${chatToken}`)
-    ws.onopen = () => console.log('✅ WebSocket Connected')
+    setWsStatus('connecting')
+    const ws = new WebSocket(`${agentURL}?token=${chatToken}`)
+    ws.onopen = () => {
+      console.log('✅ WebSocket Connected')
+      setWsStatus('connected')
+    }
+
+    const flushBuffer = () => {
+      if (contentBuffer.current == '') {
+        return
+      }
+      const contentToFlush = contentBuffer.current
+      contentBuffer.current = ''
+
+      setMessages((oldValues) => {
+        if (oldValues.length === 0) {
+          return oldValues
+        }
+        const lastItem = oldValues[oldValues.length - 1]
+        //check if the message contains end of answer marker
+        const contentStreamedSoFar = lastItem.content + contentToFlush
+        let lastMessageContent = contentStreamedSoFar
+        if (contentStreamedSoFar.includes(END_OF_ANSWER_MARKER)) {
+          const parts = contentStreamedSoFar.split(END_OF_ANSWER_MARKER)
+          if (parts.length === 2) {
+            isCollectingMeta.current = true
+            tempMetaInfo.current = parts[1].trim()
+            lastMessageContent = parts[0]
+            setStatus(STATUS_STREAMING_META)
+          }
+        }
+        return oldValues.map((oldMessage) => {
+          if (oldMessage.id === lastItem.id) {
+            return {
+              ...oldMessage,
+              content: lastMessageContent,
+            }
+          }
+          return oldMessage
+        })
+      })
+    }
+
+    const resetStreamingState = () => {
+      flushBuffer()
+      isBeingStreamed.current = false
+      isCollectingMeta.current = false
+      tempMetaInfo.current = ''
+      setStatus('')
+      setIsLoading(false)
+    }
 
     ws.onmessage = (event) => {
       try {
-        if (mode === 'agent') {
-          // Parse and push agent responses as text messages
-          const newMessages = parseAndConvertAgentResponse(event.data, uuid, setIsLoading)
-          setMessages((prev) => [...prev, ...newMessages])
+        // Validate event data
+        if (!event.data || typeof event.data !== 'string') {
+          console.warn('⚠️ Invalid websocket message data:', event.data)
           return
         }
-        if (event.data === '<start>') {
-          isBeingStreamed.current = true
-          startNewChat(uuid.current++, 'text', setMessages)
-        } else if (event.data === '<stop>') {
-          isBeingStreamed.current = false
-          stopLastChat(setMessages)
-        } else if (event.data === '<chart>') {
-          chartIsBeingStreamed.current = true
-          startNewChat(uuid.current++, 'chart', setMessages)
-        } else if (event.data === '<followup>') {
-          isExpectingFollowup.current = true
-        } else if (event.data === '<clear>') {
-          setMessages([
-            {
-              id: uuid.current++,
-              role: 'assistant',
-              content: 'Chat history cleared.',
-              contentType: 'text',
-            },
-          ])
-          isBeingStreamed.current = false
-          chartIsBeingStreamed.current = false
-          isExpectingFollowup.current = false
-        } else if (isExpectingFollowup.current) {
-          addSuggestionsToLastChat(event.data, setMessages)
-          isExpectingFollowup.current = false
-        } else if (isBeingStreamed.current) {
-          updateLastChat(event.data, setMessages)
-        } else if (chartIsBeingStreamed.current) {
-          chartIsBeingStreamed.current = false
-          const jsonBlockMatch = event.data.match(/```json([\s\S]*?)```/i)
-          if (jsonBlockMatch == null) {
-            updateLastChat(event.data, setMessages)
-            return
-          }
-          updateLastChat(jsonBlockMatch[1], setMessages)
+
+        // Parse structured message format
+        const messageData = JSON.parse(event.data)
+
+        // Handle new structured message format
+        switch (messageData.type) {
+          case 'start':
+            flushBuffer()
+            isBeingStreamed.current = true
+            isCollectingMeta.current = false
+            contentBuffer.current = ''
+            tempMetaInfo.current = ''
+            updateStatus(STATUS_START, setStatus)
+            startNewChat(uuid.current++, 'text', setMessages)
+            break
+
+          case 'token':
+            if (isCollectingMeta.current && messageData.content != null) {
+              tempMetaInfo.current += messageData.content
+            } else if (isBeingStreamed.current && messageData.content) {
+              contentBuffer.current += messageData.content
+              if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current)
+              }
+              debounceTimer.current = setTimeout(() => {
+                flushBuffer()
+                debounceTimer.current = null
+              }, 50)
+            }
+            break
+
+          case 'tool_call_start':
+            console.log('🔧 Tool call started:', messageData.tool_name, messageData.tool_input)
+            flushBuffer()
+            if (messageData.tool_name?.toLowerCase().includes('vector')) {
+              updateStatus(STATUS_SEARCH_VECTOR, setStatus)
+            } else if (
+              messageData.tool_name &&
+              (messageData.tool_name.toLowerCase().includes('data') ||
+                messageData.tool_name.toLowerCase().includes('fetch'))
+            ) {
+              updateStatus(STATUS_FETCH_DATA, setStatus)
+            }
+
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: uuid.current++,
+                role: 'action',
+                content: messageData.tool_name,
+                description: JSON.stringify(messageData.tool_input),
+                contentType: 'text',
+                suggestions: [],
+              },
+              {
+                id: uuid.current++,
+                role: 'assistant',
+                content: '',
+                contentType: 'text',
+                suggestions: [],
+              },
+            ])
+            break
+
+          case 'tool_call_end':
+            console.log('✅ Tool call completed')
+            updateStatus('Tool Call End', setStatus)
+            // Tool call finished, continue with normal flow
+            break
+
+          case 'error':
+            console.error('❌ Agent error:', messageData.message)
+            resetStreamingState()
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: uuid.current++,
+                role: 'error',
+                content: `❌ Error: ${messageData.message}`,
+                contentType: 'text',
+                suggestions: [],
+              },
+            ])
+            break
+
+          case 'stop':
+            console.log('🛑 Stopping chat stream')
+            setIsLoading(false)
+            setStatus('')
+            flushBuffer()
+            isBeingStreamed.current = false
+            if (tempMetaInfo.current != null && tempMetaInfo.current != '') {
+              const parsedMetaInfo = extractJsonMarkdown(tempMetaInfo.current)
+              console.log('Meta Information:', parsedMetaInfo)
+              handleAgentMetaResponse(parsedMetaInfo as AgentResponseMetaData, uuid, setMessages)
+            }
+            isCollectingMeta.current = false
+            tempMetaInfo.current = ''
+            break
+
+          default:
+            console.warn('⚠️ Unknown message type:', messageData.type)
         }
       } catch (error) {
-        console.error('❌ JSON Parse Error:', error)
+        console.error('❌ WebSocket Message Processing Error:', error)
+        console.error('❌ Event data that caused error:', event.data)
+
+        // Reset streaming state
+        resetStreamingState()
         setMessages((prev) => [
           ...prev,
           {
@@ -190,19 +258,26 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
             suggestions: [],
           },
         ])
-        isBeingStreamed.current = false
-        chartIsBeingStreamed.current = false
-        isExpectingFollowup.current = false
       }
-      setIsLoading(false)
     }
 
-    ws.onerror = (error) => console.error('❌ WebSocket Error:', error)
-    ws.onclose = () => console.log('❌ WebSocket Disconnected')
+    ws.onerror = (error) => {
+      console.error('❌ WebSocket Error:', error)
+
+      resetStreamingState()
+      setWsStatus('disconnected')
+    }
+    ws.onclose = () => {
+      console.log('❌ WebSocket Disconnected')
+      resetStreamingState()
+      setWsStatus('disconnected')
+    }
     socketRef.current = ws
 
-    return () => ws.close()
-  }, [chatToken, chatURL, agentURL, mode, reconnectTrigger])
+    return () => {
+      ws.close()
+    }
+  }, [chatToken, chatURL, agentURL, reconnectTrigger])
 
   const handleSendMessage = (messageContent: string) => {
     const trimmedContent = messageContent.trim()
@@ -235,28 +310,34 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
   }
 
   useEffect(() => {
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      const filteredMessages = messages.filter(
-        (message) => message.role === 'user' || message.role === 'assistant'
-      )
-      console.log('update server history : ', messages)
-      socketRef.current.send(
-        JSON.stringify({
-          type: 'history',
-          history: filteredMessages,
-        })
-      )
-    } else {
-      console.log('socket not ready')
+    if (isBeingStreamed.current || wsStatus !== 'connected') {
+      return
     }
-  }, [currentSession, reconnectTrigger])
+
+    if (socketRef.current == null || socketRef.current.readyState !== WebSocket.OPEN) {
+      return
+    }
+
+    const filteredMessages = messages.filter(
+      (message) => message.role === 'user' || message.role === 'assistant'
+    )
+    socketRef.current.send(
+      JSON.stringify({
+        type: 'history',
+        history: filteredMessages,
+      })
+    )
+  }, [currentSession, reconnectTrigger, messages, wsStatus])
 
   const setMessageFromHistory = (History: ChatMessage[]) => {
     setMessages(History)
   }
 
   useEffect(() => {
-    console.log('messsage from history: ', messages)
+    if (isBeingStreamed.current) {
+      return
+    }
+
     axios
       .patch(`/chat-history/${currentSession.id}`, {
         messages: messages,
@@ -268,29 +349,27 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
         console.error('Error saving chat history from useChat:', err)
       })
   }, [messages, currentSession])
+
   const handleRetryConnection = () => {
-    const lastUserMessageIndex = messages.findLastIndex((msg) => msg.role === 'user')
-
-    if (lastUserMessageIndex !== -1) {
-      setMessages((prevMessages) => prevMessages.slice(0, lastUserMessageIndex))
-    } else {
-      setMessages([])
-    }
-
     setIsLoading(false)
+    setStatus('')
     isBeingStreamed.current = false
-    chartIsBeingStreamed.current = false
-    isExpectingFollowup.current = false
-
+    isCollectingMeta.current = false
+    tempMetaInfo.current = ''
+    contentBuffer.current = ''
+    setWsStatus('reconnecting')
     setReconnectTrigger((prev) => prev + 1)
   }
+
   return {
     messages,
     handleSendMessage,
     isLoading,
+    status,
     input,
     setInput,
     setMessageFromHistory,
     handleRetryConnection,
+    wsStatus,
   }
 }

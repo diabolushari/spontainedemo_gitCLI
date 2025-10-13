@@ -1,9 +1,8 @@
-import AIInsights from './components/AiInsights'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
-import { useEffect, useState } from 'react'
 import useChat from './components/useChat'
-import axios from 'axios'
 
 export interface ChatMessage {
   id: number
@@ -26,18 +25,19 @@ interface ChatProps {
   currentSession: ChatHistory
 }
 
-export default function Chat({ chatHistory, currentSession }: ChatProps) {
-  const [mode, setMode] = useState<'chat' | 'agent'>('agent')
+export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
     handleSendMessage,
     isLoading,
+    status,
     input,
     setInput,
     setMessageFromHistory,
     handleRetryConnection,
-  } = useChat(mode, _currentSession)
+    wsStatus,
+  } = useChat(_currentSession)
 
   // Listen for AI Insights custom event to send a message
   useEffect(() => {
@@ -62,24 +62,29 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
   }
 
   return (
-    <div className='flex h-screen bg-gray-50'>
-      <Sidebar
-        chatHistory={chatHistory}
-        sessionId={_currentSession.id}
-        onSessionChange={switchConversation}
-      />
+    <div className='flex h-screen bg-gradient-to-br from-slate-50/80 via-blue-50/40 to-indigo-50/30'>
+      {/* Sidebar with enhanced visual separation */}
+      <div className='relative'>
+        <Sidebar
+          chatHistory={chatHistory}
+          sessionId={_currentSession.id}
+          onSessionChange={switchConversation}
+        />
+        {/* Subtle separator line */}
+        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/40 to-transparent' />
+      </div>
+
       <MainArea
         currentSession={_currentSession}
         messages={messages}
         handleSendMessage={handleSendMessage}
         isLoading={isLoading}
+        status={status}
         input={input}
         setInput={setInput}
-        mode={mode}
-        onModeChange={setMode}
         onRetry={handleRetryConnection}
+        wsStatus={wsStatus}
       />
-      <AIInsights />
     </div>
   )
 }

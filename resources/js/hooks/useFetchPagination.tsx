@@ -3,7 +3,10 @@ import { Paginator } from '@/ui/ui_interfaces'
 import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 
-export default function useFetchPagination<T>(url: string): [Paginator<T> | null, boolean] {
+export default function useFetchPagination<T>(
+  url: string,
+  debounceDelay: number = 300
+): [Paginator<T> | null, boolean] {
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState<Paginator<T> | null>(null)
 
@@ -21,8 +24,12 @@ export default function useFetchPagination<T>(url: string): [Paginator<T> | null
   }, [url])
 
   useEffect(() => {
-    fetchList()
-  }, [fetchList])
+    const timeoutId = setTimeout(async () => {
+      await fetchList()
+    }, debounceDelay)
+
+    return () => clearTimeout(timeoutId)
+  }, [fetchList, debounceDelay])
 
   return [list, loading]
 }

@@ -3,7 +3,6 @@
 namespace App\Services\DataLoader\ImportToDataTable;
 
 use App\Models\DataDetail\DataDetail;
-use App\Models\DataTable\DataTableRelation;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -46,10 +45,7 @@ class ImportToDataTable
         array $data,
         bool $deleteExistingData = false,
         ?string $duplicationIdentifierField = null,
-        ?array $fieldMapping = null
     ): array {
-
-        Log::info($dataDetail->name);
 
         $status = [
             'is_successful' => false,
@@ -67,20 +63,16 @@ class ImportToDataTable
             return $status;
         }
 
-        $referredRelations = DataTableRelation::where('related_table_id', $dataDetail->id)
-            ->whereHas('dataTable')
-            ->get();
-
-        $relationColumnInfo = $this->mapColumnToRelation->map($fieldMapping, $referredRelations);
-
         $dataColumns = array_keys($data[0]);
 
-        $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id, $fieldMapping);
+        $fieldInfo = $this->mapColumnsToField->map(
+            $dataColumns,
+            $dataDetail->id
+        );
 
         //map fieldInfo/data into data table
         $dataTable = $this->convertToDataTable->convert(
             $fieldInfo,
-            $relationColumnInfo,
             $data,
             $dataDetail->id
         );
@@ -124,7 +116,6 @@ class ImportToDataTable
             }
         } catch (Exception $e) {
 
-            Log::info($e->getMessage());
             $status['error_message'] = $e->getMessage();
             $status['completed_at'] = now();
 
@@ -140,12 +131,7 @@ class ImportToDataTable
                 );
             }
 
-            // Use different insertion methods based on whether there are related tables
-            if (count($relationColumnInfo) === 0) {
-                $this->performMassInsertion($dataDetail, $dataTable);
-            } else {
-                $this->performSingleRecordInsertion($dataDetail, $dataTable, $relationColumnInfo);
-            }
+            $this->performMassInsertion($dataDetail, $dataTable);
         } catch (Exception $e) {
             Log::info($e->getMessage());
             $status['error_message'] = $e->getMessage();
@@ -166,68 +152,8 @@ class ImportToDataTable
      */
     private function performMassInsertion(DataDetail $dataDetail, array $dataTable): void
     {
-        Log::info($dataTable);
         foreach (array_chunk($dataTable, 1000) as $chunk) {
             DB::table($dataDetail->table_name)->insert($chunk);
         }
-    }
-
-    /**
-     * Perform single record insertion for tables with relations
-     *
-     * @param  array<array<array-key, string|int|null|float|array>>  $dataTable
-     * @param  RelationColumnInfo[]  $relationColumnInfo
-     */
-    private function performSingleRecordInsertion(DataDetail $dataDetail, array $dataTable, array $relationColumnInfo): void
-    {
-        Log::info('performing single record insert');
-        /** @var array<string, array> */
-        $groupedChildData = [];
-
-        foreach ($relationColumnInfo as $relationInfo) {
-            $groupedChildData[$relationInfo->fieldMapping->fieldName] = [];
-        }
-
-        foreach ($dataTable as $record) {
-            $dataWithoutRelations = [
-                ...$record,
-            ];
-            foreach ($relationColumnInfo as $relationInfo) {
-                unset($dataWithoutRelations[$relationInfo->fieldMapping->fieldName]);
-            }
-            $recordId = DB::table($dataDetail->table_name)->insertGetId($dataWithoutRelations);
-            foreach ($relationColumnInfo as $relationInfo) {
-                if (isset($record[$relationInfo->fieldMapping->fieldName])) {
-                    $data = $record[$relationInfo->fieldMapping->fieldName];
-                    if ($relationInfo->fieldMapping->fieldType === 'object') {
-                        $data = [$data];
-                    }
-
-                    foreach ($data as &$item) {
-                        $item[$relationInfo->relation->column] = $recordId;
-                    }
-
-                    $groupedChildData[$relationInfo->fieldMapping->fieldName] = [
-                        ...$groupedChildData[$relationInfo->fieldMapping->fieldName],
-                        ...$data,
-                    ];
-                }
-            }
-        }
-
-        foreach ($relationColumnInfo as $relationInfo) {
-            $dataDetail = DataDetail::find($relationInfo->relation->data_detail_id);
-            if ($dataDetail != null) {
-                $fieldMapping = $relationInfo->fieldMapping->toArray();
-                $this->importToDataTable(
-                    $dataDetail,
-                    $groupedChildData[$relationInfo->fieldMapping->fieldName],
-                    false,
-                    null,
-                    $fieldMapping['children']
-                );
-            }
-        }
-
     }
 }

@@ -1,10 +1,10 @@
 import useFetchRecord from '@/hooks/useFetchRecord'
 import {
   DataDetail,
-  DataTableText,
   TableDateField,
   TableDimensionField,
   TableMeasureField,
+  TableTextField,
 } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
 import { memo, useMemo } from 'react'
@@ -20,7 +20,7 @@ interface DataDetailFields {
   dates: TableDateField[]
   dimensions: TableDimensionField[]
   measures: TableMeasureField[]
-  texts: DataTableText[]
+  texts: TableTextField[]
   relations: DataDetail[]
 }
 

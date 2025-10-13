@@ -12,14 +12,9 @@ class MapColumnsToField
 {
     /**
      * @param  string[]  $excelFieldNames
-     * @param  array{
-     *     field_id: int,
-     *     field_name: string,
-     *     data_table_column: string|null
-     * }[]|null  $fieldMapping
      * @return TableColumnInfo[]
      */
-    public function map(array $excelFieldNames, int $dataDetailId, ?array $fieldMapping = null): array
+    public function map(array $excelFieldNames, int $dataDetailId): array
     {
 
         /**
@@ -28,21 +23,7 @@ class MapColumnsToField
         $fieldList = [];
 
         DataTableDate::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableDate $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
-                if ($fieldMapping != null) {
-                    foreach ($fieldMapping as $field) {
-                        if ($field['data_table_column'] === $tableField->column) {
-                            $this->isFieldMapped(
-                                $fieldList,
-                                $field,
-                                false,
-                                null
-                            );
-                        }
-                    }
-
-                    return;
-                }
+            ->each(function (DataTableDate $tableField) use (&$fieldList, $excelFieldNames) {
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldList,
@@ -50,28 +31,13 @@ class MapColumnsToField
                         $excelFieldName,
                         $tableField->column,
                         false,
-                        null,
-                        $fieldMapping
+                        null
                     );
                 }
             });
 
         DataTableDimension::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableDimension $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
-                if ($fieldMapping != null) {
-                    foreach ($fieldMapping as $field) {
-                        if ($field['data_table_column'] === $tableField->column) {
-                            $this->isFieldMapped(
-                                $fieldList,
-                                $field,
-                                true,
-                                $tableField->meta_structure_id
-                            );
-                        }
-                    }
-
-                    return;
-                }
+            ->each(function (DataTableDimension $tableField) use (&$fieldList, $excelFieldNames) {
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldList,
@@ -80,29 +46,12 @@ class MapColumnsToField
                         $tableField->column,
                         true,
                         $tableField->meta_structure_id,
-                        $fieldMapping
                     );
                 }
             });
 
         DataTableMeasure::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableMeasure $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
-
-                if ($fieldMapping != null) {
-                    foreach ($fieldMapping as $field) {
-                        if ($field['data_table_column'] === $tableField->column) {
-                            $this->isFieldMapped(
-                                $fieldList,
-                                $field,
-                                false,
-                                null
-                            );
-                        }
-                    }
-
-                    return;
-                }
-
+            ->each(function (DataTableMeasure $tableField) use (&$fieldList, $excelFieldNames) {
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldList,
@@ -111,7 +60,6 @@ class MapColumnsToField
                         $tableField->column,
                         false,
                         null,
-                        $fieldMapping
                     );
                     if ($tableField->unit_column != null && $tableField->unit_field_name != null) {
                         $this->insertToList(
@@ -121,30 +69,13 @@ class MapColumnsToField
                             $tableField->unit_column,
                             false,
                             null,
-                            $fieldMapping
                         );
                     }
                 }
             });
 
         DataTableText::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableText $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
-
-                if ($fieldMapping != null) {
-                    foreach ($fieldMapping as $field) {
-                        if ($field['data_table_column'] === $tableField->column) {
-                            $this->isFieldMapped(
-                                $fieldList,
-                                $field,
-                                false,
-                                null
-                            );
-                        }
-                    }
-
-                    return;
-                }
-
+            ->each(function (DataTableText $tableField) use (&$fieldList, $excelFieldNames) {
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
                         $fieldList,
@@ -153,19 +84,8 @@ class MapColumnsToField
                         $tableField->column,
                         false,
                         null,
-                        $fieldMapping
                     );
                 }
-            });
-
-        DataTableRelation::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableRelation $tableField) use (&$fieldList) {
-                $fieldList[] = new TableColumnInfo(
-                    $tableField->column,
-                    $tableField->column,
-                    false,
-                    null
-                );
             });
 
         return $fieldList;
