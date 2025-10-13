@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/react'
 import { cn } from '@/utils'
 
 interface Properties {
+  icon?: React.ReactNode
   label: string
   onClick?: (e: React.FormEvent<HTMLButtonElement>) => void
   variant?: string
@@ -15,6 +16,12 @@ interface Properties {
 
 export const chooseButtonColor = (type: string): [string, string] => {
   switch (type) {
+    case 'disabled': {
+      return [
+        'bg-1stop-highlight text-white rounded disabled:opacity-50 disabled:cursor-not-allowed focus:ring-1',
+        'text-primary-700 ',
+      ]
+    }
     case 'secondary': {
       return ['bg-gray-200 hover:bg-gray-400 focus:ring-gray-200 text-gray-700', 'text-gray-500']
     }
@@ -53,6 +60,7 @@ export const chooseButtonColor = (type: string): [string, string] => {
 }
 
 export default function Button({
+  icon,
   label,
   onClick,
   variant = 'primary',
@@ -90,6 +98,7 @@ export default function Button({
           type={type}
         >
           {label}
+          {icon && <span className='mr-2'>{icon}</span>}
         </button>
       )}
       {processing && <Spinner svgStyle={svgStyle} />}

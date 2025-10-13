@@ -33,6 +33,7 @@ const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
           },
           onSuccess: (data) => {
             const flash = data.props.flash as LaravelFlash
+
             setErrors({} as any)
             if (flash.error == null && options?.onComplete != null) {
               options.onComplete()

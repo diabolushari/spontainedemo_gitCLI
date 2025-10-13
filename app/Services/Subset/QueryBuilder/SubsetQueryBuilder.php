@@ -124,7 +124,6 @@ readonly class SubsetQueryBuilder
         }
 
         return $query->selectRaw($selectStatement);
-
     }
 
     /**
@@ -234,7 +233,8 @@ readonly class SubsetQueryBuilder
                         '=',
                         "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
-                });
+                }
+            );
         } else {
             $query->joinSub(
                 $hierarchySubQuery,
@@ -245,7 +245,8 @@ readonly class SubsetQueryBuilder
                         '=',
                         "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
-                });
+                }
+            );
         }
 
         $query->leftJoin(
@@ -272,6 +273,5 @@ readonly class SubsetQueryBuilder
                 $groupingColumns[] = 'secondary_field_record.name';
             }
         }
-
     }
 }

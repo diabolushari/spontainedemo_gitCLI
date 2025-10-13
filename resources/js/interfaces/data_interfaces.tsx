@@ -88,6 +88,23 @@ export interface TableMeasureField extends Model {
   unit_field_name: string | null
 }
 
+/**
+ * The data structure for a subset detail, which is used to configure the output of a subset.
+ *
+ * @property {string} name - The name of the subset detail.
+ * @property {string | null} description - The description of the subset detail.
+ * @property {0 | 1} group_data - Indicates whether the subset detail should group data.
+ * @property {number} data_detail_id - The ID of the data detail that the subset detail belongs to.
+ * @property {Partial<SubsetDateField>[]} [dates] - The date fields of the subset detail.
+ * @property {Partial<SubsetDimensionField>[]} [dimensions] - The dimension fields of the subset detail.
+ * @property {Partial<SubsetMeasureField>[]} [measures] - The measure fields of the subset detail.
+ * @property {Partial<DataDetail> | null} [data_detail] - The data detail that the subset detail belongs to.
+ * @property {number | null} max_rows_to_fetch - The maximum number of rows to fetch for the subset detail.
+ * @property {0 | 1} use_for_training_ai - Indicates whether the subset detail should be used for training AI.
+ * @property {string | null} proactive_insight_instructions - The proactive insights instructions for the subset detail.
+ * @property {string | null} visualization_instructions - The visualization instructions for the subset detail.
+ * @property {string | null} type - The type of the subset detail.
+ */
 export interface SubsetDetail extends Model {
   name: string
   description: string | null
@@ -344,6 +361,112 @@ export interface TableTextField extends Model {
   is_long_text: boolean
 }
 
+export interface Page extends Model {
+  id: number
+  title: string
+  description: string
+  url: string
+  published_at: string
+}
+
+export interface BlockDimension {
+  padding_top: string
+  padding_bottom: string
+  margin_top: string
+  margin_bottom: string
+  mobile_width: string
+  tablet_width: string
+  laptop_width: string
+  desktop_width: string
+}
+
+export interface Ranking {
+  subset_id: number
+  title: string
+  data_field: {
+    label: string
+    value: string
+    show_label: boolean
+  }
+}
+
+export interface Axis {
+  label: string
+  value: string
+  show_label: boolean
+}
+
+export interface Trend {
+  subset_id: number
+  title: string
+  data_field: {
+    x_axis: Axis
+    y_axis: Axis
+  }
+  tooltip_field: {
+    label: string
+    unit: string
+    show_label: boolean
+  }
+  color: string
+  chart_type: 'area' | 'bar'
+}
+
+export interface Overview {
+  title: string
+  description: string
+  card_type: 'chart_and_table' | 'chart_only' | 'table_only'
+  overview_chart?: OverviewChart
+  overview_table?: OverviewTable[]
+}
+
+export interface OverviewChart {
+  title: string
+  subset_id: string
+  chart_type: string
+  x_axis: string
+  y_axis: string[]
+
+  [key: string]: any
+}
+
+export interface OverviewTable {
+  title: string
+  subset_id: string | null
+  measure_field_dimension?: string
+  measure_field: string
+  col_span?: boolean
+  filters?: Filter[]
+
+  [key: string]: any
+}
+
+export interface Config {
+  title: string
+  data_table_id: string
+  subtitle: string
+  default_date?: string
+  default_view?: string
+  subset_group_id: number
+  trend_selected: boolean
+  ranking_selected: boolean
+  overview_selected: boolean
+  explore_button_group?: string
+  data_explore_selected?: boolean
+  trend: Trend
+  ranking: Ranking
+  overview: Overview
+}
+
+export interface Block extends Model {
+  id: number
+  page_id: number
+  name: string
+  position: number
+  dimensions: BlockDimension
+  data: Config
+}
+
 export interface OfficeCoordinates {
   level: string
   circle: string
@@ -352,4 +475,57 @@ export interface OfficeCoordinates {
   office_name: string
   latitude: number
   longitude: number
+}
+
+export interface Filter {
+  readonly dimension: string
+  readonly operator: string
+  readonly value: string | number
+}
+
+export interface Dimension {
+  id: number
+  subset_field_name: string
+  subset_column: string
+}
+
+export interface Widget {
+  id?: number
+  title: string
+  subtitle: string
+  type: string
+  collection_id: number
+  data: {
+    data_table_id: number
+    subset_group_id: number
+    overview: {
+      chart_type: string
+      measure: {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }[]
+      dimension: string
+      color_palette: string
+      subset_id: number
+    }
+    trend: {
+      subset_id: number
+      chart_type: 'area' | 'bar'
+      measure: {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }
+      dimension: string
+      color: string
+    }
+    rank: {
+      subset_id: number
+      ranking_field: {
+        subset_field_name: string
+        subset_column: string
+      }
+    }
+  }
 }

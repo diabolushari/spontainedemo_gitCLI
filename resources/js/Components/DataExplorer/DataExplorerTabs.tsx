@@ -109,7 +109,7 @@ export default function DataExplorerTabs({
           <div className='flex min-w-0 max-w-full flex-1 flex-col gap-1 rounded-lg md:min-w-[220px] md:max-w-xs'>
             <SelectList
               list={subsetItems}
-              dataKey='id'
+              dataKey='subset_detail_id'
               displayKey='name'
               setValue={setSelectedSubsetId}
               value={selectedSubsetId}

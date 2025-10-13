@@ -44,6 +44,11 @@ export default function DeleteModal({
         {children}
         <div className='flex w-full justify-end'>
           <Button
+            label='Cancel'
+            onClick={() => setShowModal(false)}
+            variant='secondary'
+          />
+          <Button
             label='DELETE'
             onClick={onDelete}
             processing={loading}

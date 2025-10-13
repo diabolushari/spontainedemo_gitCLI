@@ -1,10 +1,10 @@
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
 } from '@/Components/ui/chart'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 

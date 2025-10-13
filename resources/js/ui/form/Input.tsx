@@ -1,6 +1,7 @@
 import React from 'react'
 import { FormFieldProp } from '../ui_interfaces'
 import ErrorText from '@/typography/ErrorText'
+import { div } from 'framer-motion/client'
 
 export const getFormStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
   switch (style) {

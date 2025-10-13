@@ -20,7 +20,7 @@ class SubsetGroup extends Model
     //relationships
 
     /**
-     * @return HasMany<SubsetGroupItem>
+     * @return HasMany<SubsetGroupItem, $this>
      */
     public function items(): HasMany
     {

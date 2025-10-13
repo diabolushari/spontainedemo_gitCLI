@@ -5,7 +5,16 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import useFetchList from '@/hooks/useFetchList'
 import Skeleton from 'react-loading-skeleton'
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 import SelectList from '@/ui/form/SelectList'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 

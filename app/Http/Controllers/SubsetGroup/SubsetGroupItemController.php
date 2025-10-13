@@ -39,6 +39,7 @@ class SubsetGroupItemController extends Controller implements HasMiddleware
 
     public function update(SubsetGroupItemRequest $request, SubsetGroupItem $subsetGroupItem): RedirectResponse
     {
+
         try {
             $subsetGroupItem->update($request->all());
         } catch (Exception $e) {

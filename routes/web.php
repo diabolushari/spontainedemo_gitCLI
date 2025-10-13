@@ -1,5 +1,28 @@
 <?php
 
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartDeleteController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableDeleteController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
+use App\Http\Controllers\Blocks\BlocksController;
+use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
+use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
+use App\Http\Controllers\Blocks\DataExplorerCard\DataExplorerCardUpdateController;
+use App\Http\Controllers\ChartData\DataDetailDateController;
+use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\DataDetailSubsetGroupController;
+use App\Http\Controllers\ChartData\DataExplorerDataController;
+use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
+use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
+use App\Http\Controllers\ChartData\SubsetFieldsController;
+use App\Http\Controllers\ChartData\SubsetGroupItemsController;
+use App\Http\Controllers\ChartData\SubsetGroupListController;
+use App\Http\Controllers\ChartData\SubsetGroupNameController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
 use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
@@ -37,8 +60,11 @@ use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
 use App\Http\Controllers\OperationsController;
+use App\Http\Controllers\PageBuilder\CustomPageController;
+use App\Http\Controllers\PageBuilder\PageBuilderController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
+use App\Http\Controllers\SampleChart\ChartController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\StaticListController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -65,20 +91,89 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
+use App\Models\DataDetail\DataDetail;
 use App\Http\Controllers\Utils\LoaderAPIListController;
 use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
+use App\Services\DataTable\JoinDataTable;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    if (! auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    return redirect()->route('data-detail.index');
+});
+
+// TEMP DEBUG: remove after troubleshooting
+Route::get('/debug-session', function () {
+    return response()->json([
+        'session_id' => session()->getId(),
+        'authenticated' => auth()->check(),
+        'user_id' => optional(auth()->user())->id,
+        'intended_url' => session()->get('url.intended'),
+        'all_session_keys' => array_keys(session()->all()),
+    ]);
 });
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// Page building
+Route::resource('page-builder', PageBuilderController::class);
+Route::resource('blocks', BlocksController::class);
+Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)
+    ->name('dimension.update');
+
+// page block urls
+Route::put('builder/config/update/{id}', BlocksUpdateConfigController::class)
+    ->name('config.update');
+Route::put('block/config/general/update/{id}', BlocksConfigGeneralUpdateController::class)
+    ->name('config.general.update');
+Route::put('block/config/trend/update/{id}', BlocksConfigTrendUpdateController::class)
+    ->name('config.trend.update');
+Route::put('block/config/ranking/update/{id}', BlocksConfigRankingUpdateController::class)
+    ->name('config.ranking.update');
+Route::put('block/config/overview/update/{id}', BlocksConfigOverviewUpdateController::class)
+    ->name('config.overview.update');
+Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewChartUpdateController::class)
+    ->name('config.overview.chart.update');
+Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)->name('config.overview.table.update');
+Route::delete('block/config/overview/table/update/{id}/{blockId}', BlocksConfigOverviewTableDeleteController::class)->name('config.overview.table.destroy');
+Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOverviewChartDeleteController::class)->name('config.overview.chart.destroy');
+Route::put('block/config/data-explorer/update/{id}', DataExplorerCardUpdateController::class)->name('config.data-explorer.update');
+Route::put('block/config/layout/update/{id}', BlocksConfigLayoutUpdateController::class)->name('config.layout.update');
+
+//chart
+
+Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
+
+//api for subset, data table
+Route::get('/api/data-detail', DataDetailListController::class);
+Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
+Route::get('/api/subset-group', SubsetGroupListController::class);
+Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
+Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)
+    ->name('data-detail.date');
+Route::get('api/subset/dimension/{subsetId}', SubsetDimensionFieldsController::class)
+    ->name('subset.dimension.fields');
+Route::get('/subset-group/{id}', SubsetGroupNameController::class);
+Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDimensionFieldItemController::class);
+Route::get('/api/data-explorer/{subsetGroup}', DataExplorerDataController::class)
+    ->name('data-explorer');
+Route::get('/api/data-detail/subset-group/{dataDetailId}', DataDetailSubsetGroupController::class);
+
+//testing
+Route::get('/test', function () {
+    return Inertia::render('TestPage');
+});
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
@@ -262,6 +357,14 @@ Route::get('office-coordinates', OfficeCoordinateListController::class)
     ->name('office-coordinates')
     ->middleware('auth');
 
+Route::get('test', function (JoinDataTable $joinDataTable) {
+    $dataDetail = DataDetail::where('id', 42)->first();
+
+    return $joinDataTable->join($dataDetail)
+        ->selectRaw('MAX(month_year_record.name) as month_year')
+        ->first();
+});
+
 Route::get('/insight-gen', InsightsGen::class)
     ->name('insight-gen');
 
@@ -348,4 +451,9 @@ Route::get('mock-api', function () {
     ]);
 })->name('mock-api');
 
+Route::resource('widget-editor', WidgetsEditorController::class)->parameters(['widget-editor' => 'widget']);
+Route::resource('widget-collection', WidgetCollectionController::class)->parameters(['widget-collection' => 'widgetCollection']);
+
 require __DIR__.'/auth.php';
+
+Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');

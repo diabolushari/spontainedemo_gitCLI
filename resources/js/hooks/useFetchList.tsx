@@ -2,13 +2,16 @@ import { useCallback, useEffect, useState } from 'react'
 import { handleHttpErrors } from '@/ui/alerts'
 import axios from 'axios'
 
-export default function useFetchList<T>(url: string): [T[], boolean] {
+export default function useFetchList<T>(url: string | null): [T[], boolean] {
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState<T[]>([])
 
   const fetchList = useCallback(async () => {
-    setLoading(true)
     setList([])
+    if (url == null) {
+      return
+    }
+    setLoading(true)
     try {
       const { data } = await axios.get(url)
       setList(data)

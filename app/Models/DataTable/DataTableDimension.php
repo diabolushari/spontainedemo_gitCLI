@@ -44,7 +44,12 @@ class DataTableDimension extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'data_detail_id', 'data_table_field', 'field_name', 'meta_structure_id', 'created_by', 'updated_by',
+        'data_detail_id',
+        'data_table_field',
+        'field_name',
+        'meta_structure_id',
+        'created_by',
+        'updated_by',
     ];
 
     /**

@@ -4,8 +4,6 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recha
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '../ActiveConnection'
 import Skeleton from 'react-loading-skeleton'
-import { CustomTooltip } from '@/Components/CustomTooltip'
-import { CustomTooltipTrend } from '@/Components/CustomTooltipTrend'
 import { solidColors } from '@/ui/ui_interfaces'
 
 export interface NewConnectionGraphValues {
