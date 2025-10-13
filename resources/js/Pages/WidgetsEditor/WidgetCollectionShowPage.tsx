@@ -242,14 +242,6 @@ export default function WidgetCollectionShowPage({
                   ? 'Try adjusting your search criteria'
                   : 'Get started by creating your first widget for this collection'}
               </p>
-              {!searchQuery && (
-                <Link
-                  href={`/widget-editor/create?collection_id=${collection.id}`}
-                  className='rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
-                >
-                  Create Widget
-                </Link>
-              )}
             </div>
           )}
         </div>
