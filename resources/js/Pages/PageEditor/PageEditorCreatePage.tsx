@@ -10,15 +10,37 @@ import ElementsSidebar from '@/Components/PageEditor/ElementsSidebar'
 import LayoutSidebar from '@/Components/PageEditor/LayoutSideBar'
 import PreviewArea from '@/Components/PageEditor/PreviewArea'
 
+interface Widget {
+  position: number
+  widgetId: number | null
+}
+
+interface PageSection {
+  id: number
+  type: string
+  title: string | null
+  widgets: Widget[]
+  description: string | null
+}
+
+interface PageConfig {
+  id: number
+  title: string
+  description: string
+  link: string
+  page: PageSection[]
+  published: boolean
+}
+
 export default function PageEditorCreatePage({
   page,
   widgets,
 }: {
-  page: any
+  page: PageConfig
   widgets: WidgetType[]
 }) {
   const [activeTab, setActiveTab] = useState('elements')
-  const { post, errors } = useInertiaPost(
+  const { post } = useInertiaPost(
     page ? route('page-editor.update', page.id) : route('page-editor.store'),
     {
       showErrorToast: true,
