@@ -1,10 +1,11 @@
 import { DataLoaderAPI } from '@/interfaces/data_interfaces'
 import useFetchPagination from '@/hooks/useFetchPagination'
 import RestPagination from '@/ui/Pagination/RestPagination'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { FiCheck, FiPlus, FiSearch } from 'react-icons/fi'
 import { cn } from '@/utils'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import CreateAPIModal from './CreateAPIModal'
 
 interface LoaderAPIPickerProps {
   onSelect: (api: DataLoaderAPI) => void
@@ -14,24 +15,40 @@ interface LoaderAPIPickerProps {
 const LoaderAPIPicker = ({ onSelect, selectedId }: LoaderAPIPickerProps) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [search, setSearch] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   const url = `/loader-apis-list?page=${currentPage}${search ? `&search=${encodeURIComponent(search)}` : ''}`
   const [loaderAPIs, loading] = useFetchPagination<DataLoaderAPI>(url)
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page)
-  }
+  }, [])
 
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = useCallback((value: string) => {
     setSearch(value)
     setCurrentPage(1)
-  }
+  }, [])
+
+  const handleAPICreated = useCallback(
+    (api: DataLoaderAPI) => {
+      onSelect(api)
+    },
+    [onSelect]
+  )
+
+  const handleCreateClick = useCallback(() => {
+    setShowCreateModal(true)
+  }, [])
+
+  const handleCloseModal = useCallback(() => {
+    setShowCreateModal(false)
+  }, [])
 
   return (
     <div className='flex flex-col gap-4'>
       <button
-        disabled
-        className='flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
+        onClick={handleCreateClick}
+        className='flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600'
       >
         <FiPlus className='h-5 w-5' />
         Create New API
@@ -108,6 +125,13 @@ const LoaderAPIPicker = ({ onSelect, selectedId }: LoaderAPIPickerProps) => {
         <RestPagination
           pagination={loaderAPIs}
           onNewPage={handlePageChange}
+        />
+      )}
+
+      {showCreateModal && (
+        <CreateAPIModal
+          onClose={handleCloseModal}
+          onSuccess={handleAPICreated}
         />
       )}
     </div>

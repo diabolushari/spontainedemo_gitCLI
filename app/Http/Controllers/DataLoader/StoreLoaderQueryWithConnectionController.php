@@ -13,7 +13,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-final class CreateLoaderQueryWithConnectionController extends Controller implements HasMiddleware
+final class StoreLoaderQueryWithConnectionController extends Controller implements HasMiddleware
 {
     /**
      * @return string[]

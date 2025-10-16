@@ -187,7 +187,7 @@ export default function SetupDataTableForm({
 
         return {
           column: field.column,
-          field_name: '',
+          field_name: field.field_name,
         }
       })
 
@@ -203,7 +203,7 @@ export default function SetupDataTableForm({
         return {
           column: field.column,
           field_name: field.field_name,
-          meta_structure_id: null,
+          meta_structure_id: field.meta_structure?.id,
         }
       })
 
@@ -218,7 +218,7 @@ export default function SetupDataTableForm({
 
         return {
           column: field.column,
-          field_name: '',
+          field_name: field.field_name,
           unit_column: field.unit_column,
           unit_field_name: field.unit_field_name,
         }

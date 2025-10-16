@@ -1,6 +1,6 @@
 import { DataLoaderQuery } from '@/interfaces/data_interfaces'
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useCallback, useState } from 'react'
+import axios, { AxiosResponse } from 'axios'
 import Modal from '@/ui/Modal/Modal'
 import useCustomForm from '@/hooks/useCustomForm'
 import Input from '@/ui/form/Input'
@@ -16,6 +16,12 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 interface CreateQueryModalProps {
   onClose: () => void
   onSuccess: (query: DataLoaderQuery) => void
+}
+
+interface CreateQueryResponse {
+  success: boolean
+  message: string
+  data?: DataLoaderQuery
 }
 
 const CreateQueryModal = ({ onClose, onSuccess }: CreateQueryModalProps) => {
@@ -43,25 +49,31 @@ const CreateQueryModal = ({ onClose, onSuccess }: CreateQueryModalProps) => {
     database: '',
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setErrors({})
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault()
+      setLoading(true)
+      setErrors({})
 
-    try {
-      const response = await axios.post(route('api.create.loader.query'), formData)
-      if (response.data.success) {
-        showSuccess(response.data.message)
-        onSuccess(response.data.data)
-        onClose()
+      try {
+        const response: AxiosResponse<CreateQueryResponse> = await axios.post(
+          route('api-store-loader-query'),
+          formData
+        )
+        if (response.data.success && response.data.data) {
+          showSuccess(response.data.message)
+          onSuccess(response.data.data)
+          onClose()
+        }
+      } catch (error) {
+        const validationErrors = handleHttpErrors(error, false)
+        setErrors(validationErrors)
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      const validationErrors = handleHttpErrors(error, false)
-      setErrors(validationErrors)
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    [onSuccess, formData, onClose]
+  )
 
   return (
     <Modal

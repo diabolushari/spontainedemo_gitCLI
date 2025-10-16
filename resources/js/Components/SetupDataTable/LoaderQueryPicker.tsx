@@ -1,7 +1,7 @@
 import { DataLoaderQuery } from '@/interfaces/data_interfaces'
 import useFetchPagination from '@/hooks/useFetchPagination'
 import RestPagination from '@/ui/Pagination/RestPagination'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { FiCheck, FiDatabase, FiPlus, FiSearch } from 'react-icons/fi'
 import { cn } from '@/utils'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
@@ -29,9 +29,16 @@ const LoaderQueryPicker = ({ onSelect, selectedId }: LoaderQueryPickerProps) => 
     setCurrentPage(1)
   }
 
-  const handleQueryCreated = (query: DataLoaderQuery) => {
-    onSelect(query)
-  }
+  const handleQueryCreated = useCallback(
+    (query: DataLoaderQuery) => {
+      onSelect(query)
+    },
+    [onSelect]
+  )
+
+  const closeCreateModal = useCallback(() => {
+    setShowCreateModal(false)
+  }, [])
 
   return (
     <div className='flex flex-col gap-4'>
@@ -113,7 +120,7 @@ const LoaderQueryPicker = ({ onSelect, selectedId }: LoaderQueryPickerProps) => 
 
       {showCreateModal && (
         <CreateQueryModal
-          onClose={() => setShowCreateModal(false)}
+          onClose={closeCreateModal}
           onSuccess={handleQueryCreated}
         />
       )}
