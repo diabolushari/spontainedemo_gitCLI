@@ -42,7 +42,7 @@ class WidgetCollectionController extends Controller
         $collection = WidgetCollection::create($validated);
 
         return redirect()->route('widget-collection.show', $collection)
-            ->with('success', 'Collection created successfully');
+            ->with(['message' => 'Collection created successfully']);
     }
 
     public function update(Request $request, WidgetCollection $widgetCollection)
@@ -54,7 +54,7 @@ class WidgetCollectionController extends Controller
         $widgetCollection->update($validated);
 
         return redirect()->route('widget-collection.show', $widgetCollection)
-            ->with('success', 'Collection updated successfully');
+            ->with(['message' => 'Collection updated successfully']);
     }
 
     public function destroy(WidgetCollection $widgetCollection)
@@ -62,6 +62,6 @@ class WidgetCollectionController extends Controller
         $widgetCollection->delete();
 
         return redirect()->route('widget-collection.index')
-            ->with('success', 'Collection deleted successfully');
+            ->with(['message' => 'Collection deleted successfully']);
     }
 }

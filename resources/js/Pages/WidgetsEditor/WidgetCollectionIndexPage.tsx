@@ -7,6 +7,7 @@ import { useState } from 'react'
 import WidgetCollectionCreateModal from '@/Components/WidgetsEditor/WidgetCollections/WidgetCollectionCreateModal'
 import CardHeader from '@/ui/Card/CardHeader'
 
+//TODO Type for collections
 export default function WidgetCollectionIndexPage({ collections }) {
   const { formData, setFormValue } = useCustomForm({
     collections: collections,
@@ -34,6 +35,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
     setFormValue('collections')([...formData.collections, newCollection])
   }
 
+  //TODO types
   const handleDelete = (e, collectionId, collectionName) => {
     e.preventDefault()
     e.stopPropagation()
@@ -213,7 +215,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
                   <div className='text-right'>
                     <p className='text-sm text-gray-600'>Widgets</p>
                     <p className='text-lg font-semibold text-gray-900'>
-                      {collection.widgets_count || 0}
+                      {collection.widgets_count ?? 0}
                     </p>
                   </div>
                   <div className='text-right'>

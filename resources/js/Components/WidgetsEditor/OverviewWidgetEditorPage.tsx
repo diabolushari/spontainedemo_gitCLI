@@ -47,6 +47,7 @@ interface Props {
   type: string
 }
 
+//TODO use ?? instead of ||
 /**
  * Parse form data to Widget format matching Laravel Widget model
  */
@@ -87,7 +88,9 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
   }
 }
 
+//TODO dont use snake_case for js variable names
 export default function OverviewWidgetEditorPage({ widget, collection_id }: Readonly<Props>) {
+  //TODO use widget != null to check if widget is being edited
   const isEditMode = !!widget
   const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
@@ -112,12 +115,8 @@ export default function OverviewWidgetEditorPage({ widget, collection_id }: Read
     rank_ranking_field: widget?.data?.rank?.ranking_field ?? null,
   })
 
-  console.log('Widget:', widget)
-  console.log('Form Data:', formData)
-  console.log('Mode:', isEditMode ? 'Edit' : 'Create')
-
-  const { post, error } = useInertiaPost(
-    isEditMode ? route('widget-editor.update', widget!.id) : route('widget-editor.store'),
+  const { post, errors } = useInertiaPost(
+    isEditMode ? route('widget-editor.update', widget.id) : route('widget-editor.store'),
     {
       showErrorToast: true,
     }
@@ -133,12 +132,11 @@ export default function OverviewWidgetEditorPage({ widget, collection_id }: Read
     }
   }, [openItem])
 
+  //TODO use post() for both edit and update
   const handleSubmit = () => {
     const widgetData = parseFormDataToWidget(formData, collection_id)
-    console.log('Parsed Widget Data:', widgetData)
-
     if (isEditMode) {
-      router.put(route('widget-editor.update', widget!.id), widgetData, {
+      router.put(route('widget-editor.update', widget.id), widgetData, {
         onSuccess: () => {
           console.log('Widget updated successfully')
         },

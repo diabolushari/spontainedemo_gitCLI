@@ -13,20 +13,23 @@ import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 import Button from '@/ui/button/Button'
 import { showError } from '@/ui/alerts'
 import { DataTableFieldConfig } from './ManageDataTableFields'
-import { FormEvent, useEffect, useMemo } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import Input from '@/ui/form/Input'
 import SelectList from '@/ui/form/SelectList'
 import TextArea from '@/ui/form/TextArea'
 import CheckBox from '@/ui/form/CheckBox'
 import DatePicker from '@/ui/form/DatePicker'
 import TimePicker from '@/ui/form/TimePicker'
+import { FieldErrors } from './SetupDataTable'
+import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 
 interface Props {
   fields: DataTableFieldConfig[]
   types: ReferenceData[]
   selectedAPI: { id: number } | null
   selectedQuery: { id: number } | null
-  fieldMapping: unknown[]
+  fieldMapping: DataTableFieldMapping[]
+  onErrorsChange: (errors: FieldErrors) => void
 }
 
 interface DataTableFormData {
@@ -48,12 +51,19 @@ interface DataTableFormData {
   duplicate_identification_field: string
 }
 
+interface ErrorMetaInfo {
+  type: string
+  index: number
+  column: string
+}
+
 export default function SetupDataTableForm({
   fields,
   types,
   selectedAPI,
   selectedQuery,
   fieldMapping,
+  onErrorsChange,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     name: '',
@@ -73,10 +83,9 @@ export default function SetupDataTableForm({
     delete_existing_data: false,
     duplicate_identification_field: '',
   })
+  const [errorMetaInfo, setErrorMetaInfo] = useState<ErrorMetaInfo[]>([])
 
-  const { post, loading, errors } = useInertiaPost<DataTableFormData>(route('data-detail.store'), {
-    showErrorToast: true,
-  })
+  const { post, loading, errors } = useInertiaPost<DataTableFormData>(route('data-detail.store'))
 
   useEffect(() => {
     setFormValue('table_name')('data_table_' + generateSnakeCaseName(formData.name))
@@ -116,14 +125,34 @@ export default function SetupDataTableForm({
     postData()
   }
 
-  const postData = () => {
-    if (fields.length === 0) {
-      showError('At least one field is required')
+  useEffect(() => {
+    if (!errors || Object.keys(errors).length === 0) {
+      onErrorsChange({})
       return
     }
 
-    if (!formData.job_name.trim()) {
-      showError('Job name is required')
+    const fieldErrors: FieldErrors = {}
+
+    errorMetaInfo.forEach((metaInfo) => {
+      const { type, index, column } = metaInfo
+      Object.entries(errors).forEach(([errorKey, errorMessage]) => {
+        if (errorKey.startsWith(`${type}.${index}.`)) {
+          if (!fieldErrors[column]) {
+            fieldErrors[column] = []
+          }
+          // Replace type.index with column name in the error message
+          const updatedMessage = (errorMessage ?? '').replace(`${type}.${index}`, column)
+          fieldErrors[column].push(updatedMessage)
+        }
+      })
+    })
+
+    onErrorsChange(fieldErrors)
+  }, [errors, errorMetaInfo, onErrorsChange])
+
+  const postData = () => {
+    if (fields.length === 0) {
+      showError('At least one field is required')
       return
     }
 
@@ -137,48 +166,92 @@ export default function SetupDataTableForm({
       return
     }
 
+    const errorMeta: ErrorMetaInfo[] = []
+
+    fieldMapping.forEach((mapping, index) => {
+      errorMeta.push({
+        column: mapping.column,
+        type: 'field_mapping',
+        index: index,
+      })
+    })
+
+    const dates = fields
+      .filter((field) => field.type === 'date')
+      .map((field, index) => {
+        errorMeta.push({
+          column: field.column,
+          type: 'dates',
+          index: index,
+        })
+
+        return {
+          column: field.column,
+          field_name: '',
+        }
+      })
+
+    const dimensions = fields
+      .filter((field) => field.type === 'dimension')
+      .map((field, index) => {
+        errorMeta.push({
+          column: field.column,
+          type: 'dimensions',
+          index: index,
+        })
+
+        return {
+          column: field.column,
+          field_name: field.field_name,
+          meta_structure_id: null,
+        }
+      })
+
+    const measures = fields
+      .filter((field) => field.type === 'measure')
+      .map((field, index) => {
+        errorMeta.push({
+          column: field.column,
+          type: 'measures',
+          index: index,
+        })
+
+        return {
+          column: field.column,
+          field_name: '',
+          unit_column: field.unit_column,
+          unit_field_name: field.unit_field_name,
+        }
+      })
+
+    const texts = fields
+      .filter((field) => field.type === 'text')
+      .map((field, index) => {
+        errorMeta.push({
+          column: field.column,
+          type: 'texts',
+          index: index,
+        })
+
+        return {
+          column: field.column,
+          field_name: field.field_name,
+          is_long_text: field.is_long_text,
+        }
+      })
+
+    setErrorMetaInfo(errorMeta)
+
     post({
       ...formData,
       field_mapping: fieldMapping,
       source_type: sourceType,
       api_id: apiId,
       query_id: queryId,
-      dates: fields
-        .filter((field) => field.type === 'date')
-        .map((field) => {
-          return {
-            column: field.column,
-            field_name: field.field_name,
-          }
-        }),
-      dimensions: fields
-        .filter((field) => field.type === 'dimension')
-        .map((field) => {
-          return {
-            column: field.column,
-            field_name: field.field_name,
-            meta_structure_id: field.meta_structure?.id,
-          }
-        }),
-      measures: fields
-        .filter((field) => field.type === 'measure')
-        .map((field) => {
-          return {
-            column: field.column,
-            field_name: field.field_name,
-            unit_column: field.unit_column,
-            unit_field_name: field.unit_field_name,
-          }
-        }),
-      texts: fields
-        .filter((field) => field.type === 'text')
-        .map((field) => {
-          return {
-            column: field.column,
-            field_name: field.field_name,
-            is_long_text: field.is_long_text,
-          }
-        }),
+      dates,
+      dimensions,
+      measures,
+      texts,
     } as DataTableFormData)
   }
 

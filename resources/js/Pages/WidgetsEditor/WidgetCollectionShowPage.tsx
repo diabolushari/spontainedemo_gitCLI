@@ -8,6 +8,7 @@ import CardHeader from '@/ui/Card/CardHeader'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import WidgetCollectionCreateModal from '@/Components/WidgetsEditor/WidgetCollections/WidgetCollectionCreateModal'
 
+//TODO need global widget type
 interface Widget {
   id: number
   title: string
@@ -40,6 +41,7 @@ export default function WidgetCollectionShowPage({
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
 
+  //TODO use Modal over window.confirm
   const handleDelete = (widgetId: number, widgetTitle: string) => {
     if (window.confirm(`Are you sure you want to delete "${widgetTitle}"?`)) {
       router.delete(route('widget-editor.destroy', widgetId), {

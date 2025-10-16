@@ -1,20 +1,19 @@
 import Modal from '@/ui/Modal/Modal'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useCustomForm from '@/hooks/useCustomForm'
-import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { router } from '@inertiajs/react'
+import Input from '@/ui/form/Input'
+import TextArea from '@/ui/form/TextArea'
+import Button from '@/ui/button/Button'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 
 interface CollectionFormData {
   name: string
   description: string
 }
 
-interface OptionType {
-  id: number
-  label: string
-}
-
+//TODO make it global WidgetCollection interface
 interface Collection {
   id: number
   name: string
@@ -26,8 +25,8 @@ interface Props {
   collection?: Collection // Optional prop for edit mode
 }
 
-export default function WidgetCollectionCreateModal({ setShowModal, collection }: Props) {
-  const isEditMode = !!collection
+export default function WidgetCollectionCreateModal({ setShowModal, collection }: Readonly<Props>) {
+  const isEditMode = collection != null
 
   const { formData, setFormValue, setAll } = useCustomForm<CollectionFormData>({
     name: '',
@@ -36,7 +35,7 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
 
   const [loading, setLoading] = useState(false)
 
-  // Initialize form with existing data in edit mode
+  //TODO can be  initialised in useCustomForm()
   useEffect(() => {
     if (isEditMode && collection) {
       setAll({
@@ -45,23 +44,6 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
       })
     }
   }, [collection, isEditMode, setAll])
-
-  const formItems: Record<keyof CollectionFormData, FormItem<any, 'id', 'label', OptionType>> = {
-    name: {
-      label: 'Collection Name',
-      type: 'text',
-      setValue: setFormValue('name'),
-      placeholder: 'Enter collection name',
-      colPositionAdjustment: 'md:col-span-2',
-    },
-    description: {
-      label: 'Description',
-      type: 'textarea',
-      setValue: setFormValue('description'),
-      placeholder: 'Enter collection description',
-      colPositionAdjustment: 'md:col-span-2',
-    },
-  }
 
   // Use different hook/route based on mode
   const { post, errors } = useInertiaPost(
@@ -73,6 +55,7 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
     }
   )
 
+  //TODO use post() for both edit and update
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -100,18 +83,42 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
       title={isEditMode ? 'Edit Collection' : 'Create Collection'}
       showClosButton={true}
     >
-      <FormBuilder
-        formData={formData}
-        formItems={formItems}
-        onFormSubmit={handleSubmit}
-        loading={loading}
-        buttonText={isEditMode ? 'Update Collection' : 'Create Collection'}
-        buttonAlignment='start'
-        showSecondaryButton={true}
-        secondaryButtonLabel='Cancel'
-        secondaryAction={() => setShowModal(false)}
-        errors={errors}
-      />
+      <form
+        className='grid w-full grid-cols-1 gap-5 p-2 md:grid-cols-2'
+        onSubmit={handleSubmit}
+      >
+        <div className='flex flex-col md:col-span-2'>
+          <Input
+            value={formData.name}
+            label='Collection Name'
+            setValue={setFormValue('name')}
+            placeholder='Enter collection name'
+            error={errors?.name}
+          />
+        </div>
+
+        <div className='flex flex-col md:col-span-2'>
+          <TextArea
+            value={formData.description}
+            label='Description'
+            setValue={setFormValue('description')}
+            placeholder='Enter collection description'
+            error={errors?.description}
+          />
+        </div>
+
+        <div className='col-start-1 flex justify-start gap-5'>
+          <FullSpinnerWrapper processing={loading}>
+            <Button label={isEditMode ? 'Update Collection' : 'Create Collection'} />
+            <Button
+              label='Cancel'
+              variant='secondary'
+              type='button'
+              onClick={() => setShowModal(false)}
+            />
+          </FullSpinnerWrapper>
+        </div>
+      </form>
     </Modal>
   )
 }

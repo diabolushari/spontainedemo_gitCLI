@@ -1,10 +1,5 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/Components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from '@/Components/ui/accordion'
 import { Download } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -12,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import * as XLSX from 'xlsx'
 import styles from './ChatMessageContent.module.css'
 import ChatVisualization from './ChatVisualization'
+import { useEffect } from 'react'
 
 interface Props {
   message: ChatMessage
@@ -42,6 +38,12 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
     XLSX.writeFile(workbook, `${filename}.xlsx`)
   }
+
+  useEffect(() => {
+    if (message.contentType === 'explore') {
+      console.log(message)
+    }
+  }, [message])
 
   return (
     <div className={styles.messageWrapper}>
@@ -121,7 +123,9 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
       {message.contentType === 'explore' && (
         <div className='flex w-[50vw] items-center justify-center'>
           <button
-            onClick={() => (window.location.href = `/subset-preview/${message.content}`)}
+            onClick={() =>
+              window.open(`https://dashboard.kseb.in/subset-preview/${message.content}`, '_blank')
+            }
             className='group flex items-center gap-3 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-indigo-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2'
           >
             <svg

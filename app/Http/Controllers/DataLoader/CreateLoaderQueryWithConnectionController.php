@@ -10,6 +10,8 @@ use App\Models\DataLoader\DataLoaderQuery;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 final class CreateLoaderQueryWithConnectionController extends Controller implements HasMiddleware
 {
@@ -23,8 +25,12 @@ final class CreateLoaderQueryWithConnectionController extends Controller impleme
         ];
     }
 
+    /**
+     * @throws Throwable
+     */
     public function __invoke(CreateLoaderQueryWithConnectionData $data): JsonResponse
     {
+        DB::beginTransaction();
         try {
             $connectionId = $data->connectionId;
 
@@ -56,11 +62,15 @@ final class CreateLoaderQueryWithConnectionController extends Controller impleme
 
             $query->load('loaderConnection');
         } catch (Exception $e) {
+            DB::rollBack();
+
             return response()->json([
                 'success' => false,
                 'message' => ExceptionMessage::getMessage($e),
             ]);
         }
+
+        DB::commit();
 
         return response()->json([
             'success' => true,

@@ -164,6 +164,10 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     })
   }, [])
 
+  const setEntireStructure = useCallback((newStructure: JSONStructureDefinition) => {
+    setDataStructure(newStructure)
+  }, [])
+
   return {
     dataStructure,
     updateJsonFieldName,
@@ -171,5 +175,6 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     addNewFieldToJson,
     removeFieldFromJson,
     setAsPrimaryField,
+    setEntireStructure,
   }
 }

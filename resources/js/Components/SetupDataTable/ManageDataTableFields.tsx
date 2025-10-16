@@ -7,9 +7,11 @@ import Modal from '@/ui/Modal/Modal'
 import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import { getAllJsonPaths } from '@/Components/DataLoader/useDataTableToJsonMapping'
-import { cn } from '@/utils'
-import { ArrowRight, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { DataLoaderAPI } from '@/interfaces/data_interfaces'
+import SourceFieldCard from '@/Components/SetupDataTable/cards/SourceFieldCard'
+import DataTableFieldCard from '@/Components/SetupDataTable/cards/DataTableFieldCard'
+import { FieldErrors } from './SetupDataTable'
 
 const DUPLICATE_FIELD_ERROR = 'Duplicate Field: Field is already present in list.'
 
@@ -24,6 +26,8 @@ interface Props {
   setFields: React.Dispatch<SetStateAction<DataTableFieldConfig[]>>
   responseStructure: JSONStructureDefinition | null
   selectedAPI?: DataLoaderAPI | null
+  sourceName?: string | null
+  fieldErrors?: FieldErrors
 }
 
 interface AvailableField {
@@ -57,6 +61,8 @@ export default function ManageDataTableFields({
   setFields,
   responseStructure,
   selectedAPI,
+  sourceName,
+  fieldErrors = {},
 }: Readonly<Props>) {
   const [showModal, setShowModal] = useState(false)
   const [selectedField, setSelectedField] = useState<DataTableFieldConfig | null>(null)
@@ -181,82 +187,38 @@ export default function ManageDataTableFields({
       <div className='grid grid-cols-2 gap-4 md:gap-2'>
         {availableFields.length > 0 && (
           <div className='flex flex-col p-5'>
-            <h4 className='mb-4 font-semibold'>Available Fields</h4>
+            <h4 className='mb-4 font-semibold'>Available From {sourceName}</h4>
             <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
               {availableFields.map((field) => (
-                <div
+                <SourceFieldCard
                   key={field.path}
-                  className={cn(
-                    'flex items-center gap-4 rounded-lg border p-4 transition-all',
-                    'border-gray-200 bg-white'
-                  )}
-                >
-                  <div className='min-w-0 flex-1'>
-                    <h4 className='font-semibold text-gray-900'>{field.name}</h4>
-                    <p className='mt-1 break-all font-mono text-xs text-gray-500'>{field.path}</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleMoveToConfigured(field)
-                    }}
-                    className='flex-shrink-0 rounded-md p-2 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600'
-                    title='Add to configured fields'
-                  >
-                    <ArrowRight className='h-5 w-5' />
-                  </button>
-                </div>
+                  field={field}
+                  onMoveToConfigured={handleMoveToConfigured}
+                />
               ))}
             </div>
           </div>
         )}
         <div className='flex flex-col p-5'>
-          <div className='mb-4 flex items-center justify-between'>
-            <h4 className='font-semibold'>Configured Fields</h4>
+          <div className='mb-4 flex flex-col gap-5'>
+            <h4 className='font-semibold'>Added To DataTable</h4>
             <button
               onClick={openAddFieldModal}
-              className='flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
+              className='flex items-center gap-2 self-end rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
             >
               <Plus className='h-4 w-4' />
-              Add Field
+              Add A Field That Is Not In {sourceName}
             </button>
           </div>
           <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-            {fields.map((field) => {
-              const typeDisplay =
-                field.type === 'dimension'
-                  ? (field.meta_structure?.structure_name ?? 'dimension')
-                  : field.type
-
-              return (
-                <div
-                  key={field.column}
-                  onClick={() => handleConfiguredFieldClick(field)}
-                  className={cn(
-                    'flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-all',
-                    'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
-                  )}
-                >
-                  <div className='min-w-0 flex-1'>
-                    <h4 className='font-semibold text-gray-900'>{field.field_name}</h4>
-                    <p className='mt-1 font-mono text-xs text-gray-500'>
-                      {field.source_field_path == null ? '' : `${field.source_field_path} > `}{' '}
-                      {field.column}
-                    </p>
-                    <div className='mt-2 flex flex-wrap gap-2'>
-                      <span className='inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700'>
-                        {typeDisplay}
-                      </span>
-                      {field.unit_field_name && (
-                        <span className='inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600'>
-                          Unit: {field.unit_field_name}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+            {fields.map((field) => (
+              <DataTableFieldCard
+                key={field.column}
+                field={field}
+                onClick={handleConfiguredFieldClick}
+                errors={fieldErrors[field.column]}
+              />
+            ))}
           </div>
         </div>
       </div>

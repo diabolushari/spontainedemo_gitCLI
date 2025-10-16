@@ -44,6 +44,7 @@ interface Props {
   selectedAPI: DataLoaderAPI | null
   selectedQuery: DataLoaderQuery | null
   isSheetOpen: boolean
+  sourceName: string | null
   onSourceSelect: (source: Exclude<DataSource, null>) => void
   onSheetOpenChange: (open: boolean) => void
   onAPISelect: (api: DataLoaderAPI) => void
@@ -58,6 +59,7 @@ function DataSourceSelection({
   selectedAPI,
   selectedQuery,
   isSheetOpen,
+  sourceName,
   onSourceSelect,
   onSheetOpenChange,
   onAPISelect,
@@ -76,17 +78,6 @@ function DataSourceSelection({
   const sheetDescription = useMemo(() => {
     const option = dataSourceOptions.find((opt) => opt.type === selectedSource)
     return option?.description ?? ''
-  }, [selectedSource])
-
-  const sourceName = useMemo(() => {
-    switch (selectedSource) {
-      case 'api':
-        return 'REST API'
-      case 'sql':
-        return 'SQL Query'
-      default:
-        return 'Excel File'
-    }
   }, [selectedSource])
 
   return (
