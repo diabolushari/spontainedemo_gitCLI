@@ -16,6 +16,7 @@ export interface PageRowType {
 
 export interface PageStructure {
   title: string
+  description: string
   link: string
   page: PageRowType[]
   published: boolean

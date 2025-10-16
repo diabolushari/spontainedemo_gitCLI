@@ -3,14 +3,21 @@ import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { Widget as WidgetType } from '@/interfaces/data_interfaces'
 import { DragSource } from '@/Components/PageEditor/DraggableWidget'
 import { PageStructure, WidgetSlot } from '@/Components/PageEditor/PreviewArea'
+import useCustomForm from '@/hooks/useCustomForm'
 
 export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
-  const [pageStructure, setPageStructure] = useState<PageStructure>({
-    title: initialPage?.title || '',
-    link: '',
-    page: initialPage?.page || [],
-    published: initialPage?.published || false,
+  const {
+    formData: pageStructure,
+    setFormValue,
+    setAll,
+  } = useCustomForm<PageStructure>({
+    title: initialPage?.title ?? '',
+    description: initialPage?.description ?? '',
+    link: initialPage?.link ?? '',
+    page: initialPage?.page ?? [],
+    published: initialPage?.published ?? false,
   })
+
   const [nextId, setNextId] = useState(1)
   const [activeWidget, setActiveWidget] = useState<WidgetType | null>(null)
 
@@ -29,28 +36,22 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
     else if (layout === 'doubleCol') layoutType = 'doubleCol'
     else if (layout === 'tripleCol') layoutType = 'tripleCol'
 
-    setPageStructure((prev) => ({
-      ...prev,
-      page: [
-        ...prev.page,
-        {
-          id: nextId,
-          type: layoutType,
-          title: '',
-          description: '',
-          widgets: createWidgetSlots(layoutType),
-        },
-      ],
-    }))
+    setFormValue('page')([
+      ...pageStructure.page,
+      {
+        id: nextId,
+        type: layoutType,
+        title: '',
+        description: '',
+        widgets: createWidgetSlots(layoutType),
+      },
+    ])
 
     setNextId((prev) => prev + 1)
   }
 
   const handleDeleteRow = (id: number) => {
-    setPageStructure((prev) => ({
-      ...prev,
-      page: prev.page.filter((row) => row.id !== id),
-    }))
+    setFormValue('page')(pageStructure.page.filter((row) => row.id !== id))
   }
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -72,69 +73,64 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
       const dropData = over.data.current as { rowId: number; position: number }
 
       if (dropData) {
-        setPageStructure((prev) => {
-          let newPage = [...prev.page]
+        let newPage = [...pageStructure.page]
 
-          const targetRow = newPage.find((row) => row.id === dropData.rowId)
-          const targetSlot = targetRow?.widgets.find((slot) => slot.position === dropData.position)
-          const targetWidgetId = targetSlot?.widgetId
+        const targetRow = newPage.find((row) => row.id === dropData.rowId)
+        const targetSlot = targetRow?.widgets.find((slot) => slot.position === dropData.position)
+        const targetWidgetId = targetSlot?.widgetId
 
-          if (source && targetWidgetId !== null && targetWidgetId !== widgetId) {
+        if (source && targetWidgetId !== null && targetWidgetId !== widgetId) {
+          newPage = newPage.map((row) => {
+            if (row.id === source.rowId) {
+              return {
+                ...row,
+                widgets: row.widgets.map((slot) =>
+                  slot.position === source.position ? { ...slot, widgetId: targetWidgetId } : slot
+                ),
+              }
+            }
+            return row
+          })
+          newPage = newPage.map((row) => {
+            if (row.id === dropData.rowId) {
+              return {
+                ...row,
+                widgets: row.widgets.map((slot) =>
+                  slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
+                ),
+              }
+            }
+            return row
+          })
+        } else {
+          if (source) {
             newPage = newPage.map((row) => {
               if (row.id === source.rowId) {
                 return {
                   ...row,
                   widgets: row.widgets.map((slot) =>
-                    slot.position === source.position ? { ...slot, widgetId: targetWidgetId } : slot
+                    slot.position === source.position ? { ...slot, widgetId: null } : slot
                   ),
                 }
               }
               return row
             })
-            newPage = newPage.map((row) => {
-              if (row.id === dropData.rowId) {
-                return {
-                  ...row,
-                  widgets: row.widgets.map((slot) =>
-                    slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
-                  ),
-                }
+          }
+
+          newPage = newPage.map((row) => {
+            if (row.id === dropData.rowId) {
+              return {
+                ...row,
+                widgets: row.widgets.map((slot) =>
+                  slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
+                ),
               }
-              return row
-            })
-          } else {
-            if (source) {
-              newPage = newPage.map((row) => {
-                if (row.id === source.rowId) {
-                  return {
-                    ...row,
-                    widgets: row.widgets.map((slot) =>
-                      slot.position === source.position ? { ...slot, widgetId: null } : slot
-                    ),
-                  }
-                }
-                return row
-              })
             }
+            return row
+          })
+        }
 
-            newPage = newPage.map((row) => {
-              if (row.id === dropData.rowId) {
-                return {
-                  ...row,
-                  widgets: row.widgets.map((slot) =>
-                    slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
-                  ),
-                }
-              }
-              return row
-            })
-          }
-
-          return {
-            ...prev,
-            page: newPage,
-          }
-        })
+        setFormValue('page')(newPage)
       }
     }
 
@@ -142,33 +138,30 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
   }
 
   const handleRemoveWidget = (rowId: number, position: number) => {
-    setPageStructure((prev) => ({
-      ...prev,
-      page: prev.page.map((row) => {
-        if (row.id === rowId) {
-          return {
-            ...row,
-            widgets: row.widgets.map((slot) =>
-              slot.position === position ? { ...slot, widgetId: null } : slot
-            ),
-          }
+    const newPage = pageStructure.page.map((row) => {
+      if (row.id === rowId) {
+        return {
+          ...row,
+          widgets: row.widgets.map((slot) =>
+            slot.position === position ? { ...slot, widgetId: null } : slot
+          ),
         }
-        return row
-      }),
-    }))
+      }
+      return row
+    })
+    setFormValue('page')(newPage)
   }
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPageStructure((prev) => ({
-      ...prev,
-      title: e.target.value,
-    }))
+    setFormValue('title')(e.target.value)
   }
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValue('description')(e.target.value)
+  }
+
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPageStructure((prev) => ({
-      ...prev,
-      link: e.target.value,
-    }))
+    setFormValue('link')(e.target.value)
   }
 
   const getWidgetById = (id: number) => {
@@ -177,7 +170,8 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
 
   return {
     pageStructure,
-    setPageStructure,
+    setFormValue,
+    setAll,
     activeWidget,
     handleLayoutClick,
     handleDeleteRow,
@@ -185,6 +179,7 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
     handleDragEnd,
     handleRemoveWidget,
     handleTitleChange,
+    handleDescriptionChange,
     handleLinkChange,
     getWidgetById,
   }

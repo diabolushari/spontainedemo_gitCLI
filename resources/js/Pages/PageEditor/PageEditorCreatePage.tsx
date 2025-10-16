@@ -19,12 +19,14 @@ export default function PageEditorCreatePage({
 }) {
   const [activeTab, setActiveTab] = useState('elements')
   const { post, errors } = useInertiaPost(
-    page ? route('page-editor.update', page.id) : route('page-editor.store')
+    page ? route('page-editor.update', page.id) : route('page-editor.store'),
+    {
+      showErrorToast: true,
+    }
   )
 
   const {
     pageStructure,
-    setPageStructure,
     activeWidget,
     handleLayoutClick,
     handleDeleteRow,
@@ -32,8 +34,10 @@ export default function PageEditorCreatePage({
     handleDragEnd,
     handleRemoveWidget,
     handleTitleChange,
+    handleDescriptionChange,
     handleLinkChange,
     getWidgetById,
+    setFormValue,
   } = usePageEditor(page, widgets)
 
   const sensors = useSensors(
@@ -56,7 +60,7 @@ export default function PageEditorCreatePage({
 
   const handlePublish = () => {
     const publishData = { ...pageStructure, published: true }
-    setPageStructure((prev) => ({ ...prev, published: true }))
+    setFormValue('published')(true)
     if (!page) {
       post(pageStructure)
     } else {
@@ -78,34 +82,83 @@ export default function PageEditorCreatePage({
           onDragEnd={handleDragEnd}
         >
           {/* Header Section */}
-          <div className='mb-6 space-y-4'>
-            <input
-              type='text'
-              placeholder='Page Title'
-              value={pageStructure.title}
-              onChange={handleTitleChange}
-              className='w-full rounded-lg border border-gray-300 px-4 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-500'
-            />
-            <input
-              type='url'
-              placeholder='Page Link (e.g., about-us)'
-              value={pageStructure.link}
-              onChange={handleLinkChange}
-              className='w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-            />
-            <div className='flex gap-3'>
+          <form
+            className='mb-6 space-y-4'
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <div className='space-y-4'>
+              <div>
+                <label
+                  htmlFor='page-title'
+                  className='mb-2 block text-sm font-medium text-gray-700'
+                >
+                  Page Title
+                </label>
+                <input
+                  id='page-title'
+                  type='text'
+                  placeholder='Enter page title'
+                  value={pageStructure.title}
+                  onChange={handleTitleChange}
+                  required
+                  className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-lg font-medium transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor='page-description'
+                  className='mb-2 block text-sm font-medium text-gray-700'
+                >
+                  Description
+                </label>
+                <textarea
+                  id='page-description'
+                  placeholder='Enter page description'
+                  value={pageStructure.description}
+                  onChange={handleDescriptionChange}
+                  rows={3}
+                  className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor='page-link'
+                  className='mb-2 block text-sm font-medium text-gray-700'
+                >
+                  Page URL
+                </label>
+                <input
+                  id='page-link'
+                  type='text'
+                  placeholder='about-us'
+                  value={pageStructure.link}
+                  onChange={handleLinkChange}
+                  pattern='[a-z0-9-]+'
+                  className='w-full rounded-lg border border-gray-300 px-4 py-2.5 font-mono text-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
+                />
+                <p className='mt-1.5 text-xs text-gray-500'>
+                  Use lowercase letters, numbers, and hyphens only
+                </p>
+              </div>
+            </div>
+
+            <div className='flex flex-wrap gap-3 pt-2'>
               <Button
                 label='Save Draft'
                 variant='secondary'
                 onClick={handleSaveDraft}
+                type='button'
               />
               <Button
                 label='Publish'
                 variant='primary'
                 onClick={handlePublish}
+                type='button'
               />
             </div>
-          </div>
+          </form>
 
           {/* Main Content Area */}
           <div className='grid h-[calc(100vh-280px)] grid-cols-[320px_1fr] gap-6'>

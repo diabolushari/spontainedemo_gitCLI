@@ -32,6 +32,8 @@ class PageEditorController extends Controller
     {
         $dashboardPage = DashboardPage::create([
             'title' => $request->title,
+            'description' => $request->description,
+            'link' => $request->link,
             'page' => $request->page,
             'published' => $request->published,
         ]);
@@ -53,6 +55,8 @@ class PageEditorController extends Controller
     {
         $pageEditor->update([
             'title' => $request->title,
+            'description' => $request->description,
+            'link' => $request->link,
             'page' => $request->page,
             'published' => $request->published,
         ]);

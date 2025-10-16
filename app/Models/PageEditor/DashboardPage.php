@@ -13,6 +13,8 @@ class DashboardPage extends Model
 
     protected $fillable = [
         'title',
+        'description',
+        'link',
         'page',
         'published',
     ];

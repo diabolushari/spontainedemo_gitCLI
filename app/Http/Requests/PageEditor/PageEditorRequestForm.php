@@ -10,9 +10,10 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class PageEditorRequestForm extends Data
 {
     public function __construct(
-        public readonly ?string $title,
-        public readonly ?string $link,
+        public readonly string $title,
+        public readonly string $description,
+        public readonly string $link,
         public readonly array $page,
-        public readonly bool $published = false,
+        public readonly bool $published,
     ) {}
 }

@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('dashboard_pages', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->json('page')->nullable();
+            $table->string('title');
+            $table->text('description');
+            $table->string('link')->nullable()->unique();
+            $table->json('page');
             $table->boolean('published')->default(false);
             $table->timestamps();
         });
