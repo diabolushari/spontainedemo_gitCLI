@@ -7,6 +7,7 @@ import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { Widget } from '@/interfaces/data_interfaces'
+import { toast } from 'react-toastify'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -24,6 +25,16 @@ export interface WidgetFormData {
   measure: SelectedMeasure[]
   dimension: string | null
   color_palette: string
+  hl_cards: {
+    title: string
+    subtitle: string
+    subsetId: number
+    measure: {
+      subset_field_name: string
+      subset_column: string
+      unit?: string
+    }
+  }[]
   trend_subset_id: number | null
   trend_chart_type: 'area' | 'bar'
   trend_measure: {
@@ -65,6 +76,7 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
         color_palette: formData.color_palette,
         subset_id: formData.subset_id!,
       },
+      hl_cards: formData.hl_cards ?? [],
       trend: {
         subset_id: formData.trend_subset_id!,
         chart_type: formData.trend_chart_type,
@@ -102,6 +114,7 @@ export default function OverviewWidgetEditorPage({ widget, collectionId }: Reado
     measure: widget?.data?.overview?.measure ?? [],
     dimension: widget?.data?.overview?.dimension ?? null,
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
+    hl_cards: widget?.data?.hl_cards ?? [],
     trend_subset_id: widget?.data?.trend?.subset_id ?? null,
     trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
     trend_measure: widget?.data?.trend?.measure ?? null,
@@ -111,7 +124,7 @@ export default function OverviewWidgetEditorPage({ widget, collectionId }: Reado
     rank_ranking_field: widget?.data?.rank?.ranking_field ?? null,
   })
 
-  const { post, errors } = useInertiaPost(
+  const { post } = useInertiaPost(
     isEditMode ? route('widget-editor.update', widget.id) : route('widget-editor.store'),
     {
       showErrorToast: true,
@@ -127,6 +140,14 @@ export default function OverviewWidgetEditorPage({ widget, collectionId }: Reado
       setCardState('ranking')
     }
   }, [openItem])
+
+  const handleOpenItem = (item: string) => {
+    if (formData.data_table_id && formData.subset_group_id) {
+      setOpenItem(item)
+    } else {
+      toast.error('Please select data source and subset group')
+    }
+  }
 
   const handleSubmit = () => {
     const widgetData = parseFormDataToWidget(formData, collectionId)
@@ -147,13 +168,13 @@ export default function OverviewWidgetEditorPage({ widget, collectionId }: Reado
           formData={formData}
           setFormValue={setFormValue}
           openItem={openItem}
-          setOpenItem={setOpenItem}
+          setOpenItem={handleOpenItem}
           handleSubmit={handleSubmit}
           isEditMode={isEditMode}
         />
       </div>
 
-      <div className='lg:col-span-2'>
+      <div className='max-h-[600px] lg:col-span-2'>
         <WidgetLayout
           block={formData}
           selectedMonth={selectedMonth}

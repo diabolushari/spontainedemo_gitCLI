@@ -48,6 +48,7 @@ class WidgetsEditorController extends Controller
 
     public function update(WidgetEditorFormRequest $request, Widget $widget)
     {
+
         $widget->update($request->toArray());
 
         return to_route('widget-collection.show', ['widgetCollection' => $widget->collection_id])

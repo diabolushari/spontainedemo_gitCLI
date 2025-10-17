@@ -509,6 +509,16 @@ export interface Widget {
       color_palette: string
       subset_id: number
     }
+    hl_cards: {
+      title: string
+      subtitle: string
+      subsetId: number
+      measure: {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }
+    }[]
     trend: {
       subset_id: number
       chart_type: 'area' | 'bar'

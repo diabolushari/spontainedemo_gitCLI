@@ -5,6 +5,7 @@ import OverviewChartSection from '@/Components/WidgetsEditor/ConfigSection/Overv
 import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
 import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
 
 interface WidgetSettingsFormProps {
   formData: WidgetFormData
@@ -21,6 +22,9 @@ export default function WidgetSettingsForm({
   setOpenItem,
   handleSubmit,
 }: WidgetSettingsFormProps) {
+  const log = (cards) => {
+    console.log(cards)
+  }
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>
@@ -47,7 +51,19 @@ export default function WidgetSettingsForm({
             />
           </AccordionContent>
         </Accordion.Item>
-
+        <Accordion.Item
+          value='hlcard'
+          className='rounded-lg border border-slate-200'
+        >
+          <AccordionTrigger>Highlight Card</AccordionTrigger>
+          <AccordionContent>
+            <HighlightConfigSection
+              formData={formData}
+              setFormValue={setFormValue}
+              onHlCardsChange={setFormValue('hl_cards')}
+            />
+          </AccordionContent>
+        </Accordion.Item>
         <Accordion.Item
           value='chart'
           className='rounded-lg border border-slate-200'
