@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Dimension } from '@/interfaces/data_interfaces'
 import { Plus, X } from 'lucide-react'
-import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 
 interface MeasureFieldSelectorProps {
   subsetId: number | null

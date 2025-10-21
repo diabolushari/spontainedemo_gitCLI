@@ -2,10 +2,7 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import { useEffect, useState } from 'react'
 import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
 import { Plus, X } from 'lucide-react'
-import {
-  SelectedMeasure,
-  WidgetFormData,
-} from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import { SelectedMeasure, WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 
 interface HighlightCard {
   title: string

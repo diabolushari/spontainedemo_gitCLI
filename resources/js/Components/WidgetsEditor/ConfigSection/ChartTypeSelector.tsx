@@ -16,7 +16,7 @@ export default function ChartTypeSelector({
   selectedType,
   onTypeChange,
   chartTypes = defaultChartTypes,
-}: ChartTypeSelectorProps) {
+}: Readonly<ChartTypeSelectorProps>) {
   return (
     <div className='flex flex-col'>
       <label className='mb-3 text-sm font-medium text-slate-700'>Chart type</label>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import type { Widget as WidgetType } from '@/interfaces/data_interfaces'
 
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
-import Overview from '@/Components/WidgetsEditor/WidgetComponents/Overview'
+import OverviewWidget from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidget'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 
@@ -42,7 +42,7 @@ export default function Widget({ widget }: Readonly<Props>) {
 
       {/* Overview Widget */}
       {selectView == 'overview' && (
-        <Overview
+        <OverviewWidget
           block={{
             subset_id: data.overview.subset_id,
             measure: (data.overview.measure || []).map((m) => ({

@@ -4,15 +4,21 @@ namespace App\Http\Controllers\ChartData;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SubsetFieldsController extends Controller
+class SubsetMeasuresController extends Controller
 {
-    public function __invoke(Request $request, $subsetId)
+    public function __invoke(Request $request, $subsetId): JsonResponse
     {
 
         $subset = SubsetDetail::with('measures')
-            ->find($subsetId);
+            ->where('id', $subsetId)
+            ->first();
+
+        if ($subset == null) {
+            return response()->json();
+        }
 
         $measures = $subset->measures->map(function ($measure) {
             return [
@@ -20,12 +26,6 @@ class SubsetFieldsController extends Controller
                 'subset_column' => $measure->subset_column,
             ];
         });
-
-        if (! $subset) {
-            return response()->json(['error' => 'Not found'], 404);
-        }
-
-
 
         return response()->json($measures);
     }

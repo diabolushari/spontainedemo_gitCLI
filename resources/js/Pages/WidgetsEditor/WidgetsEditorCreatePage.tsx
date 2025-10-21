@@ -1,7 +1,7 @@
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import React from 'react'
-import OverviewWidgetEditorPage from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import OverviewWidgetEditor from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { Widget } from '@/interfaces/data_interfaces'
 
 interface Props {
@@ -11,12 +11,11 @@ interface Props {
 }
 
 export default function WidgetsEditorCreatePage({ widget, collection_id, type }: Readonly<Props>) {
-  console.log(type)
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
         {type == 'overview' && (
-          <OverviewWidgetEditorPage
+          <OverviewWidgetEditor
             widget={widget}
             collectionId={collection_id}
             type={type}

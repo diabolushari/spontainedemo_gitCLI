@@ -22,7 +22,7 @@ interface SelectedMeasure {
   unit: string
 }
 
-export default function Overview({ block, selectedMonth }: Readonly<OverviewProps>) {
+export default function OverviewWidget({ block, selectedMonth }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
@@ -65,18 +65,15 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
 
   return (
     <div>
-      {/* Always show HighlightBar if data is available */}
       {hasHighlightData && (
         <HighlightBar
           hlCards={block.hl_cards}
           selectedMonth={selectedMonth}
         />
       )}
-
-      {/* Show charts only if chart data requirements are met */}
       {hasChartData ? (
         <>
-          {block?.chart_type === 'bar' && (
+          {block?.chart_type === 'bar' && data != null && (
             <div>
               <WidgetBarChart
                 data={data.data}

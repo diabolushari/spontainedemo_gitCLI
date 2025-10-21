@@ -1,15 +1,15 @@
 import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
-import OverviewChartSection from '@/Components/WidgetsEditor/ConfigSection/OverviewChartSelector'
+import OverviewChartConfigForm from '@/Components/WidgetsEditor/ConfigSection/OverviewChartConfigForm'
 import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
-import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
 
 interface WidgetSettingsFormProps {
   formData: WidgetFormData
-  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: number | string) => void
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
   openItem?: string
   setOpenItem?: (item: string) => void
   handleSubmit: () => void
@@ -21,7 +21,7 @@ export default function WidgetSettingsForm({
   openItem,
   setOpenItem,
   handleSubmit,
-}: WidgetSettingsFormProps) {
+}: Readonly<WidgetSettingsFormProps>) {
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>
@@ -67,7 +67,7 @@ export default function WidgetSettingsForm({
         >
           <AccordionTrigger>Overview Chart</AccordionTrigger>
           <AccordionContent>
-            <OverviewChartSection
+            <OverviewChartConfigForm
               formData={formData}
               setFormValue={setFormValue}
             />
