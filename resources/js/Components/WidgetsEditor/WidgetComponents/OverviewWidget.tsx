@@ -1,8 +1,8 @@
-import useFetchRecord from '@/hooks/useFetchRecord'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
-import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 import { WidgetBarChart } from '@/Components/WidgetsEditor/Charts/WidgetBarChart'
 import { WidgetLineChart } from '@/Components/WidgetsEditor/Charts/WidgetLineChart'
+import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface OverviewProps {
   block: {
@@ -35,6 +35,8 @@ export default function OverviewWidget({ block, selectedMonth }: Readonly<Overvi
   // Build fields parameter: dimension + all measure columns
   const fieldsParam =
     block?.dimension && measureColumns ? `${block.dimension},${measureColumns}` : ''
+
+  console.log('fieldParams:', fieldsParam)
 
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]

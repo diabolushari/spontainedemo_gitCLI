@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
 import type { Widget as WidgetType } from '@/interfaces/data_interfaces'
+import { useEffect, useState } from 'react'
 
-import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
 import OverviewWidget from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidget'
-import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
+import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
+import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
 
 interface Props {
   widget: WidgetType
@@ -17,7 +17,7 @@ const EmptyState = ({ message }: { message: string }) => (
 )
 
 export default function Widget({ widget }: Readonly<Props>) {
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(new Date())
   const [selectView, setSelectView] = useState('overview')
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Widget({ widget }: Readonly<Props>) {
       {!data && <EmptyState message='No data' />}
 
       {/* Overview Widget */}
-      {selectView == 'overview' && (
+      {selectView == 'overview' && selectedMonth != null && (
         <OverviewWidget
           block={{
             subset_id: data.overview.subset_id,
@@ -62,38 +62,22 @@ export default function Widget({ widget }: Readonly<Props>) {
       {/* Trend Widget */}
       {selectView == 'trend' && (
         <TrendWidget
-          formData={{
-            trend_subset_id: data.trend.subset_id,
-            trend_measure: data.trend.measure
-              ? [
-                  {
-                    subset_column: data.trend.measure.subset_column,
-                    subset_field_name: data.trend.measure.subset_field_name,
-                  },
-                ]
-              : [],
-            trend_chart_type: data.trend.chart_type,
-            trend_color: data.trend.color,
-          }}
+          trendSubsetId={data.trend.subset_id}
+          subsetColumn={data.trend.measure?.subset_column ?? null}
+          subsetFieldName={data.trend.measure?.subset_field_name ?? null}
+          trendChartType={data.trend.chart_type ?? null}
+          trendColor={data.trend.color ?? null}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
         />
       )}
 
       {/* Ranking Widget */}
-      {selectView == 'ranking' && (
+      {selectView == 'ranking' && selectedMonth != null && (
         <RankingWidget
-          formData={{
-            rank_subset_id: data.rank.subset_id,
-            rank_ranking_field: data.rank.ranking_field
-              ? [
-                  {
-                    subset_column: data.rank.ranking_field.subset_column,
-                    subset_field_name: data.rank.ranking_field.subset_field_name,
-                  },
-                ]
-              : [],
-          }}
+          subsetId={data.rank.subset_id}
+          subsetColumn={data.rank.ranking_field?.subset_column ?? null}
+          subsetFieldName={data.rank.ranking_field?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
         />
       )}

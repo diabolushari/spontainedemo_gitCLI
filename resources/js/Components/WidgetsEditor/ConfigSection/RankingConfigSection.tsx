@@ -1,17 +1,31 @@
 import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
-import { useMemo } from 'react'
-import { WidgetFormData } from '../OverviewWidgetEditor'
+import { useCallback, useMemo } from 'react'
+import { SelectedMeasure, WidgetFormData } from '../OverviewWidgetEditor'
 
 interface RankingConfigSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
 }
 
-export function RankingConfigSection({ formData, setFormValue }: RankingConfigSectionProps) {
+export function RankingConfigSection({
+  formData,
+  setFormValue,
+}: Readonly<RankingConfigSectionProps>) {
   const selectedMeasures = useMemo(() => {
-    return formData.rank_ranking_field != null ? [formData.rank_ranking_field] : []
+    return formData.rank_ranking_field == null ? [] : [formData.rank_ranking_field]
   }, [formData.rank_ranking_field])
+
+  const updateMeasures = useCallback(
+    (measures: SelectedMeasure[]) => {
+      if (measures.length > 0) {
+        setFormValue('rank_ranking_field')(measures[0])
+        return
+      }
+      setFormValue('rank_ranking_field')(null)
+    },
+    [setFormValue]
+  )
 
   return (
     <div className='space-y-4 px-4'>
@@ -25,12 +39,11 @@ export function RankingConfigSection({ formData, setFormValue }: RankingConfigSe
           setValue={setFormValue('rank_subset_id')}
         />
       </div>
-
       <div>
         <MeasureFieldSelector
           subsetId={formData.rank_subset_id}
           measures={selectedMeasures}
-          onMeasuresChange={(measures) => setFormValue('rank_ranking_field')(measures)}
+          onMeasuresChange={updateMeasures}
           allowMultiple={false}
         />
       </div>

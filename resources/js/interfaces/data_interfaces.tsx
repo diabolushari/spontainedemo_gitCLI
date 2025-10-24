@@ -1,6 +1,7 @@
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 
 export interface Model {
   id: number
@@ -522,20 +523,13 @@ export interface Widget {
     trend: {
       subset_id: number
       chart_type: 'area' | 'bar'
-      measure: {
-        subset_field_name: string
-        subset_column: string
-        unit?: string
-      }
+      measure: SelectedMeasure | null
       dimension: string
       color: string
     }
     rank: {
       subset_id: number
-      ranking_field: {
-        subset_field_name: string
-        subset_column: string
-      }
+      ranking_field: SelectedMeasure | null
     }
   }
 }

@@ -154,11 +154,11 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
           measure: formData.measure ?? [],
           dimension: formData.dimension ?? '',
           color_palette: formData.color_palette,
-          subset_id: Number(formData.subset_id) || 0,
+          subset_id: Number(formData.subset_id) ?? null,
         },
         hl_cards: formData.hl_cards ?? [],
         trend: {
-          subset_id: Number(formData.trend_subset_id) || 0,
+          subset_id: Number(formData.trend_subset_id) ?? null,
           chart_type: formData.trend_chart_type,
           measure: formData.trend_measure ?? {
             subset_field_name: '',
@@ -168,7 +168,7 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
           color: formData.trend_color,
         },
         rank: {
-          subset_id: Number(formData.rank_subset_id) || 0,
+          subset_id: Number(formData.rank_subset_id) ?? null,
           ranking_field: formData.rank_ranking_field ?? {
             subset_field_name: '',
             subset_column: '',
@@ -189,7 +189,6 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
           handleSubmit={handleSubmit}
         />
       </div>
-
       <div className='min-h-[600px] lg:col-span-2'>
         <OverviewWidget widget={previewWidget} />
       </div>

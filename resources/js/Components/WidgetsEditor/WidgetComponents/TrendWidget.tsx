@@ -2,40 +2,40 @@ import TrendGraph from '@/Components/WidgetsEditor/WidgetComponents/TrendGraph'
 import { Dispatch, SetStateAction } from 'react'
 
 interface TrendWidgetProps {
-  formData: {
-    trend_subset_id: number
-    trend_measure: {
-      subset_column: string
-      subset_field_name: string
-    }[]
-    trend_chart_type?: 'area' | 'bar'
-    trend_color: string
-  }
+  trendSubsetId: number | null
+  subsetColumn: string | null
+  subsetFieldName: string | null
+  trendChartType: 'area' | 'bar' | null
+  trendColor: string | null
   selectedMonth: Date | null
   setSelectedMonth: Dispatch<SetStateAction<Date | null>>
 }
 
 export default function TrendWidget({
-  formData,
+  trendSubsetId,
+  subsetColumn,
+  subsetFieldName,
+  trendChartType,
+  trendColor,
   selectedMonth,
   setSelectedMonth,
 }: Readonly<TrendWidgetProps>) {
   return (
     <>
-      {!formData.trend_subset_id && !formData.trend_measure && (
+      {(trendSubsetId == null || subsetColumn == null || subsetFieldName == null) && (
         <div className='flex h-full items-center justify-center'>
           <div className='text-gray-500'>No data</div>
         </div>
       )}
-      {formData.trend_measure != null && formData.trend_subset_id && (
+      {trendSubsetId != null && subsetColumn != null && subsetFieldName != null && (
         <div>
           <TrendGraph
-            subsetId={formData.trend_subset_id}
-            dataField={formData.trend_measure[0].subset_column}
-            dataFieldName={formData.trend_measure[0].subset_field_name}
+            subsetId={trendSubsetId}
+            dataField={subsetColumn}
+            dataFieldName={subsetFieldName ?? ''}
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
-            chartType={formData.trend_chart_type ?? 'area'}
+            chartType={trendChartType ?? 'area'}
           />
         </div>
       )}

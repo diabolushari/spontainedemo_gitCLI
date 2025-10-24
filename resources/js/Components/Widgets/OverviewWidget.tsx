@@ -52,18 +52,6 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
     hl_cards: widget.data.hl_cards,
   }
 
-  const trendData = {
-    trend_subset_id: widget.data.trend.subset_id,
-    trend_measure: [widget.data.trend.measure],
-    trend_chart_type: widget.data.trend.chart_type,
-    trend_color: widget.data.trend.color,
-  }
-
-  const rankingData = {
-    rank_subset_id: widget.data.rank.subset_id,
-    rank_ranking_field: widget.data.rank.ranking_field,
-  }
-
   return (
     <WidgetLayout
       block={{
@@ -83,14 +71,20 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
       )}
       {selectedView === 'trend' && (
         <TrendWidget
-          formData={trendData}
+          trendSubsetId={widget.data.trend.subset_id}
+          subsetColumn={widget.data.trend.measure?.subset_column ?? null}
+          subsetFieldName={widget.data.trend.measure?.subset_field_name ?? null}
+          trendChartType={widget.data.trend.chart_type ?? null}
+          trendColor={widget.data.trend.color ?? null}
           selectedMonth={selectedMonth ?? new Date()}
           setSelectedMonth={setSelectedMonth}
         />
       )}
-      {selectedView === 'ranking' && selectedMonth && (
+      {selectedView === 'ranking' && selectedMonth != null && (
         <RankingWidget
-          formData={rankingData}
+          subsetId={widget.data.rank.subset_id}
+          subsetColumn={widget.data.rank.ranking_field?.subset_column ?? null}
+          subsetFieldName={widget.data.rank.ranking_field?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
         />
       )}

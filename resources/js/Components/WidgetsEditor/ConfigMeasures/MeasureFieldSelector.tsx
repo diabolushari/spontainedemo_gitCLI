@@ -123,10 +123,8 @@ export default function MeasureFieldSelector({
     if (!allowMultiple && selectedMeasures.length === 0) {
       return true
     }
-    return allowMultiple && usedColumns.length < (availableMeasures?.length ?? 0)
-  }, [allowMultiple, usedColumns, availableMeasures, selectedMeasures.length])
-
-  console.log('showAddMeasureButton', selectedMeasures)
+    return availableMeasures?.length !== selectedMeasures.length
+  }, [allowMultiple, availableMeasures, selectedMeasures.length])
 
   return (
     <>
