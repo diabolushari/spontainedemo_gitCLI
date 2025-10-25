@@ -25,7 +25,6 @@ interface SelectedMeasure {
 }
 
 export default function OverviewWidgetContent({ block, selectedMonth }: Readonly<OverviewProps>) {
-  console.log('measure', block.measure)
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
