@@ -8,14 +8,6 @@ import {
 } from '@/Components/ui/chart'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
-const chartColors = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-]
-
 const tickFormatter = (value: number | string) => {
   const str = String(value)
   return str.length > 10 ? str.substring(0, 7) + '...' : str
@@ -37,6 +29,7 @@ interface Props {
     show_label: boolean
   }
   colorScheme?: string
+  containerClassName?: string
 }
 
 export function CustomAreaChart({
@@ -44,6 +37,7 @@ export function CustomAreaChart({
   dataKey,
   keysToPlot,
   colorScheme = 'boldWarm',
+  containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -59,7 +53,7 @@ export function CustomAreaChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className='aspect-video w-full transition-all xl:w-10/12'
+      className={containerClassName}
     >
       <ResponsiveContainer
         width='100%'

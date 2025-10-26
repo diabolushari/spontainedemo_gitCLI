@@ -1,6 +1,8 @@
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
-import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
+import { HighlightCardData } from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
+import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 
 export interface Model {
   id: number
@@ -509,23 +511,28 @@ export interface Widget {
       color_palette: string
       subset_id: number
     }
+    hl_cards: HighlightCardData[]
     trend: {
       subset_id: number
       chart_type: 'area' | 'bar'
-      measure: {
-        subset_field_name: string
-        subset_column: string
-        unit?: string
-      }
+      measure: SelectedMeasure | null
       dimension: string
       color: string
     }
     rank: {
       subset_id: number
-      ranking_field: {
-        subset_field_name: string
-        subset_column: string
-      }
+      ranking_field: SelectedMeasure | null
     }
   }
+}
+
+export interface WidgetCollection {
+  id: number
+  name: string
+  description: string | null
+  created_at: string
+  updated_at: string
+  widget_count: number
+  last_updated: string
+  widgets?: Widget[]
 }

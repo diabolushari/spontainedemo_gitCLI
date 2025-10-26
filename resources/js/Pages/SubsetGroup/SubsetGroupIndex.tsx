@@ -73,6 +73,7 @@ export default function SubsetGroupIndex({ subsetGroups, oldValues }: Readonly<P
       handleCardClick={onCardClick}
       type='data'
       subtype='subject-area'
+      title='Subset Groups'
     />
   )
 }

@@ -1,14 +1,20 @@
-import DynamicSelectList from '@/ui/form/DynamicSelectList'
-import Input from '@/ui/form/Input'
-import React from 'react'
-import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTypeSelector'
-import { AreaChart, BarChart3 } from 'lucide-react'
 import { graphColorPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
+import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTypeSelector'
+import { SelectedMeasure, WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { camelToNormal } from '@/formaters/NameFormater'
 import NormalText from '@/typography/NormalText'
-import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import Input from '@/ui/form/Input'
+import { AreaChart, BarChart3 } from 'lucide-react'
+import { useCallback, useMemo } from 'react'
 
-export default function TrendConfigSection({ formData, setFormValue }) {
+interface Props {
+  formData: WidgetFormData
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+}
+
+export default function TrendConfigSection({ formData, setFormValue }: Readonly<Props>) {
   const chartTypes = [
     { value: 'area', label: 'Area Chart', icon: AreaChart },
     { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
@@ -18,6 +24,24 @@ export default function TrendConfigSection({ formData, setFormValue }) {
     label: camelToNormal(key),
     value: value,
   }))
+
+  const selectedMeasures = useMemo(() => {
+    if (formData.trend_measure == null) {
+      return []
+    }
+    return [formData.trend_measure]
+  }, [formData.trend_measure])
+
+  const updateMeasures = useCallback(
+    (measures: SelectedMeasure[]) => {
+      if (measures.length > 0) {
+        setFormValue('trend_measure')(measures[0])
+        return
+      }
+      setFormValue('trend_measure')(null)
+    },
+    [setFormValue]
+  )
 
   return (
     <div className='space-y-4 px-4'>
@@ -31,7 +55,6 @@ export default function TrendConfigSection({ formData, setFormValue }) {
           setValue={setFormValue('trend_subset_id')}
         />
       </div>
-
       <div>
         <ChartTypeSelector
           selectedType={formData.trend_chart_type}
@@ -39,25 +62,22 @@ export default function TrendConfigSection({ formData, setFormValue }) {
           chartTypes={chartTypes}
         />
       </div>
-
       <div className='flex flex-col'>
         <Input
           label='Dimension'
           value={formData.trend_dimension}
           setValue={setFormValue('trend_dimension')}
-          disabled={true}
+          disabled
         />
       </div>
-
       <div>
         <MeasureFieldSelector
           subsetId={formData.trend_subset_id}
-          measures={formData.trend_measure}
-          onMeasuresChange={(measures) => setFormValue('trend_measure')(measures)}
+          measures={selectedMeasures}
+          onMeasuresChange={updateMeasures}
           allowMultiple={false}
         />
       </div>
-
       <div className='flex flex-col'>
         <NormalText className={'mb-1'}>Chart Color</NormalText>
         <div className='grid grid-cols-5 gap-1.5'>
@@ -69,6 +89,7 @@ export default function TrendConfigSection({ formData, setFormValue }) {
               }`}
               htmlFor={`color-${option.value}`}
               title={option.label}
+              aria-label={`Select ${option.label} color`}
             >
               <input
                 name='trend_color'

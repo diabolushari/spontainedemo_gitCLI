@@ -7,8 +7,23 @@ import { useState } from 'react'
 import WidgetCollectionCreateModal from '@/Components/WidgetsEditor/WidgetCollections/WidgetCollectionCreateModal'
 import CardHeader from '@/ui/Card/CardHeader'
 
-//TODO Type for collections
-export default function WidgetCollectionIndexPage({ collections }) {
+interface WidgetCollection {
+  id: number
+  name: string
+  description: string
+  created_at: string
+  updated_at: string
+  widgets_count: number
+  widget_count: number
+  last_updated: string
+}
+
+interface Props {
+  collections: WidgetCollection[]
+}
+
+export default function WidgetCollectionIndexPage({ collections }: Readonly<Props>) {
+  console.log(collections)
   const { formData, setFormValue } = useCustomForm({
     collections: collections,
     searchQuery: '',
@@ -23,20 +38,7 @@ export default function WidgetCollectionIndexPage({ collections }) {
       collection.description?.toLowerCase().includes(formData.searchQuery.toLowerCase())
   )
 
-  const handleCreateCollection = (newCollectionData) => {
-    const newCollection = {
-      id: formData.collections.length + 1,
-      name: newCollectionData.name,
-      description: newCollectionData.description,
-      widgets_count: 0,
-      last_updated: 'Just now',
-    }
-
-    setFormValue('collections')([...formData.collections, newCollection])
-  }
-
-  //TODO types
-  const handleDelete = (e, collectionId, collectionName) => {
+  const handleDelete = (e: MouseEvent, collectionId: number, collectionName: string) => {
     e.preventDefault()
     e.stopPropagation()
 

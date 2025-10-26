@@ -162,6 +162,13 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         permission: 'widget-editor',
         subtype: 'widget-editor',
       },
+      {
+        link: '/page-editor',
+        title: 'Page Editor',
+        image: Settings,
+        permission: 'page-editor',
+        subtype: 'page-editor',
+      },
     ],
   },
 ]

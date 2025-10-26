@@ -9,9 +9,9 @@ class SubsetGroupItemsController extends Controller
 {
     public function __invoke($subsetGroupId)
     {
-        $group = SubsetGroup::findOrFail($subsetGroupId);
-
-
+        $group = SubsetGroup::where('id', $subsetGroupId)
+            ->with('items')
+            ->firstOrFail();
 
         return response()->json($group->items);
     }

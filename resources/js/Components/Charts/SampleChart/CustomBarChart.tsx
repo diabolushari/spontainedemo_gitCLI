@@ -24,6 +24,7 @@ interface Props {
   yAxisLabel?: string
   sliceCount?: number
   sortOrder?: 'ascending' | 'descending'
+  containerClassName?: string
 }
 
 const tickFormatter = (value: number | string) => {
@@ -36,6 +37,7 @@ export function CustomBarChart({
   dataKey,
   keysToPlot,
   colorScheme = 'boldWarm',
+  containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -51,7 +53,7 @@ export function CustomBarChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className='aspect-video w-full transition-all xl:w-10/12'
+      className={containerClassName}
     >
       <ResponsiveContainer
         width='100%'

@@ -1,13 +1,18 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from '@/Components/ui/accordion'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/Components/ui/accordion'
 import { Download } from 'lucide-react'
+import { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import * as XLSX from 'xlsx'
 import styles from './ChatMessageContent.module.css'
 import ChatVisualization from './ChatVisualization'
-import { useEffect } from 'react'
 
 interface Props {
   message: ChatMessage

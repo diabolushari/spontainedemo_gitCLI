@@ -19,10 +19,10 @@ use App\Http\Controllers\ChartData\DataDetailSubsetGroupController;
 use App\Http\Controllers\ChartData\DataExplorerDataController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
-use App\Http\Controllers\ChartData\SubsetFieldsController;
 use App\Http\Controllers\ChartData\SubsetGroupItemsController;
 use App\Http\Controllers\ChartData\SubsetGroupListController;
 use App\Http\Controllers\ChartData\SubsetGroupNameController;
+use App\Http\Controllers\ChartData\SubsetMeasuresController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
 use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
@@ -40,7 +40,6 @@ use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
 use App\Http\Controllers\DataLoader\LoaderAPIRecordController;
 use App\Http\Controllers\DataLoader\QueryListController;
-use App\Http\Controllers\DataLoader\StoreLoaderQueryController;
 use App\Http\Controllers\DataLoader\StoreLoaderQueryWithConnectionController;
 use App\Http\Controllers\DataLoader\TestDataLoaderAPIController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
@@ -62,8 +61,9 @@ use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
 use App\Http\Controllers\OperationsController;
-use App\Http\Controllers\PageBuilder\CustomPageController;
 use App\Http\Controllers\PageBuilder\PageBuilderController;
+use App\Http\Controllers\PageEditor\CustomPageController;
+use App\Http\Controllers\PageEditor\PageEditorController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SampleChart\ChartController;
@@ -97,6 +97,8 @@ use App\Http\Controllers\Utils\LoaderAPIListController;
 use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Http\Controllers\Utils\StoreLoaderAPIController;
+use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
+use App\Http\Controllers\Utils\SubsetMaxValueController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
@@ -157,9 +159,11 @@ Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->nam
 
 //api for subset, data table
 Route::get('/api/data-detail', DataDetailListController::class);
-Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
+Route::get('/api/subset/{subsetId}', SubsetMeasuresController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
 Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
+Route::get('/api/subset-groups/subset-having-dimension-measure/{group}', SubsetHavingDimensionMeasureController::class)
+    ->name('subset-having-dimension-measure');
 Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)
     ->name('data-detail.date');
 Route::get('api/subset/dimension/{subsetId}', SubsetDimensionFieldsController::class)
@@ -366,6 +370,12 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
 
+Route::resource('widget-editor', WidgetsEditorController::class)
+    ->parameters(['widget-editor' => 'widget']);
+Route::resource('widget-collection', WidgetCollectionController::class)
+    ->parameters(['widget-collection' => 'widgetCollection']);
+Route::resource('page-editor', PageEditorController::class);
+
 //Util APIS
 Route::get('loader-apis-list', LoaderAPIListController::class)
     ->name('loader-apis-list');
@@ -382,11 +392,8 @@ Route::post('api/store-loader-query', StoreLoaderQueryWithConnectionController::
 Route::post('api/store-loader-json-api', StoreLoaderAPIController::class)
     ->name('api-store-loader-json-api');
 
-// TODO Plural URL
-Route::resource('widget-editor', WidgetsEditorController::class)
-    ->parameters(['widget-editor' => 'widget']);
-Route::resource('widget-collection', WidgetCollectionController::class)
-    ->parameters(['widget-collection' => 'widgetCollection']);
+Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::class)
+    ->name('subset-field-max-value');
 
 require __DIR__.'/auth.php';
 

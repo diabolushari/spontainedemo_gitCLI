@@ -1,25 +1,43 @@
 import TrendGraph from '@/Components/WidgetsEditor/WidgetComponents/TrendGraph'
+import { Dispatch, SetStateAction } from 'react'
 
-export default function TrendWidget({ formData, selectedMonth, setSelectedMonth }) {
-  if (!formData.trend_subset_id || !formData.trend_measure) {
-    return (
-      <div className='flex h-full items-center justify-center'>
-        <div className='text-gray-500'>No data</div>
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <TrendGraph
-          subsetId={formData.trend_subset_id}
-          dataField={formData.trend_measure[0].subset_column}
-          dataFieldName={formData.trend_measure[0].subset_field_name}
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
-          chartType={formData.trend_chart_type || 'area'}
-          color={formData.trend_color}
-        />
-      </div>
-    )
-  }
+interface TrendWidgetProps {
+  trendSubsetId: number | null
+  subsetColumn: string | null
+  subsetFieldName: string | null
+  trendChartType: 'area' | 'bar' | null
+  trendColor: string | null
+  selectedMonth: Date | null
+  setSelectedMonth: Dispatch<SetStateAction<Date | null>>
+}
+
+export default function TrendWidget({
+  trendSubsetId,
+  subsetColumn,
+  subsetFieldName,
+  trendChartType,
+  selectedMonth,
+  setSelectedMonth,
+}: Readonly<TrendWidgetProps>) {
+  return (
+    <>
+      {(trendSubsetId == null || subsetColumn == null || subsetFieldName == null) && (
+        <div className='flex h-full items-center justify-center'>
+          <div className='text-gray-500'>No data</div>
+        </div>
+      )}
+      {trendSubsetId != null && subsetColumn != null && subsetFieldName != null && (
+        <div>
+          <TrendGraph
+            subsetId={trendSubsetId}
+            dataField={subsetColumn}
+            dataFieldName={subsetFieldName ?? ''}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            chartType={trendChartType ?? 'area'}
+          />
+        </div>
+      )}
+    </>
+  )
 }

@@ -1,51 +1,34 @@
 import Modal from '@/ui/Modal/Modal'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { router } from '@inertiajs/react'
 import Input from '@/ui/form/Input'
 import TextArea from '@/ui/form/TextArea'
 import Button from '@/ui/button/Button'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import { WidgetCollection } from '@/interfaces/data_interfaces'
 
 interface CollectionFormData {
   name: string
   description: string
 }
 
-//TODO make it global WidgetCollection interface
-interface Collection {
-  id: number
-  name: string
-  description: string
-}
-
 interface Props {
   setShowModal: (show: boolean) => void
-  collection?: Collection // Optional prop for edit mode
+  collection?: WidgetCollection
 }
 
 export default function WidgetCollectionCreateModal({ setShowModal, collection }: Readonly<Props>) {
+  console.log(collection)
   const isEditMode = collection != null
 
   const { formData, setFormValue, setAll } = useCustomForm<CollectionFormData>({
-    name: '',
-    description: '',
+    name: collection?.name ?? '',
+    description: collection?.description ?? '',
   })
 
   const [loading, setLoading] = useState(false)
 
-  //TODO can be  initialised in useCustomForm()
-  useEffect(() => {
-    if (isEditMode && collection) {
-      setAll({
-        name: collection.name,
-        description: collection.description,
-      })
-    }
-  }, [collection, isEditMode, setAll])
-
-  // Use different hook/route based on mode
   const { post, errors } = useInertiaPost(
     isEditMode
       ? route('widget-collection.update', collection.id)
@@ -55,24 +38,12 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
     }
   )
 
-  //TODO use post() for both edit and update
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
     setLoading(true)
 
     if (isEditMode) {
-      // For edit mode, use PUT/PATCH method
-      router.put(route('widget-collection.update', collection.id), formData, {
-        onSuccess: () => {
-          setShowModal(false)
-          setLoading(false)
-        },
-        onError: () => {
-          setLoading(false)
-        },
-      })
+      post({ ...formData, _method: 'PUT' })
     } else {
-      // For create mode, use POST
       post(formData)
     }
   }

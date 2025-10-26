@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import Skeleton from 'react-loading-skeleton'
-import dayjs from 'dayjs'
+import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
+import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
-import SampleMonthSelector from '../../Dashboard/SampleMonthSelector'
+import useFetchRecord from '@/hooks/useFetchRecord'
 import { BlockDimension } from '@/interfaces/data_interfaces'
-import { WidgetAreaChart } from '@/Components/WidgetsEditor/Charts/WidgetAreaChart'
-import { WidgetBarChart } from '@/Components/WidgetsEditor/Charts/WidgetBarChart'
+import dayjs from 'dayjs'
+import React, { useEffect, useMemo, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import SampleMonthSelector from '../../Dashboard/SampleMonthSelector'
 
 interface Props {
   subsetId: number
@@ -27,7 +27,7 @@ interface Props {
     show_label: boolean
   }
   dimensions?: BlockDimension
-  color?: string
+  colorScheme?: string
   editMode?: boolean
 }
 
@@ -45,11 +45,12 @@ export default function TrendGraph({
   xAxisLabel,
   yAxisLabel,
   tooltipIndicator,
-  dimensions,
-  color,
-}: Props) {
+  colorScheme = 'boldWarm',
+}: Readonly<Props>) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
+  const chartContainerClassName =
+    'h-[450px] w-full overflow-hidden rounded-xl border border-border bg-background'
 
   const fetchUrl = useMemo(() => {
     const dateObject = dayjs(selectedMonth)
@@ -67,19 +68,27 @@ export default function TrendGraph({
         .format('YYYYMM')
     }
 
+    params['fields'] = `month,${dataField}`
+
     if (filterFieldName != null) {
       params[filterFieldName] = filterValue
     }
 
     return route('office-level-summary', { ...params })
-  }, [subsetId, selectedMonth, selectedMonthValue, filterValue, filterFieldName, setSelectedMonth])
-  console.log('fetchUrl :', fetchUrl)
+  }, [
+    subsetId,
+    selectedMonth,
+    selectedMonthValue,
+    filterValue,
+    filterFieldName,
+    setSelectedMonth,
+    dataField,
+  ])
 
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
   }>(fetchUrl)
-  console.log('graphValues :', graphValues)
 
   useEffect(() => {
     if (setSelectedMonth == null || selectedMonth != null) return
@@ -110,6 +119,16 @@ export default function TrendGraph({
       .reverse()
   }, [dataFieldName, dataField, graphValues?.data, selectedMonthValue, selectedMonth])
 
+  const keysToPlot = useMemo(() => {
+    return [
+      {
+        key: dataFieldName,
+        label: tooltipIndicator?.label ?? dataFieldName,
+        unit: tooltipIndicator?.unit,
+      },
+    ]
+  }, [dataFieldName, tooltipIndicator])
+
   return (
     <div className='flex w-full flex-col pr-4'>
       <div className='relative flex w-full justify-between gap-2 px-2 pb-2'>
@@ -126,40 +145,34 @@ export default function TrendGraph({
           />
         )}
       </div>
-      <div className='w-full'>
-        {isLoading ? (
+      <div className={chartContainerClassName}>
+        {isLoading && (
           <Skeleton
-            height={200}
+            height='100%'
             width='100%'
+            containerClassName='h-full w-full'
+            className='h-full w-full'
           />
-        ) : chartType === 'area' ? (
-          <div style={{ border: '1px solid var(--tw-prose-body)' }}>
-            <WidgetAreaChart
-              data={chartData}
-              dataKey='month'
-              keysToPlot={[{ key: dataFieldName }]}
-              xAxisLabel={xAxisLabel}
-              yAxisLabel={yAxisLabel}
-              tooltipIndicator={tooltipIndicator}
-              dimensions={dimensions}
-              color={color}
-            />
-          </div>
-        ) : (
-          <WidgetBarChart
+        )}
+        {!isLoading && chartType === 'area' && (
+          <CustomAreaChart
             data={chartData}
             dataKey='month'
-            keysToPlot={[
-              {
-                key: dataFieldName,
-                label: tooltipIndicator?.label ?? dataFieldName,
-                unit: tooltipIndicator?.unit,
-              },
-            ]}
-            colors={'softNeutral'}
-            fontSize='text-sm'
-            sliceCount={undefined}
-            sortOrder='descending'
+            keysToPlot={keysToPlot}
+            xAxisLabel={xAxisLabel}
+            yAxisLabel={yAxisLabel}
+            tooltipIndicator={tooltipIndicator}
+            colorScheme={colorScheme}
+            containerClassName='h-full w-full'
+          />
+        )}
+        {!isLoading && chartType === 'bar' && (
+          <CustomBarChart
+            data={chartData}
+            dataKey='month'
+            keysToPlot={keysToPlot}
+            colorScheme={colorScheme}
+            containerClassName='h-full w-full'
           />
         )}
       </div>

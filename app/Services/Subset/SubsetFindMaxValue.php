@@ -27,14 +27,14 @@ class SubsetFindMaxValue
     {
         $latestValue = null;
 
-        $subsetDetail->dates->each(function (SubsetDetailDate $date) use (&$latestValue, $column, $subsetDetail) {
+        $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
+            ->where('id', $subsetDetail->data_detail_id)
+            ->first();
+
+        $subsetDetail->dates->each(function (SubsetDetailDate $date) use (&$latestValue, $column, $subsetDetail, $detail) {
 
             if ($column === $date->subset_column) {
                 $expression = $this->dateStatement($date);
-
-                $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
-                    ->where('id', $subsetDetail->data_detail_id)
-                    ->first();
 
                 $query = $this->joinDataTable->join($detail);
 
@@ -47,13 +47,9 @@ class SubsetFindMaxValue
             }
         });
 
-        $subsetDetail->dimensions->each(function (SubsetDetailDimension $dimension) use (&$latestValue, $column, $subsetDetail) {
+        $subsetDetail->dimensions->each(function (SubsetDetailDimension $dimension) use (&$latestValue, $column, $subsetDetail, $detail) {
             if ($column === $dimension->subset_column) {
                 $expression = $this->dimensionStatement($dimension);
-
-                $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea')
-                    ->where('id', $subsetDetail->data_detail_id)
-                    ->first();
 
                 $query = $this->joinDataTable->join($detail);
 

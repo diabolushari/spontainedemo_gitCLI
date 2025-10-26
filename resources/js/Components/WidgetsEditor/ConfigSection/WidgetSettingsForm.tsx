@@ -1,14 +1,20 @@
-import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
-import OverviewChartSection from '@/Components/WidgetsEditor/ConfigSection/OverviewChartSelector'
-import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
+import HighlightConfigSection, {
+  HighlightCardData,
+} from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
+import OverviewChartConfigForm from '@/Components/WidgetsEditor/ConfigSection/OverviewChartConfigForm'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
-import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
+import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
+import * as Accordion from '@radix-ui/react-accordion'
+import { Dispatch, SetStateAction } from 'react'
 
 interface WidgetSettingsFormProps {
   formData: WidgetFormData
-  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: number | string) => void
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  highlightCards: HighlightCardData[]
+  setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
   openItem?: string
   setOpenItem?: (item: string) => void
   handleSubmit: () => void
@@ -17,10 +23,12 @@ interface WidgetSettingsFormProps {
 export default function WidgetSettingsForm({
   formData,
   setFormValue,
+  highlightCards,
+  setHighlightCards,
   openItem,
   setOpenItem,
   handleSubmit,
-}: WidgetSettingsFormProps) {
+}: Readonly<WidgetSettingsFormProps>) {
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>
@@ -47,14 +55,26 @@ export default function WidgetSettingsForm({
             />
           </AccordionContent>
         </Accordion.Item>
-
+        <Accordion.Item
+          value='highlight_cards'
+          className='rounded-lg border border-slate-200'
+        >
+          <AccordionTrigger>Highlight Card</AccordionTrigger>
+          <AccordionContent>
+            <HighlightConfigSection
+              formData={formData}
+              highlightCards={highlightCards}
+              setHighlightCards={setHighlightCards}
+            />
+          </AccordionContent>
+        </Accordion.Item>
         <Accordion.Item
           value='chart'
           className='rounded-lg border border-slate-200'
         >
           <AccordionTrigger>Overview Chart</AccordionTrigger>
           <AccordionContent>
-            <OverviewChartSection
+            <OverviewChartConfigForm
               formData={formData}
               setFormValue={setFormValue}
             />

@@ -1,4 +1,4 @@
-import { Link, router } from '@inertiajs/react'
+import { Link } from '@inertiajs/react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { AddWidgetSheet } from '@/Components/WidgetsEditor/AddWidgetSheet'
@@ -7,28 +7,7 @@ import { useState } from 'react'
 import CardHeader from '@/ui/Card/CardHeader'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import WidgetCollectionCreateModal from '@/Components/WidgetsEditor/WidgetCollections/WidgetCollectionCreateModal'
-
-//TODO need global widget type
-interface Widget {
-  id: number
-  title: string
-  subtitle: string
-  type: string
-  collection_id: number
-  updated_at: string
-  created_at: string
-}
-
-interface WidgetCollection {
-  id: number
-  name: string
-  description: string | null
-  created_at: string
-  updated_at: string
-  widget_count: number
-  last_updated: string
-  widgets?: Widget[]
-}
+import { WidgetCollection } from '@/interfaces/data_interfaces'
 
 interface WidgetCollectionShowPageProps {
   collection: WidgetCollection
@@ -40,14 +19,18 @@ export default function WidgetCollectionShowPage({
   const [searchQuery, setSearchQuery] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showWidgetDeleteModal, setShowWidgetDeleteModal] = useState(false)
+  const [deleteWidget, setDeleteWidget] = useState<{
+    widgetId: number | null
+    widgetTitle: string | null
+  }>({ widgetId: null, widgetTitle: null })
 
-  //TODO use Modal over window.confirm
   const handleDelete = (widgetId: number, widgetTitle: string) => {
-    if (window.confirm(`Are you sure you want to delete "${widgetTitle}"?`)) {
-      router.delete(route('widget-editor.destroy', widgetId), {
-        preserveScroll: true,
-      })
-    }
+    setDeleteWidget({
+      widgetId: widgetId,
+      widgetTitle: widgetTitle,
+    })
+    setShowWidgetDeleteModal(true)
   }
 
   const filteredWidgets =
@@ -252,6 +235,13 @@ export default function WidgetCollectionShowPage({
             setShowModal={setShowDeleteModal}
             title={`Delete ${collection.name} ?`}
             url={route('widget-collection.destroy', collection.id)}
+          />
+        )}
+        {showWidgetDeleteModal && (
+          <DeleteModal
+            setShowModal={setShowWidgetDeleteModal}
+            title={`Delete ${deleteWidget.widgetTitle}`}
+            url={route('widget-editor.destroy', deleteWidget.widgetId)}
           />
         )}
         {showEditModal && (

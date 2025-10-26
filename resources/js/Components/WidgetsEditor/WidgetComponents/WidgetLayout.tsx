@@ -2,18 +2,19 @@ import Card from '@/ui/Card/Card'
 import NormalText from '@/typography/NormalText'
 import CardHeader from '@/ui/Card/CardHeader'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
-import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface WidgetLayoutProps {
   children: React.ReactNode
-  block: WidgetFormData
+  block: {
+    title: string
+    subtitle: string
+  }
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   selectedView?: string
   onViewChange?: (view: string) => void
 }
 
-// Constants for repeated class names
 const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
 const ACTIVE_BUTTON_CLASSES = 'bg-blue-100 hover:bg-blue-200'
 const INACTIVE_BUTTON_CLASSES = 'hover:bg-slate-200'
@@ -36,10 +37,10 @@ export default function WidgetLayout({
   }
 
   return (
-    <Card>
-      <div className='grid min-h-[500px] grid-cols-[auto_1fr]'>
-        {/* Sidebar */}
-        <div className='flex flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>
+    <Card className='h-full w-full'>
+      <div className='flex h-full w-full'>
+        {/* Sidebar - Always Vertical */}
+        <div className='flex shrink-0 flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>
           {/* Overview Icon */}
           <button
             onClick={() => handleViewChange('overview')}
@@ -123,18 +124,18 @@ export default function WidgetLayout({
         </div>
 
         {/* Main Content */}
-        <div>
-          <div className='flex items-center justify-between px-4 py-3'>
+        <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
+          <div className='flex shrink-0 items-center justify-between px-4 py-3'>
             <CardHeader title={block?.title} />
             <PageBuilderMonthPicker
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
             />
           </div>
-          <div className='px-4'>
+          <div className='shrink-0 px-4'>
             <NormalText className='mb-2 text-gray-500'>{block?.subtitle}</NormalText>
           </div>
-          <div>{children}</div>
+          <div className='flex-1 overflow-auto px-4 pb-4'>{children}</div>
         </div>
       </div>
     </Card>

@@ -1,12 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import { Paginator } from '@/ui/ui_interfaces'
-import SelectList from '@/ui/form/SelectList'
-import Skeleton from 'react-loading-skeleton'
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import RestPagination from '@/ui/Pagination/RestPagination'
-import { Link } from '@inertiajs/react'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import SelectList from '@/ui/form/SelectList'
+import RestPagination from '@/ui/Pagination/RestPagination'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Paginator } from '@/ui/ui_interfaces'
+import { Link } from '@inertiajs/react'
+import { useEffect, useMemo, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
 
 interface Props {
   subsetId: number
@@ -20,10 +28,6 @@ interface Props {
   filterListFetchURL?: string
   defaultFilterValue?: string
   onFilterChange?: (value: string) => void
-  availableFields?: {
-    subset_field_name: string
-    subset_column: string
-  }[]
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -49,15 +53,12 @@ export default function RankedList({
   filterListKey,
   filterFieldName,
   onFilterChange,
-  availableFields,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
   const [itemLimit, setItemLimit] = useState('10')
   const [officeLevel, setOfficeLevel] = useState('section')
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
-  const [selectedColumn, setSelectedColumn] = useState(dataField)
-  const [selectedFieldName, setSelectedFieldName] = useState(dataFieldName)
 
   useEffect(() => {
     if (onFilterChange == null) {
@@ -70,7 +71,7 @@ export default function RankedList({
     const params = {
       subsetDetail: subsetId,
       level: officeLevel,
-      sort_by: selectedColumn,
+      sort_by: dataField,
       sort_order: sortOrder,
       limit: itemLimit,
       page: pageNumber,
@@ -87,7 +88,7 @@ export default function RankedList({
   }, [
     subsetId,
     officeLevel,
-    selectedColumn,
+    dataField,
     sortOrder,
     itemLimit,
     timePeriod,
@@ -96,45 +97,19 @@ export default function RankedList({
     filterValue,
     pageNumber,
   ])
-  console.log('Ranking fetchUrl : ', fetchUrl)
-
   const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
-  console.log('Ranking graphvalues : ', graphValues)
+
+  console.log('fetchUrl:', fetchUrl)
+  console.log('graphValues:', graphValues)
 
   const headers = useMemo(() => {
-    const selectedLevel = levelTypes.find((value) => value.value == officeLevel)
-    return [selectedLevel?.name ?? '', selectedFieldName]
-  }, [officeLevel, selectedFieldName])
-
-  const switchDisplayedColumn = useCallback(
-    (column: string) => {
-      const selectedField = availableFields?.find((value) => value.subset_column == column)
-
-      if (selectedField == null) {
-        return
-      }
-
-      setSelectedColumn(column)
-      setSelectedFieldName(selectedField.subset_field_name)
-    },
-    [availableFields]
-  )
+    const selectedLevel = levelTypes.find((value) => value.value === officeLevel)
+    return [selectedLevel?.name ?? '', dataFieldName]
+  }, [officeLevel, dataFieldName])
 
   return (
     <div className='relative flex w-full flex-col'>
       <div className='flex items-center justify-end gap-5 pr-4'>
-        {availableFields != null && (
-          <div className='flex flex-col'>
-            <SelectList
-              list={availableFields}
-              value={selectedColumn}
-              setValue={switchDisplayedColumn}
-              dataKey='subset_column'
-              displayKey='subset_field_name'
-              style='1stop-small'
-            />
-          </div>
-        )}
         {filterListFetchURL != null && filterFieldName != null && filterListKey != null && (
           <FieldUniqueValueDropdown
             listFetchURL={filterListFetchURL}
@@ -145,7 +120,7 @@ export default function RankedList({
         )}
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <button
-            className={`${sortOrder == 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`${sortOrder === 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setSortOrder('desc')
             }}
@@ -196,7 +171,7 @@ export default function RankedList({
             </svg>
           </button>
           <button
-            className={`${sortOrder == 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`${sortOrder === 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setSortOrder('asc')
             }}
@@ -276,37 +251,31 @@ export default function RankedList({
       )}
       {!isLoading && (
         <>
-          <table className='mx-4 mt-5'>
-            <thead className='rounded-2xl text-left'>
-              <tr className=''>
-                {headers.map((header) => {
+          <div className='mx-4 mt-5'>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {headers.map((head) => (
+                    <TableHead key={head}>{head}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {graphValues?.data.data.map((value, index) => {
+                  const officeName = typeof value.office_name === 'string' ? value.office_name : ''
+                  const rowKey = officeName !== '' ? officeName : `row-${index}`
+                  const columnValue = value[dataField] ?? null
+
                   return (
-                    <th
-                      key={header}
-                      className='subheader-sm-1stop bg-1stop-white'
-                    >
-                      {header}
-                    </th>
+                    <TableRow key={rowKey}>
+                      <TableCell>{officeName}</TableCell>
+                      <TableCell>{formatNumber(columnValue as number)}</TableCell>
+                    </TableRow>
                   )
                 })}
-              </tr>
-            </thead>
-            <tbody>
-              {graphValues?.data.data.map((value) => {
-                return (
-                  <tr
-                    className='data-xs-1stop text-start'
-                    key={value.office_name}
-                  >
-                    <td className=''>{value.office_name}</td>
-                    <td className='pl-2 text-start'>
-                      {formatNumber((value[selectedColumn] ?? null) as number)}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+              </TableBody>
+            </Table>
+          </div>
           <div className='flex w-full items-center gap-6 px-4'>
             <div className='flex flex-grow flex-col'>
               {graphValues?.data != null && (
