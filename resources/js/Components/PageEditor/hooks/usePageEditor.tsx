@@ -1,7 +1,5 @@
-import { DragSource } from '@/Components/PageEditor/DraggableWidget'
-import { PageRowType, PageStructure, WidgetSlot } from '@/Components/PageEditor/PagePreviewArea'
 import useCustomForm from '@/hooks/useCustomForm'
-import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
+import { DashboardPage, Widget, WidgetPosition as WidgetSlot } from '@/interfaces/data_interfaces'
 import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { useCallback, useState } from 'react'
 
@@ -10,11 +8,11 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
     formData: pageStructure,
     setFormValue,
     setAll,
-  } = useCustomForm<PageStructure>({
+  } = useCustomForm<Partial<DashboardPage>>({
     title: initialPage?.title ?? '',
     description: initialPage?.description ?? '',
     link: initialPage?.link ?? '',
-    page: (initialPage?.page as PageRowType[]) ?? [],
+    page: initialPage?.page ?? [],
     published: initialPage?.published ?? false,
   })
 
@@ -56,14 +54,10 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
     [pageStructure.page, nextId, setFormValue, createWidgetSlots]
   )
 
-  const handleDeleteRow = useCallback(
-    (id: number) => {
-      setFormValue('page')(pageStructure.page.filter((row) => row.id !== id))
-    },
-    [pageStructure.page, setFormValue]
-  )
-
-  const handleDragStart = useCallback((event: DragStartEvent) => {
+  const handleDeleteRow = (id: number) => {
+    setFormValue('page')(pageStructure.page.filter((row) => row.id !== id))
+  }
+  const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
     if (active.data.current?.widgetId) {
       const widget = getWidgetById(active.data.current.widgetId)
@@ -71,44 +65,35 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
         setActiveWidget(widget)
       }
     }
-  }, [])
+  }
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event
-      console.log('drag end', event)
-      if (over != null && active.data.current?.widgetId != null) {
-        const widgetId = active.data.current.widgetId as number
-        const source = active.data.current.source as DragSource | undefined
-        const dropData = over.data.current as { rowId: number; position: number }
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (over != null && active.data.current?.widgetId != null) {
+      const widgetId = active.data.current.widgetId as number
+      const dropData = over.data.current as { rowId: number; position: number }
 
-        if (dropData != null) {
-          let newPage = [...pageStructure.page]
+      if (dropData != null) {
+        let newPage = [...pageStructure.page]
 
-          const targetRow = newPage.find((row) => row.id === dropData.rowId)
-          const targetSlot = targetRow?.widgets.find((slot) => slot.position === dropData.position)
-          const targetWidgetId = targetSlot?.widgetId
-
-          newPage = newPage.map((row) => {
-            if (row.id === dropData.rowId) {
-              return {
-                ...row,
-                widgets: row.widgets.map((slot) =>
-                  slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
-                ),
-              }
+        newPage = newPage.map((row) => {
+          if (row.id === dropData.rowId) {
+            return {
+              ...row,
+              widgets: row.widgets.map((slot) =>
+                slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
+              ),
             }
-            return row
-          })
+          }
+          return row
+        })
 
-          setFormValue('page')(newPage)
-        }
+        setFormValue('page')(newPage)
       }
+    }
 
-      setActiveWidget(null)
-    },
-    [pageStructure.page, setFormValue]
-  )
+    setActiveWidget(null)
+  }
 
   const handleRemoveWidget = useCallback(
     (rowId: number, position: number) => {

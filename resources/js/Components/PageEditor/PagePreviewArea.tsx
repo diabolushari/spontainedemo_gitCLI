@@ -14,7 +14,7 @@ export default function PagePreviewArea({
   getWidgetById,
   onRemoveWidget,
   onDeleteRow,
-}: PreviewAreaProps) {
+}: Readonly<PreviewAreaProps>) {
   return (
     <>
       {pageStructure.page.length === 0 && (
