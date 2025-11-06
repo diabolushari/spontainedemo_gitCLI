@@ -546,11 +546,12 @@ export interface WidgetCollection {
 export interface WidgetPosition {
   position: number
   widgetId: number | null
+  widget?: Widget | null
 }
 
 export interface PageSection {
   id: number
-  type: string
+  type: 'singleCol' | 'doubleCol' | 'tripleCol'
   title: string | null
   widgets: WidgetPosition[]
   description: string | null

@@ -1,27 +1,6 @@
-import { Widget as WidgetType } from '@/interfaces/data_interfaces'
+import { DashboardPage as PageStructure, Widget as WidgetType } from '@/interfaces/data_interfaces'
 import { FilePlus2, XIcon } from 'lucide-react'
 import PageDroppableSlot from './PageDroppableSlot'
-
-export interface WidgetSlot {
-  widgetId: number | null
-  position: number
-}
-
-export interface PageRowType {
-  id: number
-  type: 'singleCol' | 'doubleCol' | 'tripleCol'
-  title: string
-  description: string
-  widgets: WidgetSlot[]
-}
-
-export interface PageStructure {
-  title: string
-  description: string
-  link: string
-  page: PageRowType[]
-  published: boolean
-}
 
 interface PreviewAreaProps {
   pageStructure: PageStructure

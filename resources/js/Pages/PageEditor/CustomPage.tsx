@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Widget as WidgetType } from '@/interfaces/data_interfaces'
+import { DashboardPage as PageData } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import CustomPageRow from '@/Components/PageEditor/CustomPage/CustomPageRow'
 
@@ -15,17 +16,6 @@ export interface PageRow {
   title: string | null
   description: string | null
   widgets: PageWidget[]
-}
-
-interface PageData {
-  id: number
-  title: string
-  description: string
-  link: string
-  page: PageRow[]
-  published: boolean
-  created_at: string
-  updated_at: string
 }
 
 interface CustomPageProps {

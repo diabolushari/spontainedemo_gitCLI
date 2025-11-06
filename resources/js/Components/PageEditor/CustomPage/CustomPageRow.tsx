@@ -1,7 +1,8 @@
 import { Carousel, CarouselContent, CarouselItem } from '@/Components/ui/carousel'
 import Widget from '@/Components/PageEditor/Widget'
 import React from 'react'
-import { COLUMN_CONFIG, PageRow } from '@/Pages/PageEditor/CustomPage'
+import { COLUMN_CONFIG } from '@/Pages/PageEditor/CustomPage'
+import { PageSection as PageRow } from '@/interfaces/data_interfaces'
 
 const EmptyWidgetSlot = ({ position }: { position: number }) => (
   <div className='flex h-full min-h-[200px] items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50'>
