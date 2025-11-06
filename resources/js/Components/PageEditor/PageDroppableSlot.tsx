@@ -12,7 +12,7 @@ interface DroppableColumnProps {
   onRemove: () => void
 }
 
-export default function DroppableColumn({
+export default function PageDroppableSlot({
   rowId,
   position,
   widgetId,

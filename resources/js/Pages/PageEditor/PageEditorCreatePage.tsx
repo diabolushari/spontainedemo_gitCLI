@@ -1,7 +1,7 @@
-import ElementsSidebar from '@/Components/PageEditor/ElementsSidebar'
+import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSidebar'
 import { usePageEditor } from '@/Components/PageEditor/hooks/usePageEditor'
 import LayoutSidebar from '@/Components/PageEditor/LayoutSideBar'
-import PreviewArea from '@/Components/PageEditor/PreviewArea'
+import PagePreviewArea from '@/Components/PageEditor/PagePreviewArea'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
@@ -186,7 +186,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
 
               <div className='h-full overflow-y-auto p-4'>
                 {activeTab === 'elements' ? (
-                  <ElementsSidebar widgets={widgets} />
+                  <DraggableWidgetSidebar widgets={widgets} />
                 ) : (
                   <LayoutSidebar onLayoutClick={handleLayoutClick} />
                 )}
@@ -196,7 +196,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
             {/* Right Side - Preview */}
             <div className='overflow-auto rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8'>
               <div className='min-h-full rounded bg-white p-6 shadow-sm'>
-                <PreviewArea
+                <PagePreviewArea
                   pageStructure={pageStructure}
                   getWidgetById={getWidgetById}
                   onRemoveWidget={handleRemoveWidget}

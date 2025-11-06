@@ -1,6 +1,6 @@
 import { Widget as WidgetType } from '@/interfaces/data_interfaces'
-import { XIcon } from 'lucide-react'
-import DroppableColumn from './DroppableColumn'
+import { FilePlus2, XIcon } from 'lucide-react'
+import PageDroppableSlot from './PageDroppableSlot'
 
 export interface WidgetSlot {
   widgetId: number | null
@@ -30,7 +30,7 @@ interface PreviewAreaProps {
   onDeleteRow: (id: number) => void
 }
 
-export default function PreviewArea({
+export default function PagePreviewArea({
   pageStructure,
   getWidgetById,
   onRemoveWidget,
@@ -40,19 +40,10 @@ export default function PreviewArea({
     <>
       {pageStructure.page.length === 0 && (
         <div className='mt-20 text-center text-gray-400'>
-          <svg
-            className='mx-auto mb-4 h-12 w-12'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth={2}
-              d='M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
-            />
-          </svg>
+          <FilePlus2
+            className={'mx-auto mb-4 h-12 w-12'}
+            strokeWidth={2}
+          />
           <p className='text-lg font-medium'>Start building your page</p>
           <p className='mt-2 text-sm'>Add layouts and drag widgets into them</p>
         </div>
@@ -81,7 +72,7 @@ export default function PreviewArea({
                 }`}
               >
                 {row.widgets.map((slot) => (
-                  <DroppableColumn
+                  <PageDroppableSlot
                     key={`${row.id}-${slot.position}`}
                     rowId={row.id}
                     position={slot.position}

@@ -45,6 +45,7 @@
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
         "dayjs": "^1.11.13",
+        "embla-carousel-react": "^8.6.0",
         "eslint": "^8.57.0",
         "eslint-config-standard-with-typescript": "^43.0.1",
         "eslint-plugin-import": "^2.29.1",
