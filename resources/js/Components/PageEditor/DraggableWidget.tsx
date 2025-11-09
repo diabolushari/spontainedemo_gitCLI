@@ -1,5 +1,5 @@
+import { Widget } from '@/interfaces/data_interfaces'
 import { useDraggable } from '@dnd-kit/core'
-import { Widget as WidgetType } from '@/interfaces/data_interfaces'
 
 export interface DragSource {
   rowId: number
@@ -7,7 +7,7 @@ export interface DragSource {
 }
 
 interface DraggableWidgetProps {
-  widget: WidgetType
+  widget: Widget
   source?: DragSource
 }
 

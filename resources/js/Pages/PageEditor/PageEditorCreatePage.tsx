@@ -1,44 +1,21 @@
+import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSidebar'
+import { usePageEditor } from '@/Components/PageEditor/hooks/usePageEditor'
+import LayoutSidebar from '@/Components/PageEditor/LayoutSideBar'
+import PagePreviewArea from '@/Components/PageEditor/PagePreviewArea'
+import useInertiaPost from '@/hooks/useInertiaPost'
+import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Button from '@/ui/button/Button'
-import { Widget as WidgetType } from '@/interfaces/data_interfaces'
-import { useEffect, useState } from 'react'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import useInertiaPost from '@/hooks/useInertiaPost'
-import { usePageEditor } from '@/Components/PageEditor/hooks/usePageEditor'
-import ElementsSidebar from '@/Components/PageEditor/ElementsSidebar'
-import LayoutSidebar from '@/Components/PageEditor/LayoutSideBar'
-import PreviewArea from '@/Components/PageEditor/PreviewArea'
+import { useEffect, useState } from 'react'
 
-interface Widget {
-  position: number
-  widgetId: number | null
-}
-
-interface PageSection {
-  id: number
-  type: string
-  title: string | null
+interface Props {
+  page?: DashboardPage
   widgets: Widget[]
-  description: string | null
 }
 
-interface PageConfig {
-  id: number
-  title: string
-  description: string
-  link: string
-  page: PageSection[]
-  published: boolean
-}
-
-export default function PageEditorCreatePage({
-  page,
-  widgets,
-}: {
-  page: PageConfig
-  widgets: WidgetType[]
-}) {
+export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>) {
   const [activeTab, setActiveTab] = useState('elements')
   const { post } = useInertiaPost(
     page ? route('page-editor.update', page.id) : route('page-editor.store'),
@@ -59,8 +36,7 @@ export default function PageEditorCreatePage({
     handleDescriptionChange,
     handleLinkChange,
     getWidgetById,
-    setFormValue,
-  } = usePageEditor(page, widgets)
+  } = usePageEditor(page ?? null, widgets)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -210,7 +186,7 @@ export default function PageEditorCreatePage({
 
               <div className='h-full overflow-y-auto p-4'>
                 {activeTab === 'elements' ? (
-                  <ElementsSidebar widgets={widgets} />
+                  <DraggableWidgetSidebar widgets={widgets} />
                 ) : (
                   <LayoutSidebar onLayoutClick={handleLayoutClick} />
                 )}
@@ -220,7 +196,7 @@ export default function PageEditorCreatePage({
             {/* Right Side - Preview */}
             <div className='overflow-auto rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8'>
               <div className='min-h-full rounded bg-white p-6 shadow-sm'>
-                <PreviewArea
+                <PagePreviewArea
                   pageStructure={pageStructure}
                   getWidgetById={getWidgetById}
                   onRemoveWidget={handleRemoveWidget}

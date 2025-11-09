@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PageEditor\PageEditorRequestForm;
 use App\Models\PageEditor\DashboardPage;
 use App\Models\WidgetEditor\Widget;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PageEditorController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $pages = DashboardPage::all();
 
@@ -19,7 +21,7 @@ class PageEditorController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         $widgets = Widget::all();
 
@@ -28,7 +30,7 @@ class PageEditorController extends Controller
         ]);
     }
 
-    public function store(PageEditorRequestForm $request)
+    public function store(PageEditorRequestForm $request): RedirectResponse
     {
         $dashboardPage = DashboardPage::create([
             'title' => $request->title,
@@ -41,7 +43,7 @@ class PageEditorController extends Controller
         return redirect()->route('page-editor.index', $dashboardPage);
     }
 
-    public function edit(DashboardPage $pageEditor)
+    public function edit(DashboardPage $pageEditor): Response
     {
         $widgets = Widget::all();
 
@@ -51,7 +53,7 @@ class PageEditorController extends Controller
         ]);
     }
 
-    public function update(PageEditorRequestForm $request, DashboardPage $pageEditor)
+    public function update(PageEditorRequestForm $request, DashboardPage $pageEditor): RedirectResponse
     {
         $pageEditor->update([
             'title' => $request->title,
@@ -64,7 +66,7 @@ class PageEditorController extends Controller
         return redirect()->route('page-editor.index', $pageEditor);
     }
 
-    public function destroy(DashboardPage $pageEditor)
+    public function destroy(DashboardPage $pageEditor): RedirectResponse
     {
         $pageEditor->delete();
 

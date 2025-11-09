@@ -1,10 +1,16 @@
-import { Link, router } from '@inertiajs/react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import useCustomForm from '@/hooks/useCustomForm'
+import { DashboardPage } from '@/interfaces/data_interfaces'
 import CardHeader from '@/ui/Card/CardHeader'
+import { Link, router } from '@inertiajs/react'
+import dayjs from 'dayjs'
 
-export default function PageEditorIndexPage({ pages }) {
+interface Props {
+  pages: DashboardPage[]
+}
+
+export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     pages: pages,
     searchQuery: '',
@@ -12,11 +18,15 @@ export default function PageEditorIndexPage({ pages }) {
   })
 
   const filteredPages = formData.pages.filter((page) => {
-    const title = page.title || 'Untitled Page'
+    const title = page.title ?? 'Untitled Page'
     return title.toLowerCase().includes(formData.searchQuery.toLowerCase())
   })
 
-  const handleDelete = (e, pageId, pageTitle) => {
+  const handleDelete = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    pageId: number,
+    pageTitle: string
+  ) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -137,12 +147,12 @@ export default function PageEditorIndexPage({ pages }) {
                   </div>
 
                   <h3 className='mb-2 text-xl font-semibold text-gray-900'>
-                    {page.title || 'Untitled Page'}
+                    {page.title ?? 'Untitled Page'}
                   </h3>
 
                   <div className='border-t border-gray-200 pt-4'>
                     <span className='text-xs text-gray-500'>
-                      Updated {new Date(page.updated_at).toLocaleDateString()}
+                      Updated {dayjs(page.updated_at ?? '').format('DD/MM/YYYY')}
                     </span>
                   </div>
                 </Link>
@@ -196,7 +206,7 @@ export default function PageEditorIndexPage({ pages }) {
                   <div className='text-right'>
                     <p className='text-sm text-gray-600'>Last Updated</p>
                     <p className='text-sm text-gray-900'>
-                      {new Date(page.updated_at).toLocaleDateString()}
+                      {dayjs(page.updated_at ?? '').format('DD/MM/YYYY')}
                     </p>
                   </div>
                   <button

@@ -1,6 +1,7 @@
-import { useDroppable } from '@dnd-kit/core'
 import Widget from '@/Components/PageEditor/Widget'
 import { Widget as WidgetType } from '@/interfaces/data_interfaces'
+import { useDroppable } from '@dnd-kit/core'
+import { XIcon } from 'lucide-react'
 import DraggableWidgetWrapper from './DraggableWidgetWrapper'
 
 interface DroppableColumnProps {
@@ -11,13 +12,13 @@ interface DroppableColumnProps {
   onRemove: () => void
 }
 
-export default function DroppableColumn({
+export default function PageDroppableSlot({
   rowId,
   position,
   widgetId,
   widget,
   onRemove,
-}: DroppableColumnProps) {
+}: Readonly<DroppableColumnProps>) {
   const { setNodeRef, isOver } = useDroppable({
     id: `droppable-${rowId}-${position}`,
     data: { rowId, position },
@@ -37,19 +38,7 @@ export default function DroppableColumn({
             className='absolute right-2 top-2 z-30 rounded-full bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600'
             title='Remove widget'
           >
-            <svg
-              className='h-4 w-4'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M6 18L18 6M6 6l12 12'
-              />
-            </svg>
+            <XIcon className='h-4 w-4' />
           </button>
           <DraggableWidgetWrapper
             widget={widget}
