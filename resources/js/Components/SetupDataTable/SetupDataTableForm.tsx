@@ -22,6 +22,7 @@ import DatePicker from '@/ui/form/DatePicker'
 import TimePicker from '@/ui/form/TimePicker'
 import { FieldErrors } from './SetupDataTable'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
+import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
 
 interface Props {
   fields: DataTableFieldConfig[]
@@ -446,15 +447,14 @@ export default function SetupDataTableForm({
           </div>
           {formData.delete_existing_data && (
             <div className='flex flex-col md:col-span-2'>
-              <SelectList
+              <MultiSelectDropdown
                 value={formData.duplicate_identification_field}
-                label='Duplicate Identification Field'
+                label='Duplicate Identification Fields'
                 setValue={setFormValue('duplicate_identification_field')}
                 list={dataTableFields}
                 displayKey='field'
                 dataKey='column'
-                showAllOption={true}
-                allOptionText='DELETE ALL DATA'
+                placeholder='Select one or more fields'
               />
             </div>
           )}
