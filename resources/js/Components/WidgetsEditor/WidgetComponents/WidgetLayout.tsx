@@ -138,8 +138,12 @@ export default function WidgetLayout({
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='flex shrink-0 items-center justify-between px-4 py-3'>
             <div className='flex flex-col gap-2'>
-              <Heading className={`subheader-1stop uppercase`}>{title}</Heading>
-              <NormalText className='mb-2 text-gray-500'>{subtitle}</NormalText>
+              {title && <Heading className={`subheader-1stop uppercase`}>{title}</Heading>}
+              {!title && (
+                <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
+              )}
+              {subtitle && <NormalText className='text-gray-500'>{subtitle}</NormalText>}
+              {!subtitle && <NormalText className='text-gray-400'>subtitle</NormalText>}
             </div>
             <PageBuilderMonthPicker
               selectedMonth={selectedMonth}

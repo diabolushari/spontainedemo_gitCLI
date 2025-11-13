@@ -1,7 +1,6 @@
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
-import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { useMemo } from 'react'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
@@ -65,60 +64,40 @@ export default function OverviewWidgetContent({
     return allMeasures
   }, [measure, chartType])
 
-  const hasHighlightData = highlightCards != null && highlightCards.length > 0
-
-  const hasChartData = dimension != null && dimension !== '' && fieldsToPlot.length > 0
-
   return (
     <div>
-      {hasHighlightData && (
-        <HighlightBar
-          highlightCards={highlightCards}
-          selectedMonth={selectedMonth}
-        />
+      {chartType === 'bar' && data != null && (
+        <div>
+          <CustomBarChart
+            data={data.data}
+            dataKey={dimension}
+            keysToPlot={fieldsToPlot}
+            colorScheme={colorPalette}
+            containerClassName={'text-sm aspect-video w-full transition-all xl:w-10/12'}
+          />
+        </div>
       )}
-      {hasChartData ? (
-        <>
-          {chartType === 'bar' && data != null && (
-            <div>
-              <CustomBarChart
-                data={data.data}
-                dataKey={dimension}
-                keysToPlot={fieldsToPlot}
-                colorScheme={colorPalette}
-                containerClassName={'text-sm aspect-video w-full transition-all xl:w-10/12'}
-              />
-            </div>
-          )}
-          {chartType === 'line' && data != null && (
-            <div>
-              <CustomLineChart
-                data={data.data}
-                dataKey={dimension}
-                keysToPlot={fieldsToPlot}
-                colorScheme={colorPalette}
-              />
-            </div>
-          )}
-          {chartType === 'pie' && data != null && (
-            <div>
-              <CustomPieChart
-                data={data.data}
-                dataKey={fieldsToPlot[0].key}
-                nameKey={dimension}
-                keysToPlot={fieldsToPlot}
-                colorScheme={colorPalette}
-                fontSize={'text-sm'}
-              />
-            </div>
-          )}
-        </>
-      ) : (
-        !hasHighlightData && (
-          <div className='flex h-64 items-center justify-center text-slate-400'>
-            No data available to display
-          </div>
-        )
+      {chartType === 'line' && data != null && (
+        <div>
+          <CustomLineChart
+            data={data.data}
+            dataKey={dimension}
+            keysToPlot={fieldsToPlot}
+            colorScheme={colorPalette}
+          />
+        </div>
+      )}
+      {chartType === 'pie' && data != null && (
+        <div>
+          <CustomPieChart
+            data={data.data}
+            dataKey={fieldsToPlot[0].key}
+            nameKey={dimension}
+            keysToPlot={fieldsToPlot}
+            colorScheme={colorPalette}
+            fontSize={'text-sm'}
+          />
+        </div>
       )}
     </div>
   )

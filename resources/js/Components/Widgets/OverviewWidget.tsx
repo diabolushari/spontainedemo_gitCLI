@@ -5,6 +5,8 @@ import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayo
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Widget } from '@/interfaces/data_interfaces'
 import { useEffect, useMemo, useState } from 'react'
+import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
+import { CustomChartSkeleton } from '@/Components/WidgetsEditor/CustomChartSkeleton'
 
 interface OverviewWidgetProps {
   widget: Widget
@@ -48,12 +50,7 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
     }
   }, [widget.data])
 
-  const [selectedView, setSelectedView] = useState<string>(() => {
-    if (hasOverview || hasHighlightCards) return 'overview'
-    if (hasTrend) return 'trend'
-    if (hasRanking) return 'ranking'
-    return ''
-  })
+  const [selectedView, setSelectedView] = useState<string>('overview')
 
   useEffect(() => {
     if (selectedView != '') {
@@ -109,6 +106,11 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
     }
   }, [loading, maxValueData])
 
+  const hasHighlightData =
+    widget.data.highlight_cards != null && widget.data.highlight_cards.length > 0
+
+  console.log(widget.data.highlight_cards, selectedView)
+
   return (
     <WidgetLayout
       title={widget.title}
@@ -122,6 +124,22 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
       hasTrend={hasTrend}
       hasHighlightCards={hasHighlightCards}
     >
+      {hasHighlightData && selectedView === 'overview' && (
+        <HighlightBar
+          highlightCards={widget.data.highlight_cards}
+          selectedMonth={selectedMonth ?? new Date()}
+        />
+      )}
+      {!hasHighlightData && selectedView === 'overview' && (
+        <div className='flex-1 rounded-lg bg-white p-4 px-6 text-left shadow-sm'>
+          <div className='mb-0.5 h-3 w-24 animate-pulse rounded bg-gray-200' />
+          <div className='mb-0.5 h-7 w-32 animate-pulse rounded bg-gray-300' />
+          <div className='h-3 w-40 animate-pulse rounded bg-gray-200' />
+        </div>
+      )}
+      {selectedView === 'overview' && widget.data.overview.subset_id == null && (
+        <CustomChartSkeleton />
+      )}
       {selectedView === 'overview' && widget.data.overview.subset_id != null && (
         <OverviewWidgetContent
           subsetId={widget.data.overview.subset_id}
