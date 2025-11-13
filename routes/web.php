@@ -113,16 +113,6 @@ Route::get('/', function () {
     return redirect()->route('data-detail.index');
 });
 
-// TEMP DEBUG: remove after troubleshooting
-Route::get('/debug-session', function () {
-    return response()->json([
-        'session_id' => session()->getId(),
-        'authenticated' => auth()->check(),
-        'user_id' => optional(auth()->user())->id,
-        'intended_url' => session()->get('url.intended'),
-        'all_session_keys' => array_keys(session()->all()),
-    ]);
-});
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
@@ -395,6 +385,6 @@ Route::post('api/store-loader-json-api', StoreLoaderAPIController::class)
 Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::class)
     ->name('subset-field-max-value');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
