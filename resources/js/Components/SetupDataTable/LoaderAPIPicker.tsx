@@ -2,7 +2,7 @@ import { DataLoaderAPI } from '@/interfaces/data_interfaces'
 import useFetchPagination from '@/hooks/useFetchPagination'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { useCallback, useState } from 'react'
-import { FiCheck, FiPlus, FiSearch } from 'react-icons/fi'
+import { FiCheck, FiDatabase, FiSearch } from 'react-icons/fi'
 import { cn } from '@/utils'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import CreateAPIModal from './CreateAPIModal'
@@ -45,48 +45,49 @@ const LoaderAPIPicker = ({ onSelect, selectedId }: LoaderAPIPickerProps) => {
   }, [])
 
   return (
-    <div className='flex flex-col gap-4'>
-      <button
-        onClick={handleCreateClick}
-        className='flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600'
-      >
-        <FiPlus className='h-5 w-5' />
-        Create New API
-      </button>
+    <div className='flex flex-col'>
+      {/* Header */}
+      <h2 className='mb-5 text-xl font-semibold text-gray-900'>Select or Create API</h2>
 
-      <div className='flex items-center gap-3'>
-        <div className='h-px flex-1 bg-gray-300' />
-        <span className='text-sm text-gray-500'>or</span>
-        <div className='h-px flex-1 bg-gray-300' />
+      {/* Search and Add New API */}
+      <div className='mb-5 flex gap-3'>
+        <div className='relative flex-1'>
+          <FiSearch className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
+          <input
+            type='text'
+            placeholder='Search API by name, description...'
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className='w-full rounded-lg border border-gray-300 py-3 pl-12 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500'
+          />
+        </div>
+        <button
+          onClick={handleCreateClick}
+          className='whitespace-nowrap rounded-lg border-2 border-blue-500 px-6 py-3 font-medium text-blue-500 transition-colors hover:bg-blue-50'
+        >
+          + Add New API
+        </button>
       </div>
 
-      <div className='relative'>
-        <FiSearch className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
-        <input
-          type='text'
-          placeholder='Search APIs by name, description, or URL...'
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className='w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
-        />
-      </div>
-
+      {/* API List */}
       <FullSpinnerWrapper processing={loading}>
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-2'>
           {loaderAPIs?.data?.map((api) => (
             <div
               key={api.id}
               onClick={() => onSelect(api)}
               className={cn(
-                'flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-all hover:shadow-md',
-                selectedId === api.id
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 bg-white hover:border-blue-300'
+                'flex cursor-pointer items-center gap-4 rounded-lg border bg-white p-4 transition-all hover:border-blue-300 hover:shadow-sm',
+                selectedId === api.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
               )}
             >
-              <div className='flex-1'>
+              <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500'>
+                <FiDatabase className='h-6 w-6 text-white' />
+              </div>
+
+              <div className='min-w-0 flex-1'>
                 <div className='flex items-center gap-2'>
-                  <h4 className='font-semibold text-gray-900'>{api.name}</h4>
+                  <h4 className='font-medium text-gray-900'>{api.name}</h4>
                   <span
                     className={cn(
                       'rounded px-2 py-0.5 text-xs font-medium',
@@ -98,15 +99,16 @@ const LoaderAPIPicker = ({ onSelect, selectedId }: LoaderAPIPickerProps) => {
                     {api.method}
                   </span>
                 </div>
-                {api.description && (
-                  <p className='small-1stop mt-1 text-gray-600'>{api.description}</p>
-                )}
-                <p className='small-1stop mt-1 font-mono text-gray-500'>{api.url}</p>
+                <p className='text-sm text-gray-500'>
+                  {api.description || api.url}
+                  {api.description && <span className='ml-2 text-gray-400'>| {api.url}</span>}
+                </p>
               </div>
+
               {selectedId === api.id && (
                 <div className='flex-shrink-0'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white'>
-                    <FiCheck className='h-4 w-4' />
+                  <div className='flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white'>
+                    <FiCheck className='h-3 w-3' />
                   </div>
                 </div>
               )}
@@ -115,19 +117,29 @@ const LoaderAPIPicker = ({ onSelect, selectedId }: LoaderAPIPickerProps) => {
         </div>
       </FullSpinnerWrapper>
 
+      {/* Empty State */}
       {!loading && loaderAPIs?.data?.length === 0 && (
-        <div className='flex items-center justify-center py-8'>
-          <div className='text-gray-500'>No APIs found</div>
+        <div className='flex items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 py-12'>
+          <div className='text-center'>
+            <p className='text-sm text-gray-500'>No APIs found</p>
+            <p className='mt-1 text-xs text-gray-400'>
+              Try creating a new one or adjusting your search
+            </p>
+          </div>
         </div>
       )}
 
+      {/* Pagination */}
       {loaderAPIs != null && loaderAPIs.last_page > 1 && (
-        <RestPagination
-          pagination={loaderAPIs}
-          onNewPage={handlePageChange}
-        />
+        <div className='mt-5'>
+          <RestPagination
+            pagination={loaderAPIs}
+            onNewPage={handlePageChange}
+          />
+        </div>
       )}
 
+      {/* Create Modal */}
       {showCreateModal && (
         <CreateAPIModal
           onClose={handleCloseModal}
