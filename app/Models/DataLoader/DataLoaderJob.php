@@ -36,6 +36,8 @@ class DataLoaderJob extends Model
         'source_type',
         'api_id',
         'field_mapping',
+        'schedule_start_time',
+        'sub_hour_interval',
     ];
 
     protected $casts = [

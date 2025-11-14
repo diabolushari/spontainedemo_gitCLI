@@ -4,6 +4,8 @@ namespace App\Services\DataLoader;
 
 class CronTypes
 {
+    const SUB_HOUR = 'SUB_HOUR';
+
     const HOURLY = 'HOURLY';
 
     const DAILY = 'DAILY';

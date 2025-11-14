@@ -49,6 +49,8 @@ interface FormData {
   delete_existing_data: boolean
   duplicate_identification_field: string
   predecessor_job_id: string
+  schedule_start_time?: string
+  sub_hour_interval?: number
 }
 
 const sourceTypes = [
@@ -99,6 +101,8 @@ export default function DataLoaderJobCreate({
     delete_existing_data: job?.delete_existing_data === 1,
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
     predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
+    schedule_start_time: job?.schedule_start_time ?? '',
+    sub_hour_interval: job?.sub_hour_interval ?? 0,
   })
   const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
@@ -238,7 +242,19 @@ export default function DataLoaderJobCreate({
         type: 'time',
         label: 'Time',
         setValue: setFormValue('schedule_time'),
-        hidden: formData.cron_type === 'HOURLY',
+        hidden: formData.cron_type === 'HOURLY' || formData.cron_type === 'SUB_HOUR',
+      },
+      schedule_start_time: {
+        type: 'time',
+        label: 'Start Time',
+        setValue: setFormValue('schedule_start_time'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
+      },
+      sub_hour_interval: {
+        type: 'number',
+        label: 'Sub Hour Interval',
+        setValue: setFormValue('sub_hour_interval'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
       },
       delete_existing_data: {
         type: 'checkbox',

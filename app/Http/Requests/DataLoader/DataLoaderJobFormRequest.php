@@ -38,6 +38,8 @@ class DataLoaderJobFormRequest extends Data
         public int $dataDetailId,
         public bool $deleteExistingData,
         public array $fieldMapping,
+        public ?string $scheduleStartTime,
+        public ?int $subHourInterval,
     ) {
         //
     }

@@ -190,6 +190,7 @@ export interface DataLoaderQuery extends Model {
   loader_connection?: Partial<DataLoaderConnection> | null
 }
 
+export const SUB_HOUR_CRON = 'SUB_HOUR'
 export const HOURLY_CRON = 'HOURLY'
 export const DAILY_CRON = 'DAILY'
 export const WEEKLY_CRON = 'WEEKLY'
@@ -197,6 +198,7 @@ export const MONTHLY_CRON = 'MONTHLY'
 export const YEARLY_CRON = 'YEARLY'
 
 export type CronType =
+  | typeof SUB_HOUR_CRON
   | typeof HOURLY_CRON
   | typeof DAILY_CRON
   | typeof WEEKLY_CRON
@@ -204,6 +206,10 @@ export type CronType =
   | typeof YEARLY_CRON
 
 export const cronTypes = [
+  {
+    value: SUB_HOUR_CRON,
+    label: 'Sub-Hourly',
+  },
   {
     value: HOURLY_CRON,
     label: 'Hourly',
@@ -250,6 +256,8 @@ export interface DataLoaderJob extends Model {
   latest?: JobStatuses
   last_status?: Partial<JobStatus> | null
   field_mapping?: DataTableFieldMapping[] | null
+  schedule_start_time?: string | null
+  sub_hour_interval?: number | null
 }
 
 export interface JobStatus extends Model {

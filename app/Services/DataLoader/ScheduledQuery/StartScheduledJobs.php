@@ -18,6 +18,7 @@ class StartScheduledJobs
 
     public function run(): void
     {
+        $this->runSubHourQueries();
         if ($this->now->minute == 0) {
             $this->runHourlyQueries();
         }
@@ -25,6 +26,28 @@ class StartScheduledJobs
         $this->runWeeklyQueries($this->now->toTimeString(), $this->now->dayName);
         $this->runMonthlyQueries($this->now->toTimeString(), $this->now->day);
         $this->runYearlyQueries($this->now->toTimeString(), $this->now->month, $this->now->day);
+    }
+
+    private function runSubHourQueries(): void
+    {
+        DataLoaderJob::where('cron_type', CronTypes::SUB_HOUR)
+            ->active()
+            ->whereNotNull('schedule_start_time')
+            ->whereNotNull('sub_hour_interval')
+            ->get()
+            ->each(function ($query) {
+                $startTime = Carbon::createFromTimeString($query->schedule_start_time);
+
+                if ($startTime->greaterThan($this->now)) {
+                    return;
+                }
+
+                $minutesDifference = $startTime->diffInMinutes($this->now, false);
+
+                if ($minutesDifference >= 0 && $minutesDifference % $query->sub_hour_interval === 0) {
+                    ScheduledDataLoadEvent::dispatch($query);
+                }
+            });
     }
 
     private function runHourlyQueries(): void
