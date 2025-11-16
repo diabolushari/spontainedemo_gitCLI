@@ -21,6 +21,8 @@ import {
 import { daysOfWeek, monthList } from '@/libs/dates'
 import Button from '@/ui/button/Button'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import CheckBox from '@/ui/form/CheckBox'
+import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -240,22 +242,7 @@ export default function DataLoaderJobCreate({
         setValue: setFormValue('schedule_time'),
         hidden: formData.cron_type === 'HOURLY',
       },
-      delete_existing_data: {
-        type: 'checkbox',
-        label: 'Delete Existing Data When Running A Job',
-        setValue: toggleBoolean('delete_existing_data'),
-      },
-      duplicate_identification_field: {
-        type: 'select',
-        list: dataTableFields,
-        dataKey: 'column',
-        displayKey: 'field',
-        label: 'Duplicate Identification Field',
-        setValue: setFormValue('duplicate_identification_field'),
-        showAllOption: true,
-        allOptionText: 'DELETE ALL DATA',
-        hidden: !formData.delete_existing_data,
-      },
+
       predecessor_job_id: {
         type: 'select',
         list: availableJobs,
@@ -372,6 +359,28 @@ export default function DataLoaderJobCreate({
       hideSubmitButton
       customSubmitData={customFormData}
     >
+      <div>
+        <div className='flex flex-col md:col-span-2'>
+          <CheckBox
+            value={formData.delete_existing_data}
+            label='Delete Existing Data When Running A Job'
+            toggleValue={toggleBoolean('delete_existing_data')}
+          />
+        </div>
+        {formData.delete_existing_data && (
+          <div className='flex flex-col md:col-span-2'>
+            <MultiSelectDropdown
+              value={formData.duplicate_identification_field}
+              label='Duplicate Identification Fields'
+              setValue={setFormValue('duplicate_identification_field')}
+              list={dataTableFields}
+              displayKey='field'
+              dataKey='column'
+              placeholder='Select one or more fields'
+            />
+          </div>
+        )}
+      </div>
       {formData.source_type === 'api' && dataTableDetail != null && formData.api_id != '' && (
         <DataTableToJsonMapping
           dataTableDetail={dataTableDetail}
