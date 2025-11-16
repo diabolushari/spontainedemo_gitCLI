@@ -233,6 +233,8 @@ readonly class SetupDataTable
             'data_detail_id' => $dataDetail->id,
             'field_mapping' => $request->fieldMapping,
             'created_by' => request()->user()?->id,
+            'schedule_start_time' => $request->scheduleStartTime,
+            'sub_hour_interval' => $request->subHourInterval,
         ]);
     }
 }

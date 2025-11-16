@@ -6,6 +6,7 @@ import {
   HOURLY_CRON,
   MONTHLY_CRON,
   ReferenceData,
+  SUB_HOUR_CRON,
   WEEKLY_CRON,
 } from '@/interfaces/data_interfaces'
 import { daysOfWeek, monthList } from '@/libs/dates'
@@ -50,6 +51,8 @@ interface DataTableFormData {
   month_of_year: string
   delete_existing_data: boolean
   duplicate_identification_field: string
+  schedule_start_time: string
+  sub_hour_interval: number
 }
 
 interface ErrorMetaInfo {
@@ -83,6 +86,8 @@ export default function SetupDataTableForm({
     month_of_year: '',
     delete_existing_data: false,
     duplicate_identification_field: '',
+    schedule_start_time: '',
+    sub_hour_interval: 0,
   })
   const [errorMetaInfo, setErrorMetaInfo] = useState<ErrorMetaInfo[]>([])
 
@@ -380,7 +385,27 @@ export default function SetupDataTableForm({
               error={errors.end_date}
             />
           </div>
-          {formData.cron_type !== HOURLY_CRON && (
+          {formData.cron_type === SUB_HOUR_CRON && (
+            <>
+              <div className='flex flex-col'>
+                <TimePicker
+                  setValue={setFormValue('schedule_start_time')}
+                  value={formData.schedule_start_time}
+                  label={'Schedule Start Time'}
+                  error={errors.schedule_start_time}
+                />
+              </div>
+              <div className='flex flex-col'>
+                <Input
+                  value={formData.sub_hour_interval}
+                  setValue={setFormValue('sub_hour_interval')}
+                  label={'Sub-hour Interval'}
+                  type={'number'}
+                />
+              </div>
+            </>
+          )}
+          {formData.cron_type !== HOURLY_CRON && formData.cron_type !== SUB_HOUR_CRON && (
             <div className='flex flex-col'>
               <TimePicker
                 value={formData.schedule_time}

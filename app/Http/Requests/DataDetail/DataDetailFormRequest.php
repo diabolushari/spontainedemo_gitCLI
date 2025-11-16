@@ -53,5 +53,7 @@ class DataDetailFormRequest extends Data
         public ?int $apiId,
         public ?string $sourceType,
         public ?array $fieldMapping,
+        public ?string $scheduleStartTime,
+        public ?int $subHourInterval,
     ) {}
 }
