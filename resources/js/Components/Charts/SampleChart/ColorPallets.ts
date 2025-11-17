@@ -1,12 +1,12 @@
 export const chartPallet = {
-  boldWarm: ['#235cc0', '#5A0F35', '#A70028', '#FF8C1C', '#E0581F', '#0B4C5F'],
-  softNeutral: ['#E9AEB3', '#F8DED3', '#E4DFD9', '#B3C3B4', '#5D6966'],
-  freshGreen: ['#C7ECD7', '#A8DBBF', '#81CDA9', '#58B38F', '#26765C', '#0C3E2F'],
-  fireSunset: ['#030014', '#3F001E', '#730015', '#B10006', '#E53300', '#FFA100'],
-  blueGrey: ['#E1E6E9', '#29456F', '#5A89B2', '#9BCBFF', '#7E7E7E'],
-  citrusMint: ['#FFA424', '#FFC578', '#FFFFFF', '#C5F2EC', '#2EDFC3'],
-  earthGreen: ['#132E1A', '#2A4425', '#4E672B', '#7E9F41', '#EDF78E'],
-  duskContrast: ['#355C63', '#FFF7C4', '#F4C46C', '#A83F3B', '#560D15'],
+  boldWarm: ['#235cc0', '#FF8C1C', '#0B4C5F', '#E0581F', '#5A0F35', '#A70028'],
+  softNeutral: ['#E9AEB3', '#5D6966', '#F8DED3', '#B3C3B4', '#E4DFD9'],
+  freshGreen: ['#C7ECD7', '#0C3E2F', '#A8DBBF', '#26765C', '#81CDA9', '#58B38F'],
+  fireSunset: ['#030014', '#FFA100', '#3F001E', '#E53300', '#730015', '#B10006'],
+  blueGrey: ['#E1E6E9', '#29456F', '#9BCBFF', '#7E7E7E', '#5A89B2'],
+  citrusMint: ['#FFA424', '#2EDFC3', '#FFC578', '#FFFFFF', '#C5F2EC'],
+  earthGreen: ['#132E1A', '#EDF78E', '#2A4425', '#7E9F41', '#4E672B'],
+  duskContrast: ['#355C63', '#FFF7C4', '#560D15', '#F4C46C', '#A83F3B'],
 }
 
 export const graphColorPallet = {

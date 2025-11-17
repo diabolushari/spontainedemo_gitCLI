@@ -3,7 +3,7 @@ import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetS
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 
 export interface SelectedMeasure {
@@ -94,6 +94,15 @@ const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
 export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<Props>) {
   const isEditMode = widget != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
+  const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
+
+  useEffect(() => {
+    if (openItem === 'trend') setSelectedView('trend')
+    if (openItem === 'ranking') setSelectedView('ranking')
+    if (openItem === 'basic') setSelectedView('overview')
+    if (openItem === 'chart') setSelectedView('overview')
+    if (openItem === 'highlight_cards') setSelectedView('overview')
+  }, [openItem])
 
   const { formData, setFormValue, setAll } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
@@ -213,7 +222,11 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
         />
       </div>
       <div className='min-h-[600px] lg:col-span-2'>
-        <OverviewWidget widget={previewWidget} />
+        <OverviewWidget
+          widget={previewWidget}
+          selectedView={selectedView}
+          setSelectedView={setSelectedView}
+        />
       </div>
     </div>
   )

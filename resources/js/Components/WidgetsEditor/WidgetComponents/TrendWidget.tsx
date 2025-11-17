@@ -18,6 +18,7 @@ export default function TrendWidget({
   trendChartType,
   selectedMonth,
   setSelectedMonth,
+  trendColor,
 }: Readonly<TrendWidgetProps>) {
   return (
     <>
@@ -35,6 +36,7 @@ export default function TrendWidget({
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
             chartType={trendChartType ?? 'area'}
+            colorScheme={trendColor}
           />
         </div>
       )}

@@ -45,7 +45,7 @@ export default function WidgetLayout({
   }
 
   return (
-    <Card className='h-full w-full'>
+    <Card className='max-h-[600px] min-h-[500px] w-full'>
       <div className='flex h-full w-full'>
         {/* Sidebar - Always Vertical */}
         <div className='flex shrink-0 flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>

@@ -11,7 +11,8 @@ import { CustomChartSkeleton } from '@/Components/WidgetsEditor/CustomChartSkele
 interface OverviewWidgetProps {
   widget: Widget
   initialMonth?: Date | null
-  initialView?: 'overview' | 'trend' | 'ranking'
+  selectedView: 'overview' | 'trend' | 'ranking'
+  setSelectedView: (view: 'overview' | 'trend' | 'ranking') => void
 }
 
 interface SubsetMaxValueResponse {
@@ -19,7 +20,11 @@ interface SubsetMaxValueResponse {
   max_value: string | null
 }
 
-export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>) {
+export default function OverviewWidget({
+  widget,
+  selectedView,
+  setSelectedView,
+}: Readonly<OverviewWidgetProps>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   const { hasOverview, hasRanking, hasTrend, hasHighlightCards } = useMemo(() => {
@@ -50,20 +55,15 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
     }
   }, [widget.data])
 
-  const [selectedView, setSelectedView] = useState<string>('overview')
-
-  useEffect(() => {
-    if (selectedView != '') {
-      return
-    }
-    if (hasOverview || hasHighlightCards) {
-      setSelectedView('overview')
-    } else if (hasTrend) {
-      setSelectedView('trend')
-    } else if (hasRanking) {
-      setSelectedView('ranking')
-    }
-  }, [selectedView, hasOverview, hasRanking, hasTrend, hasHighlightCards])
+  // useEffect(() => {
+  //   if (hasOverview || hasHighlightCards) {
+  //     setSelectedView('overview')
+  //   } else if (hasTrend) {
+  //     setSelectedView('trend')
+  //   } else if (hasRanking) {
+  //     setSelectedView('ranking')
+  //   }
+  // }, [selectedView, hasOverview, hasRanking, hasTrend, hasHighlightCards])
 
   const subsetId = useMemo(() => {
     if (widget.data.overview?.subset_id != null) {

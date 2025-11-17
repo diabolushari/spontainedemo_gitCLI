@@ -25,6 +25,10 @@ export default function OverviewChartConfigForm({
 
   return (
     <div className='space-y-4 px-4'>
+      <ChartTypeSelector
+        selectedType={formData.chart_type}
+        onTypeChange={setFormValue('chart_type')}
+      />
       <div className='flex flex-col'>
         <DynamicSelectList
           label='Subset'
@@ -35,19 +39,7 @@ export default function OverviewChartConfigForm({
           setValue={handleSubsetChange}
         />
       </div>
-      <ChartTypeSelector
-        selectedType={formData.chart_type}
-        onTypeChange={setFormValue('chart_type')}
-      />
-      <div className='flex flex-col'>
-        <MeasureFieldSelector
-          subsetId={formData.subset_id}
-          measures={formData.measures}
-          onMeasuresChange={(measures) => setFormValue('measures')(measures)}
-          showUnit={true}
-          allowMultiple={formData.chart_type !== 'pie'}
-        />
-      </div>
+
       <div>
         <DynamicSelectList
           label='Dimension'
@@ -58,6 +50,17 @@ export default function OverviewChartConfigForm({
           setValue={setFormValue('dimension')}
         />
       </div>
+
+      <div className='flex flex-col'>
+        <MeasureFieldSelector
+          subsetId={formData.subset_id}
+          measures={formData.measures}
+          onMeasuresChange={(measures) => setFormValue('measures')(measures)}
+          showUnit={true}
+          allowMultiple={formData.chart_type !== 'pie'}
+        />
+      </div>
+
       <ColorPaletteSelector
         selectedPalette={formData.color_palette}
         onPaletteChange={setFormValue('color_palette')}
