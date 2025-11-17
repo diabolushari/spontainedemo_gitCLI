@@ -85,6 +85,12 @@ function parseFormDataToWidget(
   }
 }
 
+const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
+  title: '',
+  subtitle: '',
+  subset_id: null,
+  measure: { subset_column: '', subset_field_name: '', unit: '' },
+}
 export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<Props>) {
   const isEditMode = widget != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
@@ -137,7 +143,7 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
         rank_subset_id: '',
         rank_ranking_field: null,
       })
-      setHighlightCards([])
+      setHighlightCards([EMPTY_HIGHLIGHT_CARD])
     },
     [setAll, formData]
   )
@@ -160,7 +166,7 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
         rank_subset_id: '',
         rank_ranking_field: null,
       })
-      setHighlightCards([])
+      setHighlightCards([EMPTY_HIGHLIGHT_CARD])
     },
     [setAll, formData]
   )
