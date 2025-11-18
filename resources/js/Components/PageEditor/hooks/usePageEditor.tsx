@@ -3,7 +3,11 @@ import { DashboardPage, Widget, WidgetPosition as WidgetSlot } from '@/interface
 import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { useCallback, useState } from 'react'
 
-export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget[]) {
+export function usePageEditor(
+  initialPage: DashboardPage | null,
+  widgets: Widget[],
+  setSheetOpen: (open: boolean) => void
+) {
   const {
     formData: pageStructure,
     setFormValue,
@@ -16,7 +20,9 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
     published: initialPage?.published ?? false,
   })
 
-  const [nextId, setNextId] = useState(1)
+  const [nextId, setNextId] = useState(
+    pageStructure.page?.at(-1)?.id ? pageStructure.page?.at(-1)?.id + 1 : 1
+  )
   const [activeWidget, setActiveWidget] = useState<Widget | null>(null)
 
   const createWidgetSlots = useCallback(
@@ -58,6 +64,7 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
     setFormValue('page')(pageStructure.page.filter((row) => row.id !== id))
   }
   const handleDragStart = (event: DragStartEvent) => {
+    setSheetOpen(false)
     const { active } = event
     if (active.data.current?.widgetId) {
       const widget = getWidgetById(active.data.current.widgetId)
@@ -141,6 +148,30 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
     [widgets]
   )
 
+  const moveRow = useCallback(
+    (id: number, direction: 'up' | 'down'): boolean => {
+      console.log(id, direction)
+      const index = pageStructure.page.findIndex((row) => row.id === id)
+      if (index === -1) return false
+
+      const isAtTop = direction === 'up' && index === 0
+      const isAtBottom = direction === 'down' && index === pageStructure.page.length - 1
+      if (isAtTop || isAtBottom) return false
+
+      const targetIndex = direction === 'up' ? index - 1 : index + 1
+
+      // Copy array first (immutability)
+      const page = [...pageStructure.page]
+
+      // Swap elements
+      ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
+
+      setFormValue('page')(page)
+      return true
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   return {
     pageStructure,
     setFormValue,
@@ -155,5 +186,6 @@ export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget
     handleDescriptionChange,
     handleLinkChange,
     getWidgetById,
+    moveRow,
   }
 }
