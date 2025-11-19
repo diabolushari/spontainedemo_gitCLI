@@ -92,20 +92,21 @@ class MetaStructureController extends Controller implements HasMiddleware
 
     public function show(MetaStructure $metaStructure, Request $request): Response
     {
-        $pageNo = $request->query('page', '1');
         $metaStructure->load('metaStructureLabels.dataClassificationProperty');
 
-        return Inertia::render('MetaStructure/MetaStructureShow', ['metaStructure' => $metaStructure, 'pageNo' => $pageNo]);
+        return Inertia::render('MetaStructure/MetaStructureShow', ['metaStructure' => $metaStructure]);
     }
 
     public function edit(MetaStructure $metaStructure, Request $request): Response
     {
         $pageNo = $request->query('page', '1');
         $metaStructure->load('metaStructureLabels.dataClassificationProperty');
+        $dataClassificationProperties = DataClassificationProperty::all();
 
         return Inertia::render('MetaStructure/MetaStructureEdit', [
             'metaStructure' => $metaStructure,
             'pageNo' => $pageNo,
+            'dataClassificationProperties' => $dataClassificationProperties,
         ]);
     }
 
@@ -115,6 +116,26 @@ class MetaStructureController extends Controller implements HasMiddleware
         $pageNo = $page->query('page', '1');
         try {
             $metaStructure->update($request->all());
+
+            $metaStructure->metaStructureLabels()->delete();
+
+            $classificationIds = [
+                $request->dataClassificationLevel,
+                $request->dataCategory,
+                $request->encryption,
+                $request->accessLevel,
+                $request->dataOwner,
+            ];
+
+            foreach ($classificationIds as $propertyId) {
+                if ($propertyId) {
+                    \App\Models\Meta\MetaStructureLabel::create([
+                        'structure_id' => $metaStructure->id,
+                        'data_classification_property_id' => $propertyId,
+                    ]);
+                }
+            }
+
         } catch (Exception $e) {
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($e)]);
