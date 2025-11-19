@@ -15,7 +15,7 @@ export default function DraggableWidgetWrapper({
 }: DraggableWidgetWrapperProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `widget-${widget.id}-${source.rowId}-${source.position}`,
-    data: { widgetId: widget.id, source },
+    data: { widgetId: widget.id, widget, source },
   })
 
   return (

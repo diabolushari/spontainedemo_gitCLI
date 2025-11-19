@@ -1,7 +1,8 @@
 import useCustomForm from '@/hooks/useCustomForm'
 import { DashboardPage, Widget, WidgetPosition as WidgetSlot } from '@/interfaces/data_interfaces'
 import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import axios from 'axios'
 
 export function usePageEditor(
   initialPage: DashboardPage | null,
@@ -21,9 +22,17 @@ export function usePageEditor(
   })
 
   const [nextId, setNextId] = useState(
-    pageStructure.page?.at(-1)?.id ? pageStructure.page?.at(-1)?.id + 1 : 1
+    (pageStructure.page ?? []).at(-1)?.id ? ((pageStructure.page ?? []).at(-1)?.id ?? 0) + 1 : 1
   )
   const [activeWidget, setActiveWidget] = useState<Widget | null>(null)
+  const [knownWidgets, setKnownWidgets] = useState<Map<number, Widget>>(() => {
+    const map = new Map<number, Widget>()
+    widgets.forEach((w) => {
+      if (w.id) map.set(w.id, w)
+    })
+    return map
+  })
+  const fetchingIds = useRef<Set<number>>(new Set())
 
   const createWidgetSlots = useCallback(
     (type: 'singleCol' | 'doubleCol' | 'tripleCol'): WidgetSlot[] => {
@@ -45,7 +54,7 @@ export function usePageEditor(
       else if (layout === 'tripleCol') layoutType = 'tripleCol'
 
       setFormValue('page')([
-        ...pageStructure.page,
+        ...(pageStructure.page ?? []),
         {
           id: nextId,
           type: layoutType,
@@ -61,13 +70,70 @@ export function usePageEditor(
   )
 
   const handleDeleteRow = (id: number) => {
-    setFormValue('page')(pageStructure.page.filter((row) => row.id !== id))
+    setFormValue('page')((pageStructure.page ?? []).filter((row) => row.id !== id))
   }
+
+  const getWidgetById = useCallback(
+    (id: number) => {
+      return knownWidgets.get(id)
+    },
+    [knownWidgets]
+  )
+
+  const fetchWidget = useCallback(
+    async (id: number) => {
+      if (knownWidgets.has(id) || fetchingIds.current.has(id)) return
+
+      fetchingIds.current.add(id)
+      try {
+        // @ts-ignore
+        const url = route('page-editor.get-widget', id)
+        const response = await axios.get(url)
+        const widget = response.data
+        setKnownWidgets((prev) => {
+          const newMap = new Map(prev)
+          newMap.set(id, widget)
+          return newMap
+        })
+      } catch (e) {
+        console.error(`Failed to fetch widget ${id}`, e)
+      } finally {
+        fetchingIds.current.delete(id)
+      }
+    },
+    [knownWidgets]
+  )
+
+  useEffect(() => {
+    const missingIds = new Set<number>()
+    ;(pageStructure.page ?? []).forEach((row) => {
+      row.widgets.forEach((slot) => {
+        if (slot.widgetId != null && !knownWidgets.has(slot.widgetId)) {
+          missingIds.add(slot.widgetId)
+        }
+      })
+    })
+
+    missingIds.forEach((id) => fetchWidget(id))
+  }, [pageStructure.page, knownWidgets, fetchWidget])
+
   const handleDragStart = (event: DragStartEvent) => {
     console.log('start  :', event)
     setSheetOpen(false)
     const { active } = event
-    if (active.data.current?.widgetId) {
+
+    if (active.data.current?.widget) {
+      const widget = active.data.current.widget as Widget
+      if (widget.id) {
+        setKnownWidgets((prev) => {
+          if (prev.has(widget.id!)) return prev
+          const newMap = new Map(prev)
+          newMap.set(widget.id!, widget)
+          return newMap
+        })
+      }
+      setActiveWidget(widget)
+    } else if (active.data.current?.widgetId) {
       const widget = getWidgetById(active.data.current.widgetId)
       if (widget) {
         setActiveWidget(widget)
@@ -78,12 +144,39 @@ export function usePageEditor(
   const handleDragEnd = (event: DragEndEvent) => {
     console.log(event)
     const { active, over } = event
-    if (over != null && active.data.current?.widgetId != null) {
-      const widgetId = active.data.current.widgetId as number
+
+    // Ensure widget is in knownWidgets if passed in drag data
+    if (active.data.current?.widget) {
+      const widget = active.data.current.widget as Widget
+      if (widget.id) {
+        setKnownWidgets((prev) => {
+          if (prev.has(widget.id!)) return prev
+          const newMap = new Map(prev)
+          newMap.set(widget.id!, widget)
+          return newMap
+        })
+      }
+    }
+
+    let widgetId: number | null = null
+    if (active.data.current?.widgetId != null) {
+      widgetId = Number(active.data.current.widgetId)
+    } else if (active.id) {
+      // Fallback: try to parse from ID string "widget-{id}" or "widget-{id}-{row}-{pos}"
+      const parts = String(active.id).split('-')
+      if (parts.length >= 2 && parts[0] === 'widget') {
+        const parsed = Number(parts[1])
+        if (!isNaN(parsed)) {
+          widgetId = parsed
+        }
+      }
+    }
+
+    if (over != null && widgetId != null) {
       const dropData = over.data.current as { rowId: number; position: number }
 
-      if (dropData != null) {
-        let newPage = [...pageStructure.page]
+      if (dropData != null && !isNaN(widgetId)) {
+        let newPage = [...(pageStructure.page ?? [])]
 
         newPage = newPage.map((row) => {
           if (row.id === dropData.rowId) {
@@ -106,7 +199,7 @@ export function usePageEditor(
 
   const handleRemoveWidget = useCallback(
     (rowId: number, position: number) => {
-      const newPage = pageStructure.page.map((row) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
         if (row.id === rowId) {
           return {
             ...row,
@@ -143,26 +236,20 @@ export function usePageEditor(
     [setFormValue]
   )
 
-  const getWidgetById = useCallback(
-    (id: number) => {
-      return widgets.find((widget) => widget.id === id)
-    },
-    [widgets]
-  )
-
   const moveRow = useCallback(
     (id: number, direction: 'up' | 'down'): boolean => {
       console.log(id, direction)
-      const index = pageStructure.page.findIndex((row) => row.id === id)
+      const pageList = pageStructure.page ?? []
+      const index = pageList.findIndex((row) => row.id === id)
       if (index === -1) return false
 
       const isAtTop = direction === 'up' && index === 0
-      const isAtBottom = direction === 'down' && index === pageStructure.page.length - 1
+      const isAtBottom = direction === 'down' && index === pageList.length - 1
       if (isAtTop || isAtBottom) return false
 
       const targetIndex = direction === 'up' ? index - 1 : index + 1
 
-      const page = [...pageStructure.page]
+      const page = [...pageList]
 
       ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
 

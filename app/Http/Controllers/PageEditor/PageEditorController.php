@@ -23,7 +23,8 @@ class PageEditorController extends Controller
 
     public function create(): Response
     {
-        $widgets = Widget::all();
+
+        $widgets = Widget::latest()->take(10)->get();
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
             'widgets' => $widgets,
@@ -45,12 +46,25 @@ class PageEditorController extends Controller
 
     public function edit(DashboardPage $pageEditor): Response
     {
-        $widgets = Widget::all();
+        $pageData = $pageEditor->page ?? [];
+        $widgetIds = collect($pageData)
+            ->pluck('widgets')
+            ->flatten(1)
+            ->pluck('widgetId')
+            ->filter()
+            ->unique();
+
+        $widgets = Widget::whereIn('id', $widgetIds)->get();
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
             'page' => $pageEditor,
             'widgets' => $widgets,
         ]);
+    }
+
+    public function getWidget(Widget $widget)
+    {
+        return response()->json($widget);
     }
 
     public function update(PageEditorRequestForm $request, DashboardPage $pageEditor): RedirectResponse

@@ -107,7 +107,7 @@ use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (! auth()->check()) {
+    if (!auth()->check()) {
         return redirect()->route('login');
     }
 
@@ -375,6 +375,7 @@ Route::resource('widget-editor', WidgetsEditorController::class)
     ->parameters(['widget-editor' => 'widget']);
 Route::resource('widget-collection', WidgetCollectionController::class)
     ->parameters(['widget-collection' => 'widgetCollection']);
+Route::get('page-editor/widget/{widget}', [PageEditorController::class, 'getWidget'])->name('page-editor.get-widget');
 Route::resource('page-editor', PageEditorController::class);
 
 Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
@@ -398,6 +399,6 @@ Route::post('api/store-loader-json-api', StoreLoaderAPIController::class)
 Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::class)
     ->name('subset-field-max-value');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
