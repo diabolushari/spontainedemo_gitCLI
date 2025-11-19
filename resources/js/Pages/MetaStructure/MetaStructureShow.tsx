@@ -4,8 +4,26 @@ import { MetaStructure } from '@/interfaces/meta_interfaces'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { useMemo, useState } from 'react'
 
+interface DataClassificationProperty {
+  id: number
+  property_type: string
+  property_value: string
+  order: number
+}
+
+interface MetaStructureLabel {
+  id: number
+  structure_id: number
+  data_classification_property_id: number
+  data_classification_property?: DataClassificationProperty
+}
+
+interface MetaStructureWithLabels extends MetaStructure {
+  meta_structure_labels?: MetaStructureLabel[]
+}
+
 interface Props {
-  metaStructure: MetaStructure
+  metaStructure: MetaStructureWithLabels
   itemCount?: string
   type?: string
   subtype?: string
@@ -20,7 +38,7 @@ export default function MetaStructureShow({
   pageNo,
 }: Props) {
   const displayedValues = useMemo(() => {
-    return [
+    const baseItems = [
       {
         label: 'Name',
         content: metaStructure.structure_name,
@@ -33,13 +51,22 @@ export default function MetaStructureShow({
         type: 'text',
         id: 2,
       },
-      //   {
-      //     label: 'Members',
-      //     content: itemCount,
-      //     type: 'text',
-      //     id: 3,
-      //   },
     ] as ShowPageItem[]
+
+    if (metaStructure.meta_structure_labels) {
+      metaStructure.meta_structure_labels.forEach((label, index) => {
+        if (label.data_classification_property) {
+          baseItems.push({
+            label: label.data_classification_property.property_type,
+            content: label.data_classification_property.property_value,
+            type: 'text',
+            id: 3 + index,
+          })
+        }
+      })
+    }
+
+    return baseItems
   }, [metaStructure, itemCount])
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)

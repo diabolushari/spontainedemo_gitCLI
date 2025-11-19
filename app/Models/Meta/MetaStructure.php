@@ -48,4 +48,12 @@ class MetaStructure extends Model
     {
         return $this->hasMany(MetaData::class, 'meta_structure_id', 'id');
     }
+
+    /**
+     * @return HasMany<MetaStructureLabel>
+     */
+    public function metaStructureLabels(): HasMany
+    {
+        return $this->hasMany(MetaStructureLabel::class, 'structure_id', 'id');
+    }
 }

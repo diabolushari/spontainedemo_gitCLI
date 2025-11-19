@@ -1,18 +1,36 @@
+import SelectList from '@/ui/form/SelectList'
 import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
+interface DataClassificationProperty {
+  id: number
+  property_type: string
+  property_value: string
+  order: number
+}
+
 interface Properties {
   type?: string
   subtype?: string
+  dataClassificationProperties?: DataClassificationProperty[]
 }
 
-export default function MetaStructureCreate({ type, subtype }: Properties) {
+export default function MetaStructureCreate({
+  type,
+  subtype,
+  dataClassificationProperties = [],
+}: Properties) {
   const { formData, setFormValue } = useCustomForm({
     structure_name: '',
     description: '',
+    data_classification_level: '',
+    data_category: '',
+    encryption: '',
+    access_level: '',
+    data_owner: '',
   })
 
   const breadCrumb: BreadcrumbItemLink[] = [
@@ -25,20 +43,50 @@ export default function MetaStructureCreate({ type, subtype }: Properties) {
       link: '',
     },
   ]
+
   const formItems = useMemo(() => {
     return {
       structure_name: {
         label: 'Structure Name',
         type: 'text',
         setValue: setFormValue('structure_name'),
+        placeholder: 'Name of the field'
       } as FormItem<string, never, never, never>,
       description: {
         label: 'Description',
         type: 'textarea',
         setValue: setFormValue('description'),
+        placeholder : 'Natural language description - Please include what type of values are expected and why the field is important'
       } as FormItem<string, never, never, never>,
     }
   }, [])
+
+  // Filter properties for each select list
+  const classificationLevels = useMemo(
+    () =>
+      dataClassificationProperties.filter((p) => p.property_type === 'Data Classification Level'),
+    [dataClassificationProperties]
+  )
+
+  const dataCategories = useMemo(
+    () => dataClassificationProperties.filter((p) => p.property_type === 'Data Category'),
+    [dataClassificationProperties]
+  )
+
+  const encryptions = useMemo(
+    () => dataClassificationProperties.filter((p) => p.property_type === 'Encryption'),
+    [dataClassificationProperties]
+  )
+
+  const accessLevels = useMemo(
+    () => dataClassificationProperties.filter((p) => p.property_type === 'Access Level'),
+    [dataClassificationProperties]
+  )
+
+  const dataOwners = useMemo(
+    () => dataClassificationProperties.filter((p) => p.property_type === 'Data Owner'),
+    [dataClassificationProperties]
+  )
 
   return (
     <FormPage
@@ -51,6 +99,62 @@ export default function MetaStructureCreate({ type, subtype }: Properties) {
       type={'definitions'}
       subtype={'blocks'}
       breadCrumbs={breadCrumb}
-    />
+    >
+      <div className='mt-6 rounded border bg-white p-4 shadow-sm'>
+        <h3 className='mb-4 text-lg font-bold'>Data Classification</h3>
+        <div className='grid grid-cols-1 gap-4'>
+          <div>
+            <SelectList
+              label='Data Classification Level'
+              list={classificationLevels}
+              value={formData.data_classification_level}
+              setValue={setFormValue('data_classification_level')}
+              dataKey='id'
+              displayKey='property_value'
+            />
+          </div>
+          <div>
+            <SelectList
+              label='Data Category'
+              list={dataCategories}
+              value={formData.data_category}
+              setValue={setFormValue('data_category')}
+              dataKey='id'
+              displayKey='property_value'
+            />
+          </div>
+          <div>
+            <SelectList
+              label='Encryption'
+              list={encryptions}
+              value={formData.encryption}
+              setValue={setFormValue('encryption')}
+              dataKey='id'
+              displayKey='property_value'
+            />
+          </div>
+          <div>
+            <SelectList
+              label='Access Level'
+              list={accessLevels}
+              value={formData.access_level}
+              setValue={setFormValue('access_level')}
+              dataKey='id'
+              displayKey='property_value'
+            />
+          </div>
+          <div>
+            <SelectList
+              label='Data Owner'
+              list={dataOwners}
+              value={formData.data_owner}
+              setValue={setFormValue('data_owner')}
+              dataKey='id'
+              displayKey='property_value'
+            />
+          </div>
+        </div>
+      </div>
+    </FormPage>
   )
 }

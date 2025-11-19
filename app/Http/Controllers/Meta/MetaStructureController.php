@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Meta\DataClassificationProperty;
 
 class MetaStructureController extends Controller implements HasMiddleware
 {
@@ -29,8 +30,8 @@ class MetaStructureController extends Controller implements HasMiddleware
     public function index(Request $request): Response
     {
         $structures = MetaStructure::withCount('metaData')
-            ->when($request->filled(key: 'search'), fn (Builder $builder) => $builder
-                ->where('structure_name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
+            ->when($request->filled(key: 'search'), fn(Builder $builder) => $builder
+                ->where('structure_name', operator: 'like', value: '%' . $request->input(key: 'search') . '%'))
             ->paginate(20)
             ->withPath(route('meta-structure.index'))
             ->withQueryString();
@@ -45,11 +46,14 @@ class MetaStructureController extends Controller implements HasMiddleware
 
     public function create(Request $request): Response
     {
+        $dataClassificationProperties = DataClassificationProperty::all();
+
         return Inertia::render(
             'MetaStructure/MetaStructureCreate',
             [
                 'type' => $request->type,
                 'subtype' => $request->subtype,
+                'dataClassificationProperties' => $dataClassificationProperties,
             ]
         );
     }
@@ -57,7 +61,25 @@ class MetaStructureController extends Controller implements HasMiddleware
     public function store(MetaStructureFormRequest $request): RedirectResponse
     {
         try {
-            MetaStructure::create($request->all());
+            $metaStructure = MetaStructure::create($request->all());
+
+            $classificationIds = [
+                $request->dataClassificationLevel,
+                $request->dataCategory,
+                $request->encryption,
+                $request->accessLevel,
+                $request->dataOwner,
+            ];
+
+            foreach ($classificationIds as $propertyId) {
+                if ($propertyId) {
+                    \App\Models\Meta\MetaStructureLabel::create([
+                        'structure_id' => $metaStructure->id,
+                        'data_classification_property_id' => $propertyId,
+                    ]);
+                }
+            }
+
         } catch (Exception $e) {
             return back()
                 ->with(['error' => ExceptionMessage::getMessage($e)]);
@@ -65,13 +87,13 @@ class MetaStructureController extends Controller implements HasMiddleware
 
         return redirect()
             ->route('meta-structure.index')
-            ->with(['message' => 'Meta structure '.$request->structureName.' created successfully']);
+            ->with(['message' => 'Meta structure ' . $request->structureName . ' created successfully']);
     }
 
     public function show(MetaStructure $metaStructure, Request $request): Response
     {
-
         $pageNo = $request->query('page', '1');
+        $metaStructure->load('metaStructureLabels.dataClassificationProperty');
 
         return Inertia::render('MetaStructure/MetaStructureShow', ['metaStructure' => $metaStructure, 'pageNo' => $pageNo]);
     }
@@ -79,6 +101,7 @@ class MetaStructureController extends Controller implements HasMiddleware
     public function edit(MetaStructure $metaStructure, Request $request): Response
     {
         $pageNo = $request->query('page', '1');
+        $metaStructure->load('metaStructureLabels.dataClassificationProperty');
 
         return Inertia::render('MetaStructure/MetaStructureEdit', [
             'metaStructure' => $metaStructure,
@@ -99,7 +122,7 @@ class MetaStructureController extends Controller implements HasMiddleware
 
         return redirect()
             ->route('meta-structure.show', ['metaStructure' => $metaStructure, 'pageNo' => $pageNo])
-            ->with(['message' => 'Meta structure '.$request->structureName.' updated successfully']);
+            ->with(['message' => 'Meta structure ' . $request->structureName . ' updated successfully']);
     }
 
     public function destroy(MetaStructure $metaStructure): RedirectResponse
@@ -113,6 +136,6 @@ class MetaStructureController extends Controller implements HasMiddleware
 
         return redirect()
             ->route('meta-structure.index')
-            ->with(['success' => 'Meta structure '.$metaStructure->structure_name.' deleted successfully']);
+            ->with(['success' => 'Meta structure ' . $metaStructure->structure_name . ' deleted successfully']);
     }
 }
