@@ -106,7 +106,7 @@ use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (! auth()->check()) {
+    if (!auth()->check()) {
         return redirect()->route('login');
     }
 
@@ -196,6 +196,9 @@ Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::clas
     ->name('meta-group-delete-item');
 Route::delete('meta-hierarchy-delete-item/{metaHierarchyItem}', MetaHierarchyDeleteItemController::class)
     ->name('meta-hierarchy-delete-item');
+
+Route::resource('data-classification-property', \App\Http\Controllers\Meta\DataClassificationPropertyController::class)
+    ->parameters(['data-classification-property' => 'dataClassificationProperty']);
 
 //subject areas & data details
 Route::resource('subject-area', SubjectAreaController::class)

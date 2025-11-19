@@ -1,5 +1,14 @@
 import { Model } from '@/interfaces/data_interfaces'
 
+export interface DataClassificationProperty {
+  id: number
+  property_type: string
+  property_value: string
+  order: number
+  created_at?: string
+  updated_at?: string
+}
+
 export interface MetaStructure extends Model {
   structure_name: string
   description?: string | null
