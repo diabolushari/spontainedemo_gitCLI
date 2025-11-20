@@ -164,8 +164,9 @@ export default function OverviewWidget({
           setSelectedMonth={setSelectedMonth}
         />
       )}
-      {selectedView === 'ranking' && selectedMonth != null && widget.data.rank.subset_id != null && (
+      {selectedView === 'ranking' && selectedMonth != null && (
         <RankingWidget
+          subsetGroupId={widget.data.subset_group_id}
           subsetId={widget.data.rank.subset_id}
           subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
           subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}

@@ -16,6 +16,7 @@ use App\Http\Controllers\Blocks\DataExplorerCard\DataExplorerCardUpdateControlle
 use App\Http\Controllers\ChartData\DataDetailDateController;
 use App\Http\Controllers\ChartData\DataDetailListController;
 use App\Http\Controllers\ChartData\DataDetailSubsetGroupController;
+use App\Http\Controllers\ChartData\SubsetGroupDetailController;
 use App\Http\Controllers\ChartData\DataExplorerDataController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
@@ -164,6 +165,7 @@ Route::get('/api/data-detail', DataDetailListController::class);
 Route::get('/api/subset/{subsetId}', SubsetMeasuresController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
 Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
+Route::get('/api/subset-group-detail/{subsetGroupId}', SubsetGroupDetailController::class);
 Route::get('/api/subset-groups/subset-having-dimension-measure/{group}', SubsetHavingDimensionMeasureController::class)
     ->name('subset-having-dimension-measure');
 Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)

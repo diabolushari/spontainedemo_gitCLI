@@ -1,4 +1,6 @@
 import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 interface RankingWidgetProps {
   subsetId: number
@@ -6,6 +8,12 @@ interface RankingWidgetProps {
   subsetFieldName: string | null
   selectedMonth: Date
   level: string
+  subsetGroupId: number
+}
+
+interface SubsetGroupDetail {
+  name: string
+  description: string
 }
 
 export default function RankingWidget({
@@ -14,10 +22,28 @@ export default function RankingWidget({
   subsetFieldName,
   selectedMonth,
   level,
+  subsetGroupId,
 }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
+
+  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (subsetGroupId) {
+      axios.get<SubsetGroupDetail>(`/api/subset-group-detail/${subsetGroupId}`)
+        .then(response => {
+          setSubsetGroupName(response.data.name)
+        })
+        .catch(error => {
+          console.error('Error fetching subset group detail:', error)
+          setSubsetGroupName(null)
+        })
+    } else {
+      setSubsetGroupName(null)
+    }
+  }, [subsetGroupId])
 
   return (
     <>
@@ -28,7 +54,7 @@ export default function RankingWidget({
             subsetId={subsetId}
             dataField={subsetColumn}
             dataFieldName={subsetFieldName}
-            rankingPageUrl={'#'}
+            rankingPageUrl={`/office-rankings/${subsetGroupName}`}
             timePeriod={formattedMonth}
             timePeriodFieldName={'month'}
             level={level}

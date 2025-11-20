@@ -295,6 +295,8 @@ export default function RankedList({
               <Link
                 href={rankingPageUrl}
                 className='small-2stop'
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 <div className='bg-2stop-highlight2 rounded-md px-1 text-xl hover:opacity-70'>
                   <i className='las la-expand-arrows-alt'></i>
