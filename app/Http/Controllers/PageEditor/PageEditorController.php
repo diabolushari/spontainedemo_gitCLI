@@ -39,6 +39,7 @@ class PageEditorController extends Controller
             'link' => $request->link,
             'page' => $request->page,
             'published' => $request->published,
+            'anchor_widget' => $request->anchor_widget,
         ]);
 
         return redirect()->route('page-editor.index', $dashboardPage);
@@ -75,6 +76,7 @@ class PageEditorController extends Controller
             'link' => $request->link,
             'page' => $request->page,
             'published' => $request->published,
+            'anchor_widget' => $request->anchor_widget,
         ]);
 
         return redirect()->route('page-editor.index', $pageEditor);

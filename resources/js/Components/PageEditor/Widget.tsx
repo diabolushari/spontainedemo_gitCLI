@@ -8,6 +8,7 @@ import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayo
 
 interface Props {
   widget: WidgetType
+  anchorMonth: Date
 }
 
 const EmptyState = ({ message }: { message: string }) => (
@@ -16,9 +17,13 @@ const EmptyState = ({ message }: { message: string }) => (
   </div>
 )
 
-export default function Widget({ widget }: Readonly<Props>) {
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(new Date())
+export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(anchorMonth)
   const [selectView, setSelectView] = useState('overview')
+
+  useEffect(() => {
+    setSelectedMonth(anchorMonth)
+  }, [anchorMonth])
 
   useEffect(() => {
     console.log(selectView)

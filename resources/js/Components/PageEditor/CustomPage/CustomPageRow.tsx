@@ -10,7 +10,10 @@ const EmptyWidgetSlot = ({ position }: { position: number }) => (
   </div>
 )
 
-export default function CustomPageRow({ row }: Readonly<{ row: PageRow }>) {
+export default function CustomPageRow({
+  row,
+  selectedMonth,
+}: Readonly<{ row: PageRow; selectedMonth: Date }>) {
   const config = COLUMN_CONFIG[row.type] || COLUMN_CONFIG.tripleCol
   const sortedWidgets = [...row.widgets].sort((a, b) => a.position - b.position)
   const isMultiColumn = config.cols > 1
@@ -39,7 +42,10 @@ export default function CustomPageRow({ row }: Readonly<{ row: PageRow }>) {
               >
                 <div className='min-h-[200px]'>
                   {widgetData.widget ? (
-                    <Widget widget={widgetData.widget} />
+                    <Widget
+                      widget={widgetData.widget}
+                      anchorMonth={selectedMonth}
+                    />
                   ) : (
                     <EmptyWidgetSlot position={widgetData.position} />
                   )}
@@ -57,7 +63,10 @@ export default function CustomPageRow({ row }: Readonly<{ row: PageRow }>) {
               className='min-h-[200px]'
             >
               {widgetData.widget ? (
-                <Widget widget={widgetData.widget} />
+                <Widget
+                  widget={widgetData.widget}
+                  anchorMonth={selectedMonth}
+                />
               ) : (
                 <EmptyWidgetSlot position={widgetData.position} />
               )}

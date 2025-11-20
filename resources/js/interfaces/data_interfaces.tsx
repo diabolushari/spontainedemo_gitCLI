@@ -568,4 +568,5 @@ export interface DashboardPage extends Model {
   link: string
   page: PageSection[]
   published: boolean
+  anchor_widget: number | null
 }

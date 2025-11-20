@@ -10,6 +10,7 @@ interface DroppableColumnProps {
   widgetId: number | null
   widget?: WidgetType
   onRemove: () => void
+  selectedMonth: Date
 }
 
 export default function PageDroppableSlot({
@@ -18,6 +19,7 @@ export default function PageDroppableSlot({
   widgetId,
   widget,
   onRemove,
+  selectedMonth,
 }: Readonly<DroppableColumnProps>) {
   const { setNodeRef, isOver } = useDroppable({
     id: `droppable-${rowId}-${position}`,
@@ -44,7 +46,7 @@ export default function PageDroppableSlot({
             widget={widget}
             source={{ rowId, position }}
           >
-            <Widget widget={widget} />
+            <Widget widget={widget} anchorMonth={selectedMonth} />
           </DraggableWidgetWrapper>
         </div>
       ) : (

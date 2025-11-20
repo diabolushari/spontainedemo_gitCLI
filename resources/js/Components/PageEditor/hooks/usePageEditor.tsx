@@ -19,6 +19,7 @@ export function usePageEditor(
     link: initialPage?.link ?? '',
     page: initialPage?.page ?? [],
     published: initialPage?.published ?? false,
+    anchor_widget: initialPage?.anchor_widget ?? null,
   })
 
   const [nextId, setNextId] = useState(
@@ -259,6 +260,21 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  // Get all widgets currently in the page
+  const pageWidgets = (pageStructure.page ?? []).flatMap((row) =>
+    row.widgets
+      .filter((slot) => slot.widgetId != null)
+      .map((slot) => getWidgetById(slot.widgetId!))
+      .filter((widget): widget is Widget => widget != null)
+  )
+
+  const setAnchorWidget = useCallback(
+    (id: number) => {
+      setFormValue('anchor_widget')(id)
+    },
+    [setFormValue]
+  )
+
   return {
     pageStructure,
     setFormValue,
@@ -274,5 +290,7 @@ export function usePageEditor(
     handleLinkChange,
     getWidgetById,
     moveRow,
+    setAnchorWidget,
+    pageWidgets,
   }
 }

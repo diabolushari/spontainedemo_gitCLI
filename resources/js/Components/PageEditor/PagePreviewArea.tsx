@@ -9,6 +9,7 @@ interface PreviewAreaProps {
   onDeleteRow: (id: number) => void
   onLayoutClick: (layout: string) => void
   moveRow: (id: number, pos: 'up' | 'down') => void
+  selectedMonth: Date
 }
 
 export default function PagePreviewArea({
@@ -18,6 +19,7 @@ export default function PagePreviewArea({
   onDeleteRow,
   onLayoutClick,
   moveRow,
+  selectedMonth,
 }: Readonly<PreviewAreaProps>) {
   return (
     <>
@@ -40,6 +42,7 @@ export default function PagePreviewArea({
           onRemoveWidget={onRemoveWidget}
           getWidgetById={getWidgetById}
           moveRow={moveRow}
+          selectedMonth={selectedMonth}
         />
       ))}
 

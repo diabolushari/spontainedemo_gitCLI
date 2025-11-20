@@ -8,6 +8,7 @@ interface PageRowProps {
   onRemoveWidget: (rowId: number, position: number) => void
   getWidgetById: (id: number) => Widget | undefined
   moveRow: (id: number, pos: string) => void
+  selectedMonth: Date
 }
 
 export default function PageRow({
@@ -16,6 +17,7 @@ export default function PageRow({
   onRemoveWidget,
   getWidgetById,
   moveRow,
+  selectedMonth,
 }: Readonly<PageRowProps>) {
   return (
     <div
@@ -70,6 +72,7 @@ export default function PageRow({
             widgetId={slot.widgetId}
             widget={slot.widgetId ? getWidgetById(slot.widgetId) : undefined}
             onRemove={() => onRemoveWidget(row.id, slot.position)}
+            selectedMonth={selectedMonth}
           />
         ))}
       </div>

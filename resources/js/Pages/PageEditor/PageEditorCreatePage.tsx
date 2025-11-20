@@ -8,12 +8,25 @@ import Button from '@/ui/button/Button'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { useState, useEffect } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/Components/ui/sheet'
-import { Plus } from 'lucide-react'
+import { HelpCircle, Plus } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/Components/ui/tooltip'
 import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSidebar'
+import SelectList from '@/ui/form/SelectList'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface Props {
   page?: DashboardPage
   widgets: Widget[]
+}
+
+interface SubsetMaxValueResponse {
+  field: string
+  max_value: string | null
 }
 
 export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>) {
@@ -39,7 +52,10 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     handleLinkChange,
     getWidgetById,
     moveRow,
+    pageWidgets,
+    setAnchorWidget
   } = usePageEditor(page ?? null, widgets, setSheetOpen)
+
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -86,6 +102,31 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
       window.open(`/${pageStructure.link}`, '_blank')
     }
   }
+
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+
+  const anchor_widget = getWidgetById(pageStructure.anchor_widget)
+
+const url = anchor_widget?.data.overview.subset_id
+    ? route('subset-field-max-value', { subsetDetail: anchor_widget?.data.overview.subset_id, field: 'month' })
+    : null
+
+  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
+
+  useEffect(() => {
+    if (!loading && maxValueData != null) {
+      const maxValue = maxValueData.max_value
+      if (maxValue != null && /^\d{6}$/.test(maxValue)) {
+        const year = Number.parseInt(maxValue.substring(0, 4), 10)
+        const month = Number.parseInt(maxValue.substring(4, 6), 10) - 1 // months are 0-indexed
+        setSelectedMonth(new Date(year, month, 1))
+      } else {
+        setSelectedMonth(new Date())
+      }
+    } else if (!loading && !maxValueData) {
+      setSelectedMonth(new Date())
+    }
+  }, [loading, maxValueData])
 
   return (
     <AnalyticsDashboardLayout>
@@ -161,6 +202,33 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
                   </p>
                 </div>
               </div>
+              <div>
+                <div className='mb-2 flex items-center gap-2'>
+                  <label className='text-sm font-medium text-gray-700'>Anchor Widget</label>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className='h-4 w-4 cursor-help text-gray-400' />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className='max-w-xs'>
+                          This widget is taken for the latest data presentation and all widgets are
+                          synced to this one
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <SelectList
+                  label='Anchor Widget'
+                  showLabel={false}
+                  list={pageWidgets}
+                  dataKey={'id'}
+                  displayKey='title'
+                  setValue={setAnchorWidget}
+                  value={pageStructure.anchor_widget}
+                />
+              </div>
 
               <div className='flex flex-wrap gap-3 pt-2'>
                 <Button
@@ -228,6 +296,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
                 onDeleteRow={handleDeleteRow}
                 onLayoutClick={handleLayoutClick}
                 moveRow={moveRow}
+                selectedMonth={selectedMonth}
               />
             </div>
 

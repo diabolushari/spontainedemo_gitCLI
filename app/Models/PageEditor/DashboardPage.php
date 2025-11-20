@@ -17,6 +17,7 @@ class DashboardPage extends Model
         'link',
         'page',
         'published',
+        'anchor_widget',
     ];
 
     protected $casts = [
