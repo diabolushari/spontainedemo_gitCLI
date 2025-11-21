@@ -1,4 +1,5 @@
 import { usePageEditor } from '@/Components/PageEditor/hooks/usePageEditor'
+import axios from 'axios'
 import PagePreviewArea from '@/Components/PageEditor/PagePreviewArea'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
@@ -25,7 +26,6 @@ interface SubsetMaxValueResponse {
 }
 
 export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>) {
-  console.log('PageEditorCreatePage', page)
   const [sheetOpen, setSheetOpen] = useState(false)
   const { post } = useInertiaPost(
     page ? route('page-editor.update', page.id) : route('page-editor.store'),
@@ -59,15 +59,6 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     })
   )
 
-  useEffect(() => {
-    if (page && localStorage.getItem('open_preview_after_save') === 'true') {
-      localStorage.removeItem('open_preview_after_save')
-      if (pageStructure.link) {
-        window.open(`/${pageStructure.link}`, '_blank')
-      }
-    }
-  }, [page, pageStructure.link])
-
   const handleSaveDraft = () => {
     const draftData = { ...pageStructure, published: false }
     if (!page) {
@@ -88,12 +79,18 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     console.log('Publish data:', publishData)
   }
 
-  const handlePreview = () => {
-    if (!page) {
-      localStorage.setItem('open_preview_after_save', 'true')
-      handlePublish()
-    } else if (pageStructure.link) {
-      window.open(`/${pageStructure.link}`, '_blank')
+  const handlePreview = async () => {
+    try {
+      const response = await axios.post(route('page-editor.preview.store'), {
+        ...pageStructure,
+        published: false,
+      })
+
+      if (response.data.url) {
+        window.open(response.data.url, '_blank')
+      }
+    } catch (error) {
+      console.error('Failed to generate preview:', error)
     }
   }
 

@@ -6,6 +6,7 @@ import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWi
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
 import axios from 'axios'
+import HighlightBar from '../WidgetsEditor/WidgetComponents/HighlightBar'
 
 interface SubsetGroupDetail {
   name: string
@@ -76,6 +77,13 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}
+
+      {widget.data.highlight_cards && selectView === 'overview' && (
+        <HighlightBar
+          highlightCards={widget.data.highlight_cards}
+          selectedMonth={selectedMonth ?? new Date()}
+        />
+      )}
 
       {/* Overview Widget */}
       {selectView == 'overview' && selectedMonth != null && (

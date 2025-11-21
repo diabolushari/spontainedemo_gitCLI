@@ -383,6 +383,8 @@ Route::resource('widget-editor', WidgetsEditorController::class)
 Route::resource('widget-collection', WidgetCollectionController::class)
     ->parameters(['widget-collection' => 'widgetCollection']);
 Route::get('page-editor/widget/{widget}', [PageEditorController::class, 'getWidget'])->name('page-editor.get-widget');
+Route::post('page-editor/preview', [PageEditorController::class, 'storePreview'])->name('page-editor.preview.store');
+Route::get('page-editor/preview/{key}', [CustomPageController::class, 'preview'])->name('page-editor.preview.show');
 Route::resource('page-editor', PageEditorController::class);
 
 Route::get('widget-search', WidgetSearchController::class)->name('widget.search');

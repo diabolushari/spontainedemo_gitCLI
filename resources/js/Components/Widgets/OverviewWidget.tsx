@@ -157,11 +157,19 @@ export default function OverviewWidget({
           selectedMonth={selectedMonth ?? new Date()}
         />
       )}
-      {!hasHighlightData && selectedView === 'overview' && (
-        <div className='flex-1 rounded-lg bg-white p-4 px-6 text-left shadow-sm'>
-          <div className='mb-0.5 h-3 w-24 animate-pulse rounded bg-gray-200' />
-          <div className='mb-0.5 h-7 w-32 animate-pulse rounded bg-gray-300' />
-          <div className='h-3 w-40 animate-pulse rounded bg-gray-200' />
+
+      {selectedView === 'overview' && !hasHighlightData && (
+        <div className='w-fit rounded-lg bg-white p-4'>
+          <div className='animate-pulse'>
+            {/* Skeleton for the title */}
+            <div className='mb-2 h-4 w-24 rounded bg-gray-300'></div>
+
+            {/* Skeleton for the main value */}
+            <div className='mb-2 h-10 w-32 rounded bg-gray-300'></div>
+
+            {/* Skeleton for the subtitle */}
+            <div className='h-4 w-6 rounded bg-gray-300'></div>
+          </div>
         </div>
       )}
       {selectedView === 'overview' && widget.data.overview.subset_id == null && (

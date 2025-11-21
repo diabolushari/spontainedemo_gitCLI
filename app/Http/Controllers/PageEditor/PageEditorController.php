@@ -7,6 +7,9 @@ use App\Http\Requests\PageEditor\PageEditorRequestForm;
 use App\Models\PageEditor\DashboardPage;
 use App\Models\WidgetEditor\Widget;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,18 +51,26 @@ class PageEditorController extends Controller
     public function edit(DashboardPage $pageEditor): Response
     {
         $pageData = $pageEditor->page ?? [];
-        $widgetIds = collect($pageData)
+        $pageWidgetIds = collect($pageData)
             ->pluck('widgets')
             ->flatten(1)
             ->pluck('widgetId')
             ->filter()
             ->unique();
 
-        $widgets = Widget::whereIn('id', $widgetIds)->get();
+        $latestWidgets = Widget::latest()->take(5)->get();
+
+        $existingWidgets = Widget::whereIn('id', $pageWidgetIds)->get();
+
+        $latestWidgetIds = $latestWidgets->pluck('id');
+
+        $filteredExistingWidgets = $existingWidgets->filter(fn($widget) => !$latestWidgetIds->contains($widget->id));
+
+        $allWidgets = $latestWidgets->concat($filteredExistingWidgets);
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
             'page' => $pageEditor,
-            'widgets' => $widgets,
+            'widgets' => $allWidgets,
         ]);
     }
 
@@ -87,5 +98,17 @@ class PageEditorController extends Controller
         $pageEditor->delete();
 
         return redirect()->route('page-editor.index');
+    }
+
+    public function storePreview(Request $request)
+    {
+        $data = $request->all();
+        $key = Str::uuid()->toString();
+
+        Cache::put("page_preview_{$key}", $data, 300); // Store for 5 minutes
+
+        return response()->json([
+            'url' => route('page-editor.preview.show', $key),
+        ]);
     }
 }

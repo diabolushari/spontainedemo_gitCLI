@@ -89,7 +89,7 @@ function parseFormDataToWidget(
           subset_column: '',
         },
         level: formData.rank_level,
-        hierarchy_id : formData.rank_hierarchy_id
+        hierarchy_id: formData.rank_hierarchy_id,
       },
     },
   }
@@ -101,7 +101,11 @@ const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
   subset_id: null,
   measure: { subset_column: '', subset_field_name: '', unit: '' },
 }
-export default function OverviewWidgetEditor({ widget, collectionId, metaHierarchy }: Readonly<Props>) {
+export default function OverviewWidgetEditor({
+  widget,
+  collectionId,
+  metaHierarchy,
+}: Readonly<Props>) {
   const isEditMode = widget != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
@@ -166,7 +170,7 @@ export default function OverviewWidgetEditor({ widget, collectionId, metaHierarc
         rank_subset_id: '',
         rank_ranking_field: null,
       })
-      setHighlightCards([EMPTY_HIGHLIGHT_CARD])
+      setHighlightCards([])
     },
     [setAll, formData]
   )
@@ -189,7 +193,7 @@ export default function OverviewWidgetEditor({ widget, collectionId, metaHierarc
         rank_subset_id: '',
         rank_ranking_field: null,
       })
-      setHighlightCards([EMPTY_HIGHLIGHT_CARD])
+      setHighlightCards([])
     },
     [setAll, formData]
   )
