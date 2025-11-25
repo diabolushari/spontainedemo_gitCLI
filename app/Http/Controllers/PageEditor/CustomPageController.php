@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PageEditor\DashboardPage;
 use App\Models\WidgetEditor\Widget;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class CustomPageController extends Controller implements HasMiddleware
@@ -23,12 +24,44 @@ class CustomPageController extends Controller implements HasMiddleware
             ->where('published', true)
             ->firstOrFail();
 
+        $this->hydratePage($page);
+
+        // Render view (or return JSON)
+        return Inertia::render('PageEditor/CustomPage', [
+            'page' => $page,
+        ]);
+    }
+
+    public function preview(string $key)
+    {
+        $data = Cache::get("page_preview_{$key}");
+
+        if (!$data) {
+            abort(404, 'Preview expired or not found.');
+        }
+
+        $page = new DashboardPage($data);
+
+        // Manually set the page attribute if it wasn't set by constructor (e.g. if not in fillable, but usually forceFill or just setting attributes works)
+        // DashboardPage likely has 'page' in fillable or casts.
+        // Just to be sure:
+        $page->page = $data['page'] ?? [];
+
+        $this->hydratePage($page);
+
+        return Inertia::render('PageEditor/CustomPage', [
+            'page' => $page,
+        ]);
+    }
+
+    private function hydratePage(DashboardPage $page): void
+    {
         // Original structure (array-cast on DashboardPage)
         $structure = $page->page ?? [];
 
         // Collect unique widget IDs from all blocks
         $ids = collect($structure)
-            ->flatMap(fn ($block) => collect($block['widgets'] ?? [])->pluck('widgetId'))
+            ->flatMap(fn($block) => collect($block['widgets'] ?? [])->pluck('widgetId'))
             ->filter()        // remove nulls
             ->unique()
             ->values();
@@ -53,10 +86,5 @@ class CustomPageController extends Controller implements HasMiddleware
 
         // Replace the page structure for this response only
         $page->setAttribute('page', $hydrated);
-
-        // Render view (or return JSON)
-        return Inertia::render('PageEditor/CustomPage', [
-            'page' => $page,
-        ]);
     }
 }

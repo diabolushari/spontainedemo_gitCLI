@@ -3,11 +3,16 @@ import NormalText from '@/typography/NormalText'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
 import React from 'react'
 import Heading from '@/typography/Heading'
+import { EllipsisIcon } from 'lucide-react'
+
+import { Link } from '@inertiajs/react'
 
 interface WidgetLayoutProps {
   children: React.ReactNode
   title: string
   subtitle: string
+  description?: string
+  link?: string
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   selectedView?: string
@@ -16,6 +21,7 @@ interface WidgetLayoutProps {
   hasRanking?: boolean
   hasTrend?: boolean
   hasHighlightCards?: boolean
+  subsetGroupName: string | null
 }
 
 const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
@@ -29,6 +35,8 @@ export default function WidgetLayout({
   children,
   title,
   subtitle,
+  description,
+  link,
   selectedMonth,
   setSelectedMonth,
   selectedView = 'overview',
@@ -37,6 +45,7 @@ export default function WidgetLayout({
   hasRanking = false,
   hasTrend = false,
   hasHighlightCards = false,
+  subsetGroupName,
 }: Readonly<WidgetLayoutProps>) {
   const handleViewChange = (view: string) => {
     if (onViewChange) {
@@ -45,8 +54,8 @@ export default function WidgetLayout({
   }
 
   return (
-    <Card className='h-full w-full'>
-      <div className='flex h-full w-full'>
+    <Card className='w-full'>
+      <div className='flex max-h-[600px] min-h-[500px] w-full'>
         {/* Sidebar - Always Vertical */}
         <div className='flex shrink-0 flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>
           {(hasOverview || hasHighlightCards) && (
@@ -132,21 +141,66 @@ export default function WidgetLayout({
               </svg>
             </button>
           )}
+          {subsetGroupName && (
+            <div className='mt-auto flex justify-center'>
+              <Link
+                href={`/data-explorer/${subsetGroupName}`}
+                target='_blank'
+                className='flex h-8 w-8 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+              >
+                <EllipsisIcon className='h-5 w-5' />
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Main Content */}
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='flex shrink-0 items-center justify-between px-4 py-3'>
             <div className='flex flex-col gap-2'>
-              <Heading className={`subheader-1stop uppercase`}>{title}</Heading>
-              <NormalText className='mb-2 text-gray-500'>{subtitle}</NormalText>
+              {title && <Heading className={`subheader-1stop line-clamp-2`}>{title}</Heading>}
+              {!title && (
+                <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
+              )}
+              {subtitle && <NormalText className='text-gray-500'>{subtitle}</NormalText>}
+              {!subtitle && <NormalText className='text-gray-400'>subtitle</NormalText>}
             </div>
             <PageBuilderMonthPicker
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
             />
           </div>
-          <div className='flex-1 overflow-auto px-4 pb-4'>{children}</div>
+          <div className='flex flex-1 flex-col overflow-hidden px-4 pb-4'>{children}</div>
+          {(description || link) && (
+            <div className='border-t border-gray-100 px-4 py-3'>
+              {description && (
+                <NormalText className='mb-2 text-xs text-gray-400'>{description}</NormalText>
+              )}
+              {link && (
+                <a
+                  href={link}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='mx-2 inline-flex items-center text-xs font-medium text-gray-400 hover:text-blue-600'
+                >
+                  View Details
+                  <svg
+                    className='ml-1 h-3 w-3'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
+                    />
+                  </svg>
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Card>

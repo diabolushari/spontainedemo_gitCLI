@@ -1,20 +1,15 @@
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import { camelToNormal } from '@/formaters/NameFormater'
 
 interface ColorPaletteSelectorProps {
   selectedPalette: string
   onPaletteChange: (palette: string) => void
 }
 
-const paletteOptions = [
-  { value: 'boldWarm', label: 'Bold Warm' },
-  { value: 'softNeutral', label: 'Soft Neutral' },
-  { value: 'freshGreen', label: 'Fresh Green' },
-  { value: 'fireSunset', label: 'Fire Sunset' },
-  { value: 'blueGrey', label: 'Blue Grey' },
-  { value: 'citrusMint', label: 'Citrus Mint' },
-  { value: 'earthGreen', label: 'Earth Green' },
-  { value: 'duskContrast', label: 'Dusk Contrast' },
-]
+const paletteOptions = Object.entries(chartPallet).map(([key, value]) => ({
+  label: camelToNormal(key),
+  value: key,
+}))
 
 export default function ColorPaletteSelector({
   selectedPalette,

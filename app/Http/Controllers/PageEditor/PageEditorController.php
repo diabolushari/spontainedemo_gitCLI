@@ -7,11 +7,19 @@ use App\Http\Requests\PageEditor\PageEditorRequestForm;
 use App\Models\PageEditor\DashboardPage;
 use App\Models\WidgetEditor\Widget;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class PageEditorController extends Controller
+class PageEditorController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return ['auth'];
+    }
     public function index(): Response
     {
         $pages = DashboardPage::all();
@@ -23,7 +31,8 @@ class PageEditorController extends Controller
 
     public function create(): Response
     {
-        $widgets = Widget::all();
+
+        $widgets = Widget::latest()->take(10)->get();
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
             'widgets' => $widgets,
@@ -38,6 +47,7 @@ class PageEditorController extends Controller
             'link' => $request->link,
             'page' => $request->page,
             'published' => $request->published,
+            'anchor_widget' => $request->anchor_widget,
         ]);
 
         return redirect()->route('page-editor.index', $dashboardPage);
@@ -45,12 +55,33 @@ class PageEditorController extends Controller
 
     public function edit(DashboardPage $pageEditor): Response
     {
-        $widgets = Widget::all();
+        $pageData = $pageEditor->page ?? [];
+        $pageWidgetIds = collect($pageData)
+            ->pluck('widgets')
+            ->flatten(1)
+            ->pluck('widgetId')
+            ->filter()
+            ->unique();
+
+        $latestWidgets = Widget::latest()->take(5)->get();
+
+        $existingWidgets = Widget::whereIn('id', $pageWidgetIds)->get();
+
+        $latestWidgetIds = $latestWidgets->pluck('id');
+
+        $filteredExistingWidgets = $existingWidgets->filter(fn($widget) => !$latestWidgetIds->contains($widget->id));
+
+        $allWidgets = $latestWidgets->concat($filteredExistingWidgets);
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
             'page' => $pageEditor,
-            'widgets' => $widgets,
+            'widgets' => $allWidgets,
         ]);
+    }
+
+    public function getWidget(Widget $widget)
+    {
+        return response()->json($widget);
     }
 
     public function update(PageEditorRequestForm $request, DashboardPage $pageEditor): RedirectResponse
@@ -61,6 +92,7 @@ class PageEditorController extends Controller
             'link' => $request->link,
             'page' => $request->page,
             'published' => $request->published,
+            'anchor_widget' => $request->anchor_widget,
         ]);
 
         return redirect()->route('page-editor.index', $pageEditor);
@@ -71,5 +103,17 @@ class PageEditorController extends Controller
         $pageEditor->delete();
 
         return redirect()->route('page-editor.index');
+    }
+
+    public function storePreview(Request $request)
+    {
+        $data = $request->all();
+        $key = Str::uuid()->toString();
+
+        Cache::put("page_preview_{$key}", $data, 300); // Store for 5 minutes
+
+        return response()->json([
+            'url' => route('page-editor.preview.show', $key),
+        ]);
     }
 }

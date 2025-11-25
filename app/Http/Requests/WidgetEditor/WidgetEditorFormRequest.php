@@ -16,8 +16,11 @@ class WidgetEditorFormRequest extends Data
         #[Max(512)]
         public readonly string $subtitle,
         #[Max(255)]
+        public readonly ?string $description,
+        public readonly ?string $link,
         public readonly string $type,
         public readonly int $collectionId,
         public readonly array $data,
-    ) {}
+    ) {
+    }
 }

@@ -14,7 +14,7 @@ interface DraggableWidgetProps {
 export default function DraggableWidget({ widget, source }: DraggableWidgetProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: source ? `widget-${widget.id}-${source.rowId}-${source.position}` : `widget-${widget.id}`,
-    data: { widgetId: widget.id, source },
+    data: { widgetId: widget.id, widget, source },
   })
 
   return (

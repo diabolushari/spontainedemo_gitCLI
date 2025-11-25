@@ -26,14 +26,16 @@ readonly class SubsetQueryBuilder
         private AddDatesToQuery $addDatesToQuery,
         private AddDimensionsToQuery $addDimensionsToQuery,
         private AddMeasuresToQuery $addMeasuresToQuery
-    ) {}
+    ) {
+    }
 
     public function query(
         SubsetDetail $subsetDetail,
         bool $isSummary,
         bool $excludeNonMeasurements,
         ?string $summaryLevel,
-        ?array $fields
+        ?array $fields,
+        ?string $dimension = null
     ): Builder {
 
         /** @var string[] $groupingColumns */
@@ -45,7 +47,7 @@ readonly class SubsetQueryBuilder
         /** @var SubsetFieldOrderInfo[] $orderColumns */
         $orderColumns = [];
 
-        if (! $excludeNonMeasurements) {
+        if (!$excludeNonMeasurements) {
             $this->addDatesToQuery->addDateFields(
                 $subsetDetail->dates,
                 $groupingColumns,
@@ -77,7 +79,7 @@ readonly class SubsetQueryBuilder
 
         $query = $this->joinDataTable->join($detail);
 
-        if (! $isSummary) {
+        if (!$isSummary) {
             $this->includeHierarchy(
                 $query,
                 $subsetDetail,
@@ -95,7 +97,8 @@ readonly class SubsetQueryBuilder
                 $detail,
                 $groupingColumns,
                 $selectColumns,
-                $summaryLevel
+                $summaryLevel,
+                $dimension
             );
         }
 
@@ -120,7 +123,7 @@ readonly class SubsetQueryBuilder
         }
 
         foreach ($orderColumns as $order) {
-            $query->orderByRaw($order->column.' '.$order->sortOrder);
+            $query->orderByRaw($order->column . ' ' . $order->sortOrder);
         }
 
         return $query->selectRaw($selectStatement);
@@ -145,7 +148,7 @@ readonly class SubsetQueryBuilder
             }
 
             // Skip if fields is provided and this field is not in the list
-            if ($fields !== null && ! in_array($dimension->subset_column, $fields)) {
+            if ($fields !== null && !in_array($dimension->subset_column, $fields)) {
                 return;
             }
 
@@ -177,13 +180,19 @@ readonly class SubsetQueryBuilder
         DataDetail $detail,
         array &$groupingColumns,
         array &$selectColumns,
-        ?string $groupingLevel = null
+        ?string $groupingLevel = null,
+        ?string $targetDimension = null
     ): void {
         /** @var SubsetDetailDimension $dimensionRecord */
         $dimensionRecord = null;
         //find dimension with hierarchy
         foreach ($subsetDetail->dimensions as $dimension) {
-            if ($dimension->hierarchy_id != null) {
+            if ($targetDimension !== null) {
+                if ($dimension->subset_column === $targetDimension && $dimension->hierarchy_id != null) {
+                    $dimensionRecord = $dimension;
+                    break;
+                }
+            } elseif ($dimension->hierarchy_id != null) {
                 $dimensionRecord = $dimension;
             }
         }
@@ -229,7 +238,7 @@ readonly class SubsetQueryBuilder
                 'hierarchy',
                 function ($join) use ($detail, $dimensionRecord, $hierarchyBottomLevel) {
                     $join->on(
-                        "$detail->table_name.$dimensionRecord->subset_column",
+                        "$detail->table_name." . $dimensionRecord->info->column,
                         '=',
                         "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
@@ -241,7 +250,7 @@ readonly class SubsetQueryBuilder
                 'hierarchy',
                 function ($join) use ($detail, $dimensionRecord, $hierarchyBottomLevel) {
                     $join->on(
-                        "$detail->table_name.$dimensionRecord->subset_column",
+                        "$detail->table_name." . $dimensionRecord->info->column,
                         '=',
                         "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );

@@ -31,6 +31,7 @@ interface Props {
   displayKey?: string
   displayKeyShow?: boolean
   sortOrder?: 'ascending' | 'descending'
+  containerClassName?: string
 }
 
 export function CustomLineChart({
@@ -41,6 +42,7 @@ export function CustomLineChart({
   xAxisLabel,
   yAxisLabel,
   fontSize = '',
+  containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -56,7 +58,7 @@ export function CustomLineChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className='aspect-video w-full transition-all xl:w-10/12'
+      className={containerClassName}
     >
       <ResponsiveContainer
         width='100%'

@@ -5,11 +5,20 @@ import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayo
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Widget } from '@/interfaces/data_interfaces'
 import { useEffect, useMemo, useState } from 'react'
+import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
+import { CustomChartSkeleton } from '@/Components/WidgetsEditor/CustomChartSkeleton'
+import axios from 'axios'
 
 interface OverviewWidgetProps {
   widget: Widget
   initialMonth?: Date | null
-  initialView?: 'overview' | 'trend' | 'ranking'
+  selectedView: 'overview' | 'trend' | 'ranking'
+  setSelectedView: (view: 'overview' | 'trend' | 'ranking') => void
+}
+
+interface SubsetGroupDetail {
+  name: string
+  description: string
 }
 
 interface SubsetMaxValueResponse {
@@ -17,7 +26,11 @@ interface SubsetMaxValueResponse {
   max_value: string | null
 }
 
-export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>) {
+export default function OverviewWidget({
+  widget,
+  selectedView,
+  setSelectedView,
+}: Readonly<OverviewWidgetProps>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   const { hasOverview, hasRanking, hasTrend, hasHighlightCards } = useMemo(() => {
@@ -48,25 +61,15 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
     }
   }, [widget.data])
 
-  const [selectedView, setSelectedView] = useState<string>(() => {
-    if (hasOverview || hasHighlightCards) return 'overview'
-    if (hasTrend) return 'trend'
-    if (hasRanking) return 'ranking'
-    return ''
-  })
-
-  useEffect(() => {
-    if (selectedView != '') {
-      return
-    }
-    if (hasOverview || hasHighlightCards) {
-      setSelectedView('overview')
-    } else if (hasTrend) {
-      setSelectedView('trend')
-    } else if (hasRanking) {
-      setSelectedView('ranking')
-    }
-  }, [selectedView, hasOverview, hasRanking, hasTrend, hasHighlightCards])
+  // useEffect(() => {
+  //   if (hasOverview || hasHighlightCards) {
+  //     setSelectedView('overview')
+  //   } else if (hasTrend) {
+  //     setSelectedView('trend')
+  //   } else if (hasRanking) {
+  //     setSelectedView('ranking')
+  //   }
+  // }, [selectedView, hasOverview, hasRanking, hasTrend, hasHighlightCards])
 
   const subsetId = useMemo(() => {
     if (widget.data.overview?.subset_id != null) {
@@ -109,19 +112,69 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
     }
   }, [loading, maxValueData])
 
+  const hasHighlightData =
+    widget.data.highlight_cards != null && widget.data.highlight_cards.length > 0
+
+  console.log(widget.data.highlight_cards, selectedView)
+
+  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (widget.data.subset_group_id) {
+      axios
+        .get<SubsetGroupDetail>(`/api/subset-group-detail/${widget.data.subset_group_id}`)
+        .then((response) => {
+          setSubsetGroupName(response.data.name)
+        })
+        .catch((error) => {
+          console.error('Error fetching subset group detail:', error)
+          setSubsetGroupName(null)
+        })
+    } else {
+      setSubsetGroupName(null)
+    }
+  }, [widget.data.subset_group_id])
+
   return (
     <WidgetLayout
       title={widget.title}
       subtitle={widget.subtitle}
+      description={widget.description}
+      link={widget.link}
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectedView}
-      onViewChange={setSelectedView}
+      onViewChange={(view) => setSelectedView(view as 'overview' | 'trend' | 'ranking')}
       hasOverview={hasOverview}
       hasRanking={hasRanking}
       hasTrend={hasTrend}
       hasHighlightCards={hasHighlightCards}
+      subsetGroupName={subsetGroupName}
     >
+      {hasHighlightData && selectedView === 'overview' && (
+        <HighlightBar
+          highlightCards={widget.data.highlight_cards}
+          selectedMonth={selectedMonth ?? new Date()}
+        />
+      )}
+
+      {selectedView === 'overview' && !hasHighlightData && (
+        <div className='w-fit rounded-lg bg-white p-4'>
+          <div className='animate-pulse'>
+            {/* Skeleton for the title */}
+            <div className='mb-2 h-4 w-24 rounded bg-gray-300'></div>
+
+            {/* Skeleton for the main value */}
+            <div className='mb-2 h-10 w-32 rounded bg-gray-300'></div>
+
+            {/* Skeleton for the subtitle */}
+            <div className='h-4 w-6 rounded bg-gray-300'></div>
+          </div>
+        </div>
+      )}
+      {selectedView === 'overview' && widget.data.overview.subset_id == null && (
+        <CustomChartSkeleton />
+      )}
       {selectedView === 'overview' && widget.data.overview.subset_id != null && (
         <OverviewWidgetContent
           subsetId={widget.data.overview.subset_id}
@@ -144,16 +197,19 @@ export default function OverviewWidget({ widget }: Readonly<OverviewWidgetProps>
           setSelectedMonth={setSelectedMonth}
         />
       )}
-      {selectedView === 'ranking' &&
-        selectedMonth != null &&
-        widget.data.rank.subset_id != null && (
-          <RankingWidget
-            subsetId={widget.data.rank.subset_id}
-            subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
-            subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}
-            selectedMonth={selectedMonth}
-          />
-        )}
+      {selectedView === 'ranking' && selectedMonth != null && (
+        <RankingWidget
+          subsetGroupName={subsetGroupName}
+          subsetId={widget.data.rank.subset_id}
+          subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
+          subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}
+          selectedMonth={selectedMonth}
+          level={widget.data.rank.level ?? null}
+          hierarchyId={widget.data.rank.hierarchy_id}
+          dimension={widget.data.rank.dimension_column}
+          fieldColumn={widget.data.rank.field_column}
+        />
+      )}
     </WidgetLayout>
   )
 }

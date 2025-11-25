@@ -16,6 +16,7 @@ use App\Http\Controllers\Blocks\DataExplorerCard\DataExplorerCardUpdateControlle
 use App\Http\Controllers\ChartData\DataDetailDateController;
 use App\Http\Controllers\ChartData\DataDetailListController;
 use App\Http\Controllers\ChartData\DataDetailSubsetGroupController;
+use App\Http\Controllers\ChartData\SubsetGroupDetailController;
 use App\Http\Controllers\ChartData\DataExplorerDataController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
@@ -56,6 +57,7 @@ use App\Http\Controllers\Meta\MetaGroupDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchyAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
+use App\Http\Controllers\Meta\MetaHierarchyLevelController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
@@ -100,6 +102,7 @@ use App\Http\Controllers\Utils\StoreLoaderAPIController;
 use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
 use App\Http\Controllers\Utils\SubsetMaxValueController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetSearchController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
@@ -152,6 +155,7 @@ Route::get('/api/data-detail', DataDetailListController::class);
 Route::get('/api/subset/{subsetId}', SubsetMeasuresController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
 Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
+Route::get('/api/subset-group-detail/{subsetGroupId}', SubsetGroupDetailController::class);
 Route::get('/api/subset-groups/subset-having-dimension-measure/{group}', SubsetHavingDimensionMeasureController::class)
     ->name('subset-having-dimension-measure');
 Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)
@@ -196,6 +200,13 @@ Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::clas
     ->name('meta-group-delete-item');
 Route::delete('meta-hierarchy-delete-item/{metaHierarchyItem}', MetaHierarchyDeleteItemController::class)
     ->name('meta-hierarchy-delete-item');
+Route::get('meta-hierarchy-level/{metaHierarchyLevel}', [MetaHierarchyLevelController::class, 'show'])
+    ->name('meta-hierarchy-level.show');
+Route::get('meta-hierarchy/{metaHierarchy}/levels', [MetaHierarchyLevelController::class, 'getByHierarchy'])
+    ->name('meta-hierarchy.levels');
+
+Route::get('meta-hierarchy-data/{metaHierarchy}', \App\Http\Controllers\Meta\MetaHierarchyDataController::class)
+    ->name('meta-hierarchy-data.show');
 
 Route::resource('data-classification-property', \App\Http\Controllers\Meta\DataClassificationPropertyController::class)
     ->parameters(['data-classification-property' => 'dataClassificationProperty']);
@@ -367,7 +378,12 @@ Route::resource('widget-editor', WidgetsEditorController::class)
     ->parameters(['widget-editor' => 'widget']);
 Route::resource('widget-collection', WidgetCollectionController::class)
     ->parameters(['widget-collection' => 'widgetCollection']);
+Route::get('page-editor/widget/{widget}', [PageEditorController::class, 'getWidget'])->name('page-editor.get-widget');
+Route::post('page-editor/preview', [PageEditorController::class, 'storePreview'])->name('page-editor.preview.store');
+Route::get('page-editor/preview/{key}', [CustomPageController::class, 'preview'])->name('page-editor.preview.show');
 Route::resource('page-editor', PageEditorController::class);
+
+Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
 
 //Util APIS
 Route::get('loader-apis-list', LoaderAPIListController::class)
