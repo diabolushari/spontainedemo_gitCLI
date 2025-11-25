@@ -47,30 +47,24 @@ export const COLUMN_CONFIG: Record<
 }
 
 export function getAnchorWidgetFromPage(page: PageData) {
-  const anchorId = page.anchor_widget;
+  const anchorId = page.anchor_widget
 
-  const container = page.page.find(
-    (w) => w.widgets.find(
-      (w) => w.widgetId === anchorId
-    )
-  );
+  const container = page.page.find((w) => w.widgets.find((w) => w.widgetId === anchorId))
 
-  return container?.widgets.find(
-    (w) => w.widgetId === anchorId
-  );
+  return container?.widgets.find((w) => w.widgetId === anchorId)
 }
 
-
-
 export default function CustomPage({ page }: Readonly<CustomPageProps>) {
-
   console.log(page)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
 
   const anchor_widget = getAnchorWidgetFromPage(page)?.widget
 
-const url = anchor_widget?.data.overview.subset_id
-    ? route('subset-field-max-value', { subsetDetail: anchor_widget?.data.overview.subset_id, field: 'month' })
+  const url = anchor_widget?.data.overview.subset_id
+    ? route('subset-field-max-value', {
+        subsetDetail: anchor_widget?.data.overview.subset_id,
+        field: 'month',
+      })
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)

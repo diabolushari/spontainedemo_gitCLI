@@ -233,4 +233,60 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
 )
 CarouselNext.displayName = 'CarouselNext'
 
-export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext }
+const CarouselDots = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => {
+    const { api } = useCarousel()
+    const [selectedIndex, setSelectedIndex] = React.useState(0)
+    const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([])
+
+    React.useEffect(() => {
+      if (!api) {
+        return
+      }
+
+      setScrollSnaps(api.scrollSnapList())
+      setSelectedIndex(api.selectedScrollSnap())
+
+      api.on('select', () => {
+        setSelectedIndex(api.selectedScrollSnap())
+      })
+
+      api.on('reInit', () => {
+        setScrollSnaps(api.scrollSnapList())
+        setSelectedIndex(api.selectedScrollSnap())
+      })
+    }, [api])
+
+    return (
+      <div
+        ref={ref}
+        className={cn('flex items-center justify-center gap-2 py-4', className)}
+        {...props}
+      >
+        {scrollSnaps.map((_, index) => (
+          <button
+            key={index}
+            type='button'
+            className={cn(
+              'h-2 w-2 rounded-full transition-all',
+              index === selectedIndex ? 'w-4 bg-primary' : 'bg-gray-300 hover:bg-gray-400'
+            )}
+            onClick={() => api?.scrollTo(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    )
+  }
+)
+CarouselDots.displayName = 'CarouselDots'
+
+export {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselDots,
+}

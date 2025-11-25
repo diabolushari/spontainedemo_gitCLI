@@ -1,4 +1,4 @@
-import { Carousel, CarouselContent, CarouselItem } from '@/Components/ui/carousel'
+import { Carousel, CarouselContent, CarouselItem, CarouselDots } from '@/Components/ui/carousel'
 import Widget from '@/Components/PageEditor/Widget'
 import React from 'react'
 import { COLUMN_CONFIG } from '@/Pages/PageEditor/CustomPage'
@@ -30,30 +30,36 @@ export default function CustomPageRow({
 
       {/* Carousel for multi-column rows */}
       {isMultiColumn ? (
-        <Carousel
-          opts={{ loop: false }}
-          className='w-full'
-        >
-          <CarouselContent className='-ml-4'>
-            {sortedWidgets.map((widgetData) => (
-              <CarouselItem
-                key={`widget-${row.id}-${widgetData.position}`}
-                className={`pl-4 ${config.carouselBasis}`}
-              >
-                <div className='min-h-[200px]'>
-                  {widgetData.widget ? (
-                    <Widget
-                      widget={widgetData.widget}
-                      anchorMonth={selectedMonth}
-                    />
-                  ) : (
-                    <EmptyWidgetSlot position={widgetData.position} />
-                  )}
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <div>
+          <Carousel
+            opts={{ loop: false }}
+            className='w-full'
+          >
+            <CarouselContent className='-ml-4'>
+              {sortedWidgets.map((widgetData) => (
+                <CarouselItem
+                  key={`widget-${row.id}-${widgetData.position}`}
+                  className={`pl-4 ${config.carouselBasis}`}
+                >
+                  <div className='min-h-[200px]'>
+                    {widgetData.widget ? (
+                      <Widget
+                        widget={widgetData.widget}
+                        anchorMonth={selectedMonth}
+                      />
+                    ) : (
+                      <EmptyWidgetSlot position={widgetData.position} />
+                    )}
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {/* Show dots only on mobile */}
+            <div className='md:hidden'>
+              <CarouselDots />
+            </div>
+          </Carousel>
+        </div>
       ) : (
         /* Grid Layout for single column */
         <div className={`grid gap-6 ${config.className}`}>
