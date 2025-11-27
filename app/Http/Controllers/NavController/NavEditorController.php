@@ -16,7 +16,7 @@ class NavEditorController extends Controller
 
         return Inertia::render('NavEditor/NavEditorIndexPage', [
             'allNavData' => $navData,
-            'defaultDashboardPageId' => $defaultPage->id,
+            'defaultDashboardPageId' => $defaultPage?->id,
         ]);
     }
 }
