@@ -19,7 +19,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('data_details');
             $table->boolean('group_data')->default(0);
-            $table->unsignedInteger('rows_to_fetch')->nullable();
+            $table->unsignedInteger('max_rows_to_fetch')->nullable();
             $table->string('type')->default('composite_subset');
             $table->softDeletes();
             $table->foreignId('created_by')
