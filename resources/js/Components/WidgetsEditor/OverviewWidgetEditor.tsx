@@ -3,8 +3,9 @@ import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetS
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -15,6 +16,8 @@ export interface SelectedMeasure {
 export interface WidgetFormData {
   title: string
   subtitle: string
+  description: string
+  link: string
   data_table_id: string
   subset_group_id: string
   chart_type: string
@@ -32,12 +35,17 @@ export interface WidgetFormData {
     subset_field_name: string
     subset_column: string
   } | null
+  rank_level: string | null
+  rank_hierarchy_id: number | null
+  rank_dimension_column: string | null
+  rank_field_column: string | null
 }
 
 interface Props {
   widget?: Widget
   collectionId: number
   type: string
+  metaHierarchy: MetaHierarchy[]
 }
 
 /**
@@ -51,6 +59,8 @@ function parseFormDataToWidget(
   return {
     title: formData.title ?? 'Untitled Widget',
     subtitle: formData.subtitle ?? '',
+    description: formData.description ?? '',
+    link: formData.link ?? '',
     type: 'overview',
     collection_id: collectionId,
     data: {
@@ -80,18 +90,43 @@ function parseFormDataToWidget(
           subset_field_name: '',
           subset_column: '',
         },
+        level: formData.rank_level,
+        hierarchy_id: formData.rank_hierarchy_id,
+        dimension_column: formData.rank_dimension_column,
+        field_column: formData.rank_field_column,
       },
     },
   }
 }
 
-export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<Props>) {
+const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
+  title: '',
+  subtitle: '',
+  subset_id: null,
+  measure: { subset_column: '', subset_field_name: '', unit: '' },
+}
+export default function OverviewWidgetEditor({
+  widget,
+  collectionId,
+  metaHierarchy,
+}: Readonly<Props>) {
   const isEditMode = widget != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
+  const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
+
+  useEffect(() => {
+    if (openItem === 'trend') setSelectedView('trend')
+    if (openItem === 'ranking') setSelectedView('ranking')
+    if (openItem === 'basic') setSelectedView('overview')
+    if (openItem === 'chart') setSelectedView('overview')
+    if (openItem === 'highlight_cards') setSelectedView('overview')
+  }, [openItem])
 
   const { formData, setFormValue, setAll } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
+    description: widget?.description ?? '',
+    link: widget?.link ?? '',
     data_table_id: widget?.data?.data_table_id.toString() ?? '',
     subset_group_id: widget?.data?.subset_group_id.toString() ?? '',
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
@@ -103,9 +138,13 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
     trend_measure: widget?.data?.trend?.measure ?? null,
     trend_dimension: widget?.data?.trend?.dimension ?? 'month',
-    trend_color: widget?.data?.trend?.color ?? '#5A0F35',
+    trend_color: widget?.data?.trend?.color ?? 'boldWarm',
     rank_subset_id: widget?.data?.rank?.subset_id?.toString() ?? '',
     rank_ranking_field: widget?.data?.rank?.order_by ?? null,
+    rank_level: widget?.data?.rank?.level ?? null,
+    rank_hierarchy_id: widget?.data?.rank?.hierarchy_id ?? null,
+    rank_dimension_column: widget?.data?.rank?.dimension_column ?? null,
+    rank_field_column: widget?.data?.rank?.field_column ?? null,
   })
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []
@@ -204,10 +243,15 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
           setOpenItem={handleOpenItem}
           handleSubmit={handleSubmit}
           loading={loading}
+          metaHierarchy={metaHierarchy}
         />
       </div>
       <div className='min-h-[600px] lg:col-span-2'>
-        <OverviewWidget widget={previewWidget} />
+        <OverviewWidget
+          widget={previewWidget}
+          selectedView={selectedView}
+          setSelectedView={setSelectedView}
+        />
       </div>
     </div>
   )

@@ -1,13 +1,20 @@
 import React from 'react'
-import type { Widget as WidgetType } from '@/interfaces/data_interfaces'
+import type { Page, Widget as WidgetType } from '@/interfaces/data_interfaces'
 import { DashboardPage as PageData } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import CustomPageRow from '@/Components/PageEditor/CustomPage/CustomPageRow'
+import { useState, useEffect } from 'react'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface PageWidget {
   position: number
   widgetId: number | null
   widget: WidgetType | null
+}
+
+interface SubsetMaxValueResponse {
+  field: string
+  max_value: string | null
 }
 
 export interface PageRow {
@@ -39,7 +46,44 @@ export const COLUMN_CONFIG: Record<
   },
 }
 
+export function getAnchorWidgetFromPage(page: PageData) {
+  const anchorId = page.anchor_widget
+
+  const container = page.page.find((w) => w.widgets.find((w) => w.widgetId === anchorId))
+
+  return container?.widgets.find((w) => w.widgetId === anchorId)
+}
+
 export default function CustomPage({ page }: Readonly<CustomPageProps>) {
+  console.log(page)
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+
+  const anchor_widget = getAnchorWidgetFromPage(page)?.widget
+
+  const url = anchor_widget?.data.overview.subset_id
+    ? route('subset-field-max-value', {
+        subsetDetail: anchor_widget?.data.overview.subset_id,
+        field: 'month',
+      })
+    : null
+
+  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
+
+  useEffect(() => {
+    if (!loading && maxValueData != null) {
+      const maxValue = maxValueData.max_value
+      if (maxValue != null && /^\d{6}$/.test(maxValue)) {
+        const year = Number.parseInt(maxValue.substring(0, 4), 10)
+        const month = Number.parseInt(maxValue.substring(4, 6), 10) - 1 // months are 0-indexed
+        setSelectedMonth(new Date(year, month, 1))
+      } else {
+        setSelectedMonth(new Date())
+      }
+    } else if (!loading && !maxValueData) {
+      setSelectedMonth(new Date())
+    }
+  }, [loading, maxValueData])
+
   return (
     <AnalyticsDashboardLayout>
       <div className='min-h-screen w-full bg-white py-8 sm:px-6'>
@@ -61,6 +105,7 @@ export default function CustomPage({ page }: Readonly<CustomPageProps>) {
               <CustomPageRow
                 key={row.id}
                 row={row}
+                selectedMonth={selectedMonth}
               />
             ))
           ) : (

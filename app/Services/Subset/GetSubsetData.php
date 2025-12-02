@@ -20,11 +20,14 @@ class GetSubsetData
 
     private ?SubsetDetail $subsetDetail = null;
 
+    private ?string $dimension = null;
+
     public function __construct(
         private SubsetQueryBuilder $queryBuilder,
         private SubsetFilterBuilder $filterBuilder,
         private SubsetQuerySorting $querySorting,
-    ) {}
+    ) {
+    }
 
     public function setFilters(array $filters): self
     {
@@ -63,6 +66,13 @@ class GetSubsetData
         return $this;
     }
 
+    public function withDimension(?string $dimension): self
+    {
+        $this->dimension = $dimension;
+
+        return $this;
+    }
+
     /**
      * Get the fields filter from the filters
      *
@@ -70,7 +80,7 @@ class GetSubsetData
      */
     public function getFields(): ?array
     {
-        if (! isset($this->filters['fields']) || empty($this->filters['fields'])) {
+        if (!isset($this->filters['fields']) || empty($this->filters['fields'])) {
             return null;
         }
 
@@ -88,7 +98,8 @@ class GetSubsetData
             $this->isSummary,
             $this->excludeNonMeasurements,
             $this->summaryLevel,
-            $this->getFields()
+            $this->getFields(),
+            $this->dimension
         );
 
         $this->filterBuilder->filter(

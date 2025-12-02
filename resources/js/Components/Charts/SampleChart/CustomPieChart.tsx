@@ -29,6 +29,7 @@ interface Props {
    * computed layout. Defaults to 400.
    */
   height?: number
+  containerClassName?: string
 }
 
 export function CustomPieChart({
@@ -38,6 +39,7 @@ export function CustomPieChart({
   keysToPlot,
   colorScheme = 'boldWarm',
   fontSize,
+  containerClassName = 'h-[450px] w-full transition-all xl:w-10/12',
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -52,7 +54,7 @@ export function CustomPieChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className={`${fontSize} h-[450px] w-full transition-all xl:w-10/12`}
+      className={`${fontSize} ${containerClassName}`}
     >
       <PieChart margin={{ top: 16, bottom: 32, left: 16, right: 16 }}>
         <Legend />

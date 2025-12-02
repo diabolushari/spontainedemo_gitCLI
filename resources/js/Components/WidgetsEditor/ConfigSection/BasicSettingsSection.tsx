@@ -33,6 +33,22 @@ export default function BasicSettingsSection({
           />
         </div>
       </div>
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='flex flex-col'>
+          <Input
+            label='Description'
+            value={formData.description}
+            setValue={setFormValue('description')}
+          />
+        </div>
+        <div className='flex flex-col'>
+          <Input
+            label='View Details Link'
+            value={formData.link}
+            setValue={setFormValue('link')}
+          />
+        </div>
+      </div>
       <div className='flex flex-col'>
         <DynamicSelectList
           label='Data source'

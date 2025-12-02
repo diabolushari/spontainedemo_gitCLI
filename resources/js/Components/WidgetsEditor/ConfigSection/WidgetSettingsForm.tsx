@@ -9,6 +9,7 @@ import * as Accordion from '@radix-ui/react-accordion'
 import { Dispatch, SetStateAction } from 'react'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 interface WidgetSettingsFormProps {
   formData: WidgetFormData
@@ -21,6 +22,7 @@ interface WidgetSettingsFormProps {
   setOpenItem?: (item: string) => void
   handleSubmit: () => void
   loading: boolean
+  metaHierarchy: MetaHierarchy[]
 }
 
 export default function WidgetSettingsForm({
@@ -34,7 +36,9 @@ export default function WidgetSettingsForm({
   setOpenItem,
   handleSubmit,
   loading,
+  metaHierarchy
 }: Readonly<WidgetSettingsFormProps>) {
+
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>
@@ -108,6 +112,7 @@ export default function WidgetSettingsForm({
             <RankingConfigSection
               formData={formData}
               setFormValue={setFormValue}
+              metaHierarchy={metaHierarchy}
             />
           </AccordionContent>
         </Accordion.Item>

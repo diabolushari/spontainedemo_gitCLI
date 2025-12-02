@@ -37,6 +37,12 @@ export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
     }
   }
 
+  const handlePreview = (e: React.MouseEvent<HTMLButtonElement>, pageLink: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    window.open(`/${pageLink}`, '_blank')
+  }
+
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
@@ -156,6 +162,33 @@ export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
                     </span>
                   </div>
                 </Link>
+                {page.published && (
+                  <button
+                    onClick={(e) => handlePreview(e, page.link)}
+                    className='absolute right-4 top-4 rounded-lg p-2 opacity-0 transition-all hover:bg-blue-50 group-hover:opacity-100'
+                    title='Preview page'
+                  >
+                    <svg
+                      className='h-5 w-5 text-blue-600'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+                      />
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -209,25 +242,54 @@ export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
                       {dayjs(page.updated_at ?? '').format('DD/MM/YYYY')}
                     </p>
                   </div>
-                  <button
-                    onClick={(e) => handleDelete(e, page.id, page.title)}
-                    className='rounded p-2 opacity-0 transition-all hover:bg-red-50 group-hover:opacity-100'
-                    title='Delete page'
-                  >
-                    <svg
-                      className='h-5 w-5 text-red-600'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
+                  <div className='flex items-center gap-2'>
+                    {page.published && (
+                      <button
+                        onClick={(e) => handlePreview(e, page.link)}
+                        className='rounded p-2 opacity-0 transition-all hover:bg-blue-50 group-hover:opacity-100'
+                        title='Preview page'
+                      >
+                        <svg
+                          className='h-5 w-5 text-blue-600'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+                          />
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                          />
+                        </svg>
+                      </button>
+                    )}
+                    <button
+                      onClick={(e) => handleDelete(e, page.id, page.title)}
+                      className='rounded p-2 opacity-0 transition-all hover:bg-red-50 group-hover:opacity-100'
+                      title='Delete page'
                     >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        className='h-5 w-5 text-red-600'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

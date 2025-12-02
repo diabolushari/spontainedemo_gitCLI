@@ -5,9 +5,17 @@ import OverviewWidgetContent from '@/Components/WidgetsEditor/WidgetComponents/O
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
+import axios from 'axios'
+import HighlightBar from '../WidgetsEditor/WidgetComponents/HighlightBar'
+
+interface SubsetGroupDetail {
+  name: string
+  description: string
+}
 
 interface Props {
   widget: WidgetType
+  anchorMonth: Date
 }
 
 const EmptyState = ({ message }: { message: string }) => (
@@ -16,9 +24,13 @@ const EmptyState = ({ message }: { message: string }) => (
   </div>
 )
 
-export default function Widget({ widget }: Readonly<Props>) {
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(new Date())
+export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(anchorMonth)
   const [selectView, setSelectView] = useState('overview')
+
+  useEffect(() => {
+    setSelectedMonth(anchorMonth)
+  }, [anchorMonth])
 
   useEffect(() => {
     console.log(selectView)
@@ -26,13 +38,33 @@ export default function Widget({ widget }: Readonly<Props>) {
 
   if (!widget) return null
 
-  const { title, subtitle, data, type } = widget
+  const { title, subtitle, data, type, link, description } = widget
   const normalizedType = type?.toLowerCase()
+
+  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (widget.data.subset_group_id) {
+      axios
+        .get<SubsetGroupDetail>(`/api/subset-group-detail/${widget.data.subset_group_id}`)
+        .then((response) => {
+          setSubsetGroupName(response.data.name)
+        })
+        .catch((error) => {
+          console.error('Error fetching subset group detail:', error)
+          setSubsetGroupName(null)
+        })
+    } else {
+      setSubsetGroupName(null)
+    }
+  }, [widget.data.subset_group_id])
 
   return (
     <WidgetLayout
       title={title}
       subtitle={subtitle}
+      description={description}
+      link={link}
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectView}
@@ -41,9 +73,17 @@ export default function Widget({ widget }: Readonly<Props>) {
       hasTrend={widget.data.trend.subset_id != null}
       hasRanking={widget.data.rank.subset_id != null}
       hasHighlightCards={widget.data.highlight_cards != null}
+      subsetGroupName={subsetGroupName}
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}
+
+      {widget.data.highlight_cards && selectView === 'overview' && (
+        <HighlightBar
+          highlightCards={widget.data.highlight_cards}
+          selectedMonth={selectedMonth ?? new Date()}
+        />
+      )}
 
       {/* Overview Widget */}
       {selectView == 'overview' && selectedMonth != null && (
@@ -79,9 +119,14 @@ export default function Widget({ widget }: Readonly<Props>) {
       {selectView == 'ranking' && selectedMonth != null && (
         <RankingWidget
           subsetId={data.rank.subset_id}
+          subsetGroupName={subsetGroupName}
           subsetColumn={data.rank.order_by?.subset_column ?? null}
           subsetFieldName={data.rank.order_by?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
+          level={data.rank.level ?? null}
+          hierarchyId={widget.data.rank.hierarchy_id}
+          dimension={widget.data.rank.dimension_column}
+          fieldColumn={widget.data.rank.field_column}
         />
       )}
 

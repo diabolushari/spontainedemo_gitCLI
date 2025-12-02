@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WidgetEditor\WidgetEditorFormRequest;
 use App\Models\WidgetEditor\Widget;
 use Illuminate\Http\Request;
+use App\Models\Meta\MetaHierarchy;
 use Inertia\Inertia;
 
 class WidgetsEditorController extends Controller
@@ -19,10 +20,12 @@ class WidgetsEditorController extends Controller
     {
         $collectionId = $request->get('collection_id');
         $type = $request->get('type');
+        $metaHierarchy = MetaHierarchy::all();
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'collection_id' => $collectionId,
             'type' => $type,
+            'meta_hierarchy' => $metaHierarchy,
         ]);
     }
 
@@ -40,11 +43,13 @@ class WidgetsEditorController extends Controller
     {
         $collectionId = $widget->collection_id;
         $type = $widget->type;
+        $metaHierarchy = MetaHierarchy::all();
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'widget' => $widget,
             'collection_id' => $collectionId,
             'type' => $type,
+            'meta_hierarchy' => $metaHierarchy,
         ]);
     }
 

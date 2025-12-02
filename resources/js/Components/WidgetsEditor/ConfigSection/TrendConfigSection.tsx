@@ -1,4 +1,4 @@
-import { graphColorPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
 import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTypeSelector'
 import { SelectedMeasure, WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
@@ -20,9 +20,10 @@ const chartTypes = [
 ]
 
 export default function TrendConfigSection({ formData, setFormValue }: Readonly<Props>) {
-  const colorOptions = Object.entries(graphColorPallet).map(([key, value]) => ({
+  const colorOptions = Object.entries(chartPallet).map(([key, value]) => ({
     label: camelToNormal(key),
-    value: value,
+    name: key,
+    value: value[0],
   }))
 
   const selectedMeasures = useMemo(() => {
@@ -58,8 +59,22 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
     [setFormValue]
   )
 
+  const handleColorChange = useCallback(
+    (colorName: string) => {
+      setFormValue('trend_color')(colorName)
+    },
+    [setFormValue]
+  )
+
   return (
     <div className='space-y-4 px-4'>
+      <div>
+        <ChartTypeSelector
+          selectedType={formData.trend_chart_type}
+          onTypeChange={handleChartTypeChange}
+          chartTypes={chartTypes}
+        />
+      </div>
       <div className='flex flex-col'>
         <DynamicSelectList
           label='Subset'
@@ -70,13 +85,7 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
           setValue={handleSubsetChange}
         />
       </div>
-      <div>
-        <ChartTypeSelector
-          selectedType={formData.trend_chart_type}
-          onTypeChange={handleChartTypeChange}
-          chartTypes={chartTypes}
-        />
-      </div>
+
       <div className='flex flex-col'>
         <Input
           label='Dimension'
@@ -95,34 +104,33 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
       </div>
       <div className='flex flex-col'>
         <NormalText className={'mb-1'}>Chart Color</NormalText>
-        <div className='grid grid-cols-5 gap-1.5'>
+        <div className='grid grid-cols-4 gap-2'>
           {colorOptions.map((option) => (
             <label
-              key={option.value}
-              className={`group cursor-pointer rounded border-2 p-1 transition-all hover:border-blue-400 ${
-                formData.trend_color === option.value ? 'border-blue-600' : 'border-slate-200'
+              key={option.name}
+              className={`group cursor-pointer rounded-lg border-2 p-2 transition-all hover:border-blue-400 ${
+                formData.trend_color === option.name ? 'border-blue-600' : 'border-slate-200'
               }`}
-              htmlFor={`color-${option.value}`}
+              htmlFor={`color-${option.name}`}
               title={option.label}
-              aria-label={`Select ${option.label} color`}
+              aria-label={`Select ${option.label} color scheme`}
             >
               <input
                 name='trend_color'
                 type='radio'
                 className='sr-only'
-                id={`color-${option.value}`}
-                value={option.value}
-                checked={
-                  formData.trend_chart_type === 'area'
-                    ? formData.trend_color === option.value
-                    : formData.trend_color === option.label
-                }
-                onChange={(e) => setFormValue('trend_color')(e.target.value)}
+                id={`color-${option.name}`}
+                value={option.name}
+                checked={formData.trend_color === option.name}
+                onChange={(e) => handleColorChange(e.target.value)}
               />
-              <div
-                className='h-6 w-full rounded'
-                style={{ backgroundColor: option.value }}
-              />
+              <div className='space-y-1'>
+                <div
+                  className='h-6 w-full rounded'
+                  style={{ backgroundColor: option.value }}
+                />
+                <p className='text-center text-xs text-slate-600'>{option.label}</p>
+              </div>
             </label>
           ))}
         </div>

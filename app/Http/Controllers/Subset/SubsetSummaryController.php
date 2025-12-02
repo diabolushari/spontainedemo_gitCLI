@@ -21,7 +21,7 @@ class SubsetSummaryController extends Controller
 
         $filterParams = $request->all();
         $latestValue = null;
-        if (! $request->filled('month')) {
+        if (!$request->filled('month')) {
             $maxValue = $findMaxValue->findMaxValue($subsetDetail, 'month');
             if ($maxValue != null && $maxValue->max_value != null) {
                 $filterParams['month'] = $maxValue->max_value;
@@ -38,6 +38,7 @@ class SubsetSummaryController extends Controller
             ->withSummary(true)
             ->excludeNonMeasurements(true)
             ->withSummaryLevel($request->level ?? 'region')
+            ->withDimension($request->dimension)
             ->withSubsetDetail($subsetDetail->id)
             ->getQuery();
 

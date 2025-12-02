@@ -510,6 +510,8 @@ export interface Widget {
   title: string
   subtitle: string
   type: string
+  description?: string
+  link?: string
   collection_id: number
   data: {
     data_table_id: number
@@ -536,6 +538,10 @@ export interface Widget {
     rank: {
       subset_id: number | null
       order_by: SelectedMeasure | null
+      level: string
+      hierarchy_id: number | null
+      dimension_column: string | null
+      field_column: string | null
     }
   }
 }
@@ -572,4 +578,5 @@ export interface DashboardPage extends Model {
   link: string
   page: PageSection[]
   published: boolean
+  anchor_widget: number | null
 }
