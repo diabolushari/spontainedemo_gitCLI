@@ -1,5 +1,6 @@
 import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import ComboBox from '@/ui/form/ComboBox'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SelectedMeasure, WidgetFormData } from '../OverviewWidgetEditor'
 import SelectList from '@/ui/form/SelectList'
@@ -12,12 +13,14 @@ interface RankingConfigSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
   metaHierarchy: MetaHierarchy[]
+  ai_agent?: boolean
 }
 
 export function RankingConfigSection({
   formData,
   setFormValue,
   metaHierarchy,
+  ai_agent,
 }: Readonly<RankingConfigSectionProps>) {
   const [dimensions, setDimensions] = useState<any[]>([])
   const [fieldName, setFieldName] = useState<any>(null)
@@ -92,14 +95,25 @@ export function RankingConfigSection({
   return (
     <div className='space-y-4 px-4'>
       <div className='flex flex-col'>
-        <DynamicSelectList
-          label='Subset'
-          url={`/api/subset-group/${formData?.subset_group_id}`}
-          dataKey='subset_detail_id'
-          displayKey='name'
-          value={formData.rank_subset_id}
-          setValue={handleSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={'/subset-list'}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={formData.rank_subset_id}
+            setValue={handleSubsetChange}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={`/api/subset-group/${formData?.subset_group_id}`}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={formData.rank_subset_id}
+            setValue={handleSubsetChange}
+          />
+        )}
       </div>
       {/* <div>
         <SelectList

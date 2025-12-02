@@ -5,6 +5,7 @@ import { SelectedMeasure, WidgetFormData } from '@/Components/WidgetsEditor/Over
 import { camelToNormal } from '@/formaters/NameFormater'
 import NormalText from '@/typography/NormalText'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import ComboBox from '@/ui/form/ComboBox'
 import Input from '@/ui/form/Input'
 import { AreaChart, BarChart3 } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
@@ -12,6 +13,7 @@ import { useCallback, useMemo } from 'react'
 interface Props {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  ai_agent?: boolean
 }
 
 const chartTypes = [
@@ -19,7 +21,7 @@ const chartTypes = [
   { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
 ]
 
-export default function TrendConfigSection({ formData, setFormValue }: Readonly<Props>) {
+export default function TrendConfigSection({ formData, setFormValue, ai_agent }: Readonly<Props>) {
   const colorOptions = Object.entries(chartPallet).map(([key, value]) => ({
     label: camelToNormal(key),
     name: key,
@@ -76,14 +78,25 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
         />
       </div>
       <div className='flex flex-col'>
-        <DynamicSelectList
-          label='Subset'
-          url={`/api/subset-group/${formData?.subset_group_id}`}
-          dataKey='subset_detail_id'
-          displayKey='name'
-          value={formData.trend_subset_id}
-          setValue={handleSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={'/subset-list'}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={formData.trend_subset_id}
+            setValue={handleSubsetChange}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={`/api/subset-group/${formData?.subset_group_id}`}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={formData.trend_subset_id}
+            setValue={handleSubsetChange}
+          />
+        )}
       </div>
 
       <div className='flex flex-col'>

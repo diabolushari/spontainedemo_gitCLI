@@ -91,6 +91,7 @@ export default function WidgetSettingsForm({
               formData={formData}
               highlightCards={highlightCards}
               setHighlightCards={setHighlightCards}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -103,6 +104,7 @@ export default function WidgetSettingsForm({
             <OverviewChartConfigForm
               formData={formData}
               setFormValue={setFormValue}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -115,6 +117,7 @@ export default function WidgetSettingsForm({
             <TrendConfigSection
               formData={formData}
               setFormValue={setFormValue}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -128,6 +131,7 @@ export default function WidgetSettingsForm({
               formData={formData}
               setFormValue={setFormValue}
               metaHierarchy={metaHierarchy}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>

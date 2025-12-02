@@ -2,6 +2,7 @@ import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/Meas
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import Input from '@/ui/form/Input'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import ComboBox from '@/ui/form/ComboBox'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import { Save, Trash } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -15,6 +16,7 @@ interface HighlightCardProps {
   onSubsetChange: (index: number, subsetId: number) => void
   onMeasureChange: (index: number, measures: SelectedMeasure[]) => void
   onRemove: (index: number) => void
+  ai_agent?: boolean
 }
 
 export default function HighlightCardConfigForm({
@@ -26,6 +28,7 @@ export default function HighlightCardConfigForm({
   onSubsetChange,
   onMeasureChange,
   onRemove,
+  ai_agent,
 }: Readonly<HighlightCardProps>) {
   // Local state for form data
   const [localCard, setLocalCard] = useState<HighlightCardData>(card)
@@ -146,14 +149,25 @@ export default function HighlightCardConfigForm({
         />
       </div>
       <div>
-        <DynamicSelectList
-          label='Subset'
-          url={`/api/subset-group/${subsetGroupId}`}
-          dataKey='subset_detail_id'
-          displayKey='name'
-          value={localCard.subset_id ?? undefined}
-          setValue={handleLocalSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={'/subset-list'}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={localCard.subset_id?.toString() ?? ''}
+            setValue={handleLocalSubsetChange}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={`/api/subset-group/${subsetGroupId}`}
+            dataKey='subset_detail_id'
+            displayKey='name'
+            value={localCard.subset_id ?? undefined}
+            setValue={handleLocalSubsetChange}
+          />
+        )}
       </div>
       {localCard.subset_id && (
         <div className='border-t border-slate-200 pt-3'>

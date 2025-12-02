@@ -116,7 +116,8 @@ export default function RankedList({
     dimension,
   ])
   const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
-
+  console.log('ranking fetchUrl : ', fetchUrl)
+  console.log('ranking graphValues : ', graphValues)
   const headers = useMemo(() => {
     if (fieldColumn) {
       const dimensionDisplayName = fieldColumn
@@ -126,7 +127,7 @@ export default function RankedList({
       return [dimensionDisplayName, dataFieldName]
     }
 
-    const firstRow = graphValues?.data.data[0]
+    const firstRow = graphValues?.data?.data[0]
     if (!firstRow) {
       return ['', dataFieldName]
     }
@@ -141,7 +142,7 @@ export default function RankedList({
       .join(' ')
 
     return [dimensionDisplayName, dataFieldName]
-  }, [graphValues?.data.data, dataFieldName, dataField, fieldColumn])
+  }, [graphValues?.data?.data, dataFieldName, dataField, fieldColumn])
 
   return (
     <div className='relative flex w-full flex-col'>
@@ -297,7 +298,7 @@ export default function RankedList({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {graphValues?.data.data.map((value, index) => {
+                {graphValues?.data?.data?.map((value, index) => {
                   // Extract all keys except the measure field
                   const columnNames = Object.keys(value).filter(
                     (key) =>

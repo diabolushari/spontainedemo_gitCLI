@@ -6,15 +6,18 @@ import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { useCallback, useMemo } from 'react'
 import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
+import ComboBox from '@/ui/form/ComboBox'
 
 interface OverviewChartSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  ai_agent?: boolean
 }
 
 export default function OverviewChartConfigForm({
   formData,
   setFormValue,
+  ai_agent,
 }: Readonly<OverviewChartSectionProps>) {
   const handleSubsetChange = useCallback(
     (newSubsetId: string | null) => {
@@ -48,14 +51,25 @@ export default function OverviewChartConfigForm({
         onTypeChange={setFormValue('chart_type')}
       />
       <div className='flex flex-col'>
-        <DynamicSelectList
-          label='Subset'
-          url={route('subset-having-dimension-measure', formData.subset_group_id)}
-          dataKey='id'
-          displayKey='name'
-          value={formData.subset_id}
-          setValue={handleSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={'/subset-list'}
+            dataKey='id'
+            displayKey='name'
+            value={formData.subset_id}
+            setValue={handleSubsetChange}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={route('subset-having-dimension-measure', formData.subset_group_id)}
+            dataKey='id'
+            displayKey='name'
+            value={formData.subset_id}
+            setValue={handleSubsetChange}
+          />
+        )}
       </div>
 
       <div>

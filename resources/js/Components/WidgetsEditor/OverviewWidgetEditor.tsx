@@ -257,7 +257,8 @@ export default function OverviewWidgetEditor({
       item === 'basic' ||
       item === 'data_source' ||
       (formData.data_table_id && formData.subset_group_id) ||
-      item === 'data_exploration'
+      item === 'data_exploration' ||
+      widget?.data?.ai_agent
     ) {
       setOpenItem(item)
     } else {
