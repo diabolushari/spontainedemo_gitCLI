@@ -71,6 +71,7 @@ export default function TrendConfigSection({ formData, setFormValue, ai_agent }:
 
   const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
     id: Number(formData.trend_subset_id),
+    name: formData.trend_subset_name,
   })
 
   const handleSubsetChangeAi = useCallback(

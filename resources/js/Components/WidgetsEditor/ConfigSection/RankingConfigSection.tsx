@@ -83,6 +83,7 @@ export function RankingConfigSection({
   )
   const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
     id: Number(formData.rank_subset_id),
+    name: formData.rank_subset_name,
   })
   const handleSubsetChangeAi = useCallback(
     (value: SubsetDetail) => {

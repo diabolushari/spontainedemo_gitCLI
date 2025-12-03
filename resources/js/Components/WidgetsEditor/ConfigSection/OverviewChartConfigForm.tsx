@@ -22,6 +22,7 @@ export default function OverviewChartConfigForm({
 }: Readonly<OverviewChartSectionProps>) {
   const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
     id: Number(formData?.subset_id),
+    name: formData?.subset_name,
   })
 
   const handleSubsetChangeAi = useCallback(
