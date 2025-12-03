@@ -8,17 +8,12 @@ use App\Models\SubsetGroup\SubsetGroupItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
-final class SubsetHavingDimensionMeasureController extends Controller implements HasMiddleware
+final class SubsetHavingDimensionMeasureController extends Controller
 {
     /**
      * @return string[]
      */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
+
 
     public function __invoke(int $group): JsonResponse
     {

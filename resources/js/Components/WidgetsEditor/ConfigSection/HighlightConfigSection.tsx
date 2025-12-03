@@ -8,6 +8,7 @@ interface HighlightConfigSectionProps {
   formData: WidgetFormData
   highlightCards: HighlightCardData[]
   setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
+  ai_agent?: boolean
 }
 
 const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
@@ -21,6 +22,7 @@ export default function HighlightConfigSection({
   formData,
   highlightCards,
   setHighlightCards,
+  ai_agent,
 }: Readonly<HighlightConfigSectionProps>) {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
 
@@ -177,6 +179,7 @@ export default function HighlightConfigSection({
             onSubsetChange={handleSubsetChange}
             onMeasureChange={handleMeasureChange}
             onRemove={handleRemoveCard}
+            ai_agent={ai_agent}
           />
         </div>
       )}

@@ -9,7 +9,7 @@ class DataDetailListController extends Controller
 {
     public function __invoke()
     {
-        return DataDetail::select('id', 'name')
+        return DataDetail::select('id', 'name', 'description')
             ->where('is_active', 1)
             ->get();
     }

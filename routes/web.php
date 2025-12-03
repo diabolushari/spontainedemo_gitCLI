@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Utils\SubsetGroupDetailedController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartDeleteController;
@@ -118,7 +119,7 @@ use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (! auth()->check()) {
+    if (!auth()->check()) {
         return redirect()->route('login');
     }
 
@@ -434,6 +435,9 @@ Route::post('api/store-loader-json-api', StoreLoaderAPIController::class)
 Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::class)
     ->name('subset-field-max-value');
 
-require __DIR__.'/auth.php';
+Route::get('subset-group-detailed/{group}', SubsetGroupDetailedController::class)
+    ->name('subset-group-detailed');
+
+require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');

@@ -41,24 +41,6 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
   const { title, subtitle, data, type, link, description } = widget
   const normalizedType = type?.toLowerCase()
 
-  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (widget.data.subset_group_id) {
-      axios
-        .get<SubsetGroupDetail>(`/api/subset-group-detail/${widget.data.subset_group_id}`)
-        .then((response) => {
-          setSubsetGroupName(response.data.name)
-        })
-        .catch((error) => {
-          console.error('Error fetching subset group detail:', error)
-          setSubsetGroupName(null)
-        })
-    } else {
-      setSubsetGroupName(null)
-    }
-  }, [widget.data.subset_group_id])
-
   return (
     <WidgetLayout
       title={title}
@@ -73,7 +55,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       hasTrend={widget.data.trend.subset_id != null}
       hasRanking={widget.data.rank.subset_id != null}
       hasHighlightCards={widget.data.highlight_cards != null}
-      subsetGroupName={subsetGroupName}
+      subsetGroupName={widget.data.explore.subset_group_name}
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}
@@ -119,7 +101,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       {selectView == 'ranking' && selectedMonth != null && (
         <RankingWidget
           subsetId={data.rank.subset_id}
-          subsetGroupName={subsetGroupName}
+          subsetGroupName={data.rank.subset_group_name}
           subsetColumn={data.rank.order_by?.subset_column ?? null}
           subsetFieldName={data.rank.order_by?.subset_field_name ?? null}
           selectedMonth={selectedMonth}

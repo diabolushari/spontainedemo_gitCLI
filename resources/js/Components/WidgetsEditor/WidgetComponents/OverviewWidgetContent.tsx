@@ -52,6 +52,7 @@ export default function OverviewWidgetContent({
       ? `/subset/${subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
       : null
   }, [subsetId, fieldsParam, formattedMonth])
+  console.log('overview url', url)
 
   const [data] = useFetchRecord<{
     data: Record<string, number | string>[]

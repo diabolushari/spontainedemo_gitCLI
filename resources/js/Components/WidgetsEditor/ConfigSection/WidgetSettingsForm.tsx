@@ -1,5 +1,7 @@
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
+import DataSourceSelectSection from '@/Components/WidgetsEditor/ConfigSection/DataSourceSelectSection'
+import DataExplorationConfigSection from '@/Components/WidgetsEditor/ConfigSection/DataExplorationConfigSection'
 import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
 import OverviewChartConfigForm from '@/Components/WidgetsEditor/ConfigSection/OverviewChartConfigForm'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
@@ -23,6 +25,7 @@ interface WidgetSettingsFormProps {
   handleSubmit: () => void
   loading: boolean
   metaHierarchy: MetaHierarchy[]
+  ai_agent?: boolean
 }
 
 export default function WidgetSettingsForm({
@@ -36,9 +39,9 @@ export default function WidgetSettingsForm({
   setOpenItem,
   handleSubmit,
   loading,
-  metaHierarchy
+  metaHierarchy,
+  ai_agent,
 }: Readonly<WidgetSettingsFormProps>) {
-
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>
@@ -61,6 +64,18 @@ export default function WidgetSettingsForm({
             <BasicSettingsSection
               formData={formData}
               setFormValue={setFormValue}
+            />
+          </AccordionContent>
+        </Accordion.Item>
+        <Accordion.Item
+          value='data_source'
+          className='rounded-lg border border-slate-200 disabled:opacity-50'
+          disabled={ai_agent}
+        >
+          <AccordionTrigger>Data Source Select</AccordionTrigger>
+          <AccordionContent>
+            <DataSourceSelectSection
+              formData={formData}
               handleDataTableChange={handleDataTableChange}
               handleSubsetGroupChange={handleSubsetGroupChange}
             />
@@ -76,6 +91,7 @@ export default function WidgetSettingsForm({
               formData={formData}
               highlightCards={highlightCards}
               setHighlightCards={setHighlightCards}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -88,6 +104,7 @@ export default function WidgetSettingsForm({
             <OverviewChartConfigForm
               formData={formData}
               setFormValue={setFormValue}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -100,6 +117,7 @@ export default function WidgetSettingsForm({
             <TrendConfigSection
               formData={formData}
               setFormValue={setFormValue}
+              ai_agent={ai_agent}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -113,6 +131,19 @@ export default function WidgetSettingsForm({
               formData={formData}
               setFormValue={setFormValue}
               metaHierarchy={metaHierarchy}
+              ai_agent={ai_agent}
+            />
+          </AccordionContent>
+        </Accordion.Item>
+        <Accordion.Item
+          value={'data_exploration'}
+          className='rounded-lg border border-slate-200'
+        >
+          <AccordionTrigger>Data Exploration</AccordionTrigger>
+          <AccordionContent>
+            <DataExplorationConfigSection
+              formData={formData}
+              setFormValue={setFormValue}
             />
           </AccordionContent>
         </Accordion.Item>

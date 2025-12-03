@@ -115,26 +115,6 @@ export default function OverviewWidget({
   const hasHighlightData =
     widget.data.highlight_cards != null && widget.data.highlight_cards.length > 0
 
-  console.log(widget.data.highlight_cards, selectedView)
-
-  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (widget.data.subset_group_id) {
-      axios
-        .get<SubsetGroupDetail>(`/api/subset-group-detail/${widget.data.subset_group_id}`)
-        .then((response) => {
-          setSubsetGroupName(response.data.name)
-        })
-        .catch((error) => {
-          console.error('Error fetching subset group detail:', error)
-          setSubsetGroupName(null)
-        })
-    } else {
-      setSubsetGroupName(null)
-    }
-  }, [widget.data.subset_group_id])
-
   return (
     <WidgetLayout
       title={widget.title}
@@ -149,7 +129,7 @@ export default function OverviewWidget({
       hasRanking={hasRanking}
       hasTrend={hasTrend}
       hasHighlightCards={hasHighlightCards}
-      subsetGroupName={subsetGroupName}
+      subsetGroupName={widget.data.explore?.subset_group_name}
     >
       {hasHighlightData && selectedView === 'overview' && (
         <HighlightBar
@@ -199,7 +179,7 @@ export default function OverviewWidget({
       )}
       {selectedView === 'ranking' && selectedMonth != null && (
         <RankingWidget
-          subsetGroupName={subsetGroupName}
+          subsetGroupName={widget.data.rank.subset_group_name}
           subsetId={widget.data.rank.subset_id}
           subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
           subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}

@@ -503,6 +503,7 @@ export interface HighlightCardData {
   subtitle: string
   subset_id: number | null
   measure: SelectedMeasure
+  subset_name?: string | null
 }
 
 export interface Widget {
@@ -510,10 +511,11 @@ export interface Widget {
   title: string
   subtitle: string
   type: string
-  description?: string
-  link?: string
   collection_id: number
   data: {
+    description?: string
+    link?: string
+    ai_agent: boolean
     data_table_id: number
     subset_group_id: number
     overview: {
@@ -526,22 +528,29 @@ export interface Widget {
       dimension: string
       color_palette: string
       subset_id: number | null
+      subset_name?: string
     }
     highlight_cards: HighlightCardData[]
     trend: {
       subset_id: number | null
+      subset_name?: string
       chart_type: 'area' | 'bar'
       measure: SelectedMeasure | null
       dimension: string
       color: string
     }
     rank: {
+      subset_group_name: string | null
       subset_id: number | null
+      subset_name?: string
       order_by: SelectedMeasure | null
       level: string
       hierarchy_id: number | null
       dimension_column: string | null
       field_column: string | null
+    }
+    explore: {
+      subset_group_name: string | null
     }
   }
 }

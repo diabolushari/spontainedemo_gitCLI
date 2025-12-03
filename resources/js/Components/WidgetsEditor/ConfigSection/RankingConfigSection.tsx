@@ -1,5 +1,6 @@
 import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import ComboBox from '@/ui/form/ComboBox'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SelectedMeasure, WidgetFormData } from '../OverviewWidgetEditor'
 import SelectList from '@/ui/form/SelectList'
@@ -7,17 +8,20 @@ import axios from 'axios'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip'
 import { Info } from 'lucide-react'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface RankingConfigSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
   metaHierarchy: MetaHierarchy[]
+  ai_agent?: boolean
 }
 
 export function RankingConfigSection({
   formData,
   setFormValue,
   metaHierarchy,
+  ai_agent,
 }: Readonly<RankingConfigSectionProps>) {
   const [dimensions, setDimensions] = useState<any[]>([])
   const [fieldName, setFieldName] = useState<any>(null)
@@ -77,6 +81,18 @@ export function RankingConfigSection({
     },
     [setFormValue]
   )
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+    id: Number(formData.rank_subset_id),
+    name: formData.rank_subset_name,
+  })
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail) => {
+      setSubset(value)
+      setFormValue('rank_subset_id')(value.id.toString())
+      setFormValue('rank_ranking_field')(null)
+    },
+    [setFormValue]
+  )
 
   const handleDimensionChange = useCallback(
     (value: string) => {
@@ -86,20 +102,33 @@ export function RankingConfigSection({
         setFormValue('rank_hierarchy_id')(selectedDimension.hierarchy_id)
       }
     },
-    [dimensions, setFormValue]
+    [dimensions]
   )
 
   return (
     <div className='space-y-4 px-4'>
       <div className='flex flex-col'>
-        <DynamicSelectList
-          label='Subset'
-          url={`/api/subset-group/${formData?.subset_group_id}`}
-          dataKey='subset_detail_id'
-          displayKey='name'
-          value={formData.rank_subset_id}
-          setValue={handleSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={route('subset.list', {
+              search: '',
+            })}
+            dataKey='id'
+            displayKey='name'
+            value={subset}
+            setValue={handleSubsetChangeAi}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={`/api/subset-group/${formData?.subset_group_id}`}
+            dataKey='id'
+            displayKey='name'
+            value={formData.rank_subset_id}
+            setValue={handleSubsetChange}
+          />
+        )}
       </div>
       {/* <div>
         <SelectList

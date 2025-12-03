@@ -90,6 +90,8 @@ export default function TrendGraph({
     latest_value: string | null | undefined
   }>(fetchUrl)
 
+  console.log('trend fetchUrl : ', fetchUrl)
+  console.log('trend graphValues : ', graphValues)
   useEffect(() => {
     if (setSelectedMonth == null || selectedMonth != null) return
 
@@ -110,7 +112,7 @@ export default function TrendGraph({
 
     return selectedMonths
       .map((month) => {
-        const value = graphValues?.data.find((v) => v.month === month)
+        const value = graphValues?.data?.find((v) => v.month === month)
         return {
           month: `${month?.slice(4)}/${month?.slice(0, 4)}`,
           [dataFieldName]: value?.[dataField] ?? 0,

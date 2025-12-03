@@ -5,13 +5,16 @@ import { SelectedMeasure, WidgetFormData } from '@/Components/WidgetsEditor/Over
 import { camelToNormal } from '@/formaters/NameFormater'
 import NormalText from '@/typography/NormalText'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import ComboBox from '@/ui/form/ComboBox'
 import Input from '@/ui/form/Input'
 import { AreaChart, BarChart3 } from 'lucide-react'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useState, useMemo } from 'react'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface Props {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  ai_agent?: boolean
 }
 
 const chartTypes = [
@@ -19,7 +22,7 @@ const chartTypes = [
   { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
 ]
 
-export default function TrendConfigSection({ formData, setFormValue }: Readonly<Props>) {
+export default function TrendConfigSection({ formData, setFormValue, ai_agent }: Readonly<Props>) {
   const colorOptions = Object.entries(chartPallet).map(([key, value]) => ({
     label: camelToNormal(key),
     name: key,
@@ -31,7 +34,7 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
       return []
     }
     return [formData.trend_measure]
-  }, [formData.trend_measure])
+  }, [formData.trend_measure, formData.trend_subset_id])
 
   const updateMeasures = useCallback(
     (measures: SelectedMeasure[]) => {
@@ -66,6 +69,20 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
     [setFormValue]
   )
 
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+    id: Number(formData.trend_subset_id),
+    name: formData.trend_subset_name,
+  })
+
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail | Record<string, any>) => {
+      setSubset(value)
+      setFormValue('trend_subset_id')(value.id.toString())
+      setFormValue('trend_measure')(null)
+    },
+    [setFormValue]
+  )
+
   return (
     <div className='space-y-4 px-4'>
       <div>
@@ -76,14 +93,27 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
         />
       </div>
       <div className='flex flex-col'>
-        <DynamicSelectList
-          label='Subset'
-          url={`/api/subset-group/${formData?.subset_group_id}`}
-          dataKey='subset_detail_id'
-          displayKey='name'
-          value={formData.trend_subset_id}
-          setValue={handleSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={route('subset.list', {
+              search: '',
+            })}
+            dataKey='id'
+            displayKey='name'
+            value={subset}
+            setValue={handleSubsetChangeAi}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={`/api/subset-group/${formData?.subset_group_id}`}
+            dataKey='id'
+            displayKey='name'
+            value={formData.trend_subset_id}
+            setValue={handleSubsetChange}
+          />
+        )}
       </div>
 
       <div className='flex flex-col'>

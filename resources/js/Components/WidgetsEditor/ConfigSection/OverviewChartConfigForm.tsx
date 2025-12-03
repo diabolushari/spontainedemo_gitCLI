@@ -3,19 +3,36 @@ import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTyp
 import MeasureFieldSelector from '../ConfigMeasures/MeasureFieldSelector'
 import ColorPaletteSelector from '@/Components/WidgetsEditor/ConfigSection/ColorPalettSelector'
 import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
+import ComboBox from '@/ui/form/ComboBox'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface OverviewChartSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  ai_agent?: boolean
 }
 
 export default function OverviewChartConfigForm({
   formData,
   setFormValue,
+  ai_agent,
 }: Readonly<OverviewChartSectionProps>) {
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+    id: Number(formData?.subset_id),
+    name: formData?.subset_name,
+  })
+
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail | Record<string, any>) => {
+      setSubset(value)
+      setFormValue('subset_id')(value.id)
+    },
+    [setFormValue]
+  )
+
   const handleSubsetChange = useCallback(
     (newSubsetId: string | null) => {
       setFormValue('measures')([])
@@ -48,14 +65,27 @@ export default function OverviewChartConfigForm({
         onTypeChange={setFormValue('chart_type')}
       />
       <div className='flex flex-col'>
-        <DynamicSelectList
-          label='Subset'
-          url={route('subset-having-dimension-measure', formData.subset_group_id)}
-          dataKey='id'
-          displayKey='name'
-          value={formData.subset_id}
-          setValue={handleSubsetChange}
-        />
+        {ai_agent ? (
+          <ComboBox
+            label='Subset'
+            url={route('subset.list', {
+              search: '',
+            })}
+            dataKey='id'
+            displayKey='name'
+            value={subset}
+            setValue={handleSubsetChangeAi}
+          />
+        ) : (
+          <DynamicSelectList
+            label='Subset'
+            url={route('subset-having-dimension-measure', formData.subset_group_id)}
+            dataKey='id'
+            displayKey='name'
+            value={formData.subset_id}
+            setValue={handleSubsetChange}
+          />
+        )}
       </div>
 
       <div>

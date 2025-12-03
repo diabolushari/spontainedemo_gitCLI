@@ -8,19 +8,13 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetFieldsListController extends Controller implements HasMiddleware
+class SubsetFieldsListController extends Controller
 {
     /**
      * @return string[]
      */
-    public static function middleware()
-    {
-        return [
-            'auth',
-        ];
-    }
+
 
     public function __invoke(Request $request): JsonResponse
     {

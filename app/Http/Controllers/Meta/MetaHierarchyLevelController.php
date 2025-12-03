@@ -5,16 +5,11 @@ namespace App\Http\Controllers\Meta;
 use App\Http\Controllers\Controller;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyLevelInfo;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaHierarchyLevelController extends Controller implements HasMiddleware
+class MetaHierarchyLevelController extends Controller
 {
-    public static function middleware(): array
-    {
-        return ['auth'];
-    }
+
     public function show(MetaHierarchyLevelInfo $metaHierarchyLevel): JsonResponse
     {
         return response()->json($metaHierarchyLevel);

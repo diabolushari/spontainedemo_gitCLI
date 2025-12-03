@@ -8,12 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaHierarchyDataController extends Controller implements HasMiddleware
+class MetaHierarchyDataController extends Controller
 {
-    public static function middleware(): array
-    {
-        return ['auth'];
-    }
+
 
     public function __invoke(Request $request, MetaHierarchy $metaHierarchy): JsonResponse
     {

@@ -22,10 +22,12 @@ class WidgetsEditorController extends Controller
         $type = $request->get('type');
         $metaHierarchy = MetaHierarchy::all();
 
+
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'collection_id' => $collectionId,
             'type' => $type,
             'meta_hierarchy' => $metaHierarchy,
+            'widget_agent_url' => config('app.widget_agent_url'),
         ]);
     }
 
@@ -50,6 +52,7 @@ class WidgetsEditorController extends Controller
             'collection_id' => $collectionId,
             'type' => $type,
             'meta_hierarchy' => $metaHierarchy,
+            'widget_agent_url' => config('app.widget_agent_url'),
         ]);
     }
 
