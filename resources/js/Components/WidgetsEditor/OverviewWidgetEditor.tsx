@@ -56,6 +56,7 @@ interface Props {
   chatInput: string
   setChatInput: (value: string) => void
   onChatSend: () => void
+  onPreviewWidgetChange?: (widget: Widget) => void
 }
 
 /**
@@ -131,6 +132,7 @@ export default function OverviewWidgetEditor({
   chatInput,
   setChatInput,
   onChatSend,
+  onPreviewWidgetChange,
 }: Readonly<Props>) {
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
@@ -211,6 +213,7 @@ export default function OverviewWidgetEditor({
       rank_dimension_column: widget.data?.rank?.dimension_column ?? null,
       rank_field_column: widget.data?.rank?.field_column ?? null,
       explore_subset_group_name: widget.data?.explore?.subset_group_name ?? '',
+      ai_agent: widget.data?.ai_agent ?? false,
     })
 
     // 2. Update the Highlight Cards
@@ -305,6 +308,13 @@ export default function OverviewWidgetEditor({
   const previewWidget = useMemo<Widget>(() => {
     return parseFormDataToWidget(formData, highlightCards, collectionId)
   }, [formData, collectionId, highlightCards])
+
+  // Notify parent component when preview widget changes
+  useEffect(() => {
+    if (onPreviewWidgetChange) {
+      onPreviewWidgetChange(previewWidget)
+    }
+  }, [previewWidget, onPreviewWidgetChange])
 
   return (
     <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>

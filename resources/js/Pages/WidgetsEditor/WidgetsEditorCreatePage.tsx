@@ -22,13 +22,15 @@ export default function WidgetsEditorCreatePage({
   widget_agent_url,
 }: Readonly<Props>) {
   const [currentWidget, setCurrentWidget] = useState<Widget | undefined>(widget)
+  const [previewWidget, setPreviewWidget] = useState<Widget | undefined>(widget)
   const [thinking, setThinking] = useState<string | null>(null)
   const { messages, sendMessage } = useWebSocket(widget_agent_url)
   const [input, setInput] = React.useState('')
 
   const handleSend = () => {
     if (!input.trim()) return
-    sendMessage({ message: input })
+    // Send the preview widget which reflects the current form state
+    sendMessage({ message: input, existing_widget: previewWidget })
     setInput('')
   }
 
@@ -58,6 +60,7 @@ export default function WidgetsEditorCreatePage({
             chatInput={input}
             setChatInput={setInput}
             onChatSend={handleSend}
+            onPreviewWidgetChange={setPreviewWidget}
           />
         )}
       </DashboardPadding>
