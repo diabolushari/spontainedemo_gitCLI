@@ -229,6 +229,44 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  const handleAddTextBlock = useCallback(
+    (rowId: number, position: number) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) =>
+              slot.position === position
+                ? { ...slot, type: 'text' as const, textContent: '<p>Start typing...</p>' }
+                : slot
+            ),
+          }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
+  const handleTextUpdate = useCallback(
+    (rowId: number, position: number, content: string) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) =>
+              slot.position === position ? { ...slot, textContent: content } : slot
+            ),
+          }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   const handleTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormValue('title')(e.target.value)
@@ -306,5 +344,7 @@ export function usePageEditor(
     setAnchorWidget,
     pageWidgets,
     handleRowUpdate,
+    handleAddTextBlock,
+    handleTextUpdate,
   }
 }

@@ -1,5 +1,6 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselDots } from '@/Components/ui/carousel'
 import Widget from '@/Components/PageEditor/Widget'
+import RichTextEditor from '@/Components/PageEditor/RichTextEditor' // Ensure this path is correct
 import React from 'react'
 import { COLUMN_CONFIG } from '@/Pages/PageEditor/CustomPage'
 import { PageSection as PageRow } from '@/interfaces/data_interfaces'
@@ -17,6 +18,32 @@ export default function CustomPageRow({
   const config = COLUMN_CONFIG[row.type] || COLUMN_CONFIG.tripleCol
   const sortedWidgets = [...row.widgets].sort((a, b) => a.position - b.position)
   const isMultiColumn = config.cols > 1
+
+  const renderSlotContent = (widgetData: any) => {
+    // 1. Check for Text Block
+    if (widgetData.type === 'text') {
+      return (
+        <RichTextEditor
+          content={widgetData.textContent || ''}
+          onChange={() => {}} // No-op for read-only
+          editable={false}
+        />
+      )
+    }
+
+    // 2. Check for Widget
+    if (widgetData.widget) {
+      return (
+        <Widget
+          widget={widgetData.widget}
+          anchorMonth={selectedMonth}
+        />
+      )
+    }
+
+    // 3. Fallback to Empty Slot
+    return <EmptyWidgetSlot position={widgetData.position} />
+  }
 
   return (
     <section className='mb-8'>
@@ -41,16 +68,7 @@ export default function CustomPageRow({
                   key={`widget-${row.id}-${widgetData.position}`}
                   className={`pl-4 ${config.carouselBasis}`}
                 >
-                  <div className='min-h-[200px]'>
-                    {widgetData.widget ? (
-                      <Widget
-                        widget={widgetData.widget}
-                        anchorMonth={selectedMonth}
-                      />
-                    ) : (
-                      <EmptyWidgetSlot position={widgetData.position} />
-                    )}
-                  </div>
+                  <div className='h-full min-h-[200px]'>{renderSlotContent(widgetData)}</div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -66,16 +84,9 @@ export default function CustomPageRow({
           {sortedWidgets.map((widgetData) => (
             <div
               key={`widget-${row.id}-${widgetData.position}`}
-              className='min-h-[200px]'
+              className='h-full min-h-[200px]'
             >
-              {widgetData.widget ? (
-                <Widget
-                  widget={widgetData.widget}
-                  anchorMonth={selectedMonth}
-                />
-              ) : (
-                <EmptyWidgetSlot position={widgetData.position} />
-              )}
+              {renderSlotContent(widgetData)}
             </div>
           ))}
         </div>

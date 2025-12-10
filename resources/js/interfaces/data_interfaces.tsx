@@ -572,6 +572,8 @@ export interface WidgetPosition {
   position: number
   widgetId: number | null
   widget?: Widget | null
+  type?: 'widget' | 'text'
+  textContent?: string
 }
 
 export interface PageSection {

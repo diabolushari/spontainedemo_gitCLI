@@ -11,6 +11,9 @@ interface PreviewAreaProps {
   moveRow: (id: number, pos: 'up' | 'down') => void
   selectedMonth: Date
   onRowUpdate: (rowId: number, data: { title?: string; description?: string }) => void
+  setSheetOpen: (open: boolean) => void
+  handleAddTextBlock: (rowId: number, position: number) => void
+  handleTextUpdate: (rowId: number, position: number, content: string) => void
 }
 
 export default function PagePreviewArea({
@@ -22,6 +25,9 @@ export default function PagePreviewArea({
   moveRow,
   selectedMonth,
   onRowUpdate,
+  setSheetOpen,
+  handleAddTextBlock,
+  handleTextUpdate,
 }: Readonly<PreviewAreaProps>) {
   return (
     <>
@@ -46,6 +52,9 @@ export default function PagePreviewArea({
           moveRow={moveRow}
           selectedMonth={selectedMonth}
           onRowUpdate={onRowUpdate}
+          handleAddTextBlock={handleAddTextBlock}
+          handleTextUpdate={handleTextUpdate}
+          onAddWidget={() => setSheetOpen(true)}
         />
       ))}
 
