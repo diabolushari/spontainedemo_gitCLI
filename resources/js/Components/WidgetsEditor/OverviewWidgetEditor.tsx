@@ -1,5 +1,6 @@
 import OverviewWidget from '@/Components/Widgets/OverviewWidget'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
+import WidgetChatSection from '@/Components/WidgetsEditor/ConfigSection/WidgetChatSection'
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
@@ -57,6 +58,7 @@ interface Props {
   setChatInput: (value: string) => void
   onChatSend: () => void
   onPreviewWidgetChange?: (widget: Widget) => void
+  messages: any[]
 }
 
 /**
@@ -133,10 +135,12 @@ export default function OverviewWidgetEditor({
   setChatInput,
   onChatSend,
   onPreviewWidgetChange,
+  messages,
 }: Readonly<Props>) {
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
+  const [activeTab, setActiveTab] = useState<'config' | 'chat'>('config')
 
   useEffect(() => {
     if (openItem === 'trend') setSelectedView('trend')
@@ -319,20 +323,75 @@ export default function OverviewWidgetEditor({
   return (
     <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>
       <div className='lg:col-span-1'>
-        <WidgetSettingsForm
-          formData={formData}
-          setFormValue={setFormValue}
-          handleDataTableChange={handleDataTableChange}
-          handleSubsetGroupChange={handleSubsetGroupChange}
-          highlightCards={highlightCards}
-          setHighlightCards={setHighlightCards}
-          openItem={openItem}
-          setOpenItem={handleOpenItem}
-          handleSubmit={handleSubmit}
-          loading={loading}
-          metaHierarchy={metaHierarchy}
-          ai_agent={widget?.data?.ai_agent}
-        />
+        <div className='rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div>
+              <h2 className='text-lg font-semibold text-gray-900'>Widget Settings</h2>
+              <p className='text-sm text-gray-500'>Create or manage widgets</p>
+            </div>
+            <div className='flex items-center gap-2'>
+              <span
+                className={`text-sm font-medium ${activeTab === 'chat' ? 'text-blue-600' : 'text-gray-500'}`}
+              >
+                {activeTab === 'chat' && (
+                  <svg
+                    className='mr-1 inline-block h-4 w-4'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M13 10V3L4 14h7v7l9-11h-7z'
+                    />
+                  </svg>
+                )}
+                Chat Mode
+              </span>
+              <button
+                onClick={() => setActiveTab(activeTab === 'config' ? 'chat' : 'config')}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  activeTab === 'chat' ? 'bg-blue-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`${
+                    activeTab === 'chat' ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {activeTab === 'config' ? (
+            <WidgetSettingsForm
+              formData={formData}
+              setFormValue={setFormValue}
+              handleDataTableChange={handleDataTableChange}
+              handleSubsetGroupChange={handleSubsetGroupChange}
+              highlightCards={highlightCards}
+              setHighlightCards={setHighlightCards}
+              openItem={openItem}
+              setOpenItem={handleOpenItem}
+              handleSubmit={handleSubmit}
+              loading={loading}
+              metaHierarchy={metaHierarchy}
+              ai_agent={widget?.data?.ai_agent}
+              embedded={true}
+            />
+          ) : (
+            <WidgetChatSection
+              messages={messages}
+              thinkingMessage={thinkingMessage}
+              chatInput={chatInput}
+              setChatInput={setChatInput}
+              onChatSend={onChatSend}
+            />
+          )}
+        </div>
       </div>
       <div className='min-h-[600px] lg:col-span-2'>
         <OverviewWidget
@@ -340,53 +399,6 @@ export default function OverviewWidgetEditor({
           selectedView={selectedView}
           setSelectedView={setSelectedView}
         />
-        <div className='relative bottom-0 mt-10 rounded-xl border border-gray-200 bg-white p-4 shadow-sm'>
-          {thinkingMessage && (
-            <div className='mb-3 flex items-center gap-2 px-1 text-sm text-blue-600'>
-              <span className='relative flex h-2.5 w-2.5'>
-                <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75'></span>
-                <span className='relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-500'></span>
-              </span>
-              <span className='animate-pulse font-medium'>{thinkingMessage}</span>
-            </div>
-          )}
-
-          {/* Input Bar */}
-          <div className='relative flex items-center'>
-            <input
-              type='text'
-              placeholder='Ask AI for insights regarding this widget...'
-              className='w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pl-4 pr-12 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50'
-              disabled={!!thinkingMessage}
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && onChatSend()}
-            />
-
-            <button
-              type='button'
-              disabled={!!thinkingMessage}
-              onClick={onChatSend}
-              className='absolute right-2 rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-blue-600 disabled:cursor-not-allowed disabled:text-gray-300'
-            >
-              {/* Send Icon (Heroicons outline/paper-airplane) */}
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='h-5 w-5 -rotate-45'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5'
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   )

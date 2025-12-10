@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WidgetsEditor;
 
 use App\Http\Controllers\Controller;
 use App\Models\WidgetEditor\WidgetCollection;
+use App\Models\WidgetEditor\Widget;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,14 +12,19 @@ class WidgetCollectionController extends Controller
 {
     public function index()
     {
-        // Fetch all collections with widget count optimized using withCount
-        // This prevents N+1 queries by adding a subquery
+        // Fetch all collections with widget count
         $collections = WidgetCollection::withCount('widgets')
             ->latest('updated_at')
             ->get();
 
+        // Fetch all widgets with their collection (paginated)
+        $widgets = Widget::with('collection')
+            ->latest('updated_at')
+            ->paginate(5);
+
         return Inertia::render('WidgetsEditor/WidgetCollectionIndexPage', [
             'collections' => $collections,
+            'widgets' => $widgets,
         ]);
     }
 

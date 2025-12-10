@@ -61,6 +61,7 @@ export default function WidgetsEditorCreatePage({
             setChatInput={setInput}
             onChatSend={handleSend}
             onPreviewWidgetChange={setPreviewWidget}
+            messages={messages}
           />
         )}
       </DashboardPadding>

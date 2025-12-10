@@ -41,6 +41,15 @@ class WidgetsEditorController extends Controller
             ->with('success', 'Widget created successfully');
     }
 
+    public function show(Widget $widget)
+    {
+        $widget->load('collection');
+
+        return Inertia::render('WidgetsEditor/WidgetsEditorShowPage', [
+            'widget' => $widget,
+        ]);
+    }
+
     public function edit(Widget $widget)
     {
         $collectionId = $widget->collection_id;

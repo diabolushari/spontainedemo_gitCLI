@@ -24,9 +24,10 @@ export const useWebSocket = (url: string) => {
     };
   }, [url]); // Re-run if URL changes
 
-  const sendMessage = (msg: object) => {
+  const sendMessage = (msg: any) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(msg));
+      setMessages((prev) => [...prev, { ...msg, type: 'user' }]);
     }
   };
 

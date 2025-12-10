@@ -26,6 +26,7 @@ interface WidgetSettingsFormProps {
   loading: boolean
   metaHierarchy: MetaHierarchy[]
   ai_agent?: boolean
+  embedded?: boolean
 }
 
 export default function WidgetSettingsForm({
@@ -41,13 +42,22 @@ export default function WidgetSettingsForm({
   loading,
   metaHierarchy,
   ai_agent,
+  embedded = false,
 }: Readonly<WidgetSettingsFormProps>) {
   return (
-    <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
-      <div className='mb-4'>
-        <h2 className='mb-1 text-lg font-semibold text-slate-800'>Widget settings</h2>
-        <p className='text-sm text-slate-500'>Configure the basic information for your widget.</p>
-      </div>
+    <div
+      className={
+        embedded
+          ? 'space-y-3'
+          : 'space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'
+      }
+    >
+      {!embedded && (
+        <div className='mb-4'>
+          <h2 className='mb-1 text-lg font-semibold text-slate-800'>Widget settings</h2>
+          <p className='text-sm text-slate-500'>Configure the basic information for your widget.</p>
+        </div>
+      )}
       <Accordion.Root
         type='single'
         collapsible={true}

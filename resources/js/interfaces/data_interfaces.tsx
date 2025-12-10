@@ -512,6 +512,8 @@ export interface Widget {
   subtitle: string
   type: string
   collection_id: number
+  updated_at?: string
+  collection?: WidgetCollection
   data: {
     description?: string
     link?: string

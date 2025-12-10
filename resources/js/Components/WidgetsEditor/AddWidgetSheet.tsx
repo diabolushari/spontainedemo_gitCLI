@@ -3,7 +3,13 @@ import Button from '@/ui/button/Button'
 import { useState } from 'react'
 import { Link } from '@inertiajs/react'
 
-export function AddWidgetSheet({ collectionId }) {
+export function AddWidgetSheet({
+  collectionId,
+  children,
+}: {
+  collectionId?: number
+  children?: React.ReactNode
+}) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -12,11 +18,13 @@ export function AddWidgetSheet({ collectionId }) {
       onOpenChange={setOpen}
     >
       <SheetTrigger asChild>
-        <Button
-          type='button'
-          label='Add Widget'
-          onClick={() => setOpen(true)}
-        />
+        {children ?? (
+          <Button
+            type='button'
+            label='Add Widget'
+            onClick={() => setOpen(true)}
+          />
+        )}
       </SheetTrigger>
 
       <SheetContent className='sm:max-w-2xl'>
@@ -25,7 +33,13 @@ export function AddWidgetSheet({ collectionId }) {
         </SheetHeader>
 
         <div>
-          <Link href={`/widget-editor/create?collection_id=${collectionId}&type=overview`}>
+          <Link
+            href={
+              collectionId
+                ? `/widget-editor/create?collection_id=${collectionId}&type=overview`
+                : '/widget-editor/create?type=overview'
+            }
+          >
             <div className='h-50 w-36 rounded-md border border-gray-200 bg-white p-3'>
               {/* Mini header */}
               <div className='mb-2 flex items-center justify-between'>
