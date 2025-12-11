@@ -235,9 +235,7 @@ export default function WidgetListView({
                 className='w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
               />
             </div>
-            <AddWidgetSheet
-              collectionId={selectedCollections.length === 1 ? selectedCollections[0] : undefined}
-            >
+            <AddWidgetSheet collections={collections}>
               <button className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700'>
                 <svg
                   className='h-5 w-5'
