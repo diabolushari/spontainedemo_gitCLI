@@ -326,6 +326,45 @@ export function usePageEditor(
     [setFormValue]
   )
 
+  const handleAddWidgetToSlot = useCallback(
+    (rowId: number, position: number, widget: Widget) => {
+      // 1. Ensure widget is in knownWidgets map so it renders correctly
+      if (widget.id) {
+        setKnownWidgets((prev) => {
+          if (prev.has(widget.id!)) return prev
+          const newMap = new Map(prev)
+          newMap.set(widget.id!, widget)
+          return newMap
+        })
+      }
+
+      // 2. Update the page structure to place the widget
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) => {
+              if (slot.position === position) {
+                return {
+                  ...slot,
+                  widgetId: widget.id!,
+                  // Reset text content if this slot was previously text
+                  type: 'widget' as const,
+                  textContent: undefined,
+                }
+              }
+              return slot
+            }),
+          }
+        }
+        return row
+      })
+
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   return {
     pageStructure,
     setFormValue,
@@ -346,5 +385,6 @@ export function usePageEditor(
     handleRowUpdate,
     handleAddTextBlock,
     handleTextUpdate,
+    handleAddWidgetToSlot,
   }
 }

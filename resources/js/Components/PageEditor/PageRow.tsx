@@ -13,6 +13,7 @@ interface PageRowProps {
   handleAddTextBlock: (rowId: number, position: number) => void
   handleTextUpdate: (rowId: number, position: number, content: string) => void
   onAddWidget: () => void
+  onSelectWidget: () => void
 }
 
 export default function PageRow({
@@ -26,6 +27,7 @@ export default function PageRow({
   handleAddTextBlock,
   handleTextUpdate,
   onAddWidget,
+  onSelectWidget,
 }: Readonly<PageRowProps>) {
   return (
     <div
@@ -103,6 +105,7 @@ export default function PageRow({
             onTextUpdate={(content) => handleTextUpdate(row.id, slot.position, content)}
             onAddWidget={onAddWidget}
             slot={slot}
+            selectWidget={onSelectWidget}
           />
         ))}
       </div>

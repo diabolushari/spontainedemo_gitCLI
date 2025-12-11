@@ -16,6 +16,7 @@ interface DroppableColumnProps {
   onAddTextBlock: () => void
   onTextUpdate: (content: string) => void
   onAddWidget: () => void
+  selectWidget: (row: { rowId: number; position: number }) => void
 }
 
 export default function PageDroppableSlot({
@@ -29,6 +30,7 @@ export default function PageDroppableSlot({
   onAddTextBlock,
   onTextUpdate,
   onAddWidget,
+  selectWidget,
 }: Readonly<DroppableColumnProps>) {
   const { setNodeRef, isOver } = useDroppable({
     id: `droppable-${rowId}-${position}`,
@@ -90,7 +92,7 @@ export default function PageDroppableSlot({
 
           <div className='flex items-center gap-3'>
             <button
-              onClick={onAddWidget}
+              onClick={() => selectWidget({ rowId: rowId, position: position })}
               className='group flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-blue-500 hover:text-blue-600 active:scale-95'
             >
               <LayoutTemplate className='h-4 w-4 text-gray-500 group-hover:text-blue-500' />

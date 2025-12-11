@@ -4,32 +4,43 @@ namespace App\Http\Controllers\WidgetsEditor;
 
 use App\Http\Controllers\Controller;
 use App\Models\WidgetEditor\Widget;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
 class WidgetSearchController extends Controller
 {
-
-
-
     public function __invoke(Request $request): JsonResponse
     {
-        if (!$request->filled('search')) {
-            return response()
-                ->json();
-        }
+        $query = Widget::query()
+            // Filter by search term
+            ->when($request->filled('search'), function (Builder $builder) use ($request) {
+                $searchTerm = strtolower($request->input('search'));
 
-        $searchTerm = strtolower($request->input('search'));
-
-        $widgets = Widget::query()
-            ->where(function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(subtitle) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(type) LIKE ?', ["%{$searchTerm}%"]);
+                $builder->where(function ($q) use ($searchTerm) {
+                    $q->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"])
+                        ->orWhereRaw('LOWER(subtitle) LIKE ?', ["%{$searchTerm}%"])
+                        ->orWhereRaw('LOWER(type) LIKE ?', ["%{$searchTerm}%"]);
+                });
             })
-            ->limit(10)
-            ->get();
+            // Filter by collections
+            ->when($request->filled('collections'), function (Builder $builder) use ($request) {
+                $collections = $request->input('collections');
+
+                // Ensure collections is an array
+                if (!is_array($collections)) {
+                    $collections = explode(',', $collections);
+                }
+
+                $builder->whereIn('collection_id', $collections);
+            })
+            // Order by most recently updated first
+            ->orderBy('updated_at', 'desc');
+
+        // Always paginate for consistent API response
+        $widgets = $query
+            ->paginate($request->input('per_page', 5))
+            ->withQueryString();
 
         return response()->json($widgets);
     }

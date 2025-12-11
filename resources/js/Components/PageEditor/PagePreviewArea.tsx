@@ -14,6 +14,7 @@ interface PreviewAreaProps {
   setSheetOpen: (open: boolean) => void
   handleAddTextBlock: (rowId: number, position: number) => void
   handleTextUpdate: (rowId: number, position: number, content: string) => void
+  setSelectWidget: (row: any) => void
 }
 
 export default function PagePreviewArea({
@@ -28,6 +29,7 @@ export default function PagePreviewArea({
   setSheetOpen,
   handleAddTextBlock,
   handleTextUpdate,
+  setSelectWidget,
 }: Readonly<PreviewAreaProps>) {
   return (
     <>
@@ -55,6 +57,7 @@ export default function PagePreviewArea({
           handleAddTextBlock={handleAddTextBlock}
           handleTextUpdate={handleTextUpdate}
           onAddWidget={() => setSheetOpen(true)}
+          onSelectWidget={setSelectWidget}
         />
       ))}
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from '@inertiajs/react'
-import { ArrowLeft, Edit, Trash2, Database, Layers } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, Database, Layers, Plus } from 'lucide-react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import Widget from '@/Components/PageEditor/Widget'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -14,9 +14,10 @@ interface SubsetMaxValueResponse {
 interface Props {
   widget: WidgetType
   onBack: () => void
+  onAddToDashboard?: (widget: WidgetType) => void // New optional prop
 }
 
-export default function WidgetDetailView({ widget, onBack }: Props) {
+export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(
     widget.updated_at ? new Date(widget.updated_at) : new Date()
@@ -200,6 +201,15 @@ export default function WidgetDetailView({ widget, onBack }: Props) {
                   <Edit className='h-4 w-4' />
                   Edit Widget
                 </Link>
+                {onAddToDashboard && ( // Conditionally render the button
+                  <button
+                    onClick={() => onAddToDashboard(widget)}
+                    className='inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'
+                  >
+                    <Plus className='h-4 w-4' />
+                    Add to Dashboard
+                  </button>
+                )}
               </div>
             </div>
           </div>
