@@ -56,6 +56,7 @@ export default function DynamicOverviewWidgetPreview({ widget }: Readonly<Props>
       colorPalette={widget.data.overview.color_palette}
       highlightCards={widget.data.highlight_cards}
       selectedMonth={selectedMonth}
+      compact={true}
     />
   )
 }

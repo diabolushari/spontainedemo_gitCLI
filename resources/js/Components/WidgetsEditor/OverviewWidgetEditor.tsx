@@ -389,6 +389,7 @@ export default function OverviewWidgetEditor({
               chatInput={chatInput}
               setChatInput={setChatInput}
               onChatSend={onChatSend}
+              onSave={handleSubmit}
             />
           )}
         </div>

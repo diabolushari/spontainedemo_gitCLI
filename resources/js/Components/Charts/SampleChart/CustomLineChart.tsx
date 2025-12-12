@@ -32,6 +32,8 @@ interface Props {
   displayKeyShow?: boolean
   sortOrder?: 'ascending' | 'descending'
   containerClassName?: string
+  margin?: { top: number; right: number; bottom: number; left: number }
+  xAxisHeight?: number
 }
 
 export function CustomLineChart({
@@ -43,6 +45,8 @@ export function CustomLineChart({
   yAxisLabel,
   fontSize = '',
   containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
+  margin = { top: 5, right: 30, left: 20, bottom: 25 },
+  xAxisHeight = 70,
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -66,7 +70,7 @@ export function CustomLineChart({
       >
         <LineChart
           data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+          margin={margin}
         >
           <CartesianGrid vertical={false} />
           <XAxis
@@ -78,7 +82,7 @@ export function CustomLineChart({
             interval='preserveStartEnd'
             angle={-45}
             textAnchor='end'
-            height={70}
+            height={xAxisHeight}
             tick={{ fontSize: 12 }}
             tickFormatter={tickFormatter}
           />

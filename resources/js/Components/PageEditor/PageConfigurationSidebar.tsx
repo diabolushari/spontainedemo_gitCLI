@@ -35,7 +35,7 @@ interface PageConfigurationSidebarProps {
   onPublish: () => void
   onPreview: () => void
   isEditMode: boolean
-  onPageUpdate: (data: Partial<DashboardPage>) => void // <--- Add this prop
+  onPageUpdate: (data: Partial<DashboardPage>) => void
   agentUrl: string
 }
 
@@ -60,6 +60,7 @@ export default function PageConfigurationSidebar({
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const { messages, sendMessage } = useWebSocket(agentUrl)
+  const hasError = messages.some((msg) => msg.type === 'error')
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -81,9 +82,8 @@ export default function PageConfigurationSidebar({
   }, [messages, onPageUpdate])
 
   const handleSendMessage = (e: React.FormEvent) => {
-    // ... (same as before) ...
     e.preventDefault()
-    if (!chatMessage.trim()) return
+    if (!chatMessage.trim() || hasError) return
     sendMessage({ message: chatMessage })
     setChatMessage('')
   }
@@ -94,7 +94,6 @@ export default function PageConfigurationSidebar({
   const renderMessageContent = (msg: any) => {
     // 1. Awaiting Approval
     if (msg.type === 'awaiting_approval') {
-      // ... (same render logic as before) ...
       return (
         <div className='w-full space-y-3'>
           <p className='text-sm text-gray-700'>{msg.message}</p>
@@ -159,7 +158,6 @@ export default function PageConfigurationSidebar({
     )
   }
 
-  // ... (Return JSX same as before) ...
   return (
     <>
       <div
@@ -196,66 +194,99 @@ export default function PageConfigurationSidebar({
           </div>
 
           {isChatMode ? (
-            <div className='flex flex-grow flex-col overflow-hidden bg-gray-50/30'>
-              <div className='flex-grow space-y-4 overflow-y-auto p-4'>
+            <div className='flex flex-grow flex-col overflow-hidden bg-slate-50'>
+              <div className='flex-1 overflow-y-auto p-4'>
                 {messages.length === 0 ? (
-                  <div className='flex h-full flex-col items-center justify-center space-y-3 text-center text-gray-400'>
-                    <div className='rounded-full bg-blue-50 p-3'>
-                      <Sparkles className='h-6 w-6 text-blue-500' />
-                    </div>
-                    <div>
-                      <p className='text-sm font-medium text-gray-600'>No messages yet</p>
-                      <p className='text-xs'>Start chatting to edit the page.</p>
-                    </div>
+                  <div className='flex h-full flex-col items-center justify-center text-gray-400'>
+                    <p>No messages yet.</p>
+                    <p className='text-sm'>Start chatting to edit the page.</p>
                   </div>
                 ) : (
-                  messages.map((msg, index) => {
+                  messages.map((msg, idx) => {
                     const isUser = msg.type === 'user'
+                    const isError = msg.type === 'error'
+
+                    if (isError) {
+                      return (
+                        <div
+                          key={idx}
+                          className='mb-4 flex justify-center'
+                        >
+                          <div className='rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600'>
+                            Connection lost. Please refresh to reconnect.
+                          </div>
+                        </div>
+                      )
+                    }
+
                     return (
                       <div
-                        key={index}
-                        className={`flex items-start gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}
+                        key={idx}
+                        className={`mb-6 flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}
                       >
+                        {!isUser && (
+                          <div className='mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600'>
+                            <svg
+                              className='h-5 w-5'
+                              fill='none'
+                              viewBox='0 0 24 24'
+                              stroke='currentColor'
+                            >
+                              <path
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                strokeWidth={2}
+                                d='M13 10V3L4 14h7v7l9-11h-7z'
+                              />
+                            </svg>
+                          </div>
+                        )}
                         <div
-                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${isUser ? 'border-blue-200 bg-blue-100' : 'border-gray-200 bg-white'}`}
+                          className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
+                            isUser
+                              ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                              : 'rounded-tl-sm bg-white text-gray-800'
+                          }`}
                         >
-                          {isUser ? (
-                            <User className='h-4 w-4 text-blue-600' />
-                          ) : (
-                            <Bot className='h-4 w-4 text-emerald-600' />
-                          )}
+                          <div className='whitespace-pre-wrap text-sm leading-relaxed'>
+                            {renderMessageContent(msg)}
+                          </div>
                         </div>
-                        <div
-                          className={`flex max-w-[90%] flex-col gap-1 rounded-lg p-3 text-sm shadow-sm ${isUser ? 'rounded-tr-none bg-blue-600 text-white' : 'rounded-tl-none border border-gray-100 bg-white text-gray-800'}`}
-                        >
-                          {renderMessageContent(msg)}
-                        </div>
+                        {isUser && (
+                          <div className='ml-2 h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100'>
+                            <img
+                              src='https://ui-avatars.com/api/?name=User&background=random'
+                              alt='User'
+                              className='h-full w-full object-cover'
+                            />
+                          </div>
+                        )}
                       </div>
                     )
                   })
                 )}
                 <div ref={messagesEndRef} />
               </div>
-              <div className='border-t border-gray-200 bg-white p-3'>
-                <form
-                  onSubmit={handleSendMessage}
-                  className='relative'
-                >
+              <div className='p-4'>
+                <div className='relative flex items-center rounded-full bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
                   <input
                     type='text'
+                    placeholder='Ask your questions'
+                    className='w-full border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
+                    disabled={hasError}
                     value={chatMessage}
                     onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder='Ask your questions...'
-                    className='w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-4 pr-12 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500'
+                    onKeyDown={(e) => e.key === 'Enter' && !hasError && handleSendMessage(e)}
                   />
                   <button
-                    type='submit'
-                    disabled={!chatMessage.trim()}
-                    className='absolute right-1 top-1 rounded-full bg-blue-600 p-1.5 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300'
+                    type='button'
+                    disabled={hasError}
+                    onClick={handleSendMessage}
+                    className='absolute bottom-1.5 right-1.5 top-1.5 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
                   >
-                    <Send className='h-4 w-4' />
+                    Ask
                   </button>
-                </form>
+                </div>
               </div>
             </div>
           ) : (
@@ -264,8 +295,6 @@ export default function PageConfigurationSidebar({
                 className='flex-grow space-y-6 pt-4'
                 onSubmit={(e) => e.preventDefault()}
               >
-                {/* ... Form Fields (Basic Info, Data Config) ... */}
-                {/* (Keep your existing form rendering code here) */}
                 <div className='space-y-4 rounded-lg border border-gray-100 bg-gray-50/50 p-4'>
                   <h3 className='text-sm font-semibold text-gray-900'>Basic Info</h3>
                   <div className='space-y-4'>

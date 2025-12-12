@@ -25,6 +25,8 @@ interface Props {
   sliceCount?: number
   sortOrder?: 'ascending' | 'descending'
   containerClassName?: string
+  margin?: { top: number; right: number; bottom: number; left: number }
+  xAxisHeight?: number
 }
 
 const tickFormatter = (value: number | string) => {
@@ -38,6 +40,8 @@ export function CustomBarChart({
   keysToPlot,
   colorScheme = 'boldWarm',
   containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
+  margin = { top: 20, right: 30, left: 20, bottom: 50 },
+  xAxisHeight = 70,
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -61,7 +65,7 @@ export function CustomBarChart({
       >
         <BarChart
           data={data}
-          margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+          margin={margin}
           maxBarSize={60}
           barCategoryGap='20%'
         >
@@ -75,7 +79,7 @@ export function CustomBarChart({
             interval='preserveStartEnd'
             angle={-45}
             textAnchor='end'
-            height={70}
+            height={xAxisHeight}
             tick={{ fontSize: 12 }}
             tickFormatter={tickFormatter}
           />

@@ -23,6 +23,7 @@ interface OverviewProps {
   colorPalette: string
   highlightCards: HighlightCardData[]
   selectedMonth: Date
+  compact?: boolean
 }
 
 export default function OverviewWidgetContent({
@@ -33,6 +34,7 @@ export default function OverviewWidgetContent({
   colorPalette,
   highlightCards,
   selectedMonth,
+  compact = false,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -74,6 +76,10 @@ export default function OverviewWidgetContent({
     return allMeasures
   }, [measure, chartType])
 
+  const containerClass = compact ? 'h-full w-full aspect-auto' : 'h-full w-full'
+  const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : undefined
+  const axisHeight = compact ? 30 : undefined
+
   return (
     <div className='min-h-0 w-full flex-1'>
       {chartType === 'bar' && data != null && (
@@ -83,7 +89,9 @@ export default function OverviewWidgetContent({
             dataKey={dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
-            containerClassName={'h-full w-full'}
+            containerClassName={containerClass}
+            margin={chartMargin}
+            xAxisHeight={axisHeight}
           />
         </div>
       )}
@@ -94,7 +102,9 @@ export default function OverviewWidgetContent({
             dataKey={dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
-            containerClassName={'h-full w-full'}
+            containerClassName={containerClass}
+            margin={chartMargin}
+            xAxisHeight={axisHeight}
           />
         </div>
       )}
@@ -107,7 +117,7 @@ export default function OverviewWidgetContent({
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             fontSize={'text-sm'}
-            containerClassName={'h-full w-full'}
+            containerClassName={containerClass}
           />
         </div>
       )}

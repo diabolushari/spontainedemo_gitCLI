@@ -16,6 +16,11 @@ export const useWebSocket = (url: string) => {
       setMessages((prev) => [...prev, data]);
     };
 
+
+    socket.onclose = () => {
+      setMessages((prev) => [...prev, { type: 'error' }]);
+    };
+
     // Cleanup on unmount
     return () => {
       if (socket.readyState === 1) { // 1 = OPEN
