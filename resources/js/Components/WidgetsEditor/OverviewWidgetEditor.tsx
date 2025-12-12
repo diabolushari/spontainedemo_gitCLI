@@ -1,4 +1,5 @@
 import OverviewWidget from '@/Components/Widgets/OverviewWidget'
+import Card from '@/ui/Card/Card'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
 import WidgetChatSection from '@/Components/WidgetsEditor/ConfigSection/WidgetChatSection'
 import useCustomForm from '@/hooks/useCustomForm'
@@ -320,6 +321,12 @@ export default function OverviewWidgetEditor({
     }
   }, [previewWidget, onPreviewWidgetChange])
 
+  const showPlaceholder = useMemo(() => {
+    const hasData = !!formData.subset_group_id
+    const hasAIInteraction = messages.length > 0
+    return !hasData && !hasAIInteraction
+  }, [formData.subset_group_id, messages.length])
+
   return (
     <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>
       <div className='lg:col-span-1'>
@@ -395,11 +402,19 @@ export default function OverviewWidgetEditor({
         </div>
       </div>
       <div className='min-h-[600px] lg:col-span-2'>
-        <OverviewWidget
-          widget={previewWidget}
-          selectedView={selectedView}
-          setSelectedView={setSelectedView}
-        />
+        {showPlaceholder ? (
+          <img
+            src='/widget-placeholder-bw.png'
+            alt='Widget Placeholder'
+            className='max-h-[500px] opacity-50 grayscale'
+          />
+        ) : (
+          <OverviewWidget
+            widget={previewWidget}
+            selectedView={selectedView}
+            setSelectedView={setSelectedView}
+          />
+        )}
       </div>
     </div>
   )

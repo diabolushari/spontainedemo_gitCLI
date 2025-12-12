@@ -50,6 +50,11 @@ export default function WidgetListView({
     widgetId: number | null
     widgetTitle: string | null
   }>({ widgetId: null, widgetTitle: null })
+  const [showDeleteCollectionModal, setShowDeleteCollectionModal] = useState(false)
+  const [deleteCollection, setDeleteCollection] = useState<{
+    collectionId: number | null
+    collectionName: string | null
+  }>({ collectionId: null, collectionName: null })
 
   // Fetch widgets from API
   const fetchWidgets = useCallback(async () => {
@@ -115,6 +120,17 @@ export default function WidgetListView({
     setShowDeleteModal(true)
   }
 
+  const handleDeleteCollection = (
+    e: React.MouseEvent,
+    collectionId: number,
+    collectionName: string
+  ) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDeleteCollection({ collectionId, collectionName })
+    setShowDeleteCollectionModal(true)
+  }
+
   const handleCollectionToggle = (collectionId: number) => {
     setSelectedCollections((prev) =>
       prev.includes(collectionId)
@@ -126,6 +142,11 @@ export default function WidgetListView({
   // Add handler for successful delete to refetch
   const handleDeleteSuccess = () => {
     fetchWidgets()
+  }
+
+  const handleCollectionDeleteSuccess = () => {
+    // Reload the page to refresh collections list since it's passed as prop
+    window.location.reload()
   }
 
   // Check if collections feature should be shown
@@ -173,20 +194,41 @@ export default function WidgetListView({
               <span className='text-sm text-gray-700'>All</span>
             </label>
             {collections.map((collection) => (
-              <label
+              <div
                 key={collection.id}
-                className='mb-2 flex cursor-pointer items-center gap-2'
+                className='group mb-2 flex items-center justify-between'
               >
-                <input
-                  type='checkbox'
-                  checked={selectedCollections.includes(collection.id)}
-                  onChange={() => handleCollectionToggle(collection.id)}
-                  className='h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
-                />
-                <span className='text-sm text-gray-700'>
-                  {collection.name} ({collection.widgets_count || 0})
-                </span>
-              </label>
+                <label className='flex cursor-pointer items-center gap-2'>
+                  <input
+                    type='checkbox'
+                    checked={selectedCollections.includes(collection.id)}
+                    onChange={() => handleCollectionToggle(collection.id)}
+                    className='h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+                  />
+                  <span className='text-sm text-gray-700'>
+                    {collection.name} ({collection.widget_count || 0})
+                  </span>
+                </label>
+                <button
+                  onClick={(e) => handleDeleteCollection(e, collection.id, collection.name)}
+                  className='opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100'
+                  title='Delete Collection'
+                >
+                  <svg
+                    className='h-4 w-4'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                    />
+                  </svg>
+                </button>
+              </div>
             ))}
           </div>
 
@@ -405,6 +447,20 @@ export default function WidgetListView({
           url={route('widget-editor.destroy', deleteWidget.widgetId)}
           onSuccess={handleDeleteSuccess}
         />
+      )}
+
+      {showDeleteCollectionModal && deleteCollection.collectionId && (
+        <DeleteModal
+          setShowModal={setShowDeleteCollectionModal}
+          title={`Delete Collection: ${deleteCollection.collectionName}`}
+          url={route('widget-collection.destroy', deleteCollection.collectionId)}
+          onSuccess={handleCollectionDeleteSuccess}
+        >
+          <p className='text-sm text-gray-600'>
+            This will delete the collection. Widgets in this collection will not be deleted but will
+            be removed from this collection.
+          </p>
+        </DeleteModal>
       )}
     </div>
   )
