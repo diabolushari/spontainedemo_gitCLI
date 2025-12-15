@@ -39,6 +39,7 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
   )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setLoading(true)
 
     if (isEditMode) {
