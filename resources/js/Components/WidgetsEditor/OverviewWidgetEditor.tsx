@@ -8,6 +8,7 @@ import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
+import { Bot } from 'lucide-react'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -109,7 +110,7 @@ function parseFormDataToWidget(
           subset_field_name: '',
           subset_column: '',
         },
-        level: formData.rank_level,
+        level: formData.rank_level ?? '',
         hierarchy_id: formData.rank_hierarchy_id,
         dimension_column: formData.rank_dimension_column,
         field_column: formData.rank_field_column,
@@ -402,19 +403,38 @@ export default function OverviewWidgetEditor({
         </div>
       </div>
       <div className='min-h-[600px] lg:col-span-2'>
-        {showPlaceholder ? (
-          <img
-            src='/widget-placeholder-bw.png'
-            alt='Widget Placeholder'
-            className='max-h-[500px] opacity-50 grayscale'
-          />
-        ) : (
-          <OverviewWidget
-            widget={previewWidget}
-            selectedView={selectedView}
-            setSelectedView={setSelectedView}
-          />
-        )}
+        <div className='relative h-full w-full rounded-xl transition-all duration-500'>
+          {/* AI Glow Effect Overlay */}
+          {thinkingMessage && (
+            <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
+              <div className='relative mb-4'>
+                <div className='absolute -inset-4 animate-pulse rounded-full bg-blue-500/20 blur-xl'></div>
+                <Bot className='relative h-16 w-16 animate-bounce text-blue-600' />
+              </div>
+              <h3 className='mb-2 text-xl font-bold text-gray-900'>AI Generating...</h3>
+              <p className='max-w-md text-center text-sm text-gray-500'>{thinkingMessage}</p>
+
+              {/* Loading Bar */}
+              <div className='mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-gray-200'>
+                <div className='h-full w-1/2 animate-[shimmer_1.5s_infinite] rounded-full bg-gradient-to-r from-transparent via-blue-500 to-transparent'></div>
+              </div>
+            </div>
+          )}
+
+          {showPlaceholder ? (
+            <img
+              src='/widget-placeholder-bw.png'
+              alt='Widget Placeholder'
+              className='max-h-[500px] opacity-50 grayscale'
+            />
+          ) : (
+            <OverviewWidget
+              widget={previewWidget}
+              selectedView={selectedView}
+              setSelectedView={setSelectedView}
+            />
+          )}
+        </div>
       </div>
     </div>
   )

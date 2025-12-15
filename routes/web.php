@@ -114,6 +114,7 @@ use App\Http\Controllers\Utils\StoreLoaderAPIController;
 use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
 use App\Http\Controllers\Utils\SubsetMaxValueController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetCollectionSearchController;
 use App\Http\Controllers\WidgetsEditor\WidgetSearchController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
@@ -417,6 +418,7 @@ Route::get('page-editor/preview/{key}', [CustomPageController::class, 'preview']
 Route::resource('page-editor', PageEditorController::class);
 
 Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
+Route::get('widget-collection-search', WidgetCollectionSearchController::class)->name('widget-collection.search');
 
 Route::post('widgets/save', [WidgetApiController::class, 'store'])->name('widgets.api.store');
 Route::put('widgets/save/{widget}', [WidgetApiController::class, 'update'])->name('widgets.api.update');

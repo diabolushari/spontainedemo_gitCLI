@@ -60,12 +60,14 @@ interface PageBuilderChatProps {
   agentUrl: string
   onPageUpdate: (data: Partial<DashboardPage>) => void
   onSave: () => void
+  onThinking?: (message: string | null) => void
 }
 
 export default function PageBuilderChat({
   agentUrl,
   onPageUpdate,
   onSave,
+  onThinking,
 }: Readonly<PageBuilderChatProps>) {
   const [chatMessage, setChatMessage] = useState('')
   const [thinkingMessage, setThinkingMessage] = useState<string | null>(null)
@@ -86,8 +88,10 @@ export default function PageBuilderChat({
       // Handle thinking state
       if (lastMessage.type === 'thinking') {
         setThinkingMessage(lastMessage.message)
+        onThinking?.(lastMessage.message)
       } else {
         setThinkingMessage(null)
+        onThinking?.(null)
       }
 
       // Handle complete state

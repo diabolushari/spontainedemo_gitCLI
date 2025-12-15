@@ -20,6 +20,7 @@ interface PageConfigurationSidebarProps {
   isEditMode: boolean
   onPageUpdate: (data: Partial<DashboardPage>) => void
   agentUrl: string
+  onThinking?: (message: string | null) => void
 }
 
 export default function PageConfigurationSidebar({
@@ -37,6 +38,7 @@ export default function PageConfigurationSidebar({
   isEditMode,
   onPageUpdate,
   agentUrl,
+  onThinking,
 }: Readonly<PageConfigurationSidebarProps>) {
   const [isChatMode, setIsChatMode] = useState(false)
 
@@ -80,6 +82,7 @@ export default function PageConfigurationSidebar({
               agentUrl={agentUrl}
               onPageUpdate={onPageUpdate}
               onSave={onPublish}
+              onThinking={onThinking}
             />
           ) : (
             <div className='flex flex-grow flex-col overflow-y-auto p-5 pt-2'>

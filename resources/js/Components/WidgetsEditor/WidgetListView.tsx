@@ -247,13 +247,39 @@ export default function WidgetListView({
         className='flex-1 overflow-auto bg-gray-50'
       >
         <DashboardPadding>
-          {/* Search Bar & Add Button */}
-          <div className='mb-6 flex items-center justify-between gap-4'>
-            <div className='relative flex-1'>
-              <div className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'>
-                {loading ? (
-                  <Loader2 className='h-5 w-5 animate-spin' />
-                ) : (
+          <div className='flex min-h-[85vh] flex-col'>
+            {/* Search Bar & Add Button */}
+            <div className='mb-6 flex items-center justify-between gap-4'>
+              <div className='relative flex-1'>
+                <div className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'>
+                  {loading ? (
+                    <Loader2 className='h-5 w-5 animate-spin' />
+                  ) : (
+                    <svg
+                      className='h-5 w-5'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                      />
+                    </svg>
+                  )}
+                </div>
+                <input
+                  type='text'
+                  placeholder='Search for widgets'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className='w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                />
+              </div>
+              <AddWidgetSheet collections={collections}>
+                <button className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700'>
                   <svg
                     className='h-5 w-5'
                     fill='none'
@@ -264,173 +290,155 @@ export default function WidgetListView({
                       strokeLinecap='round'
                       strokeLinejoin='round'
                       strokeWidth={2}
-                      d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                      d='M12 4v16m8-8H4'
                     />
                   </svg>
-                )}
-              </div>
-              <input
-                type='text'
-                placeholder='Search for widgets'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
-              />
+                  Add Widget
+                </button>
+              </AddWidgetSheet>
             </div>
-            <AddWidgetSheet collections={collections}>
-              <button className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700'>
-                <svg
-                  className='h-5 w-5'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M12 4v16m8-8H4'
-                  />
-                </svg>
-                Add Widget
-              </button>
-            </AddWidgetSheet>
-          </div>
 
-          {/* Content */}
-          {widgetsData && Array.isArray(widgetsData.data) && widgetsData.data.length > 0 ? (
-            <>
-              {(searchQuery || selectedCollections.length > 0) && (
-                <p className='mb-4 text-sm text-gray-500'>
-                  Found {widgetsData.total} result{widgetsData.total !== 1 ? 's' : ''}
-                </p>
-              )}
+            {/* Content */}
+            {widgetsData && Array.isArray(widgetsData.data) && widgetsData.data.length > 0 ? (
+              <>
+                {(searchQuery || selectedCollections.length > 0) && (
+                  <p className='mb-4 text-sm text-gray-500'>
+                    Found {widgetsData.total} result{widgetsData.total !== 1 ? 's' : ''}
+                  </p>
+                )}
 
-              <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                {widgetsData.data.map((widget) => (
-                  <div
-                    key={widget.id}
-                    onClick={() => onSelectWidget(widget)}
-                    className='group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:border-blue-300 hover:shadow-lg'
-                  >
-                    <div className='relative flex h-48 flex-col overflow-hidden bg-gray-50 p-2'>
-                      <div className='flex min-h-0 flex-1'>
-                        <DynamicOverviewWidgetPreview widget={widget} />
-                      </div>
-                    </div>
-                    <div className='p-4'>
-                      <div className='flex items-start justify-between'>
-                        <div className='flex-1'>
-                          <h3 className='mb-1 line-clamp-2 font-semibold text-gray-900'>
-                            {widget.title}
-                          </h3>
-                          {widget.subtitle && (
-                            <p className='line-clamp-1 text-sm text-gray-500'>{widget.subtitle}</p>
-                          )}
+                <div className='flex-1'>
+                  <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                    {widgetsData.data.map((widget) => (
+                      <div
+                        key={widget.id}
+                        onClick={() => onSelectWidget(widget)}
+                        className='group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:border-blue-300 hover:shadow-lg'
+                      >
+                        <div className='relative flex h-48 flex-col overflow-hidden bg-gray-50 p-2'>
+                          <div className='flex min-h-0 flex-1'>
+                            <DynamicOverviewWidgetPreview widget={widget} />
+                          </div>
                         </div>
-                        <div className='ml-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100'>
-                          <Link
-                            href={`/widget-editor/${widget.id}/edit`}
-                            onClick={(e) => e.stopPropagation()}
-                            className='rounded p-1 hover:bg-gray-100'
-                            title='Edit'
-                          >
-                            <svg
-                              className='h-4 w-4 text-gray-600'
-                              fill='none'
-                              stroke='currentColor'
-                              viewBox='0 0 24 24'
-                            >
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                              />
-                            </svg>
-                          </Link>
-                          <button
-                            onClick={(e) => handleDelete(e, widget.id!, widget.title)}
-                            className='rounded p-1 hover:bg-red-50'
-                            title='Delete'
-                          >
-                            <svg
-                              className='h-4 w-4 text-red-600'
-                              fill='none'
-                              stroke='currentColor'
-                              viewBox='0 0 24 24'
-                            >
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                              />
-                            </svg>
-                          </button>
+                        <div className='p-4'>
+                          <div className='flex items-start justify-between'>
+                            <div className='flex-1'>
+                              <h3 className='mb-1 line-clamp-2 font-semibold text-gray-900'>
+                                {widget.title}
+                              </h3>
+                              {widget.subtitle && (
+                                <p className='line-clamp-1 text-sm text-gray-500'>
+                                  {widget.subtitle}
+                                </p>
+                              )}
+                            </div>
+                            <div className='ml-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100'>
+                              <Link
+                                href={`/widget-editor/${widget.id}/edit`}
+                                onClick={(e) => e.stopPropagation()}
+                                className='rounded p-1 hover:bg-gray-100'
+                                title='Edit'
+                              >
+                                <svg
+                                  className='h-4 w-4 text-gray-600'
+                                  fill='none'
+                                  stroke='currentColor'
+                                  viewBox='0 0 24 24'
+                                >
+                                  <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth={2}
+                                    d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                                  />
+                                </svg>
+                              </Link>
+                              <button
+                                onClick={(e) => handleDelete(e, widget.id!, widget.title)}
+                                className='rounded p-1 hover:bg-red-50'
+                                title='Delete'
+                              >
+                                <svg
+                                  className='h-4 w-4 text-red-600'
+                                  fill='none'
+                                  stroke='currentColor'
+                                  viewBox='0 0 24 24'
+                                >
+                                  <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth={2}
+                                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {widgetsData.last_page > 1 && (
-                <div className='mt-8 flex items-center justify-center gap-2'>
-                  <button
-                    onClick={() => handlePageChange(widgetsData.current_page - 1)}
-                    disabled={widgetsData.current_page === 1}
-                    className='rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
-                  >
-                    Previous
-                  </button>
-                  <span className='px-4 text-sm text-gray-600'>
-                    Page {widgetsData.current_page} of {widgetsData.last_page}
-                  </span>
-                  <button
-                    onClick={() => handlePageChange(widgetsData.current_page + 1)}
-                    disabled={widgetsData.current_page === widgetsData.last_page}
-                    className='rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
-                  >
-                    Next
-                  </button>
                 </div>
-              )}
 
-              {typeof widgetsData.from === 'number' && typeof widgetsData.to === 'number' && (
-                <p className='mt-4 text-center text-sm text-gray-500'>
-                  Showing {widgetsData.from} to {widgetsData.to} of {widgetsData.total} widgets
-                </p>
-              )}
-            </>
-          ) : (
-            !loading && (
-              <div className='py-16 text-center'>
-                <div className='mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100'>
-                  <svg
-                    className='h-12 w-12 text-gray-400'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
-                    />
-                  </svg>
+                {/* Pagination */}
+                <div className='mt-auto pt-8'>
+                  {widgetsData.last_page > 1 && (
+                    <div className='flex items-center justify-center gap-2'>
+                      <button
+                        onClick={() => handlePageChange(widgetsData.current_page - 1)}
+                        disabled={widgetsData.current_page === 1}
+                        className='rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
+                      >
+                        Previous
+                      </button>
+                      <span className='px-4 text-sm text-gray-600'>
+                        Page {widgetsData.current_page} of {widgetsData.last_page}
+                      </span>
+                      <button
+                        onClick={() => handlePageChange(widgetsData.current_page + 1)}
+                        disabled={widgetsData.current_page === widgetsData.last_page}
+                        className='rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <h3 className='mb-2 text-xl font-semibold text-gray-900'>No widgets found</h3>
-                <p className='text-gray-600'>
-                  {searchQuery || selectedCollections.length > 0
-                    ? 'Try adjusting your search or filter criteria'
-                    : 'Create your first widget to get started'}
-                </p>
-              </div>
-            )
-          )}
+
+                {typeof widgetsData.from === 'number' && typeof widgetsData.to === 'number' && (
+                  <p className='mt-4 text-center text-sm text-gray-500'>
+                    Showing {widgetsData.from} to {widgetsData.to} of {widgetsData.total} widgets
+                  </p>
+                )}
+              </>
+            ) : (
+              !loading && (
+                <div className='flex flex-1 flex-col items-center justify-center py-16 text-center'>
+                  <div className='mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100'>
+                    <svg
+                      className='h-12 w-12 text-gray-400'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
+                      />
+                    </svg>
+                  </div>
+                  <h3 className='mb-2 text-xl font-semibold text-gray-900'>No widgets found</h3>
+                  <p className='text-gray-600'>
+                    {searchQuery || selectedCollections.length > 0
+                      ? 'Try adjusting your search or filter criteria'
+                      : 'Create your first widget to get started'}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
         </DashboardPadding>
       </main>
 
@@ -457,8 +465,7 @@ export default function WidgetListView({
           onSuccess={handleCollectionDeleteSuccess}
         >
           <p className='text-sm text-gray-600'>
-            This will delete the collection. Widgets in this collection will not be deleted but will
-            be removed from this collection.
+            This will delete the collection. All widgets in the collection will be deleted.
           </p>
         </DeleteModal>
       )}
