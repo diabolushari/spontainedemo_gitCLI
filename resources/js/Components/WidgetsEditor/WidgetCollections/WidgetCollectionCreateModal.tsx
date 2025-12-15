@@ -47,6 +47,7 @@ export default function WidgetCollectionCreateModal({ setShowModal, collection }
     } else {
       post(formData)
     }
+    setShowModal(false)
   }
 
   return (
