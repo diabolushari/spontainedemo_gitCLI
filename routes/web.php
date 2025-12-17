@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WidgetsEditor\WidgetAiSearchController;
 use App\Http\Controllers\Api\PageEditorApiController;
 use App\Http\Controllers\Api\WidgetApiController;
 use App\Http\Controllers\Utils\SubsetGroupDetailedController;
@@ -419,6 +420,7 @@ Route::resource('page-editor', PageEditorController::class);
 
 Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
 Route::get('widget-collection-search', WidgetCollectionSearchController::class)->name('widget-collection.search');
+Route::get('widget-ai-search', WidgetAiSearchController::class)->name('widget.ai.search');
 
 Route::post('widgets/save', [WidgetApiController::class, 'store'])->name('widgets.api.store');
 Route::put('widgets/save/{widget}', [WidgetApiController::class, 'update'])->name('widgets.api.update');

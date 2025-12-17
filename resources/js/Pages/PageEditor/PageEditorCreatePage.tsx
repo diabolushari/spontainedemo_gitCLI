@@ -56,6 +56,7 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
     handleTextUpdate,
     setAll,
     handleAddWidgetToSlot,
+    handleRemoveTextBlock,
   } = usePageEditor(page ?? null, widgets)
 
   const sensors = useSensors(
@@ -138,86 +139,65 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
     <AnalyticsDashboardLayout>
       <DashboardPadding>
         {!selectWidget && (
-          <DndContext
-            sensors={sensors}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-          >
-            <div className='relative flex h-[calc(100vh-100px)] overflow-hidden rounded-xl bg-gray-50/50'>
-              {/* New Component: Configuration Sidebar */}
-              <PageConfigurationSidebar
-                pageStructure={pageStructure}
-                pageWidgets={pageWidgets}
-                isOpen={isSidebarOpen}
-                setIsOpen={setIsSidebarOpen}
-                onTitleChange={handleTitleChange}
-                onDescriptionChange={handleDescriptionChange}
-                onLinkChange={handleLinkChange}
-                setAnchorWidget={setAnchorWidget}
-                onSaveDraft={handleSaveDraft}
-                onPublish={handlePublish}
-                onPreview={handlePreview}
-                isEditMode={!!page}
-                onPageUpdate={setAll}
-                agentUrl={page_agent_url}
-                onThinking={setThinkingMessage}
-              />
+          <div className='relative flex h-[calc(100vh-100px)] overflow-hidden rounded-xl bg-gray-50/50'>
+            {/* New Component: Configuration Sidebar */}
+            <PageConfigurationSidebar
+              pageStructure={pageStructure}
+              pageWidgets={pageWidgets}
+              isOpen={isSidebarOpen}
+              setIsOpen={setIsSidebarOpen}
+              onTitleChange={handleTitleChange}
+              onDescriptionChange={handleDescriptionChange}
+              onLinkChange={handleLinkChange}
+              setAnchorWidget={setAnchorWidget}
+              onSaveDraft={handleSaveDraft}
+              onPublish={handlePublish}
+              onPreview={handlePreview}
+              isEditMode={!!page}
+              onPageUpdate={setAll}
+              agentUrl={page_agent_url}
+              onThinking={setThinkingMessage}
+            />
 
-              {/* Main Content Area */}
-              <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50/50 p-8 transition-all'>
-                <div
-                  className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pl-4' : ''}`}
-                >
-                  {/* AI Glow Effect Overlay */}
-                  {thinkingMessage && (
-                    <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
-                      <div className='relative mb-4'>
-                        <div className='absolute -inset-4 animate-pulse rounded-full bg-blue-500/20 blur-xl'></div>
-                        <Bot className='relative h-16 w-16 animate-bounce text-blue-600' />
-                      </div>
-                      <h3 className='mb-2 text-xl font-bold text-gray-900'>AI Generating...</h3>
-                      <p className='max-w-md text-center text-sm text-gray-500'>
-                        {thinkingMessage}
-                      </p>
-
-                      {/* Loading Bar */}
-                      <div className='mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-gray-200'>
-                        <div className='h-full w-1/2 animate-[shimmer_1.5s_infinite] rounded-full bg-gradient-to-r from-transparent via-blue-500 to-transparent'></div>
-                      </div>
+            {/* Main Content Area */}
+            <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50/50 p-8 transition-all'>
+              <div
+                className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pl-4' : ''}`}
+              >
+                {/* AI Glow Effect Overlay */}
+                {thinkingMessage && (
+                  <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
+                    <div className='relative mb-4'>
+                      <div className='absolute -inset-4 animate-pulse rounded-full bg-blue-500/20 blur-xl'></div>
+                      <Bot className='relative h-16 w-16 animate-bounce text-blue-600' />
                     </div>
-                  )}
+                    <h3 className='mb-2 text-xl font-bold text-gray-900'>AI Generating...</h3>
+                    <p className='max-w-md text-center text-sm text-gray-500'>{thinkingMessage}</p>
 
-                  <PagePreviewArea
-                    pageStructure={pageStructure}
-                    getWidgetById={getWidgetById}
-                    onRemoveWidget={handleRemoveWidget}
-                    onDeleteRow={handleDeleteRow}
-                    onLayoutClick={handleLayoutClick}
-                    moveRow={moveRow}
-                    selectedMonth={selectedMonth}
-                    onRowUpdate={handleRowUpdate}
-                    handleAddTextBlock={handleAddTextBlock}
-                    handleTextUpdate={handleTextUpdate}
-                    setSelectWidget={setSelectWidget}
-                  />
-                </div>
+                    {/* Loading Bar */}
+                    <div className='mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-gray-200'>
+                      <div className='h-full w-1/2 animate-[shimmer_1.5s_infinite] rounded-full bg-gradient-to-r from-transparent via-blue-500 to-transparent'></div>
+                    </div>
+                  </div>
+                )}
+
+                <PagePreviewArea
+                  pageStructure={pageStructure}
+                  getWidgetById={getWidgetById}
+                  onRemoveWidget={handleRemoveWidget}
+                  onDeleteRow={handleDeleteRow}
+                  onLayoutClick={handleLayoutClick}
+                  moveRow={moveRow}
+                  selectedMonth={selectedMonth}
+                  onRowUpdate={handleRowUpdate}
+                  handleAddTextBlock={handleAddTextBlock}
+                  handleTextUpdate={handleTextUpdate}
+                  setSelectWidget={setSelectWidget}
+                  handleRemoveTextBlock={handleRemoveTextBlock}
+                />
               </div>
             </div>
-
-            <DragOverlay>
-              {activeWidget ? (
-                <div className='w-96 cursor-grabbing rounded-md border border-blue-400 bg-white p-3 shadow-2xl'>
-                  <div className='mb-1 flex items-center gap-2'>
-                    <div className='rounded bg-blue-50 p-1'>
-                      <Settings className='h-4 w-4 text-blue-600' />
-                    </div>
-                    <span className='text-sm font-medium'>{activeWidget.title}</span>
-                  </div>
-                  <p className='text-xs text-gray-500'>{activeWidget.subtitle}</p>
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
+          </div>
         )}
         {selectWidget && !selectedWidget && <WidgetListView onSelectWidget={setSelectedWidget} />}
         {selectWidget && selectedWidget && (

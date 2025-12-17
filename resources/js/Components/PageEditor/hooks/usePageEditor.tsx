@@ -365,6 +365,24 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  const handleRemoveTextBlock = useCallback(
+    (rowId: number, position: number) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) =>
+              slot.position === position ? { widgetId: null, position: slot.position } : slot
+            ),
+          }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   return {
     pageStructure,
     setFormValue,
@@ -386,5 +404,6 @@ export function usePageEditor(
     handleAddTextBlock,
     handleTextUpdate,
     handleAddWidgetToSlot,
+    handleRemoveTextBlock,
   }
 }

@@ -97,7 +97,7 @@ const manageMenuData: NavGroup[] = [
   {
     id: 10,
     group_label: 'AI Studio',
-    group_url: '/ai-studio',
+    group_url: '/chat',
     group_pos: 1,
     group_icon: 'Sparkles',
     nav_items: [

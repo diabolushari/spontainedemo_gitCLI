@@ -17,6 +17,7 @@ interface DroppableColumnProps {
   onTextUpdate: (content: string) => void
   onAddWidget: () => void
   selectWidget: (row: { rowId: number; position: number }) => void
+  handleRemoveTextBlock: (rowId: number, position: number) => void
 }
 
 export default function PageDroppableSlot({
@@ -31,6 +32,7 @@ export default function PageDroppableSlot({
   onTextUpdate,
   onAddWidget,
   selectWidget,
+  handleRemoveTextBlock,
 }: Readonly<DroppableColumnProps>) {
   const { setNodeRef, isOver } = useDroppable({
     id: `droppable-${rowId}-${position}`,
@@ -51,7 +53,7 @@ export default function PageDroppableSlot({
       {isTextMode ? (
         <div className='relative h-full w-full p-2'>
           <button
-            onClick={onRemove}
+            onClick={() => handleRemoveTextBlock(rowId, position)}
             className='absolute -right-2 -top-2 z-30 rounded-full bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600'
             title='Remove text block'
           >
@@ -73,15 +75,11 @@ export default function PageDroppableSlot({
           >
             <XIcon className='h-4 w-4' />
           </button>
-          <DraggableWidgetWrapper
+
+          <Widget
             widget={widget}
-            source={{ rowId, position }}
-          >
-            <Widget
-              widget={widget}
-              anchorMonth={selectedMonth}
-            />
-          </DraggableWidgetWrapper>
+            anchorMonth={selectedMonth}
+          />
         </div>
       ) : (
         // CASE 3: EMPTY SLOT (Buttons)
