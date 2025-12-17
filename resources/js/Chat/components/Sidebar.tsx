@@ -1,6 +1,7 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/Components/ui/collapsible'
 import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import { router } from '@inertiajs/react'
+import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import {
   FiBarChart2,
@@ -35,6 +36,9 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
     if (value === 'dashboard') {
       router.visit('/service-delivery')
     }
+    if (value === 'manage') {
+      router.visit('/data-detail')
+    }
   }
 
   const filteredChats = history.filter((chat) =>
@@ -60,22 +64,29 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
         <ToggleGroup
           type='single'
           defaultValue='chat'
-          className='grid w-full grid-cols-2 gap-2 rounded-lg bg-white/20 p-1.5 backdrop-blur-sm'
+          className='grid w-full grid-cols-3 gap-2 rounded-lg bg-white/20 p-1.5 backdrop-blur-sm'
           onValueChange={handleNavigation}
         >
           <ToggleGroupItem
             value='chat'
-            className='flex items-center gap-2 rounded-md text-gray-700 transition-all hover:bg-white/30 hover:shadow-sm data-[state=on]:bg-white/40 data-[state=on]:text-gray-900 data-[state=on]:shadow-sm'
+            className='flex items-center justify-center gap-2 rounded-md text-gray-700 transition-all hover:bg-white/30 hover:shadow-sm data-[state=on]:bg-white/40 data-[state=on]:text-gray-900 data-[state=on]:shadow-sm'
           >
             <FiCpu className='h-4 w-4' />
             <span className='text-sm font-medium'>AI Chat</span>
           </ToggleGroupItem>
           <ToggleGroupItem
             value='dashboard'
-            className='flex items-center gap-2 rounded-md text-gray-700 transition-all hover:bg-white/30 hover:shadow-sm data-[state=on]:bg-white/40 data-[state=on]:text-gray-900 data-[state=on]:shadow-sm'
+            className='flex items-center justify-center gap-2 rounded-md text-gray-700 transition-all hover:bg-white/30 hover:shadow-sm data-[state=on]:bg-white/40 data-[state=on]:text-gray-900 data-[state=on]:shadow-sm'
           >
             <FiBarChart2 className='h-4 w-4' />
             <span className='text-sm font-medium'>Dashboard</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value='manage'
+            className='flex items-center justify-center gap-2 rounded-md text-gray-700 transition-all hover:bg-white/30 hover:shadow-sm data-[state=on]:bg-white/40 data-[state=on]:text-gray-900 data-[state=on]:shadow-sm'
+          >
+            <Settings className='h-4 w-4' />
+            <span className='text-sm font-medium'>Manage</span>
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
