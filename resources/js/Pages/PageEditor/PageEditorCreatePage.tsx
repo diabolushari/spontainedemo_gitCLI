@@ -12,6 +12,7 @@ import { Settings, Bot } from 'lucide-react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import WidgetListView from '@/Components/WidgetsEditor/WidgetListView'
 import WidgetDetailView from '@/Components/WidgetsEditor/WidgetDetailView'
+import HeadingStyleComponent from '@/Components/PageEditor/HeadingStyleComponent'
 
 interface Props {
   page_agent_url?: string
@@ -57,7 +58,8 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
     setAll,
     handleAddWidgetToSlot,
     handleRemoveTextBlock,
-  } = usePageEditor(page ?? null, widgets)
+    handleHeadingStyleChange,
+  } = usePageEditor(page ?? null, widgets, setIsSidebarOpen)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -103,7 +105,9 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [thinkingMessage, setThinkingMessage] = useState<string | null>(null)
 
-  const anchor_widget = getWidgetById(pageStructure.anchor_widget)
+  const anchor_widget = pageStructure.anchor_widget
+    ? getWidgetById(pageStructure.anchor_widget)
+    : null
 
   const url = anchor_widget?.data.overview.subset_id
     ? route('subset-field-max-value', {
@@ -181,8 +185,18 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
                   </div>
                 )}
 
+                <div className='mb-8'>
+                  <h3 className='mb-4 text-lg font-bold text-gray-900'>Page Heading Style</h3>
+                  <HeadingStyleComponent
+                    title={pageStructure.title || 'Page Title'}
+                    description={pageStructure.description || 'Page Description'}
+                    currentStyle={pageStructure.config?.heading_style ?? 0}
+                    onChange={handleHeadingStyleChange}
+                  />
+                </div>
+
                 <PagePreviewArea
-                  pageStructure={pageStructure}
+                  pageStructure={pageStructure as DashboardPage}
                   getWidgetById={getWidgetById}
                   onRemoveWidget={handleRemoveWidget}
                   onDeleteRow={handleDeleteRow}
@@ -190,6 +204,7 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
                   moveRow={moveRow}
                   selectedMonth={selectedMonth}
                   onRowUpdate={handleRowUpdate}
+                  setSheetOpen={setIsSidebarOpen}
                   handleAddTextBlock={handleAddTextBlock}
                   handleTextUpdate={handleTextUpdate}
                   setSelectWidget={setSelectWidget}

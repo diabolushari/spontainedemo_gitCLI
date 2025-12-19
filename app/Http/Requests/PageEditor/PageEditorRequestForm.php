@@ -16,6 +16,7 @@ class PageEditorRequestForm extends Data
         public readonly array $page,
         public readonly bool $published,
         public readonly int $anchor_widget,
+        public readonly ?array $config,
     ) {
     }
 }

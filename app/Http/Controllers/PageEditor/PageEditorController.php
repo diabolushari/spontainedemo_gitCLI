@@ -49,6 +49,7 @@ class PageEditorController extends Controller implements HasMiddleware
             'page' => $request->page,
             'published' => $request->published,
             'anchor_widget' => $request->anchor_widget,
+            'config' => $request->config,
         ]);
 
         return redirect()->route('page-editor.index', $dashboardPage);
@@ -95,6 +96,7 @@ class PageEditorController extends Controller implements HasMiddleware
             'page' => $request->page,
             'published' => $request->published,
             'anchor_widget' => $request->anchor_widget,
+            'config' => $request->config,
         ]);
 
         return redirect()->route('page-editor.index', $pageEditor);

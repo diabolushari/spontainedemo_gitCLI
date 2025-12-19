@@ -20,6 +20,7 @@ export function usePageEditor(
     page: initialPage?.page ?? [],
     published: initialPage?.published ?? false,
     anchor_widget: initialPage?.anchor_widget ?? null,
+    config: initialPage?.config ?? { heading_style: null },
   })
 
   const [nextId, setNextId] = useState(
@@ -383,6 +384,13 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  const handleHeadingStyleChange = (styleIndex: number) => {
+    setFormValue('config')({
+      ...pageStructure.config,
+      heading_style: styleIndex,
+    })
+  }
+
   return {
     pageStructure,
     setFormValue,
@@ -405,5 +413,6 @@ export function usePageEditor(
     handleTextUpdate,
     handleAddWidgetToSlot,
     handleRemoveTextBlock,
+    handleHeadingStyleChange,
   }
 }

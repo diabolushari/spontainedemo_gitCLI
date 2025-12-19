@@ -592,4 +592,7 @@ export interface DashboardPage extends Model {
   page: PageSection[]
   published: boolean
   anchor_widget: number | null
+  config: {
+    heading_style: number | null
+  } | null
 }
