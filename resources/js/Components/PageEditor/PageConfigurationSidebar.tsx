@@ -83,6 +83,7 @@ export default function PageConfigurationSidebar({
               onPageUpdate={onPageUpdate}
               onSave={onPublish}
               onThinking={onThinking}
+              page={pageStructure}
             />
           ) : (
             <div className='flex flex-grow flex-col overflow-y-auto p-5 pt-2'>
@@ -145,11 +146,11 @@ export default function PageConfigurationSidebar({
                   <SelectList
                     label='Anchor Widget'
                     showLabel={false}
-                    list={pageWidgets}
+                    list={pageWidgets as any}
                     dataKey={'id'}
                     displayKey='title'
-                    setValue={setAnchorWidget}
-                    value={pageStructure.anchor_widget}
+                    setValue={(val: string) => setAnchorWidget(Number(val))}
+                    value={pageStructure.anchor_widget ?? undefined}
                   />
                 </div>
               </form>

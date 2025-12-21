@@ -69,9 +69,11 @@ interface Props {
 function parseFormDataToWidget(
   formData: WidgetFormData,
   highlightCards: HighlightCardData[],
-  collectionId: number
+  collectionId: number,
+  id?: number
 ): Widget {
   return {
+    id: id,
     title: formData.title ?? 'Untitled Widget',
     subtitle: formData.subtitle ?? '',
     type: 'overview',
@@ -312,8 +314,8 @@ export default function OverviewWidgetEditor({
 
   // Convert formData to Widget format for preview
   const previewWidget = useMemo<Widget>(() => {
-    return parseFormDataToWidget(formData, highlightCards, collectionId)
-  }, [formData, collectionId, highlightCards])
+    return parseFormDataToWidget(formData, highlightCards, collectionId, widget?.id)
+  }, [formData, collectionId, highlightCards, widget?.id])
 
   // Notify parent component when preview widget changes
   useEffect(() => {

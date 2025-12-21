@@ -114,6 +114,7 @@ use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Http\Controllers\Utils\StoreLoaderAPIController;
 use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
 use App\Http\Controllers\Utils\SubsetMaxValueController;
+use App\Http\Controllers\Utils\SubsetDetailGetController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionSearchController;
 use App\Http\Controllers\WidgetsEditor\WidgetSearchController;
@@ -451,6 +452,9 @@ Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::cl
 
 Route::get('subset-group-detailed/{group}', SubsetGroupDetailedController::class)
     ->name('subset-group-detailed');
+
+Route::get('api/subset-detail/{subsetDetail}', SubsetDetailGetController::class)
+    ->name('subset.detail.get');
 
 require __DIR__ . '/auth.php';
 

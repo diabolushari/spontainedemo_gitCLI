@@ -62,6 +62,7 @@ interface PageBuilderChatProps {
   onPageUpdate: (data: Partial<DashboardPage>) => void
   onSave: () => void
   onThinking?: (message: string | null) => void
+  page?: Partial<DashboardPage>
 }
 
 export default function PageBuilderChat({
@@ -69,6 +70,7 @@ export default function PageBuilderChat({
   onPageUpdate,
   onSave,
   onThinking,
+  page,
 }: Readonly<PageBuilderChatProps>) {
   const [chatMessage, setChatMessage] = useState('')
   const [thinkingMessage, setThinkingMessage] = useState<string | null>(null)
@@ -156,9 +158,9 @@ export default function PageBuilderChat({
     if (!chatMessage.trim() || hasError) return
 
     if (isAwaitingApproval) {
-      sendMessage({ action: 'new_query', message: chatMessage })
+      sendMessage({ action: 'new_query', message: chatMessage, existing_page: page })
     } else {
-      sendMessage({ message: chatMessage })
+      sendMessage({ message: chatMessage, existing_page: page })
     }
 
     setChatMessage('')

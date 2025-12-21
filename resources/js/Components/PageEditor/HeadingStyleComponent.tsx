@@ -51,7 +51,7 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
     {
       container: 'flex flex-col items-center text-center py-16 space-y-4',
       title: 'text-6xl md:text-7xl font-semibold text-gray-900 leading-tight tracking-tight',
-      description: 'text-base text-gray-500 tracking-wide order-first',
+      description: 'text-base text-gray-500 tracking-wide',
       accent: 'w-32 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent',
     },
     // Style 5 - Bold Statement
@@ -87,7 +87,7 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
     {
       container: 'flex flex-col items-center justify-center text-center py-14 space-y-6',
       title: 'text-5xl md:text-6xl font-light text-gray-900 tracking-tight leading-tight',
-      description: 'text-xs text-gray-500 uppercase tracking-[0.3em] order-first',
+      description: 'text-xs text-gray-500 uppercase tracking-[0.3em]',
       accent: 'w-full max-w-lg h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent',
     },
     // Style 10 - Heavyweight Professional
@@ -140,8 +140,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
       case 1: // Centered Professional
         return (
           <div className={style.container}>
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={style.title}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent} />
           </div>
         )
@@ -158,8 +158,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
       case 3: // Modern Business
         return (
           <div className={style.container}>
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={style.title}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent} />
           </div>
         )
@@ -167,8 +167,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
       case 4: // Bold Statement
         return (
           <div className={style.container}>
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={style.title}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent} />
           </div>
         )
@@ -210,8 +210,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
         return (
           <div className={style.container}>
             <div className={style.accent} />
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={style.title}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent} />
           </div>
         )
@@ -219,8 +219,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
       case 9: // Heavyweight Professional
         return (
           <div className={style.container}>
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={style.title}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent} />
           </div>
         )
@@ -228,8 +228,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
       case 10: // Dual Tone
         return (
           <div className={style.container}>
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={`${style.title} ${style.titleClass}`}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent}>
               <div className='h-px w-12 bg-gray-900' />
               <div className='h-px w-12 bg-gray-400' />
@@ -240,8 +240,8 @@ const HeadingStyleComponent: React.FC<HeadingStyleComponentProps> = ({
       case 11: // Executive Style
         return (
           <div className={style.container}>
-            {description && <p className={style.description}>{description}</p>}
             <h2 className={style.title}>{title}</h2>
+            {description && <p className={style.description}>{description}</p>}
             <div className={style.accent}>
               <div className='h-1 w-8 bg-gray-900' />
               <div className='h-1 w-8 bg-gray-700' />

@@ -1,7 +1,7 @@
 import Widget from '@/Components/PageEditor/Widget'
 import { Widget as WidgetType, WidgetPosition } from '@/interfaces/data_interfaces'
 import { useDroppable } from '@dnd-kit/core'
-import { XIcon, Type, LayoutTemplate, Plus } from 'lucide-react'
+import { XIcon, Type, LayoutTemplate, Plus, Pencil } from 'lucide-react'
 import DraggableWidgetWrapper from './DraggableWidgetWrapper'
 import RichTextEditor from './RichTextEditor' // Adjust path if necessary
 
@@ -68,13 +68,24 @@ export default function PageDroppableSlot({
       ) : widgetId && widget ? (
         // CASE 2: WIDGET
         <div className='relative w-full p-4'>
-          <button
-            onClick={onRemove}
-            className='absolute right-2 top-2 z-30 rounded-full bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600'
-            title='Remove widget'
-          >
-            <XIcon className='h-4 w-4' />
-          </button>
+          <div className='absolute right-2 top-2 z-30 flex gap-2'>
+            <a
+              href={route('widget-editor.edit', widget.id)}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='rounded-full bg-blue-500 p-1.5 text-white shadow-md hover:bg-blue-600'
+              title='Edit widget'
+            >
+              <Pencil className='h-4 w-4' />
+            </a>
+            <button
+              onClick={onRemove}
+              className='rounded-full bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600'
+              title='Remove widget'
+            >
+              <XIcon className='h-4 w-4' />
+            </button>
+          </div>
 
           <Widget
             widget={widget}
