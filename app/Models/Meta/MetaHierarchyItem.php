@@ -18,6 +18,11 @@ class MetaHierarchyItem extends Model
         'level',
     ];
 
+    public function metaHierarchy(): BelongsTo
+    {
+        return $this->belongsTo(MetaHierarchy::class, 'meta_hierarchy_id', 'id');
+    }
+
     /**
      * @return BelongsTo<MetaData, $this>
      */

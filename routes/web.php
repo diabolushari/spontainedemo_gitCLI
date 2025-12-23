@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Utils\OrganizationExportController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WidgetsEditor\WidgetAiSearchController;
 use App\Http\Controllers\Api\PageEditorApiController;
 use App\Http\Controllers\Api\WidgetApiController;
@@ -68,6 +70,7 @@ use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
+use App\Http\Controllers\Utils\MetaHierarchyItemSearchController;
 use App\Http\Controllers\NavController\DefaultDashboardPageController;
 use App\Http\Controllers\NavController\DefaultDashboardPageGetController;
 use App\Http\Controllers\NavController\NavController;
@@ -208,6 +211,8 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
+Route::get('meta-hierarchy-item-search', MetaHierarchyItemSearchController::class)
+    ->name('meta-hierarchy-item-search');
 Route::get('meta-structure-search', MetaStructureSearchController::class)
     ->name('meta-structure-search');
 Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::class)
@@ -455,6 +460,10 @@ Route::get('subset-group-detailed/{group}', SubsetGroupDetailedController::class
 
 Route::get('api/subset-detail/{subsetDetail}', SubsetDetailGetController::class)
     ->name('subset.detail.get');
+
+Route::resource('organization', OrganizationController::class);
+Route::get('organization-export', OrganizationExportController::class)
+    ->name('organization.export');
 
 require __DIR__ . '/auth.php';
 
