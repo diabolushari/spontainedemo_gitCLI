@@ -26,6 +26,9 @@ export interface WidgetFormData {
   chart_type: string
   subset_id: string
   subset_name: string
+  hierarchy_id: string
+  hierarchy_item_id: string
+  hierarchy_item_name: string
   measures: SelectedMeasure[]
   dimension: string
   color_palette: string
@@ -91,6 +94,10 @@ function parseFormDataToWidget(
         color_palette: formData.color_palette,
         subset_id: formData.subset_id == '' ? null : Number(formData.subset_id),
         subset_name: formData.subset_name,
+        hierarchy_id: formData.hierarchy_id == '' ? null : Number(formData.hierarchy_id),
+        hierarchy_item_id:
+          formData.hierarchy_item_id == '' ? null : Number(formData.hierarchy_item_id),
+        hierarchy_item_name: formData.hierarchy_item_name,
       },
       highlight_cards: highlightCards ?? [],
       trend: {
@@ -164,6 +171,9 @@ export default function OverviewWidgetEditor({
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
     subset_id: widget?.data?.overview?.subset_id?.toString() ?? '',
     subset_name: widget?.data?.overview?.subset_name ?? '',
+    hierarchy_id: widget?.data?.overview?.hierarchy_id?.toString() ?? '',
+    hierarchy_item_id: widget?.data?.overview?.hierarchy_item_id?.toString() ?? '',
+    hierarchy_item_name: widget?.data?.overview?.hierarchy_item_name ?? '',
     measures: widget?.data?.overview?.measures ?? [],
     dimension: widget?.data?.overview?.dimension?.toString() ?? '',
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
@@ -203,6 +213,9 @@ export default function OverviewWidgetEditor({
       chart_type: widget.data?.overview?.chart_type ?? 'bar',
       subset_id: widget.data?.overview?.subset_id?.toString() ?? '',
       subset_name: widget.data?.overview?.subset_name ?? '',
+      hierarchy_id: widget.data?.overview?.hierarchy_id?.toString() ?? '',
+      hierarchy_item_id: widget.data?.overview?.hierarchy_item_id?.toString() ?? '',
+      hierarchy_item_name: widget.data?.overview?.hierarchy_item_name ?? '',
       measures: widget.data?.overview?.measures ?? [],
       dimension: widget.data?.overview?.dimension?.toString() ?? '',
       color_palette: widget.data?.overview?.color_palette ?? 'boldWarm',
@@ -243,6 +256,9 @@ export default function OverviewWidgetEditor({
         subset_group_id: '',
         chart_type: 'bar',
         subset_id: '',
+        hierarchy_id: '',
+        hierarchy_item_id: '',
+        hierarchy_item_name: '',
         measures: [],
         dimension: '',
         color_palette: 'boldWarm',
@@ -268,6 +284,9 @@ export default function OverviewWidgetEditor({
         subset_group_id: value,
         chart_type: 'bar',
         subset_id: '',
+        hierarchy_id: '',
+        hierarchy_item_id: '',
+        hierarchy_item_name: '',
         measures: [],
         dimension: '',
         color_palette: 'boldWarm',

@@ -2,18 +2,10 @@ import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
-import { DotIcon, EllipsisIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link } from '@inertiajs/react'
-
-interface SubsetGroupDetail {
-  name: string
-  description: string
-}
 
 interface OverviewProps {
   subsetId: number
@@ -23,6 +15,7 @@ interface OverviewProps {
   colorPalette: string
   highlightCards: HighlightCardData[]
   selectedMonth: Date
+  hierarchy_item_id: number | null
   compact?: boolean
 }
 
@@ -34,11 +27,41 @@ export default function OverviewWidgetContent({
   colorPalette,
   highlightCards,
   selectedMonth,
+  hierarchy_item_id,
   compact = false,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
+
+  const [hierarchyFilter, setHierarchyFilter] = useState<{ col: string; val: string } | null>(null)
+
+  // 1. Fetch hierarchy details using the CORRECT API endpoint
+  useEffect(() => {
+    if (!hierarchy_item_id) {
+      setHierarchyFilter(null)
+      return
+    }
+
+    const fetchHierarchyDetails = async () => {
+      try {
+        // Updated URL to match your route definition
+        const res = await axios.get(`/meta-hierarchy-item-detail/${hierarchy_item_id}`)
+
+        if (res.data?.primary_column && res.data?.primary_value) {
+          setHierarchyFilter({
+            col: res.data.primary_column,
+            val: res.data.primary_value,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to fetch hierarchy item details:', error)
+        setHierarchyFilter(null)
+      }
+    }
+
+    fetchHierarchyDetails()
+  }, [hierarchy_item_id])
 
   // Build fields parameter: dimension + all measure columns
   const fieldsParam = useMemo(() => {
@@ -49,11 +72,28 @@ export default function OverviewWidgetContent({
     return dimension && measureColumns ? `${dimension},${measureColumns}` : ''
   }, [measure, dimension])
 
+  // 2. Construct the URL dynamically
   const url = useMemo(() => {
-    return subsetId && fieldsParam
-      ? `/subset/${subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
-      : null
-  }, [subsetId, fieldsParam, formattedMonth])
+    if (!subsetId || !fieldsParam) return null
+
+    let baseUrl = `/subset/${subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
+
+    // Logic:
+    // - If hierarchy_item_id is selected AND data is loaded -> append filter
+    // - If hierarchy_item_id is selected BUT data is NOT loaded -> return null (wait)
+    // - If hierarchy_item_id is NOT selected -> return base URL (no filter)
+
+    if (hierarchy_item_id) {
+      if (hierarchyFilter) {
+        return `${baseUrl}&${hierarchyFilter.col}=${hierarchyFilter.val}`
+      } else {
+        return null // Wait for filter details to load
+      }
+    }
+
+    return baseUrl
+  }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, hierarchy_item_id])
+
   console.log('overview url', url)
 
   const [data] = useFetchRecord<{

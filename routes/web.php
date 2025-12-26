@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
 use App\Http\Controllers\Utils\OrganizationExportController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WidgetsEditor\WidgetAiSearchController;
@@ -464,6 +465,9 @@ Route::get('api/subset-detail/{subsetDetail}', SubsetDetailGetController::class)
 Route::resource('organization', OrganizationController::class);
 Route::get('organization-export', OrganizationExportController::class)
     ->name('organization.export');
+
+Route::get('meta-hierarchy-item-detail/{metaHierarchyItem}', MetaHierarchyItemDetailController::class)
+    ->name('meta-hierarchy-item-detail');
 
 require __DIR__ . '/auth.php';
 

@@ -164,6 +164,7 @@ export default function OverviewWidget({
           colorPalette={widget.data.overview.color_palette}
           highlightCards={widget.data.highlight_cards}
           selectedMonth={selectedMonth ?? new Date()}
+          hierarchy_item_id={widget.data.overview.hierarchy_item_id ?? null}
         />
       )}
       {selectedView === 'trend' && (

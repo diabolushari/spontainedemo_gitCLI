@@ -531,6 +531,9 @@ export interface Widget {
       color_palette: string
       subset_id: number | null
       subset_name?: string
+      hierarchy_id: number | null
+      hierarchy_item_id: number | null
+      hierarchy_item_name: string | null
     }
     highlight_cards: HighlightCardData[]
     trend: {
