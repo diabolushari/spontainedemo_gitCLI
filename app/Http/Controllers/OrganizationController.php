@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Organization\OrganizationFormRequest;
-use App\Http\Requests\Organization\OrganizationIndexRequest;
+use Illuminate\Http\Request;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
