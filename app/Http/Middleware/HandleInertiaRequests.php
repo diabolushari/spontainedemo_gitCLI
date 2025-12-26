@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'widget_data_url' => env('WIDGET_DATA_URL'),
+            'widget_data_url' => config('app.widget_data_url'),
         ];
     }
 }
