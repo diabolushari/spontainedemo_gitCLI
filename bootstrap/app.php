@@ -24,11 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'widgets/save/*',
             'pages/save',
             'pages/save/*',
-            'subset/*',
-            'subset-field-max-value/*',
-            'subset-summary/*',
-            'office-level-summary/*',
-            'meta-hierarchy/*'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
