@@ -58,7 +58,7 @@ export default function OverviewChartConfigForm({
   // 1. Fetch and filter dimensions
   const dimensionUrl = formData.subset_id
     ? `${widget_data_url}/api/subset/dimension/${formData.subset_id}`
-    : ''
+    : null
   const [rawDimensions] = useFetchList<{
     id: number
     subset_field_name: string
@@ -66,6 +66,7 @@ export default function OverviewChartConfigForm({
   }>(dimensionUrl)
 
   const filteredDimensions = useMemo(() => {
+    if (!Array.isArray(rawDimensions)) return []
     return rawDimensions.filter(
       (dim) =>
         !dim.subset_column?.toLowerCase().includes('month') &&
