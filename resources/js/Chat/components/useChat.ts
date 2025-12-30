@@ -361,6 +361,12 @@ export default function useChat(currentSession: CurrentSession) {
     setReconnectTrigger((prev) => prev + 1)
   }
 
+  const handleToggleFavorite = (messageId: number) => {
+    setMessages((prev) =>
+      prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: !msg.is_favorite } : msg))
+    )
+  }
+
   return {
     messages,
     handleSendMessage,
@@ -371,5 +377,6 @@ export default function useChat(currentSession: CurrentSession) {
     setMessageFromHistory,
     handleRetryConnection,
     wsStatus,
+    handleToggleFavorite,
   }
 }

@@ -3,6 +3,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/Components/ui/toggle-group'
 import { router } from '@inertiajs/react'
 import { Settings } from 'lucide-react'
 import { useState } from 'react'
+import axios from 'axios'
 import {
   FiBarChart2,
   FiChevronDown,
@@ -11,6 +12,7 @@ import {
   FiCpu,
   FiMessageSquare,
   FiSearch,
+  FiStar,
 } from 'react-icons/fi'
 
 interface ChatHistoryItem {
@@ -18,6 +20,7 @@ interface ChatHistoryItem {
   title: string
   timestamp: string
   preview?: string
+  is_favorite?: boolean
 }
 
 interface ChatProps {
@@ -30,7 +33,27 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
   const [searchQuery, setSearchQuery] = useState('')
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(true)
   const [isRecentChatsOpen, setIsRecentChatsOpen] = useState(true)
-  const [history] = useState<ChatHistoryItem[]>(chatHistory)
+  const [history, setHistory] = useState<ChatHistoryItem[]>(chatHistory)
+
+  const toggleFavorite = (e: React.MouseEvent, chat: ChatHistoryItem) => {
+    e.stopPropagation()
+    const newFavoriteStatus = !chat.is_favorite
+
+    axios
+      .patch(`/chat-history/${chat.id}`, {
+        is_favorite: newFavoriteStatus,
+      })
+      .then(() => {
+        setHistory((prev) =>
+          prev.map((item) =>
+            item.id === chat.id ? { ...item, is_favorite: newFavoriteStatus } : item
+          )
+        )
+      })
+      .catch((err) => {
+        console.error('Error toggling favorite:', err)
+      })
+  }
 
   const handleNavigation = (value: string) => {
     if (value === 'dashboard') {
@@ -175,14 +198,18 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange }: Cha
                     </span>
                   </div>
                 </button>
-                {/* <button
-                  className='ml-2 rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 focus:outline-none'
-                  onClick={() => handleDeleteChat(chat.id)}
+                <button
+                  className={`ml-2 rounded-full p-1 transition-all focus:outline-none ${
+                    chat.is_favorite
+                      ? 'text-yellow-500 hover:bg-yellow-50'
+                      : 'text-gray-400 hover:bg-gray-100 hover:text-yellow-500'
+                  }`}
+                  onClick={(e) => toggleFavorite(e, chat)}
                   tabIndex={0}
-                  aria-label={`Delete chat: ${chat.title}`}
+                  aria-label={chat.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
                 >
-                  <FiTrash2 className='h-4 w-4' />
-                </button> */}
+                  <FiStar className={`h-4 w-4 ${chat.is_favorite ? 'fill-yellow-500' : ''}`} />
+                </button>
               </div>
             ))
           )}

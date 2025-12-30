@@ -19,6 +19,7 @@ interface Props {
 }
 
 function stripCodeFencesAndIndent(content: string): string {
+  if (!content) return ''
   let cleaned = content.replace(/^```[\w]*\n?/, '').replace(/```$/, '')
   cleaned = cleaned
     .split('\n')
