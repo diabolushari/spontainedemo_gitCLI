@@ -504,6 +504,12 @@ export interface HighlightCardData {
   subset_id: number | null
   measure: SelectedMeasure
   subset_name?: string | null
+  dimension_column?: string | null
+  dimension_name?: string | null
+  hierarchy_id?: number | null
+  hierarchy_item_id?: number | null
+  hierarchy_item_name?: string | null
+  metadata?: any | null
 }
 
 export interface Widget {

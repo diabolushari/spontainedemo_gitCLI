@@ -3,10 +3,13 @@ import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor
 import Input from '@/ui/form/Input'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import ComboBox from '@/ui/form/ComboBox'
-import { HighlightCardData } from '@/interfaces/data_interfaces'
+import { HighlightCardData, SubsetDimensionField } from '@/interfaces/data_interfaces'
 import { Save, Trash } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SubsetDetail } from '@/interfaces/data_interfaces'
+import useFetchList from '@/hooks/useFetchList'
+import SelectList from '@/ui/form/SelectList'
+import axios from 'axios'
 
 interface HighlightCardProps {
   card: HighlightCardData
@@ -16,6 +19,18 @@ interface HighlightCardProps {
   onSubtitleChange: (index: number, subtitle: string) => void
   onSubsetChange: (index: number, subsetId: number) => void
   onMeasureChange: (index: number, measures: SelectedMeasure[]) => void
+  onDimensionChange: (
+    index: number,
+    dimensionColumn: string | null,
+    dimensionName: string | null,
+    hierarchyId: number | null
+  ) => void
+  onMetadataChange: (
+    index: number,
+    hierarchyItemId: number | null,
+    hierarchyItemName: string | null,
+    metadata: any | null
+  ) => void
   onRemove: (index: number) => void
   ai_agent?: boolean
   widget_data_url: string
@@ -29,6 +44,8 @@ export default function HighlightCardConfigForm({
   onSubtitleChange,
   onSubsetChange,
   onMeasureChange,
+  onDimensionChange,
+  onMetadataChange,
   onRemove,
   ai_agent,
   widget_data_url,
@@ -46,9 +63,11 @@ export default function HighlightCardConfigForm({
   // Check if there are changes between local state and original card
   useEffect(() => {
     const hasFormChanges =
-      localCard.title !== card.title ||
       localCard.subtitle !== card.subtitle ||
       localCard.subset_id !== card.subset_id ||
+      localCard.dimension_column !== card.dimension_column ||
+      localCard.hierarchy_item_id !== card.hierarchy_item_id ||
+      JSON.stringify(localCard.metadata) !== JSON.stringify(card.metadata) ||
       JSON.stringify(localCard.measure) !== JSON.stringify(card.measure)
 
     setHasChanges(hasFormChanges)
@@ -66,6 +85,11 @@ export default function HighlightCardConfigForm({
     setLocalCard((prev) => ({ ...prev, subtitle: value }))
   }, [])
 
+  const dimensionUrl = localCard.subset_id
+    ? `${widget_data_url}/api/subset/dimension/${localCard.subset_id}`
+    : null
+  const [rawDimensions] = useFetchList<SubsetDimensionField>(dimensionUrl)
+
   const handleLocalSubsetChange = useCallback((value: string | number) => {
     setLocalCard((prev) => ({
       ...prev,
@@ -82,6 +106,24 @@ export default function HighlightCardConfigForm({
     setLocalCard((prev) => ({ ...prev, measure }))
   }, [])
 
+  const handleLocalDimensionChange = useCallback(
+    (value: string) => {
+      const dim = (rawDimensions as SubsetDimensionField[] | undefined)?.find(
+        (d) => d.subset_column === value
+      )
+      setLocalCard((prev) => ({
+        ...prev,
+        dimension_column: value,
+        dimension_name: dim?.subset_field_name ?? null,
+        hierarchy_id: dim?.hierarchy_id ?? null,
+        hierarchy_item_id: null,
+        hierarchy_item_name: null,
+        metadata: null,
+      }))
+    },
+    [rawDimensions]
+  )
+
   const handleSaveCard = useCallback(() => {
     // Save local state to highlightCards
     onTitleChange(index, localCard.title)
@@ -92,8 +134,29 @@ export default function HighlightCardConfigForm({
     if (localCard.measure) {
       onMeasureChange(index, [localCard.measure])
     }
+    onDimensionChange(
+      index,
+      localCard.dimension_column ?? null,
+      localCard.dimension_name ?? null,
+      localCard.hierarchy_id ?? null
+    )
+    onMetadataChange(
+      index,
+      localCard.hierarchy_item_id ?? null,
+      localCard.hierarchy_item_name ?? null,
+      localCard.metadata ?? null
+    )
     setHasChanges(false)
-  }, [index, localCard, onTitleChange, onSubtitleChange, onSubsetChange, onMeasureChange])
+  }, [
+    index,
+    localCard,
+    onTitleChange,
+    onSubtitleChange,
+    onSubsetChange,
+    onMeasureChange,
+    onDimensionChange,
+    onMetadataChange,
+  ])
 
   const handleRemoveCard = useCallback(() => {
     onRemove(index)
@@ -113,6 +176,24 @@ export default function HighlightCardConfigForm({
       setLocalCard((prev) => ({ ...prev, subset_id: value.id }))
     },
     [setLocalCard]
+  )
+
+  const metadataItem = useMemo(() => {
+    return localCard.metadata ?? null
+  }, [localCard.metadata])
+
+  const handleMetadataValueChange = useCallback(
+    (value: any) => {
+      setLocalCard((prev) => ({
+        ...prev,
+        hierarchy_item_id: localCard.hierarchy_id ? (value?.id ?? null) : (value?.value ?? null),
+        hierarchy_item_name: localCard.hierarchy_id
+          ? (value?.name ?? null)
+          : (value?.value ?? null),
+        metadata: value ?? null,
+      }))
+    },
+    [localCard.hierarchy_id]
   )
 
   return (
@@ -171,13 +252,7 @@ export default function HighlightCardConfigForm({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={`${widget_data_url}${route(
-              'subset.list',
-              {
-                search: '',
-              },
-              false
-            )}`}
+            url={`${widget_data_url}/subset-list?search=`}
             dataKey='id'
             displayKey='name'
             value={subset}
@@ -186,7 +261,7 @@ export default function HighlightCardConfigForm({
         ) : (
           <DynamicSelectList
             label='Subset'
-            url={`${widget_data_url}/api/subset-group/${subsetGroupId}`}
+            url={`${widget_data_url}/api/subset-groups/subset-having-dimension-measure/${subsetGroupId}`}
             dataKey='id'
             displayKey='name'
             value={localCard.subset_id ?? undefined}
@@ -194,6 +269,43 @@ export default function HighlightCardConfigForm({
           />
         )}
       </div>
+
+      {localCard.subset_id && rawDimensions && rawDimensions.length > 0 && (
+        <div className='flex flex-col gap-3 border-t border-slate-200 pt-3'>
+          <SelectList
+            label='Dimension'
+            list={rawDimensions}
+            dataKey='subset_column'
+            displayKey='subset_field_name'
+            value={localCard.dimension_column ?? ''}
+            setValue={handleLocalDimensionChange}
+          />
+
+          {localCard.dimension_column &&
+            (localCard.hierarchy_id ? (
+              <ComboBox
+                label='Specific Item'
+                url={`${widget_data_url}/meta-hierarchy-item-search?hierarchy_id=${localCard.hierarchy_id}&search=`}
+                dataKey='id'
+                displayKey='name'
+                value={metadataItem}
+                setValue={handleMetadataValueChange}
+                placeholder='Search items...'
+              />
+            ) : (
+              <ComboBox
+                label='Specific Item'
+                url={`${widget_data_url}/subset-column-search/${localCard.subset_id}?column=${localCard.dimension_column}&search=`}
+                dataKey='value'
+                displayKey='value'
+                value={metadataItem}
+                setValue={handleMetadataValueChange}
+                placeholder='Search items...'
+              />
+            ))}
+        </div>
+      )}
+
       {localCard.subset_id && (
         <div className='border-t border-slate-200 pt-3'>
           <MeasureFieldSelector

@@ -1,6 +1,10 @@
 import useFetchRecord from '@/hooks/useFetchRecord'
 
 import { HighlightCardData } from '@/interfaces/data_interfaces'
+import { usePage } from '@inertiajs/react'
+import { PageProps } from '@/types'
+import { useMemo, useEffect, useState } from 'react'
+import axios from 'axios'
 
 interface HighlightCardProps {
   card: HighlightCardData
@@ -14,11 +18,58 @@ export default function HighlightCard({ card, selectedMonth }: Readonly<Highligh
 
   const fieldsParam = card?.measure?.subset_column || ''
 
+  const widget_data_url = usePage<PageProps & { widget_data_url: string }>().props.widget_data_url
+
+  const [hierarchyFilter, setHierarchyFilter] = useState<{ col: string; val: string } | null>(null)
+
+  // 1. Fetch hierarchy details if hierarchy_item_id is present
+  useEffect(() => {
+    if (!card.hierarchy_item_id) {
+      setHierarchyFilter(null)
+      return
+    }
+
+    const fetchHierarchyDetails = async () => {
+      try {
+        const res = await axios.get(
+          `${widget_data_url}/meta-hierarchy-item-detail/${card.hierarchy_item_id}`
+        )
+
+        if (res.data?.primary_column && res.data?.primary_value) {
+          setHierarchyFilter({
+            col: res.data.primary_column,
+            val: res.data.primary_value,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to fetch hierarchy item details:', error)
+        setHierarchyFilter(null)
+      }
+    }
+
+    fetchHierarchyDetails()
+  }, [card.hierarchy_item_id, widget_data_url])
+
+  // 2. Build filter parameters dynamically
+  const filterParams = useMemo(() => {
+    // If we have hierarchy filter details, use them
+    if (hierarchyFilter && hierarchyFilter.col && hierarchyFilter.val) {
+      return `&${hierarchyFilter.col}=${hierarchyFilter.val}`
+    }
+
+    // Fallback: If it's a raw column search (no hierarchy_id), use dimension_column and hierarchy_item_name
+    if (!card.hierarchy_id && card.dimension_column && card.hierarchy_item_name) {
+      return `&${card.dimension_column}=${card.hierarchy_item_name}`
+    }
+
+    return ''
+  }, [hierarchyFilter, card.dimension_column, card.hierarchy_item_name, card.hierarchy_id])
+
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(
     card?.subset_id && fieldsParam
-      ? `/subset/${card.subset_id}?month=${formattedMonth}&fields=${fieldsParam}`
+      ? `${widget_data_url}${'/subset/'}${card.subset_id}?month=${formattedMonth}&fields=${fieldsParam}${filterParams}`
       : null
   )
 
