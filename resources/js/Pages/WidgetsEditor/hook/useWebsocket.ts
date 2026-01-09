@@ -34,7 +34,7 @@ export const useWebSocket = (url: string) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       console.log("WS Sending:", msg);
       socketRef.current.send(JSON.stringify(msg));
-      setMessages((prev) => [...prev, { ...msg, type: 'user' }]);
+      setMessages((prev) => [...prev, { type: 'user', ...msg }]);
     }
   };
 

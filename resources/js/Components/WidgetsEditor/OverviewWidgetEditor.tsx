@@ -65,6 +65,7 @@ interface Props {
   chatInput: string
   setChatInput: (value: string) => void
   onChatSend: () => void
+  onActionSend: (action: string, message?: string) => void
   onPreviewWidgetChange?: (widget: Widget) => void
   messages: any[]
 }
@@ -150,6 +151,7 @@ export default function OverviewWidgetEditor({
   chatInput,
   setChatInput,
   onChatSend,
+  onActionSend,
   onPreviewWidgetChange,
   messages,
 }: Readonly<Props>) {
@@ -434,6 +436,7 @@ export default function OverviewWidgetEditor({
               chatInput={chatInput}
               setChatInput={setChatInput}
               onChatSend={onChatSend}
+              onActionSend={onActionSend}
               onSave={handleSubmit}
             />
           )}
