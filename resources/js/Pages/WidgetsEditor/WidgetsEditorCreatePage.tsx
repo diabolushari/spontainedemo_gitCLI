@@ -46,6 +46,8 @@ export default function WidgetsEditorCreatePage({
       } else if (lastMessage.type == 'review_required') {
         setCurrentWidget(lastMessage.widget_state)
         setThinking(null)
+      } else if (lastMessage.type == 'approval_required') {
+        setThinking(null)
       } else if (lastMessage.type == 'complete') {
         setCurrentWidget(lastMessage.widget)
         setThinking(null)

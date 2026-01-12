@@ -35,6 +35,18 @@ export default function WidgetChatSection({
     }
   }, [chatInput])
 
+  const handleSend = () => {
+    const lastMsg = messages[messages.length - 1]
+    if (lastMsg?.type === 'approval_required') {
+      if (chatInput.trim()) {
+        onActionSend('modify', chatInput)
+        setChatInput('')
+      }
+    } else {
+      onChatSend()
+    }
+  }
+
   return (
     <div className='relative flex h-[600px] flex-col bg-slate-50'>
       <div className='flex-1 overflow-y-auto p-4'>
@@ -64,6 +76,12 @@ export default function WidgetChatSection({
                 </div>
               )
             }
+
+            // Parse options or default to legacy behavior
+            const options = msg.options || ['proceed', 're-summarize', 'modify']
+            const showProceed = options.includes('proceed')
+            const showResummarize = options.includes('re-summarize')
+            // Modify is hidden, handled via text input
 
             return (
               <div
@@ -126,35 +144,25 @@ export default function WidgetChatSection({
                       )}
 
                       <div className='flex gap-2 pt-1'>
-                        <button
-                          onClick={() => onActionSend('proceed')}
-                          className='flex-1 rounded-lg bg-[#007AFF] px-3 py-2 font-medium text-white transition-colors hover:bg-blue-600'
-                        >
-                          Proceed
-                        </button>
-                        <button
-                          onClick={() => onActionSend('re-summarize')}
-                          className='flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50'
-                        >
-                          Re-plan
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (chatInput.trim()) {
-                              onActionSend('modify', chatInput)
-                              setChatInput('')
-                            } else {
-                              // Optionally focus input if empty
-                              textareaRef.current?.focus()
-                            }
-                          }}
-                          className='flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50'
-                        >
-                          Modify
-                        </button>
+                        {showProceed && (
+                          <button
+                            onClick={() => onActionSend('proceed')}
+                            className='flex-1 rounded-lg bg-[#007AFF] px-3 py-2 font-medium text-white transition-colors hover:bg-blue-600'
+                          >
+                            Proceed
+                          </button>
+                        )}
+                        {showResummarize && (
+                          <button
+                            onClick={() => onActionSend('re-summarize')}
+                            className='flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50'
+                          >
+                            Re-plan
+                          </button>
+                        )}
                       </div>
                       <p className='text-center italic text-gray-400'>
-                        Type feedback above then click Modify if needed
+                        Type feedback above to modify
                       </p>
                     </div>
                   )}
@@ -215,7 +223,7 @@ export default function WidgetChatSection({
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
-                if (!hasError) onChatSend()
+                if (!hasError) handleSend()
               }
             }}
             rows={1}
@@ -223,7 +231,7 @@ export default function WidgetChatSection({
           <button
             type='button'
             disabled={!!thinkingMessage || hasError}
-            onClick={onChatSend}
+            onClick={handleSend}
             className='absolute bottom-2 right-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 py-2 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
           >
             Ask
