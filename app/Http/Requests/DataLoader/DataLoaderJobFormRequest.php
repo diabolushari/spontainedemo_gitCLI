@@ -10,6 +10,8 @@ use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
+use Spatie\LaravelData\Support\Validation\ValidationContext;
+
 /**
  * @property FieldMappingData[] $fieldMapping
  */
@@ -40,6 +42,8 @@ class DataLoaderJobFormRequest extends Data
         public array $fieldMapping,
         public ?string $scheduleStartTime,
         public ?int $subHourInterval,
+        public ?int $retries,
+        public ?int $retriesInterval,
     ) {
         //
     }
@@ -57,27 +61,29 @@ class DataLoaderJobFormRequest extends Data
             'end_date' => ['nullable', 'date', 'after_or_equal:startDate'],
             'schedule_time' => [
                 'nullable',
-                'required_if:cronType,'.CronTypes::DAILY,
-                'required_if:cronType,'.CronTypes::WEEKLY,
-                'required_if:cronType,'.CronTypes::MONTHLY,
-                'required_if:cronType,'.CronTypes::YEARLY,
+                'required_if:cronType,' . CronTypes::DAILY,
+                'required_if:cronType,' . CronTypes::WEEKLY,
+                'required_if:cronType,' . CronTypes::MONTHLY,
+                'required_if:cronType,' . CronTypes::YEARLY,
             ],
             'day_of_week' => [
                 'nullable',
                 'string',
                 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-                'required_if:cronType,'.CronTypes::WEEKLY,
+                'required_if:cronType,' . CronTypes::WEEKLY,
             ],
-            'month_of_year' => ['nullable', 'integer', 'min:1', 'max:12', 'required_if:cronType,'.CronTypes::YEARLY],
+            'month_of_year' => ['nullable', 'integer', 'min:1', 'max:12', 'required_if:cronType,' . CronTypes::YEARLY],
             'day_of_month' => [
                 'nullable',
                 'integer',
                 'min:1',
                 'max:31',
-                'required_if:cronType,'.CronTypes::MONTHLY,
-                'required_if:cronType,'.CronTypes::YEARLY,
+                'required_if:cronType,' . CronTypes::MONTHLY,
+                'required_if:cronType,' . CronTypes::YEARLY,
             ],
             'data_detail_id' => ['required', 'int', 'exists:data_details,id'],
+            'retries' => ['nullable', 'integer', 'min:0'],
+            'retries_interval' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

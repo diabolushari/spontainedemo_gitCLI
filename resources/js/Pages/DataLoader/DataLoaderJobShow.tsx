@@ -64,6 +64,23 @@ export default function MetaGroupShow({ dataLoaderJob, statuses }: Readonly<Prop
       },
     ]
 
+    if (dataLoaderJob.cron_type === 'SUB_HOUR') {
+      data.push(
+        {
+          id: 11,
+          label: 'Max Retries',
+          content: dataLoaderJob.retries?.toString() ?? '0',
+          type: 'text',
+        },
+        {
+          id: 12,
+          label: 'Retry Interval (min)',
+          content: dataLoaderJob.retries_interval?.toString() ?? '0',
+          type: 'text',
+        }
+      )
+    }
+
     if (dataLoaderJob.query_id != null) {
       data.push({
         id: 6,

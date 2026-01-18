@@ -38,6 +38,9 @@ class DataLoaderJob extends Model
         'field_mapping',
         'schedule_start_time',
         'sub_hour_interval',
+        'retries',
+        'retries_interval',
+        'attempts',
     ];
 
     protected $casts = [

@@ -54,6 +54,8 @@ interface DataTableFormData {
   duplicate_identification_field: string
   schedule_start_time: string
   sub_hour_interval: number
+  retries: number
+  retries_interval: number
 }
 
 interface ErrorMetaInfo {
@@ -89,6 +91,8 @@ export default function SetupDataTableForm({
     duplicate_identification_field: '',
     schedule_start_time: '',
     sub_hour_interval: 0,
+    retries: 0,
+    retries_interval: 0,
   })
   const [errorMetaInfo, setErrorMetaInfo] = useState<ErrorMetaInfo[]>([])
 
@@ -251,6 +255,13 @@ export default function SetupDataTableForm({
 
     setErrorMetaInfo(errorMeta)
 
+    if (formData.cron_type === SUB_HOUR_CRON) {
+      if (formData.retries * formData.retries_interval >= formData.sub_hour_interval) {
+        showError('Retry duration (Retries * Interval) must be less than Sub-hour Interval')
+        return
+      }
+    }
+
     post({
       ...formData,
       field_mapping: fieldMapping,
@@ -403,6 +414,22 @@ export default function SetupDataTableForm({
                   value={formData.sub_hour_interval}
                   setValue={setFormValue('sub_hour_interval')}
                   label={'Sub-hour Interval (in minutes)'}
+                  type={'number'}
+                />
+              </div>
+              <div className='flex flex-col'>
+                <Input
+                  value={String(formData.retries)}
+                  setValue={(val: string) => setFormValue('retries')(Number(val))}
+                  label={'Max Retries'}
+                  type={'number'}
+                />
+              </div>
+              <div className='flex flex-col'>
+                <Input
+                  value={String(formData.retries_interval)}
+                  setValue={(val: string) => setFormValue('retries_interval')(Number(val))}
+                  label={'Retry Interval (in minutes)'}
                   type={'number'}
                 />
               </div>

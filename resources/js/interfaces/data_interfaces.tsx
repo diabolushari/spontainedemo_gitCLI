@@ -258,6 +258,9 @@ export interface DataLoaderJob extends Model {
   field_mapping?: DataTableFieldMapping[] | null
   schedule_start_time?: string | null
   sub_hour_interval?: number | null
+  retries?: number
+  retries_interval?: number
+  attempts?: number
 }
 
 export interface JobStatus extends Model {

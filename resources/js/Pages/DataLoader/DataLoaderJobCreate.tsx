@@ -54,6 +54,8 @@ interface FormData {
   predecessor_job_id: string
   schedule_start_time?: string
   sub_hour_interval?: number
+  retries?: number
+  retries_interval?: number
 }
 
 const sourceTypes = [
@@ -106,6 +108,8 @@ export default function DataLoaderJobCreate({
     predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
     schedule_start_time: job?.schedule_start_time ?? '',
     sub_hour_interval: job?.sub_hour_interval ?? 0,
+    retries: job?.retries ?? 0,
+    retries_interval: job?.retries_interval ?? 0,
   })
   const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
@@ -259,6 +263,18 @@ export default function DataLoaderJobCreate({
         type: 'number',
         label: 'Sub Hour Interval (in minutes)',
         setValue: setFormValue('sub_hour_interval'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
+      },
+      retries: {
+        type: 'number',
+        label: 'Max Retries',
+        setValue: setFormValue('retries'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
+      },
+      retries_interval: {
+        type: 'number',
+        label: 'Retry Interval (in minutes)',
+        setValue: setFormValue('retries_interval'),
         hidden: formData.cron_type !== 'SUB_HOUR',
       },
 
