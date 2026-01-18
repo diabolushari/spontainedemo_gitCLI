@@ -16,8 +16,21 @@ export interface User extends Model {
   email: string
   role?: string
   office_code?: string
+  group_id?: number
+  photo?: string
 }
 
+export interface UserGroup extends Model {
+  group_name: string
+  description?: string
+  permissions: UserGroupPermissions[]
+  users?: User[]
+}
+
+export interface UserGroupPermissions extends Model {
+  user_group_id: number
+  role: string
+}
 export interface ReferenceDataDomain extends Model {
   domain: string
 }

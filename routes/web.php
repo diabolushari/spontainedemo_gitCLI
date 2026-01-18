@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\User\ManageUserController;
+use App\Http\Controllers\User\ManageUserGroupController;
 use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
 use App\Http\Controllers\Utils\OrganizationExportController;
 use App\Http\Controllers\OrganizationController;
@@ -468,7 +470,12 @@ Route::get('organization-export', OrganizationExportController::class)
 
 Route::get('meta-hierarchy-item-detail/{metaHierarchyItem}', MetaHierarchyItemDetailController::class)
     ->name('meta-hierarchy-item-detail');
+//users
+Route::resource('manage-users', ManageUserController::class)
+    ->parameters(['manage-users' => 'user']);
 
+Route::resource('manage-user-group', ManageUserGroupController::class)
+    ->parameters(['manage-user-group' => 'userGroup']);
 require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
