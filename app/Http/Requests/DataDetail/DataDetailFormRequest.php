@@ -60,14 +60,14 @@ class DataDetailFormRequest extends Data
     ) {
     }
 
-    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    public static function withValidator(\Illuminate\Validation\Validator $validator): void
     {
         $validator->after(function ($validator) {
+            $data = $validator->getData();
+            
             if (
-                $this->subHourInterval &&
-                $this->retries &&
-                $this->retriesInterval &&
-                ($this->retries * $this->retriesInterval >= $this->subHourInterval)
+                isset($data['sub_hour_interval'], $data['retries'], $data['retries_interval']) &&
+                ($data['retries'] * $data['retries_interval'] >= $data['sub_hour_interval'])
             ) {
                 $validator->errors()->add('retries_interval', 'Retry duration (Retries * Interval) must be less than Sub-hour Interval');
             }

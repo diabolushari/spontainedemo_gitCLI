@@ -312,6 +312,8 @@ export interface JobStatuses extends Model {
   is_successful: 0 | 1
   error_message?: string
   total_records: string
+  is_retry: 0 | 1
+  retry_attempt: number
 }
 
 export const sortOrder = [

@@ -142,7 +142,7 @@ readonly class RunScheduledJob
     {
         $retries = $dataLoaderJob->retries ?? 0;
 
-        $canRetry = $retries > 0 && $currentAttempt < ($retries - 1);
+        $canRetry = $retries > 0 && $currentAttempt < ($retries);
 
         if ($canRetry) {
             $dataLoaderJob->attempts = $currentAttempt + 1;
