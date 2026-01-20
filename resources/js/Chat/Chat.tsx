@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
 import useChat from './components/useChat'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 export interface ChatMessage {
   id: number
@@ -63,30 +64,36 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
   }
 
   return (
-    <div className='flex h-screen bg-gradient-to-br from-slate-50/80 via-blue-50/40 to-indigo-50/30'>
-      {/* Sidebar with enhanced visual separation */}
-      <div className='relative'>
-        <Sidebar
-          chatHistory={chatHistory}
-          sessionId={_currentSession.id}
-          onSessionChange={switchConversation}
-        />
-        {/* Subtle separator line */}
-        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/40 to-transparent' />
-      </div>
+    <AnalyticsDashboardLayout
+      type='chat'
+      subtype='chat'
+    >
+      <div className='flex h-[calc(100vh-80px)] overflow-hidden w-full'>
+        {/* Sidebar with fixed width */}
+        <div className='w-[280px] flex-shrink-0 border-r border-gray-100 bg-white'>
+          <Sidebar
+            chatHistory={chatHistory}
+            sessionId={_currentSession.id}
+            onSessionChange={switchConversation}
+          />
+        </div>
 
-      <MainArea
-        currentSession={_currentSession}
-        messages={messages}
-        handleSendMessage={handleSendMessage}
-        isLoading={isLoading}
-        status={status}
-        input={input}
-        setInput={setInput}
-        onRetry={handleRetryConnection}
-        wsStatus={wsStatus}
-        handleToggleFavorite={handleToggleFavorite}
-      />
-    </div>
+        {/* Main content - flex-1 to take remaining space */}
+        <div className='flex-1 min-w-0'>
+          <MainArea
+            currentSession={_currentSession}
+            messages={messages}
+            handleSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            status={status}
+            input={input}
+            setInput={setInput}
+            onRetry={handleRetryConnection}
+            wsStatus={wsStatus}
+            handleToggleFavorite={handleToggleFavorite}
+          />
+        </div>
+      </div>
+    </AnalyticsDashboardLayout>
   )
 }
