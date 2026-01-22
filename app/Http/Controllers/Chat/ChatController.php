@@ -45,6 +45,7 @@ class ChatController extends Controller implements HasMiddleware
             'chatToken' => config('app.chat_token'),
             'chatURL' => config('app.chat_url'),
             'agentURL' => config('app.agent_url'),
+            'aiSuggestionUrl' => config('app.ai_suggestion_url'),
         ]);
     }
 }

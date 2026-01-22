@@ -83,28 +83,28 @@ const TabbedResponse = ({
                     <button
                         onClick={() => setActiveTab('response')}
                         className={`
-                flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200
+                flex items-center gap-2 px-3 py-1.5 text-base font-medium rounded-lg transition-all duration-200
                 ${activeTab === 'response'
                                 ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100'
                                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                             }
               `}
                     >
-                        <MessageSquareText size={16} />
+                        <MessageSquareText size={18} />
                         Summary
                     </button>
                     {chartToUse && (
                         <button
                             onClick={() => setActiveTab('visualization')}
                             className={`
-                    flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200
+                    flex items-center gap-2 px-3 py-1.5 text-base font-medium rounded-lg transition-all duration-200
                     ${activeTab === 'visualization'
                                     ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                 }
                   `}
                         >
-                            <LayoutGrid size={16} />
+                            <LayoutGrid size={18} />
                             Chart
                         </button>
                     )}
@@ -112,14 +112,14 @@ const TabbedResponse = ({
                         <button
                             onClick={() => setActiveTab('table')}
                             className={`
-                    flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200
+                    flex items-center gap-2 px-3 py-1.5 text-base font-medium rounded-lg transition-all duration-200
                     ${activeTab === 'table'
                                     ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                 }
                   `}
                         >
-                            <Table size={16} />
+                            <Table size={18} />
                             Table
                         </button>
                     )}

@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { FiLoader, FiStar } from 'react-icons/fi'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { FlashIcon } from '@hugeicons/core-free-icons'
-import ChatMessageContent from './ChatMessageContent'
 import ChatInput from './ChatInput'
-import ReasoningSection from './ReasoningSection'
-import TabbedResponse from './TabbedResponse'
+import MessageList from './MessageList'
+import EmptyState from './EmptyState'
 
 // --- Interfaces ---
 export interface ChatMessage {
@@ -28,37 +24,9 @@ interface ChatHistory {
   id: number
 }
 
-type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+export type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 
-interface MessageGroup {
-  userMessage?: ChatMessage
-  responses: ChatMessage[]
-}
 
-const groupMessages = (messages: ChatMessage[]): MessageGroup[] => {
-  const groups: MessageGroup[] = []
-  let currentGroup: MessageGroup | null = null
-
-  messages.forEach((msg) => {
-    if (msg.role === 'user') {
-      if (currentGroup) {
-        groups.push(currentGroup)
-      }
-      currentGroup = { userMessage: msg, responses: [] }
-    } else {
-      if (!currentGroup) {
-        currentGroup = { responses: [] }
-      }
-      currentGroup.responses.push(msg)
-    }
-  })
-
-  if (currentGroup) {
-    groups.push(currentGroup)
-  }
-
-  return groups
-}
 
 interface MainAreaProps {
   currentSession: ChatHistory
@@ -71,24 +39,9 @@ interface MainAreaProps {
   onRetry: () => void
   wsStatus: WebSocketStatus
   handleToggleFavorite: (messageId: number) => void
+  aiSuggestionUrl?: string
 }
 
-// --- Custom Gradient Flower Icon based on CSS Data ---
-const GradientFlowerIcon = () => (
-  <svg width="50" height="50" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="flowerGradient" x1="0%" y1="0%" x2="100%" y2="100%" gradientTransform="rotate(214.63)">
-        <stop offset="12.17%" stopColor="#0E6FFF" />
-        <stop offset="94.08%" stopColor="#00F0FF" />
-      </linearGradient>
-    </defs>
-    {/* Abstract representation of the 8-petal flower in the image */}
-    <path
-      d="M21 0L23.5 16L39.5 10.5L26 21L39.5 31.5L23.5 26L21 42L18.5 26L2.5 31.5L16 21L2.5 10.5L18.5 16L21 0Z"
-      fill="url(#flowerGradient)"
-    />
-  </svg>
-)
 
 export default function MainArea({
   messages,
@@ -101,16 +54,42 @@ export default function MainArea({
   wsStatus,
   currentSession,
   handleToggleFavorite,
+  aiSuggestionUrl,
 }: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([
+    "How many complaints are unresolved in this section?",
+    "Has the maintenance schedule been updated?",
+    "What is the pending workload for the field staff?",
+    "How many consumers are still in arrears this quarter?"
+  ])
+  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false)
+
+  useEffect(() => {
+    if (aiSuggestionUrl) {
+      setIsSuggestionsLoading(true)
+      fetch(aiSuggestionUrl)
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            setDynamicSuggestions(data.slice(0, 4))
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching AI suggestions:", error)
+        })
+        .finally(() => {
+          setIsSuggestionsLoading(false)
+        })
+    }
+  }, [aiSuggestionUrl])
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInput(e.target.value)
     },
-    [setInput]
+    [setInput],
   )
 
   const onSendMessage = useCallback(() => {
@@ -118,167 +97,21 @@ export default function MainArea({
   }, [handleSendMessage, input])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     console.log(messages)
   }, [messages, isLoading])
 
-  const hasMessages = messages.length > 0
-
   return (
     <main className='flex h-full flex-1 flex-col bg-[#F3F4F7] font-sans'>
-      {hasMessages ? (
+      {messages.length > 0 ? (
         <>
-          <div className='flex-1 space-y-4 overflow-y-auto px-4 py-6'>
-            {groupMessages(messages).map((group, groupIdx) => (
-              <div key={groupIdx} className='space-y-4'>
-                {group.userMessage && (
-                  <div className='flex justify-end'>
-                    <div className='group relative max-w-[50vw] overflow-hidden rounded-2xl rounded-br-md bg-blue-600 p-3 text-white shadow-sm transition-all duration-200 ease-in-out hover:shadow-md'>
-                      <ChatMessageContent message={group.userMessage} />
-                      <button
-                        onClick={() => handleToggleFavorite(group.userMessage!.id)}
-                        className='absolute right-2 top-2 rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 text-blue-100 hover:bg-blue-500/30'
-                        title='Favorite message'
-                      >
-                        <FiStar className={`h-4 w-4 ${group.userMessage.is_favorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
-                      </button>
-                    </div>
-                    <div className='ml-3 flex-shrink-0'>
-                      <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 shadow-sm'>
-                        <svg className='h-4 w-4 text-blue-600' fill='currentColor' viewBox='0 0 24 24'>
-                          <path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {group.responses.length > 0 && (() => {
-                  // Separate reasoning messages from final messages
-                  const reasoningMessages = group.responses.filter(
-                    (msg) => msg.contentType === 'text' || msg.role === 'action'
-                  )
-                  const finalMessages = group.responses.filter(
-                    (msg) => msg.contentType === 'final_response' || msg.contentType === 'chart' || msg.contentType === 'explore'
-                  )
-                  const hasError = group.responses.some((msg) => msg.role === 'error')
-                  const errorMessage = group.responses.find((msg) => msg.role === 'error')
-                  const isLastGroup = groupIdx === groupMessages(messages).length - 1
-                  const isReasoningComplete = finalMessages.length > 0 || (isLastGroup && !isLoading)
-
-                  return (
-                    <div className='flex justify-start'>
-                      <div className='mr-3 flex-shrink-0'>
-                        <div className='flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden'>
-                          <img src="/ai_agent.png" alt="AI Agent" className="h-full w-full object-cover" />
-                        </div>
-                      </div>
-
-                      <div className='flex w-full md:min-w-[600px] max-w-[90vw] md:max-w-[1000px] flex-col space-y-3 rounded-2xl rounded-bl-md'>
-                        {/* Error handling */}
-                        {hasError && errorMessage && (
-                          <div className='flex justify-center'>
-                            <button
-                              onClick={() => onRetry()}
-                              className='group flex max-w-sm cursor-pointer items-center gap-3 rounded-2xl bg-red-100 p-3 text-left text-red-800 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-200 hover:shadow-md'
-                            >
-                              <div className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-200 transition-transform duration-300 ease-in-out group-hover:rotate-180'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'>
-                                  <path d='M15 10h6V4h-2v2.339a9 9 0 1 0 1.716 7.91l-1.936-.5A7.028 7.028 0 1 1 17.726 8H15z' />
-                                </svg>
-                              </div>
-                              <div className='flex-1'>
-                                <p className='font-semibold'>Unexpected Error</p>
-                                <p className='text-sm text-red-700'>Click to Retry</p>
-                              </div>
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Reasoning Section */}
-                        {reasoningMessages.length > 0 && (
-                          <ReasoningSection
-                            messages={reasoningMessages}
-                            isComplete={isReasoningComplete}
-                            isLoading={isLoading && isLastGroup}
-                            status={status}
-                          />
-                        )}
-
-                        {/* Loading indicator when no reasoning messages yet */}
-                        {isLoading && isLastGroup && reasoningMessages.length === 0 && finalMessages.length === 0 && !hasError && (
-                          <ReasoningSection
-                            messages={[]}
-                            isComplete={false}
-                            isLoading={true}
-                            status={status}
-                          />
-                        )}
-
-                        {/* Final Messages (final_response, chart, explore) */}
-                        {(() => {
-                          const result = [];
-                          const processedIds = new Set<number>();
-
-                          // Look for pairs to tab
-                          const finalResponseIndex = finalMessages.findIndex(m => m.contentType === 'final_response');
-                          const hasFinalResponse = finalResponseIndex !== -1 ? finalMessages[finalResponseIndex] : undefined;
-
-                          const messagesAfterFinal = finalResponseIndex !== -1 ? finalMessages.slice(finalResponseIndex + 1) : [];
-                          const hasChart = messagesAfterFinal.find(m => m.contentType === 'chart');
-                          const hasExplore = messagesAfterFinal.find(m => m.contentType === 'explore');
-
-                          if (hasFinalResponse) {
-                            // Aggregate suggestions from all response messages in this group
-                            const allSuggestions = Array.from(new Set(
-                              group.responses.flatMap(m => m.suggestions || [])
-                            ));
-
-                            result.push(
-                              <div key={`tabbed-${hasFinalResponse.id}`} className='group relative'>
-                                <TabbedResponse
-                                  finalResponse={hasFinalResponse}
-                                  chart={hasChart}
-                                  explore={hasExplore}
-                                  onToggleFavorite={handleToggleFavorite}
-                                  suggestions={allSuggestions}
-                                  handleSendMessage={handleSendMessage}
-                                />
-                              </div>
-                            );
-                            processedIds.add(hasFinalResponse.id);
-                            if (hasChart) processedIds.add(hasChart.id);
-                            if (hasExplore) processedIds.add(hasExplore.id);
-                          }
-
-                          // Render remaining messages (e.g., singles)
-                          finalMessages.forEach((message) => {
-                            if (processedIds.has(message.id)) return;
-
-                            result.push(
-                              <div key={message.id} className='group relative rounded-2xl border border-gray-100 bg-white p-3 shadow-sm'>
-                                <ChatMessageContent message={message} />
-                                <button
-                                  onClick={() => handleToggleFavorite(message.id)}
-                                  className='absolute right-[-8px] top-[-8px] rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 text-gray-400 hover:bg-gray-100'
-                                  title='Favorite message'
-                                >
-                                  <FiStar className={`h-4 w-4 ${message.is_favorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
-                                </button>
-                              </div>
-                            );
-                          });
-
-                          return result;
-                        })()}
-                      </div>
-                    </div>
-                  )
-                })()}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+          <MessageList
+            messages={messages}
+            handleToggleFavorite={handleToggleFavorite}
+            handleSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            status={status}
+            onRetry={onRetry}
+          />
           <ChatInput
             ref={textareaRef}
             wsStatus={wsStatus}
@@ -292,81 +125,15 @@ export default function MainArea({
           />
         </>
       ) : (
-        <div className='flex flex-1 flex-col items-center justify-center p-4 md:p-8 bg-[#F3F4F7]'>
-          <div className='w-full max-w-[920px]'>
-
-            {/* Header Section */}
-            <div className='mb-10 pl-2'>
-              <div className='flex items-center gap-4 mb-1'>
-                {/* Flower Icon */}
-                <div className="flex-shrink-0">
-                  <img src="/CS_Flower_2 1.svg" alt="" />
-                </div>
-
-                <h1
-                  className='font-[Inter] font-medium text-[44px] leading-[53px] tracking-[-0.03em]'
-                  style={{
-                    background: 'linear-gradient(90.72deg, #0FB54C -18.17%, #137EB8 76.33%, #1682CC 88.9%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}
-                >
-                  Hello!
-                </h1>
-              </div>
-
-              {/* Question Text */}
-              <p
-                className='font-[Inter] font-medium text-[35px] leading-[42px] tracking-[-0.03em]'
-                style={{
-                  background: 'linear-gradient(90.72deg, #036226 -18.17%, #137EB8 76.33%, #1682CC 88.9%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                How can i help you today?
-              </p>
-            </div>
-
-            {/* Input Bar */}
-            <div className='w-full mb-12 relative'>
-              <ChatInput
-                input={input}
-                handleInputChange={(e) => setInput(e.target.value)}
-                onSendMessage={onSendMessage}
-                isLoading={isLoading}
-                placeholder=' '
-              />
-            </div>
-
-            {/* Suggestion Pills */}
-            <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-4'>
-              {[
-                "How many complaints are unresolved in this section?",
-                "Has the maintenance schedule been updated?",
-                "What is the pending workload for the field staff?",
-                "How many consumers are still in arrears this quarter?"
-              ].map((text, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSendMessage(text)}
-                  className='group flex items-center gap-3 rounded-full bg-white px-6 py-4 text-left shadow-[0_2px_8px_rgb(0,0,0,0.02)] transition-all hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)] hover:-translate-y-0.5'
-                >
-                  {/* Lightning Icon - Solid Blue */}
-                  <span className='text-[#2D7FF9] flex-shrink-0'>
-                    <HugeiconsIcon icon={FlashIcon} size={20} strokeWidth={2.5} variant="solid" />
-                  </span>
-                  <span className='text-[15px] font-normal text-gray-700 group-hover:text-gray-900'>
-                    {text}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-          </div>
-        </div>
+        <EmptyState
+          input={input}
+          setInput={setInput}
+          onSendMessage={onSendMessage}
+          isLoading={isLoading}
+          dynamicSuggestions={dynamicSuggestions}
+          isSuggestionsLoading={isSuggestionsLoading}
+          handleSendMessage={handleSendMessage}
+        />
       )}
     </main>
   )

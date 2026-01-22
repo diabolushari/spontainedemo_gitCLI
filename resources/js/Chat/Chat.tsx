@@ -24,9 +24,10 @@ interface ChatHistory {
 interface ChatProps {
   chatHistory: ChatHistory[]
   currentSession: ChatHistory
+  aiSuggestionUrl?: string
 }
 
-export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps>) {
+export default function Chat({ chatHistory, currentSession, aiSuggestionUrl }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -91,6 +92,7 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
             onRetry={handleRetryConnection}
             wsStatus={wsStatus}
             handleToggleFavorite={handleToggleFavorite}
+            aiSuggestionUrl={aiSuggestionUrl}
           />
         </div>
       </div>
