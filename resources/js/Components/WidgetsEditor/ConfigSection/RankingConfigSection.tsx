@@ -15,6 +15,7 @@ interface RankingConfigSectionProps {
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
   metaHierarchy: MetaHierarchy[]
   ai_agent?: boolean
+  widget_data_url: string
 }
 
 export function RankingConfigSection({
@@ -22,6 +23,7 @@ export function RankingConfigSection({
   setFormValue,
   metaHierarchy,
   ai_agent,
+  widget_data_url,
 }: Readonly<RankingConfigSectionProps>) {
   const [dimensions, setDimensions] = useState<any[]>([])
   const [fieldName, setFieldName] = useState<any>(null)
@@ -29,33 +31,37 @@ export function RankingConfigSection({
 
   useEffect(() => {
     if (formData.rank_subset_id) {
-      axios.get(`/subset-fields?subset_id=${formData.rank_subset_id}`).then((res) => {
-        const dims = res.data.dimensions.filter(
-          (d: any) => d.subset_column !== 'month' && d.hierarchy_id != null
-        )
-        setDimensions(dims)
-        console.log('dims : ', dims)
-      })
+      axios
+        .get(`${widget_data_url}/subset-fields?subset_id=${formData.rank_subset_id}`)
+        .then((res) => {
+          const dims = res.data.dimensions.filter(
+            (d: any) => d.subset_column !== 'month' && d.hierarchy_id != null
+          )
+          setDimensions(dims)
+          console.log('dims : ', dims)
+        })
     }
   }, [formData.rank_subset_id])
 
   useEffect(() => {
     if (formData.rank_hierarchy_id) {
-      axios.get(`/meta-hierarchy-data/${formData.rank_hierarchy_id}`).then((res) => {
-        setSelectedHierarchy(res.data)
-        setFieldName([
-          {
-            id: 1,
-            column: res.data.primary_column,
-            name: res.data.primary_field_name,
-          },
-          {
-            id: 2,
-            column: res.data.secondary_column,
-            name: res.data.secondary_field_name,
-          },
-        ])
-      })
+      axios
+        .get(`${widget_data_url}/meta-hierarchy-data/${formData.rank_hierarchy_id}`)
+        .then((res) => {
+          setSelectedHierarchy(res.data)
+          setFieldName([
+            {
+              id: 1,
+              column: res.data.primary_column,
+              name: res.data.primary_field_name,
+            },
+            {
+              id: 2,
+              column: res.data.secondary_column,
+              name: res.data.secondary_field_name,
+            },
+          ])
+        })
     }
   }, [formData.rank_hierarchy_id])
 
@@ -111,18 +117,25 @@ export function RankingConfigSection({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={route('subset.list', {
-              search: '',
-            })}
+            url={`${widget_data_url}${route(
+              'subset.list',
+              {
+                search: '',
+              },
+              false
+            )}`}
             dataKey='id'
             displayKey='name'
             value={subset}
-            setValue={handleSubsetChangeAi}
+            setValue={(val: any) => {
+              setSubset(val)
+              setFormValue('rank_subset_id')(val?.id)
+            }}
           />
         ) : (
           <DynamicSelectList
             label='Subset'
-            url={`/api/subset-group/${formData?.subset_group_id}`}
+            url={`${widget_data_url}/api/subset-group/${formData?.subset_group_id}`}
             dataKey='id'
             displayKey='name'
             value={formData.rank_subset_id}
@@ -194,11 +207,11 @@ export function RankingConfigSection({
         <div className='flex flex-col'>
           <DynamicSelectList
             label={'Default Level'}
-            url={`/meta-hierarchy/${formData.rank_hierarchy_id}/levels`}
+            url={`${widget_data_url}/meta-hierarchy/${formData.rank_hierarchy_id}/levels`}
             dataKey={'name'}
             displayKey={'name'}
             setValue={setFormValue('rank_level')}
-            value={formData.rank_level}
+            value={formData.rank_level ?? undefined}
           />
         </div>
       )}

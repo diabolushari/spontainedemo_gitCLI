@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { FiLoader } from 'react-icons/fi'
+import { FiLoader, FiStar } from 'react-icons/fi'
+import { router } from '@inertiajs/react'
 import ChatInputArea from './ChatInputArea'
 import ChatMessageContent from './ChatMessageContent'
 
@@ -12,6 +13,7 @@ export interface ChatMessage {
   suggestions?: string[]
   explore?: number
   data_table?: object[]
+  is_favorite?: boolean
 }
 
 interface ChatHistory {
@@ -32,6 +34,7 @@ interface MainAreaProps {
   setInput: (input: string) => void
   onRetry: () => void
   wsStatus: WebSocketStatus
+  handleToggleFavorite: (messageId: number) => void
 }
 
 export default function MainArea({
@@ -43,6 +46,8 @@ export default function MainArea({
   setInput,
   onRetry,
   wsStatus,
+  currentSession,
+  handleToggleFavorite,
 }: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
@@ -82,7 +87,6 @@ export default function MainArea({
     <main className='flex flex-1 flex-col bg-gradient-to-r from-1stop-gradient-left to-1stop-gradient-right'>
       {hasMessages ? (
         <>
-          {/* Chat Messages */}
           <div className='flex-1 space-y-6 overflow-y-auto px-6 py-8'>
             {messages.map((message) => (
               <>
@@ -142,6 +146,19 @@ export default function MainArea({
                       }`}
                     >
                       <ChatMessageContent message={message} />
+                      <button
+                        onClick={() => handleToggleFavorite(message.id)}
+                        className={`absolute right-2 top-2 rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
+                          message.role === 'user'
+                            ? 'text-blue-100 hover:bg-blue-500/30'
+                            : 'text-gray-400 hover:bg-gray-100'
+                        }`}
+                        title='Favorite message'
+                      >
+                        <FiStar
+                          className={`h-4 w-4 ${message.is_favorite ? 'fill-yellow-400 text-yellow-400' : ''}`}
+                        />
+                      </button>
                       {message.suggestions && message.suggestions.length > 0 && (
                         <div className='mt-4 w-full space-y-2'>
                           <div className='mb-2 text-xs font-medium text-gray-500'>

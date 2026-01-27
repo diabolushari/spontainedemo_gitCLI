@@ -14,7 +14,7 @@ interface SubsetMaxValueResponse {
 interface Props {
   widget: WidgetType
   onBack: () => void
-  onAddToDashboard?: (widget: WidgetType) => void // New optional prop
+  onAddToDashboard?: (widget: WidgetType) => void
 }
 
 export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: Props) {
@@ -107,11 +107,22 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
             <div className='space-y-6'>
               {/* Preview Card */}
               <div className='overflow-hidden rounded-xl bg-white shadow-sm'>
-                <div className='border-b border-gray-100 bg-gray-50/50 px-6 py-4'>
+                {/* Header with Title and Actions */}
+                <div className='flex items-center justify-between border-b border-gray-100 bg-gray-50/50 px-6 py-4'>
                   <span className='inline-flex items-center rounded bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700'>
                     Preview
                   </span>
+
+                  {/* Primary Edit Action placed here for easy access */}
+                  <Link
+                    href={`/widget-editor/${widget.id}/edit`}
+                    className='inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                  >
+                    <Edit className='h-3.5 w-3.5' />
+                    Edit Widget
+                  </Link>
                 </div>
+
                 <div className='p-8'>
                   <div className='relative flex min-h-[600px] flex-col overflow-hidden rounded-lg border border-gray-100 bg-white p-6 shadow-sm'>
                     <div className='mb-6 flex items-start justify-between'>
@@ -179,7 +190,7 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
                 </div>
               </div>
 
-              {/* Actions */}
+              {/* Actions Footer */}
               <div className='flex items-center justify-end gap-3 pt-4'>
                 <button
                   onClick={onBack}
@@ -194,14 +205,8 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
                   <Trash2 className='h-4 w-4' />
                   Delete
                 </button>
-                <Link
-                  href={`/widget-editor/${widget.id}/edit`}
-                  className='inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'
-                >
-                  <Edit className='h-4 w-4' />
-                  Edit Widget
-                </Link>
-                {onAddToDashboard && ( // Conditionally render the button
+
+                {onAddToDashboard && (
                   <button
                     onClick={() => onAddToDashboard(widget)}
                     className='inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'

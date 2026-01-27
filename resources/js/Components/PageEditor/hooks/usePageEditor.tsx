@@ -20,6 +20,7 @@ export function usePageEditor(
     page: initialPage?.page ?? [],
     published: initialPage?.published ?? false,
     anchor_widget: initialPage?.anchor_widget ?? null,
+    config: initialPage?.config ?? { heading_style: null },
   })
 
   const [nextId, setNextId] = useState(
@@ -365,6 +366,31 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  const handleRemoveTextBlock = useCallback(
+    (rowId: number, position: number) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) =>
+              slot.position === position ? { widgetId: null, position: slot.position } : slot
+            ),
+          }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
+  const handleHeadingStyleChange = (styleIndex: number) => {
+    setFormValue('config')({
+      ...pageStructure.config,
+      heading_style: styleIndex,
+    })
+  }
+
   return {
     pageStructure,
     setFormValue,
@@ -386,5 +412,7 @@ export function usePageEditor(
     handleAddTextBlock,
     handleTextUpdate,
     handleAddWidgetToSlot,
+    handleRemoveTextBlock,
+    handleHeadingStyleChange,
   }
 }

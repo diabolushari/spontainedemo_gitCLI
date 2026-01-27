@@ -24,13 +24,41 @@ const EmptyState = ({ message }: { message: string }) => (
   </div>
 )
 
+import useFetchRecord from '@/hooks/useFetchRecord'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
+
+interface SubsetMaxValueResponse {
+  field: string
+  max_value: string | null
+}
+// ... imports
+
 export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(anchorMonth)
   const [selectView, setSelectView] = useState('overview')
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
+
+  const subsetId = widget?.data?.overview?.subset_id
+  const url =
+    subsetId && widget_data_url
+      ? `${widget_data_url}${route('subset-field-max-value', { subsetDetail: subsetId, field: 'month' }, false)}`
+      : null
+
+  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
 
   useEffect(() => {
-    setSelectedMonth(anchorMonth)
-  }, [anchorMonth])
+    if (!loading && maxValueData != null && maxValueData.max_value) {
+      const maxValue = maxValueData.max_value
+      if (/^\d{6}$/.test(maxValue)) {
+        const year = parseInt(maxValue.substring(0, 4), 10)
+        const month = parseInt(maxValue.substring(4, 6), 10) - 1 // months are 0-indexed
+        setSelectedMonth(new Date(year, month, 1))
+      }
+    } else {
+      setSelectedMonth(anchorMonth)
+    }
+  }, [loading, maxValueData, anchorMonth])
 
   useEffect(() => {
     console.log(selectView)
@@ -81,6 +109,9 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           colorPalette={data.overview.color_palette}
           highlightCards={data.highlight_cards}
           selectedMonth={selectedMonth}
+          hierarchy_item_id={data?.overview?.hierarchy_item_id}
+          overviewLevel={data?.overview?.level}
+          overviewNameField={data?.overview?.name_field}
         />
       )}
 

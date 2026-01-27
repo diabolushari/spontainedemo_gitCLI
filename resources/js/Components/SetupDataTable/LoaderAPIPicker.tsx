@@ -2,7 +2,8 @@ import { DataLoaderAPI } from '@/interfaces/data_interfaces'
 import useFetchPagination from '@/hooks/useFetchPagination'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { useCallback, useState } from 'react'
-import { FiCheck, FiDatabase, FiSearch } from 'react-icons/fi'
+import { FiCheck, FiDatabase, FiEdit2, FiSearch } from 'react-icons/fi'
+import { Link } from '@inertiajs/react'
 import { cn } from '@/utils'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import CreateAPIModal from './CreateAPIModal'
@@ -105,13 +106,23 @@ const LoaderAPIPicker = ({ onSelect, selectedId }: LoaderAPIPickerProps) => {
                 </p>
               </div>
 
-              {selectedId === api.id && (
-                <div className='flex-shrink-0'>
+              <div className='flex flex-shrink-0 items-center gap-2'>
+                <Link
+                  href={`/loader-apis/${api.id}/edit`}
+                  target='_blank'
+                  className='group rounded-full p-2 transition-colors hover:bg-gray-100'
+                  onClick={(e) => e.stopPropagation()}
+                  title='Edit API'
+                >
+                  <FiEdit2 className='h-4 w-4 text-gray-400 group-hover:text-blue-500' />
+                </Link>
+
+                {selectedId === api.id && (
                   <div className='flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white'>
                     <FiCheck className='h-3 w-3' />
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ))}
         </div>

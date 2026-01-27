@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import Modal from '@/ui/Modal/Modal'
 import { handleHttpErrors, showSuccess } from '@/ui/alerts'
 import DataLoaderAPIForm from '@/Components/DataLoader/DataLoaderAPIForm'
+import { router } from '@inertiajs/react'
 
 interface CreateAPIModalProps {
   onClose: () => void
@@ -34,6 +35,9 @@ const CreateAPIModal = ({ onClose, onSuccess }: CreateAPIModalProps) => {
           showSuccess(response.data.message)
           onSuccess(response.data.data)
           onClose()
+          router.get('/data-detail/create', {
+            source: 'api', // Converts to ?source=api
+          })
         }
       } catch (error) {
         const validationErrors = handleHttpErrors(error, false)

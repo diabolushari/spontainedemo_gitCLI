@@ -20,7 +20,8 @@ readonly class SetupDataTable
 {
     public function __construct(
         public readonly CreateDataTable $createDataTable
-    ) {}
+    ) {
+    }
 
     public function setup(DataDetailFormRequest $formRequest): OperationResult
     {
@@ -31,7 +32,7 @@ readonly class SetupDataTable
 
             return OperationResult::from([
                 'error' => true,
-                'message' => 'on table create: '.ExceptionMessage::getMessage($exception),
+                'message' => 'on table create: ' . ExceptionMessage::getMessage($exception),
             ]);
         }
 
@@ -45,7 +46,7 @@ readonly class SetupDataTable
 
             return OperationResult::from([
                 'error' => true,
-                'message' => 'On Detail Create: '.ExceptionMessage::getMessage($e),
+                'message' => 'On Detail Create: ' . ExceptionMessage::getMessage($e),
             ]);
         }
 
@@ -60,7 +61,7 @@ readonly class SetupDataTable
 
             return OperationResult::from([
                 'error' => true,
-                'message' => 'here: '.ExceptionMessage::getMessage($exception),
+                'message' => 'here: ' . ExceptionMessage::getMessage($exception),
             ]);
         }
 
@@ -69,13 +70,13 @@ readonly class SetupDataTable
         } catch (Exception $exception) {
             return OperationResult::from([
                 'error' => true,
-                'message' => 'On Job Create: '.ExceptionMessage::getMessage($exception),
+                'message' => 'On Job Create: ' . ExceptionMessage::getMessage($exception),
             ]);
         }
 
         return OperationResult::from([
             'error' => false,
-            'message' => ''.$record->id,
+            'message' => '' . $record->id,
         ]);
     }
 
@@ -235,6 +236,8 @@ readonly class SetupDataTable
             'created_by' => request()->user()?->id,
             'schedule_start_time' => $request->scheduleStartTime,
             'sub_hour_interval' => $request->subHourInterval,
+            'retries' => $request->retries,
+            'retries_interval' => $request->retriesInterval,
         ]);
     }
 }

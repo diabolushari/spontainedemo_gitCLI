@@ -22,6 +22,7 @@ import {
   Table2,
   Timer,
   Users,
+  Building2,
 } from 'lucide-react'
 
 // The types remain the same, they are our target structure.
@@ -65,6 +66,7 @@ const iconMap: { [key: string]: React.ComponentType<LucideProps> } = {
   Server: Server,
   FileCode2: FileCode2,
   Menu: Menu,
+  Building2: Building2,
 }
 
 const dashboardMenuData: NavGroup[] = [
@@ -97,7 +99,7 @@ const manageMenuData: NavGroup[] = [
   {
     id: 10,
     group_label: 'AI Studio',
-    group_url: '/ai-studio',
+    group_url: '/chat',
     group_pos: 1,
     group_icon: 'Sparkles',
     nav_items: [
@@ -241,6 +243,13 @@ const manageMenuData: NavGroup[] = [
         item_url: '/manage/users',
         item_pos: 2,
         item_icon: 'Users',
+      },
+      {
+        id: 5003,
+        item_label: 'Organizations',
+        item_url: '/organization',
+        item_pos: 3,
+        item_icon: 'Building2',
       },
     ],
   },

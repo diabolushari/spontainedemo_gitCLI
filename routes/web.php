@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Subset\SubsetLevelDataController;
+use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
+use App\Http\Controllers\Utils\OrganizationExportController;
+use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\WidgetsEditor\WidgetAiSearchController;
 use App\Http\Controllers\Api\PageEditorApiController;
 use App\Http\Controllers\Api\WidgetApiController;
 use App\Http\Controllers\Utils\SubsetGroupDetailedController;
@@ -29,6 +34,7 @@ use App\Http\Controllers\ChartData\SubsetGroupNameController;
 use App\Http\Controllers\ChartData\SubsetMeasuresController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
+use App\Http\Controllers\ChatHistory\FavoriteController;
 use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -67,6 +73,7 @@ use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
+use App\Http\Controllers\Utils\MetaHierarchyItemSearchController;
 use App\Http\Controllers\NavController\DefaultDashboardPageController;
 use App\Http\Controllers\NavController\DefaultDashboardPageGetController;
 use App\Http\Controllers\NavController\NavController;
@@ -113,6 +120,7 @@ use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Http\Controllers\Utils\StoreLoaderAPIController;
 use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
 use App\Http\Controllers\Utils\SubsetMaxValueController;
+use App\Http\Controllers\Utils\SubsetDetailGetController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionSearchController;
 use App\Http\Controllers\WidgetsEditor\WidgetSearchController;
@@ -206,6 +214,8 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
+Route::get('meta-hierarchy-item-search', MetaHierarchyItemSearchController::class)
+    ->name('meta-hierarchy-item-search');
 Route::get('meta-structure-search', MetaStructureSearchController::class)
     ->name('meta-structure-search');
 Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::class)
@@ -382,6 +392,7 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
+Route::post('/chat-history/favorite', FavoriteController::class)->name('chat-history.favorite');
 
 Route::get('/nav-editor', [NavEditorController::class, 'index'])->name('nav.editor');
 
@@ -419,6 +430,7 @@ Route::resource('page-editor', PageEditorController::class);
 
 Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
 Route::get('widget-collection-search', WidgetCollectionSearchController::class)->name('widget-collection.search');
+Route::get('widget-ai-search', WidgetAiSearchController::class)->name('widget.ai.search');
 
 Route::post('widgets/save', [WidgetApiController::class, 'store'])->name('widgets.api.store');
 Route::put('widgets/save/{widget}', [WidgetApiController::class, 'update'])->name('widgets.api.update');
@@ -449,6 +461,19 @@ Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::cl
 
 Route::get('subset-group-detailed/{group}', SubsetGroupDetailedController::class)
     ->name('subset-group-detailed');
+
+Route::get('api/subset-detail/{subsetDetail}', SubsetDetailGetController::class)
+    ->name('subset.detail.get');
+
+Route::resource('organization', OrganizationController::class);
+Route::get('organization-export', OrganizationExportController::class)
+    ->name('organization.export');
+
+Route::get('meta-hierarchy-item-detail/{metaHierarchyItem}', MetaHierarchyItemDetailController::class)
+    ->name('meta-hierarchy-item-detail');
+
+Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
+    ->name('subset-level-data');
 
 require __DIR__ . '/auth.php';
 

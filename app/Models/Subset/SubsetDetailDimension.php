@@ -24,6 +24,7 @@ class SubsetDetailDimension extends Model
         'updated_by',
         'hierarchy_id',
         'description',
+        'sort_order',
     ];
 
     protected $casts = [

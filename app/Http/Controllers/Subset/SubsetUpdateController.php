@@ -49,11 +49,23 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                 'dates',
                 $user,
                 [
-                    'subset_detail_id', 'field_id', 'subset_field_name', 'subset_column',
-                    'sort_order', 'start_date', 'end_date', 'use_dynamic_date',
-                    'use_last_found_data', 'dynamic_start_type', 'dynamic_end_type',
-                    'dynamic_start_offset', 'dynamic_start_unit', 'dynamic_end_offset',
-                    'dynamic_end_unit', 'date_field_expression', 'updated_by',
+                    'subset_detail_id',
+                    'field_id',
+                    'subset_field_name',
+                    'subset_column',
+                    'sort_order',
+                    'start_date',
+                    'end_date',
+                    'use_dynamic_date',
+                    'use_last_found_data',
+                    'dynamic_start_type',
+                    'dynamic_end_type',
+                    'dynamic_start_offset',
+                    'dynamic_start_unit',
+                    'dynamic_end_offset',
+                    'dynamic_end_unit',
+                    'date_field_expression',
+                    'updated_by',
                 ]
             );
 
@@ -65,9 +77,17 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                 'dimensions',
                 $user,
                 [
-                    'subset_detail_id', 'field_id', 'subset_field_name', 'subset_column',
-                    'filter_only', 'column_expression', 'filters', 'hierarchy_id',
-                    'description', 'updated_by',
+                    'subset_detail_id',
+                    'field_id',
+                    'subset_field_name',
+                    'subset_column',
+                    'filter_only',
+                    'column_expression',
+                    'filters',
+                    'hierarchy_id',
+                    'description',
+                    'updated_by',
+                    'sort_order',
                 ]
             );
 
@@ -79,8 +99,15 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                 'measures',
                 $user,
                 [
-                    'subset_detail_id', 'field_id', 'subset_field_name', 'subset_column',
-                    'sort_order', 'column', 'aggregation', 'expression', 'weight_field_id',
+                    'subset_detail_id',
+                    'field_id',
+                    'subset_field_name',
+                    'subset_column',
+                    'sort_order',
+                    'column',
+                    'aggregation',
+                    'expression',
+                    'weight_field_id',
                     'updated_by',
                 ]
             );
@@ -133,7 +160,7 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                 ...collect($itemArray)->except('id')->toArray(),
             ];
 
-            if (! empty($itemArray['id'])) {
+            if (!empty($itemArray['id'])) {
                 $preparedData['id'] = $itemArray['id'];
                 $itemsToUpdate[] = $preparedData;
                 $idsToKeep[] = $itemArray['id'];
@@ -145,7 +172,7 @@ class SubsetUpdateController extends Controller implements HasMiddleware
             }
         }
 
-        if (! empty($itemsToUpdate)) {
+        if (!empty($itemsToUpdate)) {
             $modelClass::upsert($itemsToUpdate, ['id'], $upsertColumns);
         }
 

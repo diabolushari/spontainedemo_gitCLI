@@ -3,6 +3,8 @@ import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { BlockDimension } from '@/interfaces/data_interfaces'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import dayjs from 'dayjs'
 import React, { useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -52,6 +54,8 @@ export default function TrendGraph({
   const chartContainerClassName =
     'h-[450px] w-full overflow-hidden rounded-xl border border-border bg-background'
 
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
+
   const fetchUrl = useMemo(() => {
     const dateObject = dayjs(selectedMonth)
 
@@ -74,7 +78,7 @@ export default function TrendGraph({
       params[filterFieldName] = filterValue
     }
 
-    return route('office-level-summary', { ...params })
+    return `${widget_data_url}${route('office-level-summary', { ...params }, false)}`
   }, [
     subsetId,
     selectedMonth,

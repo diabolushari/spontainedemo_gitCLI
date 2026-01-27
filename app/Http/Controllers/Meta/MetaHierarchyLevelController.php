@@ -17,10 +17,14 @@ class MetaHierarchyLevelController extends Controller
 
     public function getByHierarchy(MetaHierarchy $metaHierarchy): JsonResponse
     {
-        $levels = $metaHierarchy->levels->map(function ($level) {
-            $level->value = \Illuminate\Support\Str::snake($level->name);
-            return $level;
-        });
+        $levels = $metaHierarchy->levels()
+            ->with(['primaryStructure', 'secondaryStructure'])
+            ->get()
+            ->map(function ($level) {
+                $level->value = \Illuminate\Support\Str::snake($level->name);
+                $level->makeHidden(['primary_field_structure_id', 'secondary_field_structure_id']);
+                return $level;
+            });
 
         return response()->json($levels);
     }

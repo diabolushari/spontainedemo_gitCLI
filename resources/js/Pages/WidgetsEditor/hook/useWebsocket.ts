@@ -13,6 +13,7 @@ export const useWebSocket = (url: string) => {
     
     socket.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
+      console.log("WS Received:", data);
       setMessages((prev) => [...prev, data]);
     };
 
@@ -31,8 +32,9 @@ export const useWebSocket = (url: string) => {
 
   const sendMessage = (msg: any) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
+      console.log("WS Sending:", msg);
       socketRef.current.send(JSON.stringify(msg));
-      setMessages((prev) => [...prev, { ...msg, type: 'user' }]);
+      setMessages((prev) => [...prev, { type: 'user', ...msg }]);
     }
   };
 

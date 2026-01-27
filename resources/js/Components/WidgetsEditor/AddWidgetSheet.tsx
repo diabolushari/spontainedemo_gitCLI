@@ -40,29 +40,27 @@ export function AddWidgetSheet({
 
         <div className='space-y-4'>
           {/* Collection Selector */}
-          {collections.length > 0 && (
-            <div className='mb-4 flex items-end gap-2'>
-              <div className='flex-1'>
-                <SelectList
-                  label='Collection'
-                  value={selectedCollectionId}
-                  setValue={(value) => setSelectedCollectionId(value)}
-                  list={collections}
-                  dataKey='id'
-                  displayKey='name'
-                  style='normal'
-                />
-              </div>
-              <button
-                type='button'
-                className='mb-[2px] rounded-md bg-gray-200 p-2 text-gray-700 hover:bg-gray-300'
-                onClick={() => setShowCollectionModal(true)}
-                title='Create New Collection'
-              >
-                <PlusIcon className='h-5 w-5' />
-              </button>
+          <div className='mb-4 flex items-end gap-2'>
+            <div className='flex-1'>
+              <SelectList
+                label='Collection'
+                value={selectedCollectionId}
+                setValue={(value) => setSelectedCollectionId(value)}
+                list={collections}
+                dataKey='id'
+                displayKey='name'
+                style='normal'
+              />
             </div>
-          )}
+            <button
+              type='button'
+              className='mb-[2px] rounded-md bg-gray-200 p-2 text-gray-700 hover:bg-gray-300'
+              onClick={() => setShowCollectionModal(true)}
+              title='Create New Collection'
+            >
+              <PlusIcon className='h-5 w-5' />
+            </button>
+          </div>
 
           {showCollectionModal && (
             <WidgetCollectionCreateModal setShowModal={setShowCollectionModal} />

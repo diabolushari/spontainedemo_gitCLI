@@ -18,10 +18,12 @@ class DashboardPage extends Model
         'page',
         'published',
         'anchor_widget',
+        'config',
     ];
 
     protected $casts = [
         'page' => 'array',
         'published' => 'boolean',
+        'config' => 'array',
     ];
 }

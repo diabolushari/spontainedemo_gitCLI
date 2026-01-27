@@ -258,6 +258,9 @@ export interface DataLoaderJob extends Model {
   field_mapping?: DataTableFieldMapping[] | null
   schedule_start_time?: string | null
   sub_hour_interval?: number | null
+  retries?: number
+  retries_interval?: number
+  attempts?: number
 }
 
 export interface JobStatus extends Model {
@@ -309,6 +312,8 @@ export interface JobStatuses extends Model {
   is_successful: 0 | 1
   error_message?: string
   total_records: string
+  is_retry: 0 | 1
+  retry_attempt: number
 }
 
 export const sortOrder = [
@@ -504,6 +509,12 @@ export interface HighlightCardData {
   subset_id: number | null
   measure: SelectedMeasure
   subset_name?: string | null
+  dimension_column?: string | null
+  dimension_name?: string | null
+  hierarchy_id?: number | null
+  hierarchy_item_id?: number | null
+  hierarchy_item_name?: string | null
+  metadata?: any | null
 }
 
 export interface Widget {
@@ -531,6 +542,11 @@ export interface Widget {
       color_palette: string
       subset_id: number | null
       subset_name?: string
+      hierarchy_id?: number | null
+      hierarchy_item_id?: number | null
+      hierarchy_item_name?: string | null
+      level: string | null
+      name_field: string | null
     }
     highlight_cards: HighlightCardData[]
     trend: {
@@ -592,4 +608,7 @@ export interface DashboardPage extends Model {
   page: PageSection[]
   published: boolean
   anchor_widget: number | null
+  config: {
+    heading_style: number | null
+  } | null
 }

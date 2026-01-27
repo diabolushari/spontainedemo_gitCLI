@@ -18,7 +18,8 @@ readonly class RunScheduledJob
     public function __construct(
         private DataLoaderFactory $dataLoaderFactory,
         private ImportToDataTable $importToDataTable,
-    ) {}
+    ) {
+    }
 
     /**
      * @throws Exception
@@ -26,21 +27,23 @@ readonly class RunScheduledJob
     public function run(DataLoaderJob $dataLoaderJob): OperationResult
     {
         $startTime = now();
+        $currentAttempt = $dataLoaderJob->attempts ?? 0;
+        $isRetry = $currentAttempt > 0;
 
         // Validate the job first
-        $validationResult = $this->validateJob($dataLoaderJob, $startTime);
+        $validationResult = $this->validateJob($dataLoaderJob, $startTime, $currentAttempt, $isRetry);
         if ($validationResult->error) {
             return $validationResult;
         }
 
         // Fetch and insert data if validation passed
-        return $this->fetchAndInsertJob($dataLoaderJob, $startTime);
+        return $this->fetchAndInsertJob($dataLoaderJob, $startTime, $currentAttempt, $isRetry);
     }
 
     /**
      * Checks if data table is valid and if the predecessor job has finished running
      */
-    private function validateJob(DataLoaderJob $dataLoaderJob, string $startTime): OperationResult
+    private function validateJob(DataLoaderJob $dataLoaderJob, string $startTime, int $currentAttempt, bool $isRetry): OperationResult
     {
         if ($dataLoaderJob->detail == null) {
             return OperationResult::from([
@@ -49,16 +52,10 @@ readonly class RunScheduledJob
             ]);
         }
 
-        if ($dataLoaderJob->predecessor != null && ! $this->hasPredecessorFinishedRunning($dataLoaderJob->predecessor)) {
-            $errorMessage = 'Predecessor was not finished in time: '.$dataLoaderJob->predecessor->name;
-            DataLoaderJobStatus::create([
-                'executed_at' => $startTime,
-                'completed_at' => now(),
-                'loader_job_id' => $dataLoaderJob->id,
-                'is_successful' => false,
-                'error_message' => $errorMessage,
-                'total_records' => 0,
-            ]);
+        if ($dataLoaderJob->predecessor != null && !$this->hasPredecessorFinishedRunning($dataLoaderJob->predecessor)) {
+            $errorMessage = 'Predecessor was not finished in time: ' . $dataLoaderJob->predecessor->name;
+
+            $this->handleJobFailure($dataLoaderJob, $startTime, new Exception($errorMessage), $currentAttempt, $isRetry);
 
             return OperationResult::from([
                 'error' => true,
@@ -72,20 +69,13 @@ readonly class RunScheduledJob
         ]);
     }
 
-    private function fetchAndInsertJob(DataLoaderJob $dataLoaderJob, string $startTime): OperationResult
+    private function fetchAndInsertJob(DataLoaderJob $dataLoaderJob, string $startTime, int $currentAttempt, bool $isRetry): OperationResult
     {
         try {
             $dataSource = DataLoaderSource::fromLoaderJob($dataLoaderJob);
             $data = $this->dataLoaderFactory->createFetcher($dataSource->type)->fetchData($dataSource);
-        } catch (Exception|GuzzleException $exception) {
-            DataLoaderJobStatus::create([
-                'executed_at' => $startTime,
-                'completed_at' => now(),
-                'loader_job_id' => $dataLoaderJob->id,
-                'is_successful' => false,
-                'error_message' => $exception->getMessage(),
-                'total_records' => 0,
-            ]);
+        } catch (Exception | GuzzleException $exception) {
+            $this->handleJobFailure($dataLoaderJob, $startTime, $exception, $currentAttempt, $isRetry);
 
             return OperationResult::from([
                 'error' => true,
@@ -109,13 +99,33 @@ readonly class RunScheduledJob
             ];
         }
 
+        // Let's look at the result variable.
+        if (isset($result['is_successful']) && !$result['is_successful']) {
+            $this->handleJobFailure($dataLoaderJob, $startTime, new Exception($result['error_message']), $currentAttempt, $isRetry);
+
+            return OperationResult::from([
+                'error' => true,
+                'message' => $result['error_message'],
+            ]);
+        }
+
+        // Success Path
         try {
+            // Reset attempts on success
+            if ($dataLoaderJob->attempts > 0) {
+                $dataLoaderJob->attempts = 0;
+                $dataLoaderJob->save();
+            }
+
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
                 'loader_job_id' => $dataLoaderJob->id,
+                'is_retry' => $isRetry,
+                'retry_attempt' => $currentAttempt,
                 ...$result,
             ]);
         } catch (Exception $e) {
+            // Status creation failed? Unlikely to retry this.
             return OperationResult::from([
                 'error' => true,
                 'message' => $e->getMessage(),
@@ -125,6 +135,39 @@ readonly class RunScheduledJob
         return OperationResult::from([
             'error' => false,
             'message' => null,
+        ]);
+    }
+
+    private function handleJobFailure(DataLoaderJob $dataLoaderJob, string $startTime, Exception|GuzzleException $exception, int $currentAttempt, bool $isRetry): void
+    {
+        $retries = $dataLoaderJob->retries ?? 0;
+
+        $canRetry = $retries > 0 && $currentAttempt < ($retries);
+
+        if ($canRetry) {
+            $dataLoaderJob->attempts = $currentAttempt + 1;
+            $dataLoaderJob->save();
+
+            $retryInterval = $dataLoaderJob->retries_interval ?? 0;
+
+            dispatch(function () use ($dataLoaderJob) {
+                \App\Events\ScheduledDataLoadEvent::dispatch($dataLoaderJob);
+            })->delay(now()->addMinutes($retryInterval));
+
+        } else {
+            $dataLoaderJob->attempts = 0;
+            $dataLoaderJob->save();
+        }
+
+        DataLoaderJobStatus::create([
+            'executed_at' => $startTime,
+            'completed_at' => now(),
+            'loader_job_id' => $dataLoaderJob->id,
+            'is_successful' => false,
+            'error_message' => $exception instanceof GuzzleException ? ExceptionMessage::getMessage($exception) : $exception->getMessage(),
+            'total_records' => 0,
+            'is_retry' => $isRetry,
+            'retry_attempt' => $currentAttempt,
         ]);
     }
 

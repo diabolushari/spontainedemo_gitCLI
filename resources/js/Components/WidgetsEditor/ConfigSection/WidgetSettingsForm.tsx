@@ -27,6 +27,7 @@ interface WidgetSettingsFormProps {
   metaHierarchy: MetaHierarchy[]
   ai_agent?: boolean
   embedded?: boolean
+  widget_data_url: string
 }
 
 export default function WidgetSettingsForm({
@@ -43,6 +44,7 @@ export default function WidgetSettingsForm({
   metaHierarchy,
   ai_agent,
   embedded = false,
+  widget_data_url,
 }: Readonly<WidgetSettingsFormProps>) {
   return (
     <div
@@ -88,6 +90,7 @@ export default function WidgetSettingsForm({
               formData={formData}
               handleDataTableChange={handleDataTableChange}
               handleSubsetGroupChange={handleSubsetGroupChange}
+              widget_data_url={widget_data_url}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -102,6 +105,7 @@ export default function WidgetSettingsForm({
               highlightCards={highlightCards}
               setHighlightCards={setHighlightCards}
               ai_agent={ai_agent}
+              widget_data_url={widget_data_url}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -115,6 +119,7 @@ export default function WidgetSettingsForm({
               formData={formData}
               setFormValue={setFormValue}
               ai_agent={ai_agent}
+              widget_data_url={widget_data_url}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -128,6 +133,7 @@ export default function WidgetSettingsForm({
               formData={formData}
               setFormValue={setFormValue}
               ai_agent={ai_agent}
+              widget_data_url={widget_data_url}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -142,6 +148,7 @@ export default function WidgetSettingsForm({
               setFormValue={setFormValue}
               metaHierarchy={metaHierarchy}
               ai_agent={ai_agent}
+              widget_data_url={widget_data_url}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -154,6 +161,7 @@ export default function WidgetSettingsForm({
             <DataExplorationConfigSection
               formData={formData}
               setFormValue={setFormValue}
+              widget_data_url={widget_data_url}
             />
           </AccordionContent>
         </Accordion.Item>

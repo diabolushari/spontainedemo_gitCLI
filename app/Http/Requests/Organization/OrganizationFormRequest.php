@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Http\Requests\Organization;
+
+use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+
+#[MapName(SnakeCaseMapper::class)]
+class OrganizationFormRequest extends Data
+{
+    public function __construct(
+        #[Required, StringType, Max(255)]
+        public readonly string $name,
+
+        #[Required, StringType]
+        public readonly string $address,
+
+        #[Required, StringType, Max(255)]
+        public readonly string $state,
+
+        #[Required, StringType, Max(255)]
+        public readonly string $country,
+
+        #[Required, StringType]
+        public readonly string $industryContext,
+
+        #[Nullable, Exists('meta_hierarchy_items', 'id')]
+        public readonly ?int $metaHierarchyItemId,
+
+        #[Nullable]
+        public readonly ?array $objectives,
+
+        #[Nullable]
+        public readonly ?string $hierarchyConnection,
+    ) {
+    }
+
+
+}

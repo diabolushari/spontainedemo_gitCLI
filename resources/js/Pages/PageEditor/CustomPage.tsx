@@ -5,6 +5,7 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import CustomPageRow from '@/Components/PageEditor/CustomPage/CustomPageRow'
 import { useState, useEffect } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import HeadingStyleComponent from '@/Components/PageEditor/HeadingStyleComponent'
 
 interface PageWidget {
   position: number
@@ -89,8 +90,22 @@ export default function CustomPage({ page }: Readonly<CustomPageProps>) {
       <div className='min-h-screen w-full bg-white py-8 sm:px-6'>
         {/* Page Header */}
         <header className='mb-8 border-b pb-6'>
-          <h1 className='text-3xl font-bold text-gray-900'>{page.title}</h1>
-          {page.description && <p className='mt-2 text-base text-gray-600'>{page.description}</p>}
+          {page.config?.heading_style !== undefined && page.config?.heading_style !== null ? (
+            <HeadingStyleComponent
+              title={page.title}
+              description={page.description}
+              currentStyle={page.config.heading_style}
+              readOnly={true}
+              noBackground={true}
+            />
+          ) : (
+            <>
+              <h1 className='text-3xl font-bold text-gray-900'>{page.title}</h1>
+              {page.description && (
+                <p className='mt-2 text-base text-gray-600'>{page.description}</p>
+              )}
+            </>
+          )}
           {!page.published && (
             <div className='mt-3 inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-800'>
               Draft

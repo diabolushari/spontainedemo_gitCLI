@@ -24,6 +24,7 @@ import TimePicker from '@/ui/form/TimePicker'
 import { FieldErrors } from './SetupDataTable'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
+import { calculateNextRunTime } from '@/libs/jobSchedule'
 
 interface Props {
   fields: DataTableFieldConfig[]
@@ -53,6 +54,8 @@ interface DataTableFormData {
   duplicate_identification_field: string
   schedule_start_time: string
   sub_hour_interval: number
+  retries: number
+  retries_interval: number
 }
 
 interface ErrorMetaInfo {
@@ -88,6 +91,8 @@ export default function SetupDataTableForm({
     duplicate_identification_field: '',
     schedule_start_time: '',
     sub_hour_interval: 0,
+    retries: 0,
+    retries_interval: 0,
   })
   const [errorMetaInfo, setErrorMetaInfo] = useState<ErrorMetaInfo[]>([])
 
@@ -118,6 +123,8 @@ export default function SetupDataTableForm({
       setFormValue('month_of_year')('')
     }
   }, [formData.cron_type, setFormValue])
+
+  const nextRunTime = useMemo(() => calculateNextRunTime(formData), [formData])
 
   const dataTableFields = useMemo(() => {
     return fields.map((field) => ({
@@ -247,6 +254,13 @@ export default function SetupDataTableForm({
       })
 
     setErrorMetaInfo(errorMeta)
+
+    if (formData.cron_type === SUB_HOUR_CRON) {
+      if (formData.retries * formData.retries_interval >= formData.sub_hour_interval) {
+        showError('Retry duration (Retries * Interval) must be less than Sub-hour Interval')
+        return
+      }
+    }
 
     post({
       ...formData,
@@ -399,7 +413,23 @@ export default function SetupDataTableForm({
                 <Input
                   value={formData.sub_hour_interval}
                   setValue={setFormValue('sub_hour_interval')}
-                  label={'Sub-hour Interval'}
+                  label={'Sub-hour Interval (in minutes)'}
+                  type={'number'}
+                />
+              </div>
+              <div className='flex flex-col'>
+                <Input
+                  value={String(formData.retries)}
+                  setValue={(val: string) => setFormValue('retries')(Number(val))}
+                  label={'Max Retries'}
+                  type={'number'}
+                />
+              </div>
+              <div className='flex flex-col'>
+                <Input
+                  value={String(formData.retries_interval)}
+                  setValue={(val: string) => setFormValue('retries_interval')(Number(val))}
+                  label={'Retry Interval (in minutes)'}
                   type={'number'}
                 />
               </div>
@@ -452,6 +482,11 @@ export default function SetupDataTableForm({
             </div>
           )}
         </div>
+        {nextRunTime && (
+          <div className='mt-4 rounded-md bg-blue-50 p-3'>
+            <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
+          </div>
+        )}
       </div>
 
       {/* Data Management Options Section */}

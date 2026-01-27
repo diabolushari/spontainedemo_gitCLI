@@ -59,7 +59,14 @@ export default function AddSubsetMeasure({
     return {
       field_id: {
         type: 'select' as const,
-        setValue: setFormValue('field_id'),
+        setValue: (value: string) => {
+          setFormValue('field_id')(value)
+          const selected = measureFields.find((f) => f.id === Number(value))
+          if (selected != null) {
+            setFormValue('subset_field_name')(selected.field_name)
+            setFormValue('expression')(`MYSQL format - EXPR(${selected.column}_record.name)`)
+          }
+        },
         label: 'Field',
         list: measureFields,
         dataKey: 'id',

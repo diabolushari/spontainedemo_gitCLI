@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Step from '@/Components/SetupDataTable/V2/Step'
 import Step2QuerySelection from '@/Components/SetupDataTable/V2/Steps/Step2QuerySelection'
 import Step3QueryPreview from '@/Components/SetupDataTable/V2/Steps/Step3QueryPreview'
@@ -17,9 +17,10 @@ type DataSourceType = 'sql' | 'api' | 'excel' | null
 
 interface Props {
   types: ReferenceData[]
+  source: string
 }
 
-function SetupDataTableV2({ types }: Readonly<Props>) {
+function SetupDataTableV2({ types, source }: Readonly<Props>) {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5>(1)
   const [dataSource, setDataSource] = useState<DataSourceType>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -29,6 +30,16 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
   const [selectedAPI, setSelectedAPI] = useState<DataLoaderAPI | null>(null)
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+
+  useEffect(() => {
+    if (source === 'sql') {
+      setDataSource('sql')
+      setCurrentStep(2)
+    } else if (source === 'api') {
+      setDataSource('api')
+      setCurrentStep(2)
+    }
+  }, [source])
 
   const [sourceResponseStructure, setSourceResponseStructure] =
     useState<JSONStructureDefinition | null>(null)

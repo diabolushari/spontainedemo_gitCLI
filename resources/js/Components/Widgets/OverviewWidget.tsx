@@ -4,6 +4,8 @@ import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Widget } from '@/interfaces/data_interfaces'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import { useEffect, useMemo, useState } from 'react'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 import { CustomChartSkeleton } from '@/Components/WidgetsEditor/CustomChartSkeleton'
@@ -32,6 +34,7 @@ export default function OverviewWidget({
   setSelectedView,
 }: Readonly<OverviewWidgetProps>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   const { hasOverview, hasRanking, hasTrend, hasHighlightCards } = useMemo(() => {
     const hasOverview =
@@ -91,9 +94,10 @@ export default function OverviewWidget({
     return null
   }, [widget.data])
 
-  const url = subsetId
-    ? route('subset-field-max-value', { subsetDetail: subsetId, field: 'month' })
-    : null
+  const url =
+    subsetId && widget_data_url
+      ? `${widget_data_url}${route('subset-field-max-value', { subsetDetail: subsetId, field: 'month' }, false)}`
+      : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
 
@@ -164,6 +168,9 @@ export default function OverviewWidget({
           colorPalette={widget.data.overview.color_palette}
           highlightCards={widget.data.highlight_cards}
           selectedMonth={selectedMonth ?? new Date()}
+          hierarchy_item_id={widget.data.overview.hierarchy_item_id ?? null}
+          overviewLevel={widget.data.overview.level ?? null}
+          overviewNameField={widget.data.overview.name_field ?? null}
         />
       )}
       {selectedView === 'trend' && (

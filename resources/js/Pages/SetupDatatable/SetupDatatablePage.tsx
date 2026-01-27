@@ -5,16 +5,20 @@ import SetupDataTableV2 from '@/Components/SetupDataTable/SetupDataTableV2'
 
 interface Props {
   types: ReferenceData[]
+  source: string
 }
 
-const SetupDatatablePage = ({ types }: Readonly<Props>) => {
+const SetupDatatablePage = ({ types, source }: Readonly<Props>) => {
   console.log(types)
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
         {/*<div className='flex flex-col gap-5 pt-8 sm:pt-14 md:pl-10'>*/}
         {/*<SetupDataTable types={types} />*/}
-        <SetupDataTableV2 types={types} />
+        <SetupDataTableV2
+          types={types}
+          source={source}
+        />
         {/*</div>*/}
       </DashboardPadding>
     </AnalyticsDashboardLayout>

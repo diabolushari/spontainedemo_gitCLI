@@ -30,8 +30,12 @@ export default function WidgetsEditorCreatePage({
   const handleSend = () => {
     if (!input.trim()) return
     // Send the preview widget which reflects the current form state
-    sendMessage({ message: input, existing_widget: previewWidget })
+    sendMessage({ message: input, widget: previewWidget, widget_id: currentWidget?.id?.toString() })
     setInput('')
+  }
+
+  const handleAction = (action: string, message?: string) => {
+    sendMessage({ action, message, type: 'user_action' })
   }
 
   useEffect(() => {
@@ -39,7 +43,12 @@ export default function WidgetsEditorCreatePage({
       const lastMessage = messages[messages.length - 1]
       if (lastMessage.type == 'thinking') {
         setThinking(lastMessage.message)
-      } else if (lastMessage.type == 'review_required' || lastMessage.type == 'complete') {
+      } else if (lastMessage.type == 'review_required') {
+        setCurrentWidget(lastMessage.widget_state)
+        setThinking(null)
+      } else if (lastMessage.type == 'approval_required') {
+        setThinking(null)
+      } else if (lastMessage.type == 'complete') {
         setCurrentWidget(lastMessage.widget)
         setThinking(null)
         console.log('widget', lastMessage.widget)
@@ -60,6 +69,7 @@ export default function WidgetsEditorCreatePage({
             chatInput={input}
             setChatInput={setInput}
             onChatSend={handleSend}
+            onActionSend={handleAction}
             onPreviewWidgetChange={setPreviewWidget}
             messages={messages}
           />

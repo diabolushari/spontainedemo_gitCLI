@@ -9,6 +9,7 @@ interface HighlightConfigSectionProps {
   highlightCards: HighlightCardData[]
   setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
   ai_agent?: boolean
+  widget_data_url: string
 }
 
 const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
@@ -16,6 +17,12 @@ const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
   subtitle: '',
   subset_id: null,
   measure: { subset_column: '', subset_field_name: '', unit: '' },
+  dimension_column: null,
+  dimension_name: null,
+  hierarchy_id: null,
+  hierarchy_item_id: null,
+  hierarchy_item_name: null,
+  metadata: null,
 }
 
 export default function HighlightConfigSection({
@@ -23,6 +30,7 @@ export default function HighlightConfigSection({
   highlightCards,
   setHighlightCards,
   ai_agent,
+  widget_data_url,
 }: Readonly<HighlightConfigSectionProps>) {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
 
@@ -86,6 +94,55 @@ export default function HighlightConfigSection({
       const measure = measures[0]
       setHighlightCards((prevCards) =>
         prevCards.map((card, i) => (i === index ? { ...card, measure } : card))
+      )
+    },
+    [setHighlightCards]
+  )
+
+  const handleDimensionChange = useCallback(
+    (
+      index: number,
+      dimensionColumn: string | null,
+      dimensionName: string | null,
+      hierarchyId: number | null
+    ) => {
+      setHighlightCards((prevCards) =>
+        prevCards.map((card, i) =>
+          i === index
+            ? {
+                ...card,
+                dimension_column: dimensionColumn,
+                dimension_name: dimensionName,
+                hierarchy_id: hierarchyId,
+                metadata_id: null,
+                metadata_name: null,
+                metadata: null,
+              }
+            : card
+        )
+      )
+    },
+    [setHighlightCards]
+  )
+
+  const handleMetadataChange = useCallback(
+    (
+      index: number,
+      hierarchyItemId: number | null,
+      hierarchyItemName: string | null,
+      metadata: any | null
+    ) => {
+      setHighlightCards((prevCards) =>
+        prevCards.map((card, i) =>
+          i === index
+            ? {
+                ...card,
+                hierarchy_item_id: hierarchyItemId,
+                hierarchy_item_name: hierarchyItemName,
+                metadata: metadata,
+              }
+            : card
+        )
       )
     },
     [setHighlightCards]
@@ -178,8 +235,11 @@ export default function HighlightConfigSection({
             onSubtitleChange={handleSubtitleChange}
             onSubsetChange={handleSubsetChange}
             onMeasureChange={handleMeasureChange}
+            onDimensionChange={handleDimensionChange}
+            onMetadataChange={handleMetadataChange}
             onRemove={handleRemoveCard}
             ai_agent={ai_agent}
+            widget_data_url={widget_data_url}
           />
         </div>
       )}

@@ -12,10 +12,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Paginator } from '@/ui/ui_interfaces'
-import { Link } from '@inertiajs/react'
+import { Link, usePage } from '@inertiajs/react'
 import { useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import { PageProps } from '@/types'
 
 interface Props {
   subsetId: number
@@ -80,6 +81,8 @@ export default function RankedList({
     onFilterChange(filterValue)
   }, [onFilterChange, filterValue])
 
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
+
   const fetchUrl = useMemo(() => {
     const params = {
       subsetDetail: subsetId,
@@ -99,9 +102,13 @@ export default function RankedList({
       params['dimension'] = dimension
     }
 
-    return route('subset.summary', {
-      ...params,
-    })
+    return `${widget_data_url}${route(
+      'subset.summary',
+      {
+        ...params,
+      },
+      false
+    )}`
   }, [
     subsetId,
     officeLevel,
@@ -271,7 +278,7 @@ export default function RankedList({
         </div>
         <div className='flex flex-col'>
           <DynamicSelectList
-            url={`/meta-hierarchy/${hierarchyId}/levels`}
+            url={`${widget_data_url}/meta-hierarchy/${hierarchyId}/levels`}
             dataKey={'name'}
             displayKey={'name'}
             setValue={setOfficeLevel}

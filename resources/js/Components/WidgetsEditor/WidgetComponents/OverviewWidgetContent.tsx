@@ -2,18 +2,12 @@ import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
-import { DotIcon, EllipsisIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import axios from 'axios'
-import { Link } from '@inertiajs/react'
-
-interface SubsetGroupDetail {
-  name: string
-  description: string
-}
 
 interface OverviewProps {
   subsetId: number
@@ -23,7 +17,10 @@ interface OverviewProps {
   colorPalette: string
   highlightCards: HighlightCardData[]
   selectedMonth: Date
+  hierarchy_item_id: number | null
   compact?: boolean
+  overviewLevel: string | null
+  overviewNameField: string | null
 }
 
 export default function OverviewWidgetContent({
@@ -34,11 +31,47 @@ export default function OverviewWidgetContent({
   colorPalette,
   highlightCards,
   selectedMonth,
+  hierarchy_item_id,
+  overviewLevel,
   compact = false,
+  overviewNameField,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
+
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
+
+  const [hierarchyFilter, setHierarchyFilter] = useState<{ col: string; val: string } | null>(null)
+
+  // 1. Fetch hierarchy details using the CORRECT API endpoint
+  useEffect(() => {
+    if (!hierarchy_item_id) {
+      setHierarchyFilter(null)
+      return
+    }
+
+    const fetchHierarchyDetails = async () => {
+      try {
+        // Updated URL to match your route definition
+        const res = await axios.get(
+          `${widget_data_url}/meta-hierarchy-item-detail/${hierarchy_item_id}`
+        )
+
+        if (res.data?.primary_column && res.data?.primary_value) {
+          setHierarchyFilter({
+            col: res.data.primary_column,
+            val: res.data.primary_value,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to fetch hierarchy item details:', error)
+        setHierarchyFilter(null)
+      }
+    }
+
+    fetchHierarchyDetails()
+  }, [hierarchy_item_id])
 
   // Build fields parameter: dimension + all measure columns
   const fieldsParam = useMemo(() => {
@@ -49,11 +82,29 @@ export default function OverviewWidgetContent({
     return dimension && measureColumns ? `${dimension},${measureColumns}` : ''
   }, [measure, dimension])
 
+  // 2. Construct the URL dynamically
   const url = useMemo(() => {
-    return subsetId && fieldsParam
-      ? `/subset/${subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
-      : null
-  }, [subsetId, fieldsParam, formattedMonth])
+    if (!subsetId || !fieldsParam) return null
+
+    const params: Record<string, string> = {
+      month: formattedMonth,
+      fields: fieldsParam,
+    }
+
+    if (hierarchyFilter?.col && hierarchyFilter?.val) {
+      params[hierarchyFilter.col] = hierarchyFilter.val
+    }
+
+    if (overviewLevel) {
+      params['level'] = overviewLevel
+    }
+
+    const queryString = new URLSearchParams(params).toString()
+    let baseUrl = `/subset-level-data/${subsetId}?${queryString}`
+
+    return `${widget_data_url}${baseUrl}`
+  }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, widget_data_url, overviewLevel])
+
   console.log('overview url', url)
 
   const [data] = useFetchRecord<{
@@ -80,13 +131,15 @@ export default function OverviewWidgetContent({
   const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : undefined
   const axisHeight = compact ? 30 : undefined
 
+  console.log('overviewNameField', overviewNameField)
+
   return (
     <div className='min-h-0 w-full flex-1'>
       {chartType === 'bar' && data != null && (
         <div className='h-full w-full'>
           <CustomBarChart
             data={data.data}
-            dataKey={dimension}
+            dataKey={overviewLevel ? overviewNameField : dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
@@ -99,7 +152,7 @@ export default function OverviewWidgetContent({
         <div className='h-full w-full'>
           <CustomLineChart
             data={data.data}
-            dataKey={dimension}
+            dataKey={overviewLevel ? overviewNameField : dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
@@ -113,7 +166,7 @@ export default function OverviewWidgetContent({
           <CustomPieChart
             data={data.data}
             dataKey={fieldsToPlot[0].key}
-            nameKey={dimension}
+            nameKey={overviewLevel ? overviewNameField : dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             fontSize={'text-sm'}

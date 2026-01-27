@@ -7,6 +7,7 @@ interface WidgetChatSectionProps {
   chatInput: string
   setChatInput: (value: string) => void
   onChatSend: () => void
+  onActionSend: (action: string, message?: string) => void
   onSave: () => void
 }
 
@@ -16,12 +17,34 @@ export default function WidgetChatSection({
   chatInput,
   setChatInput,
   onChatSend,
+  onActionSend,
   onSave,
 }: Readonly<WidgetChatSectionProps>) {
   const hasError = messages.some((msg) => msg.type === 'error')
 
   const handleSave = () => {
     onSave()
+  }
+
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+
+  React.useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
+    }
+  }, [chatInput])
+
+  const handleSend = () => {
+    const lastMsg = messages[messages.length - 1]
+    if (lastMsg?.type === 'approval_required') {
+      if (chatInput.trim()) {
+        onActionSend('modify', chatInput)
+        setChatInput('')
+      }
+    } else {
+      onChatSend()
+    }
   }
 
   return (
@@ -34,11 +57,12 @@ export default function WidgetChatSection({
           </div>
         )}
         {messages
-          .filter((msg) => msg.type !== 'thinking')
+          .filter((msg) => msg.type !== 'thinking' && msg.type !== 'user_action')
           .map((msg, idx) => {
             const isUser = msg.type === 'user' || !msg.type
             const isError = msg.type === 'error'
             const isReviewRequired = msg.type === 'review_required'
+            const isApprovalRequired = msg.type === 'approval_required'
 
             if (isError) {
               return (
@@ -52,6 +76,12 @@ export default function WidgetChatSection({
                 </div>
               )
             }
+
+            // Parse options or default to legacy behavior
+            const options = msg.options || ['proceed', 're-summarize', 'modify']
+            const showProceed = options.includes('proceed')
+            const showResummarize = options.includes('re-summarize')
+            // Modify is hidden, handled via text input
 
             return (
               <div
@@ -82,25 +112,71 @@ export default function WidgetChatSection({
                       : 'rounded-tl-sm bg-white text-gray-800'
                   }`}
                 >
-                  <div className='whitespace-pre-wrap text-sm leading-relaxed'>{msg.message}</div>
-                  {isReviewRequired && msg.widget && (
-                    <div className='mt-4 space-y-3 border-t border-gray-200 pt-3'>
-                      <div className='rounded-md bg-blue-50 p-3'>
-                        <h4 className='text-xs font-semibold text-gray-800'>{msg.widget.title}</h4>
-                        <p className='mt-1 text-[11px] text-gray-600'>{msg.widget.subtitle}</p>
-                        {msg.widget.data?.description && (
-                          <p className='mt-2 text-[10px] text-gray-500'>
-                            {msg.widget.data.description}
-                          </p>
+                  {!isApprovalRequired && (
+                    <div className='whitespace-pre-wrap text-sm leading-relaxed'>{msg.message}</div>
+                  )}
+
+                  {isApprovalRequired && (
+                    <div className='mt-4 space-y-3 border-t border-gray-100 pt-3 text-xs'>
+                      {msg.edit_details && (
+                        <div className='rounded-md bg-amber-50 p-2.5 text-amber-900'>
+                          <span className='font-bold uppercase tracking-wider'>
+                            Planned Changes:{' '}
+                          </span>
+                          <span>{msg.edit_details}</span>
+                        </div>
+                      )}
+
+                      {msg.metadata && (
+                        <div className='rounded-md border border-gray-200 bg-gray-50 p-2.5'>
+                          <div className='font-bold text-gray-700'>{msg.metadata.title}</div>
+                          <div className='text-gray-500'>{msg.metadata.subtitle}</div>
+                        </div>
+                      )}
+
+                      {msg.refactored_query && (
+                        <div className='rounded-md bg-blue-50 p-2.5 text-blue-900'>
+                          <span className='font-bold uppercase tracking-wider'>
+                            Refactored Query:{' '}
+                          </span>
+                          <span>{msg.refactored_query}</span>
+                        </div>
+                      )}
+
+                      <div className='flex gap-2 pt-1'>
+                        {showProceed && (
+                          <button
+                            onClick={() => onActionSend('proceed')}
+                            className='flex-1 rounded-lg bg-[#007AFF] px-3 py-2 font-medium text-white transition-colors hover:bg-blue-600'
+                          >
+                            Proceed
+                          </button>
+                        )}
+                        {showResummarize && (
+                          <button
+                            onClick={() => onActionSend('re-summarize')}
+                            className='flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50'
+                          >
+                            Re-plan
+                          </button>
                         )}
                       </div>
-                      <button
-                        onClick={() => handleSave(msg.widget)}
-                        className='flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700'
-                      >
-                        <CheckCircle className='h-4 w-4' />
-                        Save Widget
-                      </button>
+                      <p className='text-center italic text-gray-400'>
+                        Type feedback above to modify
+                      </p>
+                    </div>
+                  )}
+
+                  {isReviewRequired && (
+                    <div className='mt-4 space-y-3 border-t border-gray-200 pt-3'>
+                      <div className='flex gap-2'>
+                        <button
+                          onClick={() => onSave()}
+                          className='flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
+                        >
+                          Save & Finish
+                        </button>
+                      </div>
                       <p className='text-center text-[10px] italic text-gray-400'>
                         Or type below to request changes
                       </p>
@@ -136,21 +212,27 @@ export default function WidgetChatSection({
         )}
       </div>
       <div className='p-4'>
-        <div className='relative flex items-center rounded-full bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
-          <input
-            type='text'
+        <div className='relative flex items-center rounded-3xl bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
+          <textarea
+            ref={textareaRef}
             placeholder='Ask your questions'
-            className='w-full border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
+            className='max-h-[200px] min-h-[50px] w-full resize-none border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
             disabled={!!thinkingMessage || hasError}
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !hasError && onChatSend()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                if (!hasError) handleSend()
+              }
+            }}
+            rows={1}
           />
           <button
             type='button'
             disabled={!!thinkingMessage || hasError}
-            onClick={onChatSend}
-            className='absolute bottom-1.5 right-1.5 top-1.5 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
+            onClick={handleSend}
+            className='absolute bottom-2 right-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 py-2 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
           >
             Ask
           </button>

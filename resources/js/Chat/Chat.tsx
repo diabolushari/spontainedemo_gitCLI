@@ -37,6 +37,7 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
     setMessageFromHistory,
     handleRetryConnection,
     wsStatus,
+    handleToggleFavorite,
   } = useChat(_currentSession)
 
   // Listen for AI Insights custom event to send a message
@@ -84,6 +85,7 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
         setInput={setInput}
         onRetry={handleRetryConnection}
         wsStatus={wsStatus}
+        handleToggleFavorite={handleToggleFavorite}
       />
     </div>
   )

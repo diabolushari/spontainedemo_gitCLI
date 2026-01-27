@@ -30,7 +30,7 @@ class ChatController extends Controller implements HasMiddleware
         ]);
 
         $chatHistory = ChatHistory::where('user_id', $userId)
-            ->select('id', 'title', 'created_at')
+            ->select('id', 'title', 'created_at', 'is_favorite')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

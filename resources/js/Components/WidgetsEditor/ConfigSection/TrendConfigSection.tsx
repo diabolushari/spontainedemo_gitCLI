@@ -15,6 +15,7 @@ interface Props {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
   ai_agent?: boolean
+  widget_data_url: string
 }
 
 const chartTypes = [
@@ -22,7 +23,12 @@ const chartTypes = [
   { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
 ]
 
-export default function TrendConfigSection({ formData, setFormValue, ai_agent }: Readonly<Props>) {
+export default function TrendConfigSection({
+  formData,
+  setFormValue,
+  ai_agent,
+  widget_data_url,
+}: Readonly<Props>) {
   const colorOptions = Object.entries(chartPallet).map(([key, value]) => ({
     label: camelToNormal(key),
     name: key,
@@ -96,9 +102,13 @@ export default function TrendConfigSection({ formData, setFormValue, ai_agent }:
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={route('subset.list', {
-              search: '',
-            })}
+            url={`${widget_data_url}${route(
+              'subset.list',
+              {
+                search: '',
+              },
+              false
+            )}`}
             dataKey='id'
             displayKey='name'
             value={subset}
@@ -107,7 +117,7 @@ export default function TrendConfigSection({ formData, setFormValue, ai_agent }:
         ) : (
           <DynamicSelectList
             label='Subset'
-            url={`/api/subset-group/${formData?.subset_group_id}`}
+            url={`${widget_data_url}/api/subset-group/${formData?.subset_group_id}`}
             dataKey='id'
             displayKey='name'
             value={formData.trend_subset_id}

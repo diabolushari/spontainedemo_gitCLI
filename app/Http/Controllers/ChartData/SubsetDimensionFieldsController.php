@@ -10,9 +10,11 @@ class SubsetDimensionFieldsController extends Controller
 {
     public function __invoke($subsetId): JsonResponse
     {
-        $subset = SubsetDetail::with(['dimensions' => function ($query) {
-            $query->where('filter_only', 0);
-        }])->where('id', $subsetId)
+        $subset = SubsetDetail::with([
+            'dimensions' => function ($query) {
+                $query->where('filter_only', 0);
+            }
+        ])->where('id', $subsetId)
             ->first();
 
         if ($subset == null) {
@@ -24,6 +26,7 @@ class SubsetDimensionFieldsController extends Controller
                 'id' => $dimension->id,
                 'subset_field_name' => $dimension->subset_field_name,
                 'subset_column' => $dimension->subset_column,
+                'hierarchy_id' => $dimension->hierarchy_id,
             ];
         });
 

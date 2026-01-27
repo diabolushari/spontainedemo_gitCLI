@@ -2,6 +2,7 @@ import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResour
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderJob, JobStatuses } from '@/interfaces/data_interfaces'
+import { calculateNextRunTime } from '@/libs/jobSchedule'
 import { Paginator } from '@/ui/ui_interfaces'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import JobStatusesTable from '@/Components/DataLoader/Jobs/JobStatusesTable'
@@ -55,7 +56,30 @@ export default function MetaGroupShow({ dataLoaderJob, statuses }: Readonly<Prop
         content: dataLoaderJob.cron_type,
         type: 'text',
       },
+      {
+        id: 10,
+        label: 'Next Run',
+        content: calculateNextRunTime(dataLoaderJob),
+        type: 'text',
+      },
     ]
+
+    if (dataLoaderJob.cron_type === 'SUB_HOUR') {
+      data.push(
+        {
+          id: 11,
+          label: 'Max Retries',
+          content: dataLoaderJob.retries?.toString() ?? '0',
+          type: 'text',
+        },
+        {
+          id: 12,
+          label: 'Retry Interval (min)',
+          content: dataLoaderJob.retries_interval?.toString() ?? '0',
+          type: 'text',
+        }
+      )
+    }
 
     if (dataLoaderJob.query_id != null) {
       data.push({

@@ -146,6 +146,10 @@ export function AppSidebar(props: AppSidebarProps) {
 
   const handleLinkClick = (e: React.MouseEvent, url: string) => {
     e.preventDefault()
+    if (isCollapsed) {
+      toggleSidebar()
+      return
+    }
     setActiveLink(url)
     router.visit(url, { preserveState: true, preserveScroll: true })
   }
@@ -222,7 +226,7 @@ export function AppSidebar(props: AppSidebarProps) {
                           <button
                             className='flex-1 text-left'
                             onClick={(e) => {
-                              currentMenu === 'dashboard' && handleLinkClick(e, group.group_url)
+                              handleLinkClick(e, group.group_url)
                             }}
                           >
                             {group.group_label}
