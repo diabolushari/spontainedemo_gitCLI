@@ -95,15 +95,6 @@ const MessageList = ({
                             <div className='flex justify-end'>
                                 <div className='group relative max-w-[70%] overflow-hidden rounded-2xl rounded-br-md bg-blue-600 p-3 text-white shadow-sm transition-all duration-200 ease-in-out hover:shadow-md'>
                                     <ChatMessageContent message={group.userMessage} />
-                                    <button
-                                        onClick={() => handleToggleFavorite(group.userMessage!.id)}
-                                        className='absolute right-2 top-2 rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 text-blue-100 hover:bg-blue-500/30'
-                                        title='Favorite message'
-                                    >
-                                        <FiStar
-                                            className={`h-4 w-4 ${group.userMessage.is_favorite ? 'fill-yellow-400 text-yellow-400' : ''}`}
-                                        />
-                                    </button>
                                 </div>
                                 <div className='ml-3 flex-shrink-0'>
                                     <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 shadow-sm'>
@@ -192,6 +183,7 @@ const MessageList = ({
                                                     groupResponses={group.responses}
                                                     handleToggleFavorite={handleToggleFavorite}
                                                     handleSendMessage={handleSendMessage}
+                                                    messages={messages}
                                                 />
                                             </div>
                                         </div>

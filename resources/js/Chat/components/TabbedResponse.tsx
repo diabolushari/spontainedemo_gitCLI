@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import { ChatMessage } from './MainArea'
 import ChatMessageContent from './ChatMessageContent'
-import { LayoutGrid, MessageSquareText, Table, Share, Copy, Check, ExternalLink, FileText, ChevronRight } from 'lucide-react'
+import { LayoutGrid, MessageSquareText, Table, Share, Copy, Check, ExternalLink, FileText, ChevronRight, Star } from 'lucide-react'
+import FavoriteModal from './FavoriteModal'
 
 interface TabbedResponseProps {
     finalResponse: ChatMessage
     chart?: ChatMessage
     explore?: ChatMessage
-    onToggleFavorite: (id: number) => void
+    onToggleFavorite: (id: number, summary?: string) => void
     suggestions?: string[]
     handleSendMessage?: (message: string) => void
+    messages: ChatMessage[]
 }
 
 const TabbedResponse = ({
@@ -18,10 +20,12 @@ const TabbedResponse = ({
     explore,
     onToggleFavorite,
     suggestions,
-    handleSendMessage
+    handleSendMessage,
+    messages
 }: Readonly<TabbedResponseProps>) => {
     const [activeTab, setActiveTab] = useState<'response' | 'visualization' | 'table' | 'more'>('response')
     const [copied, setCopied] = useState(false)
+    const [toggleFavoriteModal, setToggleFavoriteModal] = useState(false)
 
     const handleCopy = async () => {
         try {
@@ -33,7 +37,7 @@ const TabbedResponse = ({
         }
     }
 
-    const chartToUse = (finalResponse.chart_data?.length > 0) && (finalResponse.chart_data ? {
+    const chartToUse = ((finalResponse.chart_data?.length ?? 0) > 0) && (finalResponse.chart_data ? {
         ...finalResponse,
         content: JSON.stringify(finalResponse.chart_data),
         contentType: 'chart' as const
@@ -73,16 +77,20 @@ const TabbedResponse = ({
                 {/* Header with Title and Icons */}
                 <div className="flex items-center justify-between mb-2 px-1">
                     <h3 className="text-[#1A365D] font-semibold text-lg">{title}</h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                        <button
+                            onClick={() => setToggleFavoriteModal(true)}
+                            className={`p-1.5 rounded-lg transition-colors ${finalResponse.is_favorite ? 'text-yellow-500 bg-yellow-50' : 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50'}`}
+                            title={finalResponse.is_favorite ? 'Unfavorite' : 'Favorite'}
+                        >
+                            <Star size={18} fill={finalResponse.is_favorite ? 'currentColor' : 'none'} />
+                        </button>
                         <button
                             onClick={handleCopy}
                             className={`p-1.5 rounded-lg transition-colors ${copied ? 'text-green-500 bg-green-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
                             title={copied ? 'Copied!' : 'Copy response'}
                         >
                             {copied ? <Check size={18} /> : <Copy size={18} />}
-                        </button>
-                        <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <FileText size={18} />
                         </button>
                         {exploreToUse && (
                             <button
@@ -96,6 +104,9 @@ const TabbedResponse = ({
                                 <ExternalLink size={18} />
                             </button>
                         )}
+                        <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                            <FileText size={18} />
+                        </button>
                     </div>
                 </div>
 
@@ -172,21 +183,23 @@ const TabbedResponse = ({
             </div>
 
             {/* Suggestions Box */}
-            {suggestions && suggestions.length > 0 && (
-                <div className="rounded-2xl bg-[#F8FAFC] p-4 border border-gray-100 shadow-sm">
-                    <div className="space-y-3">
-                        {suggestions.map((suggestion, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => handleSendMessage?.(suggestion)}
-                                className="block w-full text-left text-[#1E40AF] hover:text-blue-800 transition-colors text-base font-medium"
-                            >
-                                {suggestion}
-                            </button>
-                        ))}
+            {
+                suggestions && suggestions.length > 0 && (
+                    <div className="rounded-2xl bg-[#F8FAFC] p-4 border border-gray-100 shadow-sm">
+                        <div className="space-y-3">
+                            {suggestions.map((suggestion, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleSendMessage?.(suggestion)}
+                                    className="block w-full text-left text-[#1E40AF] hover:text-blue-800 transition-colors text-base font-medium"
+                                >
+                                    {suggestion}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Bottom Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
@@ -207,7 +220,17 @@ const TabbedResponse = ({
                     <ChevronRight size={20} />
                 </button>
             </div>
-        </div>
+
+            {/* Favorite Modal */}
+            <FavoriteModal
+                isOpen={toggleFavoriteModal}
+                onClose={() => setToggleFavoriteModal(false)}
+                onConfirm={(summary) => onToggleFavorite(finalResponse.id, summary)}
+                isAlreadyFavorite={finalResponse.is_favorite ?? false}
+                messages={messages}
+                currentMessageId={finalResponse.id}
+            />
+        </div >
     )
 }
 

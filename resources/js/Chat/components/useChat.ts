@@ -561,10 +561,36 @@ export default function useChat(currentSession: CurrentSession) {
     setReconnectTrigger((prev) => prev + 1)
   }
 
-  const handleToggleFavorite = (messageId: number) => {
+  const handleToggleFavorite = async (messageId: number, summary?: string) => {
+    // Find the current message to check its favorite status
+    const currentMessage = messages.find((msg) => msg.id === messageId)
+    const isCurrentlyFavorite = currentMessage?.is_favorite ?? false
+
+    // Optimistically update UI
     setMessages((prev) =>
       prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: !msg.is_favorite } : msg))
     )
+
+    try {
+      if (isCurrentlyFavorite) {
+        // Remove from favorites
+        await axios.delete(`/chat-history/${currentSession.id}/favorite/${messageId}`)
+        console.log('Favorite removed successfully')
+      } else {
+        // Add to favorites
+        await axios.post(`/chat-history/${currentSession.id}/favorite`, {
+          message_id: messageId,
+          summary: summary ?? '',
+        })
+        console.log('Favorite added successfully')
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err)
+      // Revert the optimistic update on error
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: isCurrentlyFavorite } : msg))
+      )
+    }
   }
 
   return {

@@ -392,7 +392,8 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
-Route::post('/chat-history/favorite', FavoriteController::class)->name('chat-history.favorite');
+Route::post('/chat-history/{chatHistory}/favorite', [FavoriteController::class, 'addFavorite'])->name('chat-history.add-favorite');
+Route::delete('/chat-history/{chatHistory}/favorite/{messageId}', [FavoriteController::class, 'removeFavorite'])->name('chat-history.remove-favorite');
 
 Route::get('/nav-editor', [NavEditorController::class, 'index'])->name('nav.editor');
 
