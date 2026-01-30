@@ -4,6 +4,7 @@ import ChatMessageContent from './ChatMessageContent'
 import FinalResponseSection from './FinalResponseSection'
 import { ChatMessage } from '@/Chat/components/MainArea'
 import ReasoningSection from './ReasoningSection'
+import WaveLogoSpinner from './WaveLogoSpinner'
 
 interface MessageGroup {
     userMessage?: ChatMessage
@@ -110,6 +111,13 @@ const MessageList = ({
                             </div>
                         )}
 
+                        {/* Loading Spinner for new response */}
+                        {isLoading && groupIdx === grouped.length - 1 && group.responses.length === 0 && (
+                            <div className='flex justify-start px-4'>
+                                <WaveLogoSpinner size={60} />
+                            </div>
+                        )}
+
                         {group.responses.length > 0 &&
                             (() => {
                                 const reasoningMessages = group.responses.filter(
@@ -134,7 +142,7 @@ const MessageList = ({
                                         <div className='mr-3 flex-shrink-0'>
                                             <div className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm'>
                                                 <img
-                                                    src='/ai_agent.png'
+                                                    src='/spontaine-mark-logo.png'
                                                     alt='AI Agent'
                                                     className='h-full w-full object-cover'
                                                 />

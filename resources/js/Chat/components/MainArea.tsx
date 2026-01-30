@@ -72,8 +72,9 @@ export default function MainArea({
       fetch(aiSuggestionUrl)
         .then(response => response.json())
         .then(data => {
-          if (Array.isArray(data) && data.length > 0) {
-            setDynamicSuggestions(data.slice(0, 4))
+          console.log('suggestion data: ', data.questions)
+          if (Array.isArray(data.questions) && data.questions.length > 0) {
+            setDynamicSuggestions(data.questions.slice(0, 4))
           }
         })
         .catch(error => {
