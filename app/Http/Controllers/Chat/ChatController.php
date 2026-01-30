@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Chat;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatHistory\ChatHistory;
+use App\Models\ChatHistory\FavouriteChat;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -39,12 +40,17 @@ class ChatController extends Controller implements HasMiddleware
             $chat->timestamp = $chat->created_at->diffForHumans();
         }
 
+        $favorites = FavouriteChat::with('chatHistory')->get();
+
         return Inertia::render('Chat/ChatIndexPage', [
             'chatHistory' => $chatHistory,
+            'favorites' => $favorites,
             'currentSession' => $currentSession,
             'chatToken' => config('app.chat_token'),
             'chatURL' => config('app.chat_url'),
             'agentURL' => config('app.agent_url'),
+            'aiSuggestionUrl' => config('app.ai_suggestion_url'),
+            'chatSummarizationUrl' => config('app.chat_summarization_url'),
         ]);
     }
 }

@@ -9,6 +9,7 @@ export interface AgentResponseMetaData {
   suggestions?: string[]
   visualization?: object[]
   data_explore?: { subsetID: number }
+  extras?: string
 }
 
 function startNewChat(
@@ -54,8 +55,12 @@ interface CurrentSession {
   title: string
   messages: ChatMessage[]
 }
-
+const START_OF_ANSWER_MARKER = '<spontaine:start_of_answer>'
 const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
+const START_OF_META_MARKER = '<spontaine:meta_data>'
+const END_OF_META_MARKER = '</spontaine:meta_data>'
+const START_OF_EXTRAS_MARKER = '<spontaine:extras>'
+const END_OF_EXTRAS_MARKER = '</spontaine:extras>'
 
 type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 
@@ -78,6 +83,11 @@ export default function useChat(currentSession: CurrentSession) {
   const [reconnectTrigger, setReconnectTrigger] = useState(0)
   const contentBuffer = useRef('')
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+  const isCollectingInlineMeta = useRef(false)
+  const inlineMetaBuffer = useRef('')
+  const isCollectingExtras = useRef(false)
+  const extrasBuffer = useRef('')
+  const streamBuffer = useRef('')
 
   useEffect(() => {
     setWsStatus('connecting')
@@ -91,32 +101,207 @@ export default function useChat(currentSession: CurrentSession) {
       if (contentBuffer.current == '') {
         return
       }
-      const contentToFlush = contentBuffer.current
+
+      // Append new content to the stream buffer
+      streamBuffer.current += contentBuffer.current
       contentBuffer.current = ''
+
+      let textToAdd = ''
+      let extractedMeta: AgentResponseMetaData | null = null
+      let extractedExtras: string | null = null
+
+      // Process the stream buffer
+      const processStream = () => {
+        if (streamBuffer.current === '') return
+
+        if (isCollectingInlineMeta.current) {
+          const endIdx = streamBuffer.current.indexOf(END_OF_META_MARKER)
+          if (endIdx !== -1) {
+            // Found end of meta data
+            inlineMetaBuffer.current += streamBuffer.current.substring(0, endIdx)
+
+            // Allow some time for parsing to avoid blocking UI
+            try {
+              const parsed = extractJsonMarkdown(inlineMetaBuffer.current) as AgentResponseMetaData | null
+              // Only update if we successfully parsed something useful
+              if (parsed && (parsed.visualization || parsed.data_explore || parsed.suggestions)) {
+                extractedMeta = parsed
+              }
+            } catch (e) {
+              console.warn("Failed to parse inline metadata", e)
+            }
+
+            inlineMetaBuffer.current = ''
+            isCollectingInlineMeta.current = false
+            streamBuffer.current = streamBuffer.current.substring(endIdx + END_OF_META_MARKER.length)
+
+            // Continue processing the rest of the stream
+            processStream()
+          } else {
+            // No end marker yet, move everything to meta buffer
+            inlineMetaBuffer.current += streamBuffer.current
+            streamBuffer.current = ''
+          }
+        } else if (isCollectingExtras.current) {
+          const endIdx = streamBuffer.current.indexOf(END_OF_EXTRAS_MARKER)
+          if (endIdx !== -1) {
+            // Found end of extras
+            extrasBuffer.current += streamBuffer.current.substring(0, endIdx)
+            extractedExtras = extrasBuffer.current
+
+            extrasBuffer.current = ''
+            isCollectingExtras.current = false
+            streamBuffer.current = streamBuffer.current.substring(endIdx + END_OF_EXTRAS_MARKER.length)
+
+            processStream()
+          } else {
+            extrasBuffer.current += streamBuffer.current
+            streamBuffer.current = ''
+          }
+        } else {
+          // Check for start of markers
+          const startMetaIdx = streamBuffer.current.indexOf(START_OF_META_MARKER)
+          const startExtrasIdx = streamBuffer.current.indexOf(START_OF_EXTRAS_MARKER)
+
+          // Determine which marker comes first (if any)
+          let firstMarkerIdx = -1
+          let markerType: 'meta' | 'extras' | null = null
+
+          if (startMetaIdx !== -1 && startExtrasIdx !== -1) {
+            if (startMetaIdx < startExtrasIdx) {
+              firstMarkerIdx = startMetaIdx
+              markerType = 'meta'
+            } else {
+              firstMarkerIdx = startExtrasIdx
+              markerType = 'extras'
+            }
+          } else if (startMetaIdx !== -1) {
+            firstMarkerIdx = startMetaIdx
+            markerType = 'meta'
+          } else if (startExtrasIdx !== -1) {
+            firstMarkerIdx = startExtrasIdx
+            markerType = 'extras'
+          }
+
+          if (firstMarkerIdx !== -1) {
+            // Found a marker
+            textToAdd += streamBuffer.current.substring(0, firstMarkerIdx)
+
+            if (markerType === 'meta') {
+              isCollectingInlineMeta.current = true
+              streamBuffer.current = streamBuffer.current.substring(firstMarkerIdx + START_OF_META_MARKER.length)
+            } else {
+              isCollectingExtras.current = true
+              streamBuffer.current = streamBuffer.current.substring(firstMarkerIdx + START_OF_EXTRAS_MARKER.length)
+            }
+
+            processStream()
+          } else {
+            // No start marker found. 
+            // Check for partial marker at the end to avoid splitting it.
+            // We need to keep enough chars at the end to cover the start marker length - 1
+            const minLengthToCheck = START_OF_META_MARKER.length - 1
+            if (streamBuffer.current.length > minLengthToCheck) {
+              // We can safely move everything except the last few chars
+              // But we need to be careful. Simplest is:
+              // Does the end of the string look like it could be the start of the marker?
+              // <
+              // <s
+              // ...
+              // <spontaine:meta_dat
+
+              let partialMatchLength = 0
+              for (let i = 1; i <= minLengthToCheck; i++) {
+                const tail = streamBuffer.current.slice(-i)
+                if (START_OF_META_MARKER.startsWith(tail)) {
+                  partialMatchLength = i
+                }
+              }
+
+              if (partialMatchLength > 0) {
+                // Move everything up to the partial match
+                const safeLength = streamBuffer.current.length - partialMatchLength
+                textToAdd += streamBuffer.current.substring(0, safeLength)
+                streamBuffer.current = streamBuffer.current.substring(safeLength)
+              } else {
+                textToAdd += streamBuffer.current
+                streamBuffer.current = ''
+              }
+            } else {
+              // Buffer is short, check if it is a prefix of marker
+              if (START_OF_META_MARKER.startsWith(streamBuffer.current)) {
+                // Keep it in buffer
+              } else {
+                textToAdd += streamBuffer.current
+                streamBuffer.current = ''
+              }
+            }
+          }
+        }
+      }
+
+      processStream()
+
+      if (textToAdd === '' && extractedMeta === null && extractedExtras === null) {
+        return
+      }
 
       setMessages((oldValues) => {
         if (oldValues.length === 0) {
           return oldValues
         }
         const lastItem = oldValues[oldValues.length - 1]
-        //check if the message contains end of answer marker
-        const contentStreamedSoFar = lastItem.content + contentToFlush
+
+        // Use textToAdd to update content
+        let contentStreamedSoFar = lastItem.content + textToAdd
         let lastMessageContent = contentStreamedSoFar
-        if (contentStreamedSoFar.includes(END_OF_ANSWER_MARKER)) {
-          const parts = contentStreamedSoFar.split(END_OF_ANSWER_MARKER)
-          if (parts.length === 2) {
+        let newContentType = lastItem.contentType
+
+        // Check for START_OF_ANSWER_MARKER and extract content after it
+        if (contentStreamedSoFar.includes(START_OF_ANSWER_MARKER)) {
+          const afterStartMarker = contentStreamedSoFar.split(START_OF_ANSWER_MARKER)[1] || ''
+          lastMessageContent = afterStartMarker
+          newContentType = 'final_response'
+        }
+
+        // Check for END_OF_ANSWER_MARKER and extract content before it
+        if (lastMessageContent.includes(END_OF_ANSWER_MARKER)) {
+          const parts = lastMessageContent.split(END_OF_ANSWER_MARKER)
+          if (parts.length >= 2) {
             isCollectingMeta.current = true
             tempMetaInfo.current = parts[1].trim()
             lastMessageContent = parts[0]
             setStatus(STATUS_STREAMING_META)
           }
         }
+
+        // Prepare update object
+        const updatedMessage = {
+          ...lastItem,
+          content: lastMessageContent,
+          contentType: newContentType,
+        }
+
+        // Apply extracted meta if any
+        if (extractedMeta) {
+          if (extractedMeta.visualization) {
+            updatedMessage.chart_data = extractedMeta.visualization
+          }
+          if (extractedMeta.data_explore) {
+            updatedMessage.explore_data = extractedMeta.data_explore
+          }
+          if (extractedMeta.suggestions) {
+            updatedMessage.suggestions = extractedMeta.suggestions
+          }
+        }
+
+        if (extractedExtras) {
+          updatedMessage.extras = extractedExtras
+        }
+
         return oldValues.map((oldMessage) => {
           if (oldMessage.id === lastItem.id) {
-            return {
-              ...oldMessage,
-              content: lastMessageContent,
-            }
+            return updatedMessage
           }
           return oldMessage
         })
@@ -128,6 +313,11 @@ export default function useChat(currentSession: CurrentSession) {
       isBeingStreamed.current = false
       isCollectingMeta.current = false
       tempMetaInfo.current = ''
+      isCollectingInlineMeta.current = false
+      inlineMetaBuffer.current = ''
+      isCollectingExtras.current = false
+      extrasBuffer.current = ''
+      streamBuffer.current = ''
       setStatus('')
       setIsLoading(false)
     }
@@ -151,6 +341,11 @@ export default function useChat(currentSession: CurrentSession) {
             isCollectingMeta.current = false
             contentBuffer.current = ''
             tempMetaInfo.current = ''
+            isCollectingInlineMeta.current = false
+            inlineMetaBuffer.current = ''
+            isCollectingExtras.current = false
+            extrasBuffer.current = ''
+            streamBuffer.current = ''
             updateStatus(STATUS_START, setStatus)
             startNewChat(uuid.current++, 'text', setMessages)
             break
@@ -357,14 +552,45 @@ export default function useChat(currentSession: CurrentSession) {
     isCollectingMeta.current = false
     tempMetaInfo.current = ''
     contentBuffer.current = ''
+    isCollectingInlineMeta.current = false
+    inlineMetaBuffer.current = ''
+    isCollectingExtras.current = false
+    extrasBuffer.current = ''
+    streamBuffer.current = ''
     setWsStatus('reconnecting')
     setReconnectTrigger((prev) => prev + 1)
   }
 
-  const handleToggleFavorite = (messageId: number) => {
+  const handleToggleFavorite = async (messageId: number, summary?: string) => {
+    // Find the current message to check its favorite status
+    const currentMessage = messages.find((msg) => msg.id === messageId)
+    const isCurrentlyFavorite = currentMessage?.is_favorite ?? false
+
+    // Optimistically update UI
     setMessages((prev) =>
       prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: !msg.is_favorite } : msg))
     )
+
+    try {
+      if (isCurrentlyFavorite) {
+        // Remove from favorites
+        await axios.delete(`/chat-history/${currentSession.id}/favorite/${messageId}`)
+        console.log('Favorite removed successfully')
+      } else {
+        // Add to favorites
+        await axios.post(`/chat-history/${currentSession.id}/favorite`, {
+          message_id: messageId,
+          summary: summary ?? '',
+        })
+        console.log('Favorite added successfully')
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err)
+      // Revert the optimistic update on error
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: isCurrentlyFavorite } : msg))
+      )
+    }
   }
 
   return {

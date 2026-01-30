@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
 import useChat from './components/useChat'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 export interface ChatMessage {
   id: number
   role: 'user' | 'assistant' | 'action' | 'error'
   content: string
   description?: string
-  contentType: 'text' | 'table' | 'chart'
+  contentType: 'text' | 'table' | 'chart' | 'explore' | 'final_response'
   suggestions?: string[]
 }
 
@@ -17,15 +18,19 @@ interface ChatHistory {
   title: string
   messages: ChatMessage[]
   id: number
-  timestamp: string
+  timestamp?: string
 }
+
+import { Favorite } from '@/Pages/Chat/ChatIndexPage'
 
 interface ChatProps {
   chatHistory: ChatHistory[]
   currentSession: ChatHistory
+  aiSuggestionUrl?: string
+  favorites?: Favorite[]
 }
 
-export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps>) {
+export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, favorites = [] }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -63,30 +68,38 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
   }
 
   return (
-    <div className='flex h-screen bg-gradient-to-br from-slate-50/80 via-blue-50/40 to-indigo-50/30'>
-      {/* Sidebar with enhanced visual separation */}
-      <div className='relative'>
-        <Sidebar
-          chatHistory={chatHistory}
-          sessionId={_currentSession.id}
-          onSessionChange={switchConversation}
-        />
-        {/* Subtle separator line */}
-        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/40 to-transparent' />
-      </div>
+    <AnalyticsDashboardLayout
+      type='chat'
+      subtype='chat'
+    >
+      <div className='flex h-[calc(100vh-80px)] overflow-hidden w-full'>
+        {/* Sidebar with fixed width */}
+        <div className='w-[280px] flex-shrink-0 border-r border-gray-100 bg-white'>
+          <Sidebar
+            chatHistory={chatHistory}
+            sessionId={_currentSession.id}
+            onSessionChange={switchConversation}
+            favorites={favorites}
+          />
+        </div>
 
-      <MainArea
-        currentSession={_currentSession}
-        messages={messages}
-        handleSendMessage={handleSendMessage}
-        isLoading={isLoading}
-        status={status}
-        input={input}
-        setInput={setInput}
-        onRetry={handleRetryConnection}
-        wsStatus={wsStatus}
-        handleToggleFavorite={handleToggleFavorite}
-      />
-    </div>
+        {/* Main content - flex-1 to take remaining space */}
+        <div className='flex-1 min-w-0'>
+          <MainArea
+            currentSession={_currentSession}
+            messages={messages}
+            handleSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            status={status}
+            input={input}
+            setInput={setInput}
+            onRetry={handleRetryConnection}
+            wsStatus={wsStatus}
+            handleToggleFavorite={handleToggleFavorite}
+            aiSuggestionUrl={aiSuggestionUrl}
+          />
+        </div>
+      </div>
+    </AnalyticsDashboardLayout>
   )
 }
