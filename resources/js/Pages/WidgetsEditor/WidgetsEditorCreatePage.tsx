@@ -10,6 +10,7 @@ interface Props {
   widget?: Widget
   collection_id: number
   type: string
+  source_query: string
   meta_hierarchy: MetaHierarchy[]
   widget_agent_url: string
 }
@@ -18,14 +19,23 @@ export default function WidgetsEditorCreatePage({
   widget,
   collection_id,
   type,
+  source_query,
   meta_hierarchy,
   widget_agent_url,
 }: Readonly<Props>) {
   const [currentWidget, setCurrentWidget] = useState<Widget | undefined>(widget)
   const [previewWidget, setPreviewWidget] = useState<Widget | undefined>(widget)
   const [thinking, setThinking] = useState<string | null>(null)
-  const { messages, sendMessage } = useWebSocket(widget_agent_url)
+  const { messages, sendMessage, connectionStatus } = useWebSocket(widget_agent_url)
   const [input, setInput] = React.useState('')
+  const hasSentSourceQuery = React.useRef(false)
+
+  useEffect(() => {
+    if (source_query && !hasSentSourceQuery.current) {
+      sendMessage({ message: source_query, widget: previewWidget, widget_id: currentWidget?.id?.toString() })
+      hasSentSourceQuery.current = true
+    }
+  }, [source_query])
 
   const handleSend = () => {
     if (!input.trim()) return
@@ -44,11 +54,13 @@ export default function WidgetsEditorCreatePage({
       if (lastMessage.type == 'thinking') {
         setThinking(lastMessage.message)
       } else if (lastMessage.type == 'review_required') {
+        lastMessage.widget_state.data.ai_agent = true
         setCurrentWidget(lastMessage.widget_state)
         setThinking(null)
       } else if (lastMessage.type == 'approval_required') {
         setThinking(null)
       } else if (lastMessage.type == 'complete') {
+        lastMessage.widget.data.ai_agent = true
         setCurrentWidget(lastMessage.widget)
         setThinking(null)
         console.log('widget', lastMessage.widget)
@@ -72,6 +84,8 @@ export default function WidgetsEditorCreatePage({
             onActionSend={handleAction}
             onPreviewWidgetChange={setPreviewWidget}
             messages={messages}
+            source_query={source_query}
+            connectionStatus={connectionStatus}
           />
         )}
       </DashboardPadding>

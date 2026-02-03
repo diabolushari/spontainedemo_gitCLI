@@ -3,6 +3,7 @@ import { ChatMessage } from './MainArea'
 import ChatMessageContent from './ChatMessageContent'
 import { LayoutGrid, MessageSquareText, Table, Share, Copy, Check, ExternalLink, FileText, ChevronRight, Star } from 'lucide-react'
 import FavoriteModal from './FavoriteModal'
+import { router } from '@inertiajs/react'
 
 interface TabbedResponseProps {
     finalResponse: ChatMessage
@@ -104,6 +105,16 @@ const TabbedResponse = ({
                                 <ExternalLink size={18} />
                             </button>
                         )}
+                        <button
+                            onClick={() => {
+                                router.get(route('widget-editor.create'), {
+                                    collection_id: 1,
+                                    type: 'overview',
+                                    source_query: 'test query'
+                                })
+                            }}>
+                            test session
+                        </button>
                     </div>
                 </div>
 

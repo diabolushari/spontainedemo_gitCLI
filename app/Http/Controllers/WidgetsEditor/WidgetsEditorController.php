@@ -20,12 +20,14 @@ class WidgetsEditorController extends Controller
     {
         $collectionId = $request->get('collection_id');
         $type = $request->get('type');
+        $source_query = $request->get('source_query');
         $metaHierarchy = MetaHierarchy::all();
 
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'collection_id' => $collectionId,
             'type' => $type,
+            'source_query' => $source_query,
             'meta_hierarchy' => $metaHierarchy,
             'widget_agent_url' => config('app.widget_agent_url'),
         ]);

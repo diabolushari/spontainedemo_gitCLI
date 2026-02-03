@@ -1,5 +1,5 @@
 import React from 'react'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, Send } from 'lucide-react'
 
 interface WidgetChatSectionProps {
   messages: any[]
@@ -9,6 +9,7 @@ interface WidgetChatSectionProps {
   onChatSend: () => void
   onActionSend: (action: string, message?: string) => void
   onSave: () => void
+  connectionStatus: boolean
 }
 
 export default function WidgetChatSection({
@@ -19,6 +20,7 @@ export default function WidgetChatSection({
   onChatSend,
   onActionSend,
   onSave,
+  connectionStatus
 }: Readonly<WidgetChatSectionProps>) {
   const hasError = messages.some((msg) => msg.type === 'error')
 
@@ -106,11 +108,10 @@ export default function WidgetChatSection({
                   </div>
                 )}
                 <div
-                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
-                    isUser
-                      ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                      : 'rounded-tl-sm bg-white text-gray-800'
-                  }`}
+                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
+                    ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                    : 'rounded-tl-sm bg-white text-gray-800'
+                    }`}
                 >
                   {!isApprovalRequired && (
                     <div className='whitespace-pre-wrap text-sm leading-relaxed'>{msg.message}</div>
@@ -211,30 +212,34 @@ export default function WidgetChatSection({
           </div>
         )}
       </div>
-      <div className='p-4'>
-        <div className='relative flex items-center rounded-3xl bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
+      <div className='m-3 rounded-lg bg-white p-2'>
+        <div className={`mb-2 flex items-center gap-2 px-1 text-xs transition-colors ${connectionStatus ? 'text-gray-500' : 'text-gray-400'}`}>
+          <span className={`h-1.5 w-1.5 rounded-full transition-all ${connectionStatus ? 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]' : 'bg-gray-300'}`}></span>
+          {connectionStatus ? 'Talking to Chat Agent' : 'Agent Offline'}
+        </div>
+        <div className='relative flex items-center gap-1.5 rounded-xl border border-blue-100 bg-[#F5F9FF] p-0.5 shadow-sm transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50'>
           <textarea
             ref={textareaRef}
-            placeholder='Ask your questions'
-            className='max-h-[200px] min-h-[50px] w-full resize-none border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
-            disabled={!!thinkingMessage || hasError}
+            placeholder=''
+            className='max-h-[150px] min-h-[36px] w-full resize-none border-none bg-transparent py-2 pl-4 pr-10 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
+            disabled={!connectionStatus || !!thinkingMessage || hasError}
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
-                if (!hasError) handleSend()
+                if (!hasError && connectionStatus) handleSend()
               }
             }}
             rows={1}
           />
           <button
             type='button'
-            disabled={!!thinkingMessage || hasError}
+            disabled={!connectionStatus || !!thinkingMessage || hasError}
             onClick={handleSend}
-            className='absolute bottom-2 right-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 py-2 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
+            className='absolute right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500 text-white shadow-sm transition-all hover:bg-blue-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:shadow-none'
           >
-            Ask
+            <Send className='h-4 w-4' />
           </button>
         </div>
       </div>

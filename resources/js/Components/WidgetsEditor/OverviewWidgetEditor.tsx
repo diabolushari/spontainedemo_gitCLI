@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { Bot } from 'lucide-react'
 import OverviewWidget from '../Widgets/OverviewWidget'
+import { source } from 'framer-motion/client'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -68,6 +69,8 @@ interface Props {
   onActionSend: (action: string, message?: string) => void
   onPreviewWidgetChange?: (widget: Widget) => void
   messages: any[]
+  source_query?: string
+  connectionStatus: boolean
 }
 
 /**
@@ -154,11 +157,13 @@ export default function OverviewWidgetEditor({
   onActionSend,
   onPreviewWidgetChange,
   messages,
+  source_query,
+  connectionStatus
 }: Readonly<Props>) {
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
-  const [activeTab, setActiveTab] = useState<'config' | 'chat'>('config')
+  const [activeTab, setActiveTab] = useState<'config' | 'chat'>(source_query ? 'chat' : 'config')
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
@@ -175,8 +180,8 @@ export default function OverviewWidgetEditor({
     subtitle: widget?.subtitle ?? '',
     description: widget?.data?.description ?? '',
     link: widget?.data?.link ?? '',
-    data_table_id: widget?.data?.data_table_id.toString() ?? '',
-    subset_group_id: widget?.data?.subset_group_id.toString() ?? '',
+    data_table_id: widget?.data?.data_table_id?.toString() ?? '',
+    subset_group_id: widget?.data?.subset_group_id?.toString() ?? '',
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
     subset_id: widget?.data?.overview?.subset_id?.toString() ?? '',
     subset_name: widget?.data?.overview?.subset_name ?? '',
@@ -219,8 +224,8 @@ export default function OverviewWidgetEditor({
       subtitle: widget.subtitle ?? '',
       description: widget.data?.description ?? '',
       link: widget.data?.link ?? '',
-      data_table_id: widget.data?.data_table_id.toString() ?? '',
-      subset_group_id: widget.data?.subset_group_id.toString() ?? '',
+      data_table_id: widget.data?.data_table_id?.toString() ?? '',
+      subset_group_id: widget.data?.subset_group_id?.toString() ?? '',
       chart_type: widget.data?.overview?.chart_type ?? 'bar',
       subset_id: widget.data?.overview?.subset_id?.toString() ?? '',
       subset_name: widget.data?.overview?.subset_name ?? '',
@@ -399,14 +404,12 @@ export default function OverviewWidgetEditor({
               </span>
               <button
                 onClick={() => setActiveTab(activeTab === 'config' ? 'chat' : 'config')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  activeTab === 'chat' ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${activeTab === 'chat' ? 'bg-blue-600' : 'bg-gray-200'
+                  }`}
               >
                 <span
-                  className={`${
-                    activeTab === 'chat' ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  className={`${activeTab === 'chat' ? 'translate-x-6' : 'translate-x-1'
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                 />
               </button>
             </div>
@@ -438,6 +441,7 @@ export default function OverviewWidgetEditor({
               onChatSend={onChatSend}
               onActionSend={onActionSend}
               onSave={handleSubmit}
+              connectionStatus={connectionStatus}
             />
           )}
         </div>
