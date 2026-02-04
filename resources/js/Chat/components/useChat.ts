@@ -10,6 +10,7 @@ export interface AgentResponseMetaData {
   visualization?: object[]
   data_explore?: { subsetID: number }
   extras?: string
+  widget_generation?: object
 }
 
 function startNewChat(
@@ -124,7 +125,7 @@ export default function useChat(currentSession: CurrentSession) {
             try {
               const parsed = extractJsonMarkdown(inlineMetaBuffer.current) as AgentResponseMetaData | null
               // Only update if we successfully parsed something useful
-              if (parsed && (parsed.visualization || parsed.data_explore || parsed.suggestions)) {
+              if (parsed && (parsed.visualization || parsed.data_explore || parsed.suggestions || parsed.widget_generation)) {
                 extractedMeta = parsed
               }
             } catch (e) {
@@ -292,6 +293,9 @@ export default function useChat(currentSession: CurrentSession) {
           }
           if (extractedMeta.suggestions) {
             updatedMessage.suggestions = extractedMeta.suggestions
+          }
+          if (extractedMeta.widget_generation) {
+            updatedMessage.widget_generation = extractedMeta.widget_generation
           }
         }
 

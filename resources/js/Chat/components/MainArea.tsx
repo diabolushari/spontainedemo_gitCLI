@@ -17,6 +17,7 @@ export interface ChatMessage {
   chart_data?: object[]
   explore_data?: { subsetID: number }
   extras?: string
+  widget_generation?: object
 }
 
 interface ChatHistory {
