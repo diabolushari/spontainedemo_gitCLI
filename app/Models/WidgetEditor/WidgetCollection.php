@@ -15,7 +15,16 @@ class WidgetCollection extends Model
     protected $fillable = [
         'name',
         'description',
+        'user_id',
     ];
+
+    /**
+     * Get the user that owns the collection.
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
 
     /**
      * Get the widgets that belong to this collection.
