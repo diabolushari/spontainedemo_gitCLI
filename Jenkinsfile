@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         SERVER_HOST     = '206.189.142.129'
         REMOTE_APP_DIR  = '/var/www/html/kseb-analytics'
