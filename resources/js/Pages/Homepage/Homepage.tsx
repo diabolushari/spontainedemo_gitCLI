@@ -14,12 +14,13 @@ declare function route(name: string, params?: any): string
 
 interface Props {
     widgets: Widget[]
+    communityWidgets: Widget[]
     pages: DashboardPage[]
     page_agent_url: string
     chatHistory: ChatHistoryItem[]
 }
 
-export default function Homepage({ widgets, pages, page_agent_url, chatHistory = [] }: Readonly<Props>) {
+export default function Homepage({ widgets, communityWidgets, pages, page_agent_url, chatHistory = [] }: Readonly<Props>) {
     const { auth } = usePage().props as any
     const user = auth.user
     const [query, setQuery] = useState('')
@@ -102,9 +103,6 @@ export default function Homepage({ widgets, pages, page_agent_url, chatHistory =
                                 }`}
                         >
                             Community
-                            <span className='ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800'>
-                                Soon
-                            </span>
                         </button>
                     </div>
                 </div>
@@ -123,7 +121,7 @@ export default function Homepage({ widgets, pages, page_agent_url, chatHistory =
                             <RecentPages pages={pages} itemVariants={itemVariants} />
                         </motion.div>
                     ) : (
-                        <CommunitySection />
+                        <CommunitySection widgets={communityWidgets} itemVariants={itemVariants} />
                     )}
                 </AnimatePresence>
             </DashboardPadding>

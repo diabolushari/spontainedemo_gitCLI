@@ -164,7 +164,7 @@ export default function OverviewWidgetEditor({
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
   const [activeTab, setActiveTab] = useState<'config' | 'chat'>(source_query ? 'chat' : 'config')
-  const [saveMode, setSaveMode] = useState<'save' | 'draft' | null>(null)
+  const [saveMode, setSaveMode] = useState<'save' | 'draft' | 'community' | null>(null)
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
@@ -342,7 +342,7 @@ export default function OverviewWidgetEditor({
     }
   }
 
-  const handleSubmit = (mode: 'save' | 'draft' = 'save') => {
+  const handleSubmit = (mode: 'save' | 'draft' | 'community' = 'save') => {
     setSaveMode(mode)
     const widgetData = parseFormDataToWidget(formData, highlightCards, collectionId)
     const postData = {

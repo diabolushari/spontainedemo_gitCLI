@@ -25,7 +25,7 @@ export default function RecentPages({ pages, itemVariants }: Props) {
                 <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                     {pages.map((page) => (
                         <motion.div key={page.id} variants={itemVariants}>
-                            <Link href={route('page-editor.edit', page.id)} className='group block h-full'>
+                            <Link href={route('custom-page', page.link)} className='group block h-full'>
                                 <div className='flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-indigo-400 hover:shadow-md'>
                                     {/* Compact Page Preview */}
                                     <div className='relative h-28 bg-gray-50 border-b border-gray-100 group-hover:bg-indigo-50/30 transition-colors'>

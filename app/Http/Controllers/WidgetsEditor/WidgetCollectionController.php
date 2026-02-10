@@ -13,14 +13,18 @@ class WidgetCollectionController extends Controller
     public function index()
     {
         // Fetch all collections with widget count
-        $collections = WidgetCollection::where('user_id', auth()->id())
+        $collections = WidgetCollection::where(function ($query) {
+            $query->where('user_id', auth()->id())
+                ->orWhereNull('user_id');
+        })
             ->withCount('widgets')
             ->latest('updated_at')
             ->get();
 
         // Fetch all widgets with their collection (paginated)
         $widgets = Widget::whereHas('collection', function ($query) {
-            $query->where('user_id', auth()->id());
+            $query->where('user_id', auth()->id())
+                ->orWhereNull('user_id');
         })
             ->with('collection')
             ->latest('updated_at')

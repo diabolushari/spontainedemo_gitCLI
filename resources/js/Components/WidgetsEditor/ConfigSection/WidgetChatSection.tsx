@@ -8,7 +8,7 @@ interface WidgetChatSectionProps {
   setChatInput: (value: string) => void
   onChatSend: () => void
   onActionSend: (action: string, message?: string) => void
-  onSave: (mode?: 'save' | 'draft') => void
+  onSave: (mode?: 'save' | 'draft' | 'community') => void
   connectionStatus: boolean
 }
 
@@ -176,6 +176,12 @@ export default function WidgetChatSection({
                           className='flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
                         >
                           Save & Finish
+                        </button>
+                        <button
+                          onClick={() => onSave('community')}
+                          className='flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700'
+                        >
+                          Save to Community
                         </button>
                       </div>
                       <p className='text-center text-[10px] italic text-gray-400'>

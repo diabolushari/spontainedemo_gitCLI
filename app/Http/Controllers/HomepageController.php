@@ -38,8 +38,19 @@ class HomepageController extends Controller
             ->limit(10)
             ->get();
 
+        // Fetch community widgets
+        $communityWidgets = Widget::with('collection')
+            ->whereHas('collection', function ($query) {
+                $query->whereNull('user_id')
+                    ->where('name', 'community');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->limit(8)
+            ->get();
+
         return Inertia::render('Homepage/Homepage', [
             'widgets' => $widgets,
+            'communityWidgets' => $communityWidgets,
             'pages' => $pages,
             'chatHistory' => $chatHistory,
             'page_agent_url' => $pageAgentUrl,

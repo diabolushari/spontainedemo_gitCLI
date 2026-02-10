@@ -22,7 +22,7 @@ interface WidgetSettingsFormProps {
   setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
   openItem?: string
   setOpenItem?: (item: string) => void
-  handleSubmit: (mode?: 'save' | 'draft') => void
+  handleSubmit: (mode?: 'save' | 'draft' | 'community') => void
   loading: boolean
   metaHierarchy: MetaHierarchy[]
   ai_agent?: boolean
@@ -167,18 +167,26 @@ export default function WidgetSettingsForm({
         </Accordion.Item>
       </Accordion.Root>
       <FullSpinnerWrapper processing={loading}>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleSubmit('save')}
+              className='flex-1 rounded-lg bg-blue-500 px-4 py-3 text-center font-medium text-white transition-colors hover:bg-blue-600'
+            >
+              save
+            </button>
+            <button
+              onClick={() => handleSubmit('draft')}
+              className='flex-1 rounded-lg border border-slate-200 bg-white px-4 py-3 text-center font-medium text-slate-600 transition-colors hover:bg-slate-50'
+            >
+              draft
+            </button>
+          </div>
           <button
-            onClick={() => handleSubmit('save')}
-            className='flex-1 rounded-lg bg-blue-500 px-4 py-3 text-center font-medium text-white transition-colors hover:bg-blue-600'
+            onClick={() => handleSubmit('community')}
+            className='w-full rounded-lg bg-emerald-600 px-4 py-3 text-center font-medium text-white transition-colors hover:bg-emerald-700'
           >
-            save
-          </button>
-          <button
-            onClick={() => handleSubmit('draft')}
-            className='flex-1 rounded-lg border border-slate-200 bg-white px-4 py-3 text-center font-medium text-slate-600 transition-colors hover:bg-slate-50'
-          >
-            draft
+            Save to Community
           </button>
         </div>
       </FullSpinnerWrapper>

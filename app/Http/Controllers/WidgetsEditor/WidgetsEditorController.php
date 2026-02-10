@@ -38,12 +38,27 @@ class WidgetsEditorController extends Controller
         $data = $request->toArray();
 
         if ($request->saveMode) {
+            $collectionName = $request->saveMode;
+            $userId = auth()->id();
+
+            if ($request->saveMode === 'community') {
+                $userId = null;
+            }
+
             $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
-                'user_id' => auth()->id(),
-                'name' => $request->saveMode === 'save' ? 'save' : 'draft',
+                'user_id' => $userId,
+                'name' => $collectionName,
             ]);
+
+            // If we found an existing collection, ensure the user owns it (if it's not community)
+            if ($collection->user_id !== null && $collection->user_id !== auth()->id()) {
+                abort(403, 'Unauthorized to save to this collection');
+            }
+
             $data['collection_id'] = $collection->id;
         }
+
+        $data['user_id'] = auth()->id();
 
         $widget = Widget::create($data);
 
@@ -77,15 +92,34 @@ class WidgetsEditorController extends Controller
 
     public function update(WidgetEditorFormRequest $request, Widget $widget)
     {
+        if ($widget->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized to update this widget');
+        }
+
         $data = $request->toArray();
 
         if ($request->saveMode) {
+            $collectionName = $request->saveMode;
+            $userId = auth()->id();
+
+            if ($request->saveMode === 'community') {
+                $userId = null;
+            }
+
             $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
-                'user_id' => auth()->id(),
-                'name' => $request->saveMode === 'save' ? 'save' : 'draft',
+                'user_id' => $userId,
+                'name' => $collectionName,
             ]);
+
+            // Ensure the user owns the collection (if it's not community)
+            if ($collection->user_id !== null && $collection->user_id !== auth()->id()) {
+                abort(403, 'Unauthorized to save to this collection');
+            }
+
             $data['collection_id'] = $collection->id;
         }
+
+        $data['user_id'] = auth()->id();
 
         $widget->update($data);
 
@@ -95,6 +129,10 @@ class WidgetsEditorController extends Controller
 
     public function destroy(Widget $widget)
     {
+        if ($widget->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized to delete this widget');
+        }
+
         $widget->delete();
 
         return to_route('widget-collection.index')->with('success', 'Widget deleted successfully');

@@ -519,6 +519,7 @@ export interface HighlightCardData {
 
 export interface Widget {
   id?: number
+  user_id?: number
   title: string
   subtitle: string
   type: string

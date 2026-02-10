@@ -14,6 +14,7 @@ class Widget extends Model
      */
     protected $fillable = [
         'collection_id',
+        'user_id',
         'title',
         'subtitle',
         'type',
@@ -38,5 +39,13 @@ class Widget extends Model
     public function collection()
     {
         return $this->belongsTo(WidgetCollection::class, 'collection_id');
+    }
+
+    /**
+     * Get the user that owns this widget.
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
     }
 }
