@@ -21,7 +21,7 @@ export default function CommunitySection({ widgets, itemVariants }: Props) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className='flex flex-col items-center justify-center py-32 text-center'
+                className='px-20 flex flex-col items-center justify-center py-32 text-center'
             >
                 <div className='relative mb-6'>
                     <div className='absolute -inset-4 rounded-full bg-blue-100 opacity-50 blur-xl'></div>
@@ -46,7 +46,7 @@ export default function CommunitySection({ widgets, itemVariants }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className='pb-20'
+            className='pb-20 px-20'
         >
             <SectionHeader
                 title="Community Explorer"

@@ -14,7 +14,7 @@ interface Props {
 
 export default function RecentPages({ pages, itemVariants }: Props) {
     return (
-        <div>
+        <div className='px-20'>
             <SectionHeader
                 title="Recent Pages"
                 link={route('page-editor.index')}
@@ -48,14 +48,6 @@ export default function RecentPages({ pages, itemVariants }: Props) {
                             </Link>
                         </motion.div>
                     ))}
-                    <motion.div variants={itemVariants}>
-                        <Link href={route('page-editor.index')} className='group flex h-full min-h-[160px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50/50 p-4 transition-colors hover:border-indigo-400 hover:bg-indigo-50/30'>
-                            <div className='mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm group-hover:scale-110 transition-transform'>
-                                <Plus className='h-4 w-4 text-indigo-500' />
-                            </div>
-                            <span className='text-xs font-medium text-gray-600 group-hover:text-indigo-600'>New Page</span>
-                        </Link>
-                    </motion.div>
                 </div>
             ) : (
                 <EmptyState message="No pages created yet" actionLabel="Create Page" actionLink={route('page-editor.index')} />

@@ -15,10 +15,10 @@ interface Props {
 
 export default function RecentWidgets({ widgets, itemVariants }: Props) {
     return (
-        <div className='pb-20'>
+        <div className='pb-20 px-20'>
             <SectionHeader
                 title="Recent Widgets"
-                link={route('widget-editor.index')}
+                link={route('widget-collection.index')}
                 icon={<Zap className="h-5 w-5 text-amber-500" />}
             />
 
@@ -54,14 +54,6 @@ export default function RecentWidgets({ widgets, itemVariants }: Props) {
                             </Link>
                         </motion.div>
                     ))}
-                    <motion.div variants={itemVariants}>
-                        <Link href={route('widget-editor.create')} className='group flex h-full min-h-[160px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50/50 p-4 transition-colors hover:border-blue-400 hover:bg-blue-50/30'>
-                            <div className='mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm group-hover:scale-110 transition-transform'>
-                                <Plus className='h-4 w-4 text-blue-500' />
-                            </div>
-                            <span className='text-xs font-medium text-gray-600 group-hover:text-blue-600'>New Widget</span>
-                        </Link>
-                    </motion.div>
                 </div>
             ) : (
                 <EmptyState message="No recent widgets found" actionLabel="Create Widget" actionLink={route('widget-editor.create')} />
