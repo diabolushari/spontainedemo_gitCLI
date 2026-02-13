@@ -13,7 +13,13 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->bind(
+            \App\Services\Embedding\EmbeddingServiceInterface::class,
+            \App\Services\Embedding\OpenAIEmbeddingService::class
+        );
+    }
 
     /**
      * Bootstrap any application services.

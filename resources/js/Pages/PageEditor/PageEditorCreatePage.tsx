@@ -18,6 +18,13 @@ interface Props {
   page_agent_url?: string
   page?: DashboardPage
   widgets: Widget[]
+  auth: {
+    user: {
+      id: number
+      name: string
+      email: string
+    }
+  }
 }
 
 interface SubsetMaxValueResponse {
@@ -25,7 +32,7 @@ interface SubsetMaxValueResponse {
   max_value: string | null
 }
 
-export default function PageEditorCreatePage({ page_agent_url, page, widgets }: Readonly<Props>) {
+export default function PageEditorCreatePage({ page_agent_url, page, widgets, auth }: Readonly<Props>) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [selectWidget, setSelectWidget] = useState(null)
   const [selectedWidget, setSelectedWidget] = useState<Widget | null>(null)
@@ -111,9 +118,9 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
 
   const url = anchor_widget?.data.overview.subset_id
     ? route('subset-field-max-value', {
-        subsetDetail: anchor_widget?.data.overview.subset_id,
-        field: 'month',
-      })
+      subsetDetail: anchor_widget?.data.overview.subset_id,
+      field: 'month',
+    })
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
@@ -161,6 +168,7 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
               onPageUpdate={setAll}
               agentUrl={page_agent_url}
               onThinking={setThinkingMessage}
+              userId={auth.user.id}
             />
 
             {/* Main Content Area */}

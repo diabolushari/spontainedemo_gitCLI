@@ -2,7 +2,7 @@
 
 namespace App\Services\Qdrant;
 
-use App\Services\Embedding\GoogleEmbeddingService;
+use App\Services\Embedding\EmbeddingServiceInterface;
 use Illuminate\Support\Facades\Log;
 use Qdrant\Config;
 use Qdrant\Http\Builder;
@@ -18,9 +18,9 @@ use RuntimeException;
 class QdrantService
 {
     private Qdrant $client;
-    private GoogleEmbeddingService $embeddingService;
+    private EmbeddingServiceInterface $embeddingService;
 
-    public function __construct(GoogleEmbeddingService $embeddingService)
+    public function __construct(EmbeddingServiceInterface $embeddingService)
     {
         $this->embeddingService = $embeddingService;
 
@@ -28,6 +28,13 @@ class QdrantService
             $host = config('app.qdrant_host', '127.0.0.1');
             $port = config('app.qdrant_port', 6333);
             $apiKey = config('app.qdrant_api_key');
+
+            Log::debug("Initializing Qdrant client", [
+                'host' => $host,
+                'port' => $port,
+                'has_api_key' => !empty($apiKey),
+                'api_key_length' => $apiKey ? strlen($apiKey) : 0
+            ]);
 
             // Build the URL correctly
             $url = $host . ':' . $port;
@@ -43,8 +50,12 @@ class QdrantService
             $this->client = new Qdrant($transport);
 
         } catch (\Exception $e) {
-            Log::error("Failed to initialize Qdrant client: " . $e->getMessage());
-            throw new RuntimeException("Could not connect to Vector Database service.");
+            Log::error("Failed to initialize Qdrant client", [
+                'message' => $e->getMessage(),
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw new RuntimeException("Could not connect to Vector Database service: " . $e->getMessage());
         }
     }
 
@@ -74,13 +85,33 @@ class QdrantService
      * 
      * @return array The raw API response
      */
-    public function createCollection(string $name, int $vectorSize = 768, string $distance = VectorParams::DISTANCE_COSINE): array
+    public function createCollection(string $name, int $vectorSize = 1536, string $distance = VectorParams::DISTANCE_COSINE): array
     {
-        // FIX: Wrap VectorParams in CreateCollection request object
-        $createCollection = new CreateCollection();
-        $createCollection->addVector(new VectorParams($vectorSize, $distance));
+        Log::info("Creating Qdrant collection", [
+            'name' => $name,
+            'vector_size' => $vectorSize,
+            'distance' => $distance
+        ]);
 
-        return $this->client->collections($name)->create($createCollection)->__toArray();
+        try {
+            // FIX: Wrap VectorParams in CreateCollection request object
+            $createCollection = new CreateCollection();
+            $createCollection->addVector(new VectorParams($vectorSize, $distance));
+
+            $response = $this->client->collections($name)->create($createCollection);
+            
+            Log::debug("Qdrant createCollection raw response", ['response' => $response->__toArray()]);
+            
+            return $response->__toArray();
+        } catch (\Exception $e) {
+            Log::error("Qdrant createCollection failed", [
+                'collection' => $name,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'exception' => get_class($e)
+            ]);
+            throw $e;
+        }
     }
 
     public function deleteCollection(string $name): array
@@ -94,7 +125,21 @@ class QdrantService
             $response = $this->client->collections($name)->info();
             return isset($response['result']);
         } catch (\Exception $e) {
-            // 404 means it doesn't exist, other errors might be connection related
+            // 404 is technically not always thrown as an exception by this client depending on config,
+            // but if it is, we should only return false if it's actually "not found".
+            if ($e->getCode() === 404) {
+                return false;
+            }
+            
+            Log::warning("Qdrant collectionExists check encountered an error", [
+                'collection' => $name,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'exception' => get_class($e)
+            ]);
+            
+            // If it's 403 or other connection error, we might want to know.
+            // For now return false but the log will tell us why.
             return false;
         }
     }
@@ -108,15 +153,24 @@ class QdrantService
      */
     public function addDocument(string $collectionName, int|string $id, string|array $textOrVector, array $payload = []): array
     {
+        Log::info("Adding document to Qdrant", [
+            'collection' => $collectionName,
+            'id' => $id,
+            'is_precomputed_vector' => is_array($textOrVector)
+        ]);
+
         $vector = is_array($textOrVector) ? $textOrVector : $this->embeddingService->embedDocument($textOrVector);
 
-        return $this->addDocuments($collectionName, [
+        $result = $this->addDocuments($collectionName, [
             [
                 'id' => $id,
                 'vector' => $vector,
                 'payload' => $payload
             ]
         ]);
+
+        Log::info("Qdrant addDocument result", ['id' => $id, 'result' => $result]);
+        return $result;
     }
 
     /**
@@ -143,8 +197,19 @@ class QdrantService
             $points->addPoint($point);
         }
 
-        // Return array instead of Response object
-        return $this->client->collections($collectionName)->points()->upsert($points)->__toArray();
+        try {
+            // Return array instead of Response object
+            $response = $this->client->collections($collectionName)->points()->upsert($points);
+            return $response->__toArray();
+        } catch (\Exception $e) {
+            Log::error("Qdrant addDocuments failed", [
+                'collection' => $collectionName,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'exception' => get_class($e)
+            ]);
+            throw $e;
+        }
     }
 
     /**
@@ -168,11 +233,34 @@ class QdrantService
      */
     public function search(string $collectionName, string $query, int $limit = 10): array
     {
-        $vector = $this->embeddingService->embedQuery($query);
+        Log::info("Searching Qdrant", [
+            'collection' => $collectionName,
+            'query_length' => strlen($query),
+            'limit' => $limit
+        ]);
 
-        $searchRequest = new SearchRequest(new VectorStruct($vector));
-        $searchRequest->setLimit($limit);
+        try {
+            $vector = $this->embeddingService->embedQuery($query);
 
-        return $this->client->collections($collectionName)->points()->search($searchRequest)->__toArray();
+            $searchRequest = new SearchRequest(new VectorStruct($vector));
+            $searchRequest->setLimit($limit);
+
+            $result = $this->client->collections($collectionName)->points()->search($searchRequest)->__toArray();
+
+            Log::info("Qdrant search result count", [
+                'collection' => $collectionName,
+                'count' => count($result['result'] ?? [])
+            ]);
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error("Qdrant search failed", [
+                'collection' => $collectionName,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'exception' => get_class($e)
+            ]);
+            throw $e;
+        }
     }
 }

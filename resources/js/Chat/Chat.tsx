@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { router } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
@@ -28,9 +29,10 @@ interface ChatProps {
   currentSession: ChatHistory
   aiSuggestionUrl?: string
   favorites?: Favorite[]
+  initialMessage?: string
 }
 
-export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, favorites = [] }: Readonly<ChatProps>) {
+export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, favorites = [], initialMessage }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -57,14 +59,21 @@ export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, fav
     return () => window.removeEventListener('ai-insight-send-message', handler)
   }, [handleSendMessage])
 
+  // Handle initial message from homepage
+  useEffect(() => {
+    if (wsStatus === 'connected' && initialMessage && messages.length === 0 && !isLoading) {
+      handleSendMessage(initialMessage)
+    }
+  }, [wsStatus, initialMessage, messages.length, isLoading, handleSendMessage])
+
+  // Sync currentSession prop with local state when it changes (e.g. navigation)
+  useEffect(() => {
+    setCurrentSession(currentSession)
+    setMessageFromHistory(currentSession.messages)
+  }, [currentSession])
+
   const switchConversation = (sessionId: number) => {
-    console.log(sessionId)
-    axios.get(`/chat-history/${sessionId}`).then((res) => {
-      // console.log('from res: ', res.data.messages)
-      setCurrentSession(res.data)
-      setMessageFromHistory(res.data.messages)
-      // console.log('current session: ', _currentSession)
-    })
+    router.visit(`/chat/${sessionId}`)
   }
 
   return (

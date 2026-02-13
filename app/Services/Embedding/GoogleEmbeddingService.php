@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
-class GoogleEmbeddingService
+class GoogleEmbeddingService implements EmbeddingServiceInterface
 {
     private string $apiKey;
     private string $baseUrl;

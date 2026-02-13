@@ -27,6 +27,7 @@ interface Props {
   containerClassName?: string
   margin?: { top: number; right: number; bottom: number; left: number }
   xAxisHeight?: number
+  showTooltip?: boolean
 }
 
 const tickFormatter = (value: number | string) => {
@@ -42,6 +43,7 @@ export function CustomBarChart({
   containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
   margin = { top: 20, right: 30, left: 20, bottom: 50 },
   xAxisHeight = 70,
+  showTooltip = true,
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -89,7 +91,7 @@ export function CustomBarChart({
             axisLine={false}
             tickMargin={8}
           />
-          <ChartTooltip content={<ChartTooltipContent />} />
+          {showTooltip && <ChartTooltip content={<ChartTooltipContent />} />}
           {keysToPlot.map((plotKey, index) => (
             <Bar
               key={plotKey.key}

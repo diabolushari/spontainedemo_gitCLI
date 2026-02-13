@@ -97,6 +97,13 @@ class FavoriteController extends Controller
         // Use the provided summary as the text for embedding
         $text = "Title: " . $chatHistory->title . "\n\nSummary:\n" . $summary;
 
+        Log::info("Storing favorite to Qdrant", [
+            'collection' => $collectionName,
+            'point_id' => $pointId,
+            'chat_history_id' => $chatHistory->id,
+            'message_id' => $messageId
+        ]);
+
         $this->qdrantService->addDocument($collectionName, $pointId, $text, [
             'chat_history_id' => $chatHistory->id,
             'message_id' => $messageId,
@@ -104,6 +111,8 @@ class FavoriteController extends Controller
             'user_id' => $chatHistory->user_id,
             'summary' => $summary,
         ]);
+
+        Log::info("Favorite stored in Qdrant successfully", ['point_id' => $pointId]);
     }
 
     /**
@@ -119,8 +128,14 @@ class FavoriteController extends Controller
 
         $pointId = $this->generatePointId($chatHistoryId, $messageId);
 
+        Log::info("Removing favorite from Qdrant", [
+            'collection' => $collectionName,
+            'point_id' => $pointId
+        ]);
+
         try {
             $this->qdrantService->deleteDocument($collectionName, $pointId);
+            Log::info("Favorite removed from Qdrant successfully", ['point_id' => $pointId]);
         } catch (\Exception $e) {
             // Log error but don't fail the request
             Log::warning("Failed to delete from Qdrant: " . $e->getMessage());

@@ -519,6 +519,7 @@ export interface HighlightCardData {
 
 export interface Widget {
   id?: number
+  user_id?: number
   title: string
   subtitle: string
   type: string
@@ -531,6 +532,11 @@ export interface Widget {
     ai_agent: boolean
     data_table_id: number
     subset_group_id: number
+    view?: {
+      overview: boolean
+      trend: boolean
+      ranking: boolean
+    }
     overview: {
       chart_type: string
       measures: {

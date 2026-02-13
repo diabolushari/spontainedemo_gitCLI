@@ -15,13 +15,16 @@ interface WidgetLayoutProps {
   link?: string
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  selectedView?: string
+  selectedView?: string | null
   onViewChange?: (view: string) => void
   hasOverview?: boolean
   hasRanking?: boolean
   hasTrend?: boolean
   hasHighlightCards?: boolean
   subsetGroupName: string | null
+  isEditable?: boolean
+  onTitleChange?: (value: string) => void
+  onSubtitleChange?: (value: string) => void
 }
 
 const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
@@ -46,6 +49,9 @@ export default function WidgetLayout({
   hasTrend = false,
   hasHighlightCards = false,
   subsetGroupName,
+  isEditable = false,
+  onTitleChange,
+  onSubtitleChange,
 }: Readonly<WidgetLayoutProps>) {
   const handleViewChange = (view: string) => {
     if (onViewChange) {
@@ -54,24 +60,22 @@ export default function WidgetLayout({
   }
 
   return (
-    <Card className='w-full'>
+    <Card className='w-full '>
       <div className='flex max-h-[600px] min-h-[500px] w-full'>
         {/* Sidebar - Always Vertical */}
         <div className='flex shrink-0 flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>
           {(hasOverview || hasHighlightCards) && (
             <button
               onClick={() => handleViewChange('overview')}
-              className={`${BASE_BUTTON_CLASSES} ${
-                selectedView === 'overview' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
-              }`}
+              className={`${BASE_BUTTON_CLASSES} ${selectedView === 'overview' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
+                }`}
               aria-label='Overview'
               aria-pressed={selectedView === 'overview'}
               title='Overview'
             >
               <svg
-                className={`${BASE_ICON_CLASSES} ${
-                  selectedView === 'overview' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
-                }`}
+                className={`${BASE_ICON_CLASSES} ${selectedView === 'overview' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
+                  }`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -89,17 +93,15 @@ export default function WidgetLayout({
           {hasTrend && (
             <button
               onClick={() => handleViewChange('trend')}
-              className={`${BASE_BUTTON_CLASSES} ${
-                selectedView === 'trend' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
-              }`}
+              className={`${BASE_BUTTON_CLASSES} ${selectedView === 'trend' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
+                }`}
               aria-label='Trend'
               aria-pressed={selectedView === 'trend'}
               title='Trend'
             >
               <svg
-                className={`${BASE_ICON_CLASSES} ${
-                  selectedView === 'trend' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
-                }`}
+                className={`${BASE_ICON_CLASSES} ${selectedView === 'trend' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
+                  }`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -117,17 +119,15 @@ export default function WidgetLayout({
           {hasRanking && (
             <button
               onClick={() => handleViewChange('ranking')}
-              className={`${BASE_BUTTON_CLASSES} ${
-                selectedView === 'ranking' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
-              }`}
+              className={`${BASE_BUTTON_CLASSES} ${selectedView === 'ranking' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
+                }`}
               aria-label='Ranking'
               aria-pressed={selectedView === 'ranking'}
               title='Ranking'
             >
               <svg
-                className={`${BASE_ICON_CLASSES} ${
-                  selectedView === 'ranking' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
-                }`}
+                className={`${BASE_ICON_CLASSES} ${selectedView === 'ranking' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
+                  }`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -158,12 +158,36 @@ export default function WidgetLayout({
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='flex shrink-0 items-center justify-between px-4 py-3'>
             <div className='flex flex-col gap-2'>
-              {title && <Heading className={`subheader-1stop line-clamp-2`}>{title}</Heading>}
-              {!title && (
-                <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
+              {isEditable && onTitleChange ? (
+                <input
+                  type='text'
+                  value={title}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  placeholder='Enter title'
+                  className='subheader-1stop line-clamp-2 w-full border-b border-transparent bg-transparent px-0 py-1 outline-none transition-colors placeholder:text-gray-300 hover:border-gray-200 focus:border-blue-400'
+                />
+              ) : (
+                <>
+                  {title && <Heading className={`subheader-1stop line-clamp-2`}>{title}</Heading>}
+                  {!title && (
+                    <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
+                  )}
+                </>
               )}
-              {subtitle && <NormalText className='text-gray-500'>{subtitle}</NormalText>}
-              {!subtitle && <NormalText className='text-gray-400'>subtitle</NormalText>}
+              {isEditable && onSubtitleChange ? (
+                <input
+                  type='text'
+                  value={subtitle}
+                  onChange={(e) => onSubtitleChange(e.target.value)}
+                  placeholder='Enter subtitle'
+                  className='w-full border-b border-transparent bg-transparent px-0 py-1 text-sm text-gray-500 outline-none transition-colors placeholder:text-gray-300 hover:border-gray-200 focus:border-blue-400'
+                />
+              ) : (
+                <>
+                  {subtitle && <NormalText className='text-gray-500'>{subtitle}</NormalText>}
+                  {!subtitle && <NormalText className='text-gray-400'>subtitle</NormalText>}
+                </>
+              )}
             </div>
             <PageBuilderMonthPicker
               selectedMonth={selectedMonth}

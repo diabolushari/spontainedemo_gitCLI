@@ -23,15 +23,17 @@ interface ChatProps {
   currentSession: ChatHistory
   aiSuggestionUrl?: string
   favorites?: Favorite[]
+  initialMessage?: string
 }
 
-export default function ChatIndexPage({ chatHistory, currentSession, aiSuggestionUrl, favorites }: ChatProps) {
+export default function ChatIndexPage({ chatHistory, currentSession, aiSuggestionUrl, favorites, initialMessage }: ChatProps) {
   return (
     <Chat
       chatHistory={chatHistory}
       currentSession={currentSession}
       aiSuggestionUrl={aiSuggestionUrl}
       favorites={favorites}
+      initialMessage={initialMessage}
     />
   )
 }

@@ -31,6 +31,7 @@ return [
     'qdrant_api_key' => env('QDRANT_API_KEY'),
 
     'chat_summarization_url' => env('CHAT_SUMMARIZATION_URL', 'http://127.0.0.1:8080'),
+    'openai_api_key' => env('OPENAI_API', null),
 
 
     /*

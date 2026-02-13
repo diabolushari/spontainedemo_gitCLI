@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\Subset\SubsetLevelDataController;
 use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
 use App\Http\Controllers\Utils\OrganizationExportController;
@@ -134,12 +135,14 @@ Route::get('/', function () {
         return redirect()->route('login');
     }
 
-    return redirect()->route('data-detail.index');
+    return redirect()->route('homepage');
 });
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/home', [HomepageController::class, 'index'])->name('homepage');
 
 // Page building
 Route::resource('page-builder', PageBuilderController::class);
@@ -340,7 +343,7 @@ Route::get('subset-fields', SubsetFieldsListController::class)
 Route::get('static-list', StaticListController::class)
     ->name('static-list');
 
-Route::get('chat', ChatController::class)
+Route::get('chat/{chatHistory?}', ChatController::class)
     ->name('chat');
 
 Route::get('subset-documentation', SubsetDocumentationController::class)

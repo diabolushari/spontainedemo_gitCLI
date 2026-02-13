@@ -1,5 +1,3 @@
-import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
-import WidgetChatSection from '@/Components/WidgetsEditor/ConfigSection/WidgetChatSection'
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
@@ -8,8 +6,10 @@ import { usePage } from '@inertiajs/react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
-import { Bot } from 'lucide-react'
 import OverviewWidget from '../Widgets/OverviewWidget'
+import EditorHeader from './Parts/EditorHeader'
+import EditorPreview from './Parts/EditorPreview'
+import EditorSidebar from './Parts/EditorSidebar'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -54,11 +54,16 @@ export interface WidgetFormData {
   rank_field_column: string | null
   explore_subset_group_name: string
   ai_agent: boolean
+  view: {
+    overview: boolean
+    trend: boolean
+    ranking: boolean
+  }
 }
 
 interface Props {
   widget?: Widget
-  collectionId: number
+  collectionId?: number
   type: string
   metaHierarchy: MetaHierarchy[]
   thinkingMessage: string | null
@@ -68,6 +73,8 @@ interface Props {
   onActionSend: (action: string, message?: string) => void
   onPreviewWidgetChange?: (widget: Widget) => void
   messages: any[]
+  source_query?: string
+  connectionStatus: boolean
 }
 
 /**
@@ -76,7 +83,7 @@ interface Props {
 function parseFormDataToWidget(
   formData: WidgetFormData,
   highlightCards: HighlightCardData[],
-  collectionId: number,
+  collectionId?: number,
   id?: number
 ): Widget {
   return {
@@ -84,13 +91,14 @@ function parseFormDataToWidget(
     title: formData.title ?? 'Untitled Widget',
     subtitle: formData.subtitle ?? '',
     type: 'overview',
-    collection_id: collectionId,
+    collection_id: collectionId ?? 0,
     data: {
       description: formData.description,
       link: formData.link,
       ai_agent: formData.ai_agent,
       data_table_id: Number(formData.data_table_id) || 0,
       subset_group_id: Number(formData.subset_group_id) || 0,
+      view: formData.view,
       overview: {
         chart_type: formData.chart_type,
         measures: formData.measures ?? [],
@@ -154,18 +162,23 @@ export default function OverviewWidgetEditor({
   onActionSend,
   onPreviewWidgetChange,
   messages,
+  source_query,
+  connectionStatus
 }: Readonly<Props>) {
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
-  const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
-  const [activeTab, setActiveTab] = useState<'config' | 'chat'>('config')
+  const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking' | null>(null)
+  const [activeTab, setActiveTab] = useState<'config' | 'chat'>(source_query ? 'chat' : 'config')
+  const [saveMode, setSaveMode] = useState<'save' | 'draft' | 'community' | null>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(source_query ? true : false)
+  const [buildMode, setBuildMode] = useState<boolean>(widget ? true : false)
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   useEffect(() => {
     if (openItem === 'trend') setSelectedView('trend')
     if (openItem === 'ranking') setSelectedView('ranking')
-    if (openItem === 'basic') setSelectedView('overview')
+    // if (openItem === 'basic') setSelectedView('overview')
     if (openItem === 'chart') setSelectedView('overview')
     if (openItem === 'highlight_cards') setSelectedView('overview')
   }, [openItem])
@@ -175,8 +188,8 @@ export default function OverviewWidgetEditor({
     subtitle: widget?.subtitle ?? '',
     description: widget?.data?.description ?? '',
     link: widget?.data?.link ?? '',
-    data_table_id: widget?.data?.data_table_id.toString() ?? '',
-    subset_group_id: widget?.data?.subset_group_id.toString() ?? '',
+    data_table_id: widget?.data?.data_table_id?.toString() ?? '',
+    subset_group_id: widget?.data?.subset_group_id?.toString() ?? '',
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
     subset_id: widget?.data?.overview?.subset_id?.toString() ?? '',
     subset_name: widget?.data?.overview?.subset_name ?? '',
@@ -204,7 +217,43 @@ export default function OverviewWidgetEditor({
     rank_field_column: widget?.data?.rank?.field_column ?? null,
     explore_subset_group_name: widget?.data?.explore?.subset_group_name ?? '',
     ai_agent: widget?.data?.ai_agent ?? false,
+
+    view: widget?.data?.view ?? { overview: false, trend: false, ranking: false },
+
   })
+
+  // Synchronize selectedView with formData.view
+  useEffect(() => {
+    const { overview, trend, ranking } = formData.view
+
+    // If no views are selected, set selectedView to null
+    if (!overview && !trend && !ranking) {
+      if (selectedView !== null) setSelectedView(null)
+      return
+    }
+
+    // If selectedView is null but some views are selected, pick the first available one
+    if (selectedView === null) {
+      if (overview) setSelectedView('overview')
+      else if (trend) setSelectedView('trend')
+      else if (ranking) setSelectedView('ranking')
+    } else {
+      // If the currently selectedView is no longer active, fallback to another active one
+      if (selectedView === 'overview' && !overview) {
+        if (trend) setSelectedView('trend')
+        else if (ranking) setSelectedView('ranking')
+        else setSelectedView(null)
+      } else if (selectedView === 'trend' && !trend) {
+        if (overview) setSelectedView('overview')
+        else if (ranking) setSelectedView('ranking')
+        else setSelectedView(null)
+      } else if (selectedView === 'ranking' && !ranking) {
+        if (overview) setSelectedView('overview')
+        else if (trend) setSelectedView('trend')
+        else setSelectedView(null)
+      }
+    }
+  }, [formData.view, selectedView])
 
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []
@@ -219,8 +268,8 @@ export default function OverviewWidgetEditor({
       subtitle: widget.subtitle ?? '',
       description: widget.data?.description ?? '',
       link: widget.data?.link ?? '',
-      data_table_id: widget.data?.data_table_id.toString() ?? '',
-      subset_group_id: widget.data?.subset_group_id.toString() ?? '',
+      data_table_id: widget.data?.data_table_id?.toString() ?? '',
+      subset_group_id: widget.data?.subset_group_id?.toString() ?? '',
       chart_type: widget.data?.overview?.chart_type ?? 'bar',
       subset_id: widget.data?.overview?.subset_id?.toString() ?? '',
       subset_name: widget.data?.overview?.subset_name ?? '',
@@ -248,6 +297,7 @@ export default function OverviewWidgetEditor({
       rank_field_column: widget.data?.rank?.field_column ?? null,
       explore_subset_group_name: widget.data?.explore?.subset_group_name ?? '',
       ai_agent: widget.data?.ai_agent ?? false,
+      view: widget.data?.view ?? { overview: false, trend: false, ranking: false },
     })
 
     // 2. Update the Highlight Cards
@@ -336,15 +386,21 @@ export default function OverviewWidgetEditor({
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (mode: 'save' | 'draft' | 'community' = 'save') => {
+    setSaveMode(mode)
     const widgetData = parseFormDataToWidget(formData, highlightCards, collectionId)
+    const postData = {
+      ...widgetData,
+      save_mode: mode
+    }
+
     if (isEditMode) {
       post({
-        ...widgetData,
+        ...postData,
         _method: 'PUT',
       })
     } else {
-      post(widgetData)
+      post(postData)
     }
   }
 
@@ -361,121 +417,101 @@ export default function OverviewWidgetEditor({
   }, [previewWidget, onPreviewWidgetChange])
 
   const showPlaceholder = useMemo(() => {
+    if (buildMode) return false
     const hasData = !!formData.subset_group_id
     const hasAIInteraction = messages.length > 0
     return !hasData && !hasAIInteraction
-  }, [formData.subset_group_id, messages.length])
+  }, [formData.subset_group_id, messages.length, buildMode])
 
   return (
-    <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>
-      <div className='lg:col-span-1'>
-        <div className='rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
-          <div className='mb-4 flex items-center justify-between'>
-            <div>
-              <h2 className='text-lg font-semibold text-gray-900'>Widget Settings</h2>
-              <p className='text-sm text-gray-500'>Create or manage widgets</p>
-            </div>
-            <div className='flex items-center gap-2'>
-              <span
-                className={`text-sm font-medium ${activeTab === 'chat' ? 'text-blue-600' : 'text-gray-500'}`}
-              >
-                {activeTab === 'chat' && (
-                  <svg
-                    className='mr-1 inline-block h-4 w-4'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M13 10V3L4 14h7v7l9-11h-7z'
-                    />
-                  </svg>
+    <div className='relative flex h-[calc(100vh-theme(spacing.10)-theme(spacing.12))] overflow-hidden bg-gray-50/50'>
+      {/* Main Content Area */}
+      <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50/50 p-8 transition-all duration-300'>
+        <div
+          className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pr-4' : ''}`}
+        >
+          <EditorHeader
+            breadcrumbItems={[
+              { item: 'Widgets', link: route('widget-collection.index') },
+              {
+                item: 'Widget Editor',
+                link: route('widget-editor.create', { type: 'overview' }),
+              },
+            ]}
+            actions={
+              <div className='flex items-center gap-2'>
+                <button
+                  onClick={() => handleSubmit('draft')}
+                  disabled={loading}
+                  className='h-9 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-600 transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-50'
+                >
+                  Draft
+                </button>
+                <button
+                  onClick={() => handleSubmit('save')}
+                  disabled={loading}
+                  className='h-9 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50'
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => handleSubmit('community')}
+                  disabled={loading}
+                  className='h-9 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-all hover:bg-emerald-700 active:scale-95 disabled:opacity-50'
+                >
+                  Add to Community
+                </button>
+                {loading && (
+                  <div className='ml-2 h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent' />
                 )}
-                Chat Mode
-              </span>
-              <button
-                onClick={() => setActiveTab(activeTab === 'config' ? 'chat' : 'config')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  activeTab === 'chat' ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`${
-                    activeTab === 'chat' ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />
-              </button>
-            </div>
-          </div>
-
-          {activeTab === 'config' ? (
-            <WidgetSettingsForm
-              formData={formData}
-              setFormValue={setFormValue}
-              handleDataTableChange={handleDataTableChange}
-              handleSubsetGroupChange={handleSubsetGroupChange}
-              highlightCards={highlightCards}
-              setHighlightCards={setHighlightCards}
-              openItem={openItem}
-              setOpenItem={handleOpenItem}
-              handleSubmit={handleSubmit}
-              loading={loading}
-              metaHierarchy={metaHierarchy}
-              ai_agent={widget?.data?.ai_agent}
-              embedded={true}
-              widget_data_url={widget_data_url}
-            />
-          ) : (
-            <WidgetChatSection
-              messages={messages}
-              thinkingMessage={thinkingMessage}
-              chatInput={chatInput}
-              setChatInput={setChatInput}
-              onChatSend={onChatSend}
-              onActionSend={onActionSend}
-              onSave={handleSubmit}
-            />
-          )}
+              </div>
+            }
+          />
+          <EditorPreview
+            thinkingMessage={thinkingMessage}
+            showPlaceholder={showPlaceholder}
+            activeTab={activeTab}
+            setBuildMode={setBuildMode}
+            setActiveTab={setActiveTab}
+            setIsSidebarOpen={setIsSidebarOpen}
+            previewWidget={previewWidget}
+            selectedView={selectedView}
+            setSelectedView={setSelectedView}
+            onTitleChange={setFormValue('title')}
+            onSubtitleChange={setFormValue('subtitle')}
+            onEditSection={setOpenItem}
+          />
         </div>
       </div>
-      <div className='min-h-[600px] lg:col-span-2'>
-        <div className='relative h-full w-full rounded-xl transition-all duration-500'>
-          {/* AI Glow Effect Overlay */}
-          {thinkingMessage && (
-            <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
-              <div className='relative mb-4'>
-                <div className='absolute -inset-4 animate-pulse rounded-full bg-blue-500/20 blur-xl'></div>
-                <Bot className='relative h-16 w-16 animate-bounce text-blue-600' />
-              </div>
-              <h3 className='mb-2 text-xl font-bold text-gray-900'>AI Generating...</h3>
-              <p className='max-w-md text-center text-sm text-gray-500'>{thinkingMessage}</p>
 
-              {/* Loading Bar */}
-              <div className='mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-gray-200'>
-                <div className='h-full w-1/2 animate-[shimmer_1.5s_infinite] rounded-full bg-gradient-to-r from-transparent via-blue-500 to-transparent'></div>
-              </div>
-            </div>
-          )}
-
-          {showPlaceholder ? (
-            <img
-              src='/widget-placeholder-bw.png'
-              alt='Widget Placeholder'
-              className='max-h-[500px] opacity-50 grayscale'
-            />
-          ) : (
-            <OverviewWidget
-              widget={previewWidget}
-              selectedView={selectedView}
-              setSelectedView={setSelectedView}
-            />
-          )}
-        </div>
-      </div>
+      <EditorSidebar
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        formData={formData}
+        setFormValue={setFormValue}
+        handleDataTableChange={handleDataTableChange}
+        handleSubsetGroupChange={handleSubsetGroupChange}
+        highlightCards={highlightCards}
+        setHighlightCards={setHighlightCards}
+        openItem={openItem}
+        handleOpenItem={handleOpenItem}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        metaHierarchy={metaHierarchy}
+        ai_agent={widget?.data?.ai_agent}
+        widget_data_url={widget_data_url}
+        messages={messages}
+        thinkingMessage={thinkingMessage}
+        chatInput={chatInput}
+        setChatInput={setChatInput}
+        onChatSend={onChatSend}
+        onActionSend={onActionSend}
+        connectionStatus={connectionStatus}
+      />
     </div>
   )
 }
+
+

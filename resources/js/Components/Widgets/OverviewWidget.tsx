@@ -8,14 +8,18 @@ import { PageProps } from '@/types'
 import { usePage } from '@inertiajs/react'
 import { useEffect, useMemo, useState } from 'react'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
-import { CustomChartSkeleton } from '@/Components/WidgetsEditor/CustomChartSkeleton'
+import { CustomChartSkeleton, RankingSkeleton, TrendSkeleton } from '@/Components/WidgetsEditor/CustomChartSkeleton'
 import axios from 'axios'
 
 interface OverviewWidgetProps {
   widget: Widget
   initialMonth?: Date | null
-  selectedView: 'overview' | 'trend' | 'ranking'
-  setSelectedView: (view: 'overview' | 'trend' | 'ranking') => void
+  selectedView: 'overview' | 'trend' | 'ranking' | null
+  setSelectedView: (view: 'overview' | 'trend' | 'ranking' | null) => void
+  isEditable?: boolean
+  onTitleChange?: (value: string) => void
+  onSubtitleChange?: (value: string) => void
+  onEditSection?: (section: string) => void
 }
 
 interface SubsetGroupDetail {
@@ -32,11 +36,24 @@ export default function OverviewWidget({
   widget,
   selectedView,
   setSelectedView,
+  isEditable = false,
+  onTitleChange,
+  onSubtitleChange,
+  onEditSection,
 }: Readonly<OverviewWidgetProps>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   const { hasOverview, hasRanking, hasTrend, hasHighlightCards } = useMemo(() => {
+    if (widget.data.view) {
+      return {
+        hasOverview: widget.data.view.overview,
+        hasRanking: widget.data.view.ranking,
+        hasTrend: widget.data.view.trend,
+        hasHighlightCards: widget.data.view.overview, // Overview controls highlight cards too
+      }
+    }
+
     const hasOverview =
       widget.data.overview?.subset_id != null &&
       widget.data.overview?.measures != null &&
@@ -64,15 +81,16 @@ export default function OverviewWidget({
     }
   }, [widget.data])
 
-  // useEffect(() => {
-  //   if (hasOverview || hasHighlightCards) {
-  //     setSelectedView('overview')
-  //   } else if (hasTrend) {
-  //     setSelectedView('trend')
-  //   } else if (hasRanking) {
-  //     setSelectedView('ranking')
-  //   }
-  // }, [selectedView, hasOverview, hasRanking, hasTrend, hasHighlightCards])
+  useEffect(() => {
+
+    if (hasOverview || hasHighlightCards) {
+      if (selectedView !== 'overview') setSelectedView('overview')
+    } else if (hasTrend) {
+      if (selectedView !== 'trend') setSelectedView('trend')
+    } else if (hasRanking) {
+      if (selectedView !== 'ranking') setSelectedView('ranking')
+    }
+  }, [hasOverview, hasRanking, hasTrend, hasHighlightCards])
 
   const subsetId = useMemo(() => {
     if (widget.data.overview?.subset_id != null) {
@@ -128,22 +146,35 @@ export default function OverviewWidget({
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectedView}
-      onViewChange={(view) => setSelectedView(view as 'overview' | 'trend' | 'ranking')}
+      onViewChange={(view) => setSelectedView(view as 'overview' | 'trend' | 'ranking' | null)}
       hasOverview={hasOverview}
       hasRanking={hasRanking}
       hasTrend={hasTrend}
       hasHighlightCards={hasHighlightCards}
       subsetGroupName={widget.data.explore?.subset_group_name}
+      isEditable={isEditable}
+      onTitleChange={onTitleChange}
+      onSubtitleChange={onSubtitleChange}
     >
+      {selectedView === null && (
+        <div className='flex h-[300px] items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50'>
+          <p className='text-sm text-gray-500'>Please select at least one view in the sidebar</p>
+        </div>
+      )}
+
       {hasHighlightData && selectedView === 'overview' && (
         <HighlightBar
           highlightCards={widget.data.highlight_cards}
           selectedMonth={selectedMonth ?? new Date()}
+          onEditSection={onEditSection}
         />
       )}
 
       {selectedView === 'overview' && !hasHighlightData && (
-        <div className='w-fit rounded-lg bg-white p-4'>
+        <div
+          className='w-full cursor-pointer rounded-lg bg-white p-4 px-6 text-left shadow-md transition-all hover:shadow-lg hover:scale-[1.02]'
+          onClick={() => onEditSection?.('highlight_cards')}
+        >
           <div className='animate-pulse'>
             {/* Skeleton for the title */}
             <div className='mb-2 h-4 w-24 rounded bg-gray-300'></div>
@@ -157,7 +188,12 @@ export default function OverviewWidget({
         </div>
       )}
       {selectedView === 'overview' && widget.data.overview.subset_id == null && (
-        <CustomChartSkeleton />
+        <div
+          className='cursor-pointer transition-all hover:scale-[1.01]'
+          onClick={() => onEditSection?.('chart')}
+        >
+          <CustomChartSkeleton />
+        </div>
       )}
       {selectedView === 'overview' && widget.data.overview.subset_id != null && (
         <OverviewWidgetContent
@@ -171,9 +207,18 @@ export default function OverviewWidget({
           hierarchy_item_id={widget.data.overview.hierarchy_item_id ?? null}
           overviewLevel={widget.data.overview.level ?? null}
           overviewNameField={widget.data.overview.name_field ?? null}
+          onEditSection={onEditSection}
         />
       )}
-      {selectedView === 'trend' && (
+      {selectedView === 'trend' && widget.data.trend.subset_id == null && (
+        <div
+          className='cursor-pointer transition-all hover:scale-[1.01]'
+          onClick={() => onEditSection?.('trend')}
+        >
+          <TrendSkeleton />
+        </div>
+      )}
+      {selectedView === 'trend' && widget.data.trend.subset_id != null && (
         <TrendWidget
           trendSubsetId={widget.data.trend.subset_id}
           subsetColumn={widget.data.trend.measure?.subset_column ?? null}
@@ -182,21 +227,33 @@ export default function OverviewWidget({
           trendColor={widget.data.trend.color ?? null}
           selectedMonth={selectedMonth ?? new Date()}
           setSelectedMonth={setSelectedMonth}
+          onEditSection={onEditSection}
         />
       )}
-      {selectedView === 'ranking' && selectedMonth != null && (
-        <RankingWidget
-          subsetGroupName={widget.data.rank.subset_group_name}
-          subsetId={widget.data.rank.subset_id}
-          subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
-          subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}
-          selectedMonth={selectedMonth}
-          level={widget.data.rank.level ?? null}
-          hierarchyId={widget.data.rank.hierarchy_id}
-          dimension={widget.data.rank.dimension_column}
-          fieldColumn={widget.data.rank.field_column}
-        />
+      {selectedView === 'ranking' && widget.data.rank.subset_id == null && (
+        <div
+          className='cursor-pointer transition-all hover:scale-[1.01]'
+          onClick={() => onEditSection?.('ranking')}
+        >
+          <RankingSkeleton />
+        </div>
       )}
+      {selectedView === 'ranking' &&
+        selectedMonth != null &&
+        widget.data.rank.subset_id != null && (
+          <RankingWidget
+            subsetGroupName={widget.data.rank.subset_group_name}
+            subsetId={widget.data.rank.subset_id}
+            subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
+            subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}
+            selectedMonth={selectedMonth}
+            level={widget.data.rank.level ?? ''}
+            hierarchyId={widget.data.rank.hierarchy_id}
+            dimension={widget.data.rank.dimension_column}
+            fieldColumn={widget.data.rank.field_column}
+            onEditSection={onEditSection}
+          />
+        )}
     </WidgetLayout>
   )
 }

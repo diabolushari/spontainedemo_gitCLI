@@ -1,5 +1,5 @@
-import React from 'react'
-import { CheckCircle } from 'lucide-react'
+import React, { useEffect } from 'react'
+import { ChevronDown, ChevronRight, Send, Terminal } from 'lucide-react'
 
 interface WidgetChatSectionProps {
   messages: any[]
@@ -8,7 +8,40 @@ interface WidgetChatSectionProps {
   setChatInput: (value: string) => void
   onChatSend: () => void
   onActionSend: (action: string, message?: string) => void
-  onSave: () => void
+  onSave: (mode?: 'save' | 'draft' | 'community') => void
+  connectionStatus: boolean
+}
+
+const CollapsibleQuery = ({ query }: { query: string }) => {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  return (
+    <div className='overflow-hidden rounded-md bg-blue-50/50 text-blue-900 border border-blue-100'>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className='flex w-full items-center justify-between p-2.5 transition-colors hover:bg-blue-100/50'
+      >
+        <div className='flex items-center gap-2'>
+          <Terminal size={12} className='text-blue-600' />
+          <span className='text-[10px] font-bold uppercase tracking-widest text-blue-700/70'>
+            Refactored Query
+          </span>
+        </div>
+        {isOpen ? (
+          <ChevronDown size={14} className='text-blue-400' />
+        ) : (
+          <ChevronRight size={14} className='text-blue-400' />
+        )}
+      </button>
+      {isOpen && (
+        <div className='border-t border-blue-100 p-2.5 pt-2'>
+          <code className='block whitespace-pre-wrap text-[11px] leading-relaxed font-mono opacity-80'>
+            {query}
+          </code>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function WidgetChatSection({
@@ -19,6 +52,7 @@ export default function WidgetChatSection({
   onChatSend,
   onActionSend,
   onSave,
+  connectionStatus
 }: Readonly<WidgetChatSectionProps>) {
   const hasError = messages.some((msg) => msg.type === 'error')
 
@@ -28,12 +62,16 @@ export default function WidgetChatSection({
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
     }
   }, [chatInput])
+
+  useEffect(() => {
+    textareaRef.current?.focus()
+  }, [])
 
   const handleSend = () => {
     const lastMsg = messages[messages.length - 1]
@@ -48,7 +86,7 @@ export default function WidgetChatSection({
   }
 
   return (
-    <div className='relative flex h-[600px] flex-col bg-slate-50'>
+    <div className='relative flex h-full flex-col bg-slate-50'>
       <div className='flex-1 overflow-y-auto p-4'>
         {messages.length === 0 && (
           <div className='flex h-full flex-col items-center justify-center text-gray-400'>
@@ -106,11 +144,10 @@ export default function WidgetChatSection({
                   </div>
                 )}
                 <div
-                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
-                    isUser
-                      ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                      : 'rounded-tl-sm bg-white text-gray-800'
-                  }`}
+                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
+                    ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                    : 'rounded-tl-sm bg-white text-gray-800'
+                    }`}
                 >
                   {!isApprovalRequired && (
                     <div className='whitespace-pre-wrap text-sm leading-relaxed'>{msg.message}</div>
@@ -135,12 +172,7 @@ export default function WidgetChatSection({
                       )}
 
                       {msg.refactored_query && (
-                        <div className='rounded-md bg-blue-50 p-2.5 text-blue-900'>
-                          <span className='font-bold uppercase tracking-wider'>
-                            Refactored Query:{' '}
-                          </span>
-                          <span>{msg.refactored_query}</span>
-                        </div>
+                        <CollapsibleQuery query={msg.refactored_query} />
                       )}
 
                       <div className='flex gap-2 pt-1'>
@@ -150,14 +182,6 @@ export default function WidgetChatSection({
                             className='flex-1 rounded-lg bg-[#007AFF] px-3 py-2 font-medium text-white transition-colors hover:bg-blue-600'
                           >
                             Proceed
-                          </button>
-                        )}
-                        {showResummarize && (
-                          <button
-                            onClick={() => onActionSend('re-summarize')}
-                            className='flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50'
-                          >
-                            Re-plan
                           </button>
                         )}
                       </div>
@@ -171,10 +195,16 @@ export default function WidgetChatSection({
                     <div className='mt-4 space-y-3 border-t border-gray-200 pt-3'>
                       <div className='flex gap-2'>
                         <button
-                          onClick={() => onSave()}
+                          onClick={() => onSave('save')}
                           className='flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
                         >
                           Save & Finish
+                        </button>
+                        <button
+                          onClick={() => onSave('community')}
+                          className='flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700'
+                        >
+                          Save to Community
                         </button>
                       </div>
                       <p className='text-center text-[10px] italic text-gray-400'>
@@ -211,30 +241,34 @@ export default function WidgetChatSection({
           </div>
         )}
       </div>
-      <div className='p-4'>
-        <div className='relative flex items-center rounded-3xl bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
+      <div className='m-3 rounded-lg bg-white p-2'>
+        <div className={`mb-2 flex items-center gap-2 px-1 text-xs transition-colors ${connectionStatus ? 'text-gray-500' : 'text-gray-400'}`}>
+          <span className={`h-1.5 w-1.5 rounded-full transition-all ${connectionStatus ? 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]' : 'bg-gray-300'}`}></span>
+          {connectionStatus ? 'Talking to Chat Agent' : 'Agent Offline'}
+        </div>
+        <div className='relative flex items-center gap-1.5 rounded-xl border border-blue-100 bg-[#F5F9FF] p-0.5 shadow-sm transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50'>
           <textarea
             ref={textareaRef}
-            placeholder='Ask your questions'
-            className='max-h-[200px] min-h-[50px] w-full resize-none border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
-            disabled={!!thinkingMessage || hasError}
+            placeholder=''
+            className='max-h-[150px] min-h-[36px] w-full resize-none border-none bg-transparent py-2 pl-4 pr-10 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
+            disabled={!connectionStatus || !!thinkingMessage || hasError}
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
-                if (!hasError) handleSend()
+                if (!hasError && connectionStatus) handleSend()
               }
             }}
             rows={1}
           />
           <button
             type='button'
-            disabled={!!thinkingMessage || hasError}
+            disabled={!connectionStatus || !!thinkingMessage || hasError}
             onClick={handleSend}
-            className='absolute bottom-2 right-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 py-2 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
+            className='absolute right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500 text-white shadow-sm transition-all hover:bg-blue-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:shadow-none'
           >
-            Ask
+            <Send className='h-4 w-4' />
           </button>
         </div>
       </div>

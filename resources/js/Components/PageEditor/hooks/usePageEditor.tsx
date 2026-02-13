@@ -108,13 +108,13 @@ export function usePageEditor(
 
   useEffect(() => {
     const missingIds = new Set<number>()
-    ;(pageStructure.page ?? []).forEach((row) => {
-      row.widgets.forEach((slot) => {
-        if (slot.widgetId != null && !knownWidgets.has(slot.widgetId)) {
-          missingIds.add(slot.widgetId)
-        }
+      ; (pageStructure.page ?? []).forEach((row) => {
+        row.widgets.forEach((slot) => {
+          if (slot.widgetId != null && !knownWidgets.has(slot.widgetId)) {
+            missingIds.add(slot.widgetId)
+          }
+        })
       })
-    })
 
     missingIds.forEach((id) => fetchWidget(id))
   }, [pageStructure.page, knownWidgets, fetchWidget])
@@ -304,7 +304,7 @@ export function usePageEditor(
 
       const page = [...pageList]
 
-      ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
+        ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
 
       setFormValue('page')(page)
       return true

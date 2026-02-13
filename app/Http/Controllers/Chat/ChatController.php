@@ -21,14 +21,22 @@ class ChatController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(): Response
+    public function __invoke(?ChatHistory $chatHistory = null): Response
     {
         $userId = auth()->id();
-        $currentSession = ChatHistory::create([
-            'user_id' => $userId,
-            'title' => 'Chat',
-            'messages' => [],
-        ]);
+        
+        if ($chatHistory) {
+            if ($chatHistory->user_id !== $userId) {
+                abort(403);
+            }
+            $currentSession = $chatHistory;
+        } else {
+            $currentSession = ChatHistory::create([
+                'user_id' => $userId,
+                'title' => 'Chat',
+                'messages' => [],
+            ]);
+        }
 
         $chatHistory = ChatHistory::where('user_id', $userId)
             ->select('id', 'title', 'created_at', 'is_favorite')
@@ -51,6 +59,7 @@ class ChatController extends Controller implements HasMiddleware
             'agentURL' => config('app.agent_url'),
             'aiSuggestionUrl' => config('app.ai_suggestion_url'),
             'chatSummarizationUrl' => config('app.chat_summarization_url'),
+            'initialMessage' => request()->query('initial_message'),
         ]);
     }
 }

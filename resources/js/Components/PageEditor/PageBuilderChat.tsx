@@ -63,6 +63,7 @@ interface PageBuilderChatProps {
   onSave: () => void
   onThinking?: (message: string | null) => void
   page?: Partial<DashboardPage>
+  userId: number
 }
 
 export default function PageBuilderChat({
@@ -71,10 +72,12 @@ export default function PageBuilderChat({
   onSave,
   onThinking,
   page,
+  userId,
 }: Readonly<PageBuilderChatProps>) {
   const [chatMessage, setChatMessage] = useState('')
   const [thinkingMessage, setThinkingMessage] = useState<string | null>(null)
   const [selectedPlanItemIds, setSelectedPlanItemIds] = useState<Set<string>>(new Set())
+  const [isFirstMessage, setIsFirstMessage] = useState(true)
 
   // Ref to track the last plan we actually initialized to prevent constant resets
   const lastInitializedPlanRef = useRef<string | null>(null)
@@ -159,10 +162,15 @@ export default function PageBuilderChat({
 
     const existingPage = page
 
-    const payload = {
+    const payload: any = {
       message: chatMessage,
       // If editing, pass the page object. If creating new, this can be null/undefined.
       existing_page: existingPage,
+    }
+
+    if (isFirstMessage) {
+      payload.user_id = userId
+      setIsFirstMessage(false)
     }
 
     if (isAwaitingApproval) {
@@ -224,11 +232,10 @@ export default function PageBuilderChat({
                     type='button'
                     key={widget.plan_item_id}
                     onClick={() => toggleSelected(widget.plan_item_id)}
-                    className={`w-full rounded-md border p-3 text-left transition ${
-                      checked
-                        ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
-                        : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-                    }`}
+                    className={`w-full rounded-md border p-3 text-left transition ${checked
+                      ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
+                      : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                      }`}
                   >
                     <div className='flex items-start gap-2'>
                       <input
@@ -365,11 +372,10 @@ export default function PageBuilderChat({
                   )}
 
                   <div
-                    className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
-                      isUser
-                        ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                        : 'rounded-tl-sm bg-white text-gray-800'
-                    }`}
+                    className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
+                      ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                      : 'rounded-tl-sm bg-white text-gray-800'
+                      }`}
                   >
                     <div className='whitespace-pre-wrap text-sm leading-relaxed'>
                       {renderMessageContent(msg as AgentMessage)}

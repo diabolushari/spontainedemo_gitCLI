@@ -3,6 +3,8 @@ import { ChatMessage } from './MainArea'
 import ChatMessageContent from './ChatMessageContent'
 import { LayoutGrid, MessageSquareText, Table, Share, Copy, Check, ExternalLink, FileText, ChevronRight, Star } from 'lucide-react'
 import FavoriteModal from './FavoriteModal'
+import { router } from '@inertiajs/react'
+import WidgetGenerationCard from './WidgetGenerationCard'
 
 interface TabbedResponseProps {
     finalResponse: ChatMessage
@@ -104,9 +106,6 @@ const TabbedResponse = ({
                                 <ExternalLink size={18} />
                             </button>
                         )}
-                        <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <FileText size={18} />
-                        </button>
                     </div>
                 </div>
 
@@ -182,16 +181,27 @@ const TabbedResponse = ({
                 </div>
             </div>
 
+            {/* Widget Generation Card */}
+            {finalResponse.widget_generation && (
+                <WidgetGenerationCard
+                    widgetGeneration={finalResponse.widget_generation as {
+                        should_create_widget: boolean
+                        rationale?: string
+                        generation_prompt: string
+                    }}
+                />
+            )}
+
             {/* Suggestions Box */}
             {
                 suggestions && suggestions.length > 0 && (
                     <div className="rounded-2xl bg-[#F8FAFC] p-4 border border-gray-100 shadow-sm">
-                        <div className="space-y-3">
+                        <div className="space-y-1">
                             {suggestions.map((suggestion, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => handleSendMessage?.(suggestion)}
-                                    className="block w-full text-left text-[#1E40AF] hover:text-blue-800 transition-colors text-base font-medium"
+                                    className="block w-full text-left px-3 py-2 rounded-lg text-[#1E40AF] hover:bg-white hover:text-blue-900 hover:shadow-sm transition-all text-base font-medium"
                                 >
                                     {suggestion}
                                 </button>

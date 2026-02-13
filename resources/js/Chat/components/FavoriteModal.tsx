@@ -122,7 +122,7 @@ export default function FavoriteModal({
                             onChange={(e) => setSummary(e.target.value)}
                             placeholder={isSummarizing ? "Summarizing conversation..." : "Enter a brief summary of this chat..."}
                             className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${isSummarizing ? 'bg-gray-50' : ''}`}
-                            rows={3}
+                            rows={6}
                             required
                             disabled={isSummarizing}
                         />

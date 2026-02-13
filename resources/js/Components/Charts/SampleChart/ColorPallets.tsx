@@ -85,6 +85,14 @@ export const chartPallet = {
     '#5F27CD',
     '#FF9FF3',
   ],
+  graySkeleton: [
+    '#E5E7EB', // gray-200 (lightest)
+    '#D1D5DB', // gray-300
+    '#C7CCD1', // light gray
+    '#CBD5E0', // blue-gray-300
+    '#D6DBE0', // very light gray
+    '#E0E4E8', // almost white-gray
+  ],
 }
 
 export const graphColorPallet = {

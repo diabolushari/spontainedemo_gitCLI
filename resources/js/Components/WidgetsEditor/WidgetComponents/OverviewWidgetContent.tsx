@@ -21,6 +21,7 @@ interface OverviewProps {
   compact?: boolean
   overviewLevel: string | null
   overviewNameField: string | null
+  onEditSection?: (section: string) => void
 }
 
 export default function OverviewWidgetContent({
@@ -35,6 +36,7 @@ export default function OverviewWidgetContent({
   overviewLevel,
   compact = false,
   overviewNameField,
+  onEditSection,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -114,10 +116,10 @@ export default function OverviewWidgetContent({
   const fieldsToPlot = useMemo(() => {
     const allMeasures = Array.isArray(measure)
       ? measure.map((m: SelectedMeasure) => ({
-          key: m.subset_column,
-          label: m.subset_field_name,
-          unit: m.unit,
-        }))
+        key: m.subset_column,
+        label: m.subset_field_name,
+        unit: m.unit,
+      }))
       : []
 
     if (chartType === 'pie') {
@@ -134,12 +136,15 @@ export default function OverviewWidgetContent({
   console.log('overviewNameField', overviewNameField)
 
   return (
-    <div className='min-h-0 w-full flex-1'>
+    <div
+      className='min-h-0 w-full flex-1 cursor-pointer transition-all hover:scale-[1.005]'
+      onClick={() => onEditSection?.('chart')}
+    >
       {chartType === 'bar' && data != null && (
         <div className='h-full w-full'>
           <CustomBarChart
             data={data.data}
-            dataKey={overviewLevel ? overviewNameField : dimension}
+            dataKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
@@ -152,7 +157,7 @@ export default function OverviewWidgetContent({
         <div className='h-full w-full'>
           <CustomLineChart
             data={data.data}
-            dataKey={overviewLevel ? overviewNameField : dimension}
+            dataKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
@@ -166,7 +171,7 @@ export default function OverviewWidgetContent({
           <CustomPieChart
             data={data.data}
             dataKey={fieldsToPlot[0].key}
-            nameKey={overviewLevel ? overviewNameField : dimension}
+            nameKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             fontSize={'text-sm'}
