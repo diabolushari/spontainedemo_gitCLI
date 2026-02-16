@@ -1,3 +1,4 @@
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 import handleEnterPress from '@/libs/handle-enter'
 import Dropdown from '@/ui/button/DropDown'
 import { useMemo } from 'react'
@@ -7,6 +8,9 @@ interface Props {
   setActiveTab: (tab: string) => void
   isMapView?: boolean
   excludeTabs?: string[]
+  selectedSubsetId: string
+  setSelectedSubsetId: React.Dispatch<React.SetStateAction<string>>
+  selectedSubset: SubsetDetail | null | undefined
 }
 
 const tabItems = [
@@ -28,10 +32,23 @@ export default function OfficeLevelTabs({
   setActiveTab,
   isMapView = false,
   excludeTabs = [],
+  selectedSubsetId,
+  setSelectedSubsetId,
+  selectedSubset,
 }: Props) {
+  const subsetLevels = useMemo(() => {
+    const levels = selectedSubset?.heirarchy?.levels
+
+    return (
+      levels?.map((level: any) => ({
+        name: level.name,
+        value: level.name,
+      })) || []
+    )
+  }, [selectedSubset])
   const tabs = useMemo(() => {
-    return tabItems.filter((tab) => !excludeTabs.includes(tab.value))
-  }, [excludeTabs])
+    return subsetLevels.filter((tab) => !excludeTabs.includes(tab.value))
+  }, [excludeTabs, subsetLevels])
 
   return (
     <div

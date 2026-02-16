@@ -28,4 +28,6 @@ class SubsetGroupItem extends Model
     {
         return $this->hasOne(SubsetDetail::class, 'id', 'subset_detail_id');
     }
+
+    
 }

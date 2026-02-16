@@ -120,6 +120,7 @@ export interface SubsetDetail extends Model {
   proactive_insight_instructions: string | null
   visualization_instructions: string | null
   type: string | null
+  heirarchy: MetaHierarchy
 }
 
 export interface SubsetDateField extends Model {

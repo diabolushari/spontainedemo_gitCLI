@@ -32,5 +32,6 @@ class SubsetFormRequest extends Data
         public ?array $dates,
         public ?array $dimensions,
         public ?array $measures,
+        public string $heirarchy,
     ) {}
 }

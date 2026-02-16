@@ -30,6 +30,7 @@ class DataExplorerController extends Controller implements HasMiddleware
         $groups = SubsetGroupItem::where('subset_group_id', $subsetGroup->id)
             ->with([
                 'subset' => fn ($query) => $query->with([
+                    'heirarchy.levels',
                     'dimensions.info',
                     'dimensions.hierarchy',
                     'measures.info',
@@ -41,6 +42,7 @@ class DataExplorerController extends Controller implements HasMiddleware
             ->get();
 
         $offices = $cachedOfficeLIst->getList();
+        
 
         return Inertia::render('DataExplorer/DataExplorerPage', [
             'subsetGroup' => $subsetGroup,

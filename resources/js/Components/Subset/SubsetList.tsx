@@ -36,7 +36,9 @@ export default function SubsetList({ detail, subsets }: Readonly<Props>) {
   }, [])
 
   const onAddClick = () => {
+    // console.log('here')
     router.get(route('subset.create', { dataDetail: detail.id }))
+    // router.get(`subset/create/${detail.id}`)
   }
 
   const onCardClick = useCallback((id: number | string) => {

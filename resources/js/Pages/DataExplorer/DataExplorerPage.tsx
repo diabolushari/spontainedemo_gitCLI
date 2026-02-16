@@ -227,6 +227,9 @@ export default function DataExplorerPage({
                 activeTab={activeTab}
                 setActiveTab={changeTab}
                 isMapView={activeViewTab === 'map'}
+                selectedSubsetId={selectedSubsetId}
+                setSelectedSubsetId={setSelectedSubsetId}
+                selectedSubset={selectedSubset}
               />
 
               {selectedSubset != null && (

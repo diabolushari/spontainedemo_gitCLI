@@ -177,6 +177,7 @@ class MetaHierarchyController extends Controller implements HasMiddleware
                 'secondary_field_name' => $request->secondaryFieldName,
                 'primary_column' => Str::snake($request->primaryFieldName),
                 'secondary_column' => $request->secondaryFieldName != null ? Str::snake($request->secondaryFieldName) : null,
+                'default_heirarchy' => $request->defaultHeirarchy,
             ]);
 
             foreach ($hierarchyLevels as &$tempLevel) {

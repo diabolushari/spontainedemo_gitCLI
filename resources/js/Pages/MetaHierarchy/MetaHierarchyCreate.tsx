@@ -57,6 +57,7 @@ export default function MetaHierarchyCreate({
     no_of_levels: levelInfos?.length ?? 0,
     primary_field_name: metaHierarchy?.primary_field_name ?? '',
     secondary_field_name: metaHierarchy?.secondary_field_name ?? '',
+    default_heirarchy: metaHierarchy?.default_heirarchy,
   })
 
   const [hierarchyLevelInfos, setHierarchyLevelInfos] = useState<HierarchyLevelInfo[]>(
@@ -129,6 +130,11 @@ export default function MetaHierarchyCreate({
         type: 'text',
         label: 'Secondary Field (If Any)',
         setValue: setFormValue('secondary_field_name'),
+      },
+      default_heirarchy: {
+        type: 'text',
+        label: 'Default Heirarchy',
+        setValue: setFormValue('default_heirarchy'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])

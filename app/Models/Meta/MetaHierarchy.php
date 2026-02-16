@@ -17,6 +17,7 @@ class MetaHierarchy extends Model
         'secondary_column',
         'primary_column',
         'secondary_field_name',
+        'default_heirarchy'
     ];
 
     /**

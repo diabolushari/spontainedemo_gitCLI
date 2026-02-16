@@ -56,6 +56,7 @@ export interface MetaHierarchy extends Model {
   items?: Partial<MetaHierarchyItem>[]
   items_count?: number
   levels?: Partial<MetaHierarchyLevelInfo>[]
+  default_heirarchy: string
 }
 
 export interface MetaHierarchyItem extends Model {

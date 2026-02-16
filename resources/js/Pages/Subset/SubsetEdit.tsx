@@ -58,6 +58,7 @@ export default function SubsetEdit({
     add_visualization_instructions: subsetDetail.visualization_instructions != null,
     visualization_instructions: subsetDetail.visualization_instructions ?? '',
     type: subsetDetail.type ?? '',
+    heirarchy: subsetDetail?.heirarchy?.id ?? '',
   })
   const [dates, setDates] = useState<Omit<SubsetDateField, 'subset_detail_id'>[]>(
     subsetDetail.dates as SubsetDateField[]
@@ -71,7 +72,7 @@ export default function SubsetEdit({
   const { post, loading, errors } = useInertiaPost(route('subset.update', subsetDetail.id), {
     showErrorToast: true,
   })
-
+  console.log(formData.heirarchy)
   const formItems = useMemo(<
     T,
     U extends keyof T,
@@ -95,7 +96,15 @@ export default function SubsetEdit({
         setValue: setFormValue('max_rows_to_fetch'),
         placeholder: 'Max Rows To Show (Leave Empty To Show All)',
       },
-
+      heirarchy: {
+        type: 'select',
+        setValue: setFormValue('heirarchy'),
+        displayKey: 'name',
+        dataKey: 'id',
+        list: hierarchies,
+        showAllOption: true,
+        // label: 'Heirarchy',
+      },
       group_data: {
         label: 'Perform Grouping & Aggregation Operations on Data',
         type: 'checkbox' as const,
@@ -105,7 +114,7 @@ export default function SubsetEdit({
           'Grouping & Aggregation Operations can not be toggled if measures are already added',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, toggleBoolean, measureFields])
+  }, [setFormValue, toggleBoolean, measureFields, hierarchies])
 
   const aiFormItems = useMemo(() => {
     return {

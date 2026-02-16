@@ -20,6 +20,7 @@ class MetaHierarchyFormRequest extends Data
         public string $primaryFieldName,
         #[Regex('/^[a-zA-Z0-9\s]*$/')]
         public ?string $secondaryFieldName,
+        public ?string $defaultHeirarchy,
         /**
          * @var array<array{
          *     level:int,

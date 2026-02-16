@@ -28,6 +28,8 @@ class SubsetEditController extends Controller implements HasMiddleware
         $subsetDetail->load(['dates', 'dimensions', 'measures', 'dataDetail']);
 
         $dataDetail = DataDetail::findOrFail($subsetDetail->data_detail_id);
+        // $herirarchy = MetaHierarchy::with('levels')->get();
+        // dd($herirarchy);
 
         return inertia('Subset/SubsetEdit', [
             'subsetDetail' => $subsetDetail,
