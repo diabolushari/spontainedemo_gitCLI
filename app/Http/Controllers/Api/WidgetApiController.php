@@ -20,11 +20,14 @@ class WidgetApiController
 
             if ($request->saveMode) {
                 $userId = $request->userId ?? auth()->id();
-                $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
+                $collection = \App\Models\WidgetEditor\WidgetCollection::where([
                     'user_id' => $userId,
                     'name' => 'save',
-                ]);
-                $data['collection_id'] = $collection->id;
+                ])->first();
+                
+                if ($collection) {
+                    $data['collection_id'] = $collection->id;
+                }
             }
 
             $widget = Widget::create($data);
@@ -57,11 +60,14 @@ class WidgetApiController
 
             if ($request->saveMode) {
                 $userId = $request->userId ?? auth()->id();
-                $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
+                $collection = \App\Models\WidgetEditor\WidgetCollection::where([
                     'user_id' => $userId,
                     'name' => $request->saveMode === 'save' ? 'save' : 'draft',
-                ]);
-                $data['collection_id'] = $collection->id;
+                ])->first();
+                
+                if ($collection) {
+                    $data['collection_id'] = $collection->id;
+                }
             }
 
             $widget->update($data);

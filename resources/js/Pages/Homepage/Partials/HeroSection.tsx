@@ -1,8 +1,8 @@
 import { User } from '@/interfaces/data_interfaces'
 import { router } from '@inertiajs/react'
-import { Sparkles, Bot, ArrowRight, Layout, Zap, MessageSquare, Clock } from 'lucide-react'
+import { Sparkles, Send, Clock, Settings, LayoutDashboard, Box, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
-import React from 'react'
+import React, { useState } from 'react'
 
 declare function route(name: string, params?: any): string
 
@@ -25,109 +25,141 @@ export default function HeroSection({
     handleSearch,
     setShowHistory
 }: Props) {
+    const [activeTab, setActiveTab] = useState('Get insights');
+
     return (
-        <div className='relative -mx-8 -mt-8 mb-8 flex min-h-[500px] flex-col bg-[#F8FAFC] px-4 pb-20 pt-6'>
-            {/* History Button */}
-            <div className='flex w-full justify-end px-4 mt-5 mb-4'>
+        <div className='relative mx-4 mt-6 mb-8 flex min-h-[500px] flex-col overflow-hidden rounded-[40px] px-4 pb-16 pt-6 font-sans text-white shadow-sm'>
+            {/* Background Image Asset */}
+            <div className="absolute inset-0 z-0 select-none">
+                <img
+                    src="/images/Hero-bg.svg"
+                    alt="Hero Background"
+                    className="h-full w-full object-cover"
+                />
+            </div>
+
+            {/* Top Controls */}
+            <div className='relative z-10 flex w-full justify-end gap-3 px-6 pt-2'>
                 <button
                     onClick={() => setShowHistory(true)}
-                    className='flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm ring-1 ring-slate-200 transition-all hover:bg-slate-50 hover:shadow-md hover:text-slate-900'
+                    className='rounded-lg bg-white/20 p-2 backdrop-blur-md transition-all hover:bg-white/30 hover:scale-105'
                 >
-                    <Clock className='h-4 w-4' />
-                    <span>History</span>
+                    <Clock className='h-5 w-5 text-white' />
+                </button>
+                <button
+                    className='rounded-lg bg-white/20 p-2 backdrop-blur-md transition-all hover:bg-white/30 hover:scale-105'
+                    onClick={() => router.visit('/data-detail')}
+                >
+                    <Settings className='h-5 w-5 text-white' />
                 </button>
             </div>
 
-            <div className='w-full max-w-[960px] flex flex-1 flex-col items-center justify-center mx-auto'>
-                {/* Header Section */}
-                <div className='mb-10 text-center'>
-                    <div className='flex items-center justify-center gap-5 mb-3'>
-                        <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 shadow-lg text-white'>
-                            <Bot className='h-8 w-8' />
-                        </div>
+            <div className='relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center text-center'>
+                {/* Greeting */}
+                <motion.h2
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className='mb-2 text-2xl font-bold tracking-wide text-[#fef08a]'
+                >
+                    Hi, {user?.name ? user.name.split(' ')[0] : 'there'}!
+                </motion.h2>
 
-                        <h1
-                            className='font-inter font-semibold text-[52px] leading-tight tracking-[-0.03em]'
-                            style={{
-                                background:
-                                    'linear-gradient(135deg, #059669 0%, #1D4ED8 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                            }}
-                        >
-                            <span className="block sm:inline">Hello, </span>
-                            <span className="block sm:inline">{user?.name}</span>
-                        </h1>
-                    </div>
+                {/* Main Heading */}
+                <motion.h1
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className='mb-12 text-4xl font-medium leading-tight tracking-normal text-white md:text-[44px]'
+                >
+                    What would you like to build today?
+                </motion.h1>
 
-                    <p
-                        className='font-inter font-medium text-[32px] sm:text-[42px] leading-tight tracking-[-0.03em] mt-2'
-                        style={{
-                            background:
-                                'linear-gradient(135deg, #064E3B 0%, #1E40AF 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
-                        }}
-                    >
-                        How can I help you today?
-                    </p>
-                </div>
+                {/* Main Action Card */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="w-full max-w-[780px]"
+                >
+                    {/* Gradient Wrapper for Tabs & Input */}
+                    <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-emerald-400/40 via-blue-500/40 to-indigo-500/40 p-[1px] shadow-2xl backdrop-blur-sm">
 
-                {/* Search/Chat Bar */}
-                <div className='w-full max-w-3xl'>
-                    <form onSubmit={handleSearch} className={`relative group transition-all duration-300 ${isFocused ? 'scale-[1.01]' : ''}`}>
-                        <div className={`absolute -inset-0.5 rounded-xl bg-gradient-to-r from-emerald-500 via-blue-500 to-indigo-500 opacity-30 blur transition duration-500 ${isFocused ? 'opacity-60 blur-md' : 'group-hover:opacity-50'}`}></div>
-                        <div className='relative flex items-center rounded-xl bg-white p-1.5 shadow-xl ring-1 ring-slate-100 transition-all'>
-                            <div className='pl-3 pr-2'>
-                                <Sparkles className={`h-6 w-6 transition-colors ${isFocused ? 'text-blue-600' : 'text-slate-400'}`} />
+                        {/* Inner Content */}
+                        <div className="flex flex-col rounded-[27px] bg-white/10 p-1 backdrop-blur-md px-2 pb-2" >
+
+                            {/* Tabs */}
+                            <div className="flex items-center justify-center space-x-1 px-4 py-3">
+                                {['Get insights', 'Dashboard', 'Widgets'].map((tab) => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => setActiveTab(tab)}
+                                        className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${activeTab === tab
+                                            ? 'bg-white/20 text-white shadow-sm ring-1 ring-white/30 backdrop-blur-sm'
+                                            : 'text-white/80 hover:bg-white/10 hover:text-white'
+                                            }`}
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
                             </div>
-                            <textarea
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                onFocus={() => setIsFocused(true)}
-                                onBlur={() => setIsFocused(false)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                        e.preventDefault();
-                                        handleSearch(e as any);
-                                    }
-                                }}
-                                placeholder='Ask anything about your data...'
-                                rows={2}
-                                className='w-full resize-none border-none bg-transparent px-2 py-2 text-base text-slate-900 placeholder-slate-400 focus:ring-0 scrollbar-hide'
-                            />
-                            <button
-                                type='submit'
-                                disabled={!query.trim()}
-                                className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition-all hover:bg-blue-700 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100'
-                            >
-                                <ArrowRight className='h-5 w-5' />
-                            </button>
-                        </div>
-                    </form>
 
-                    {/* Quick Actions / Suggestions */}
-                    <div className='mt-8 flex flex-wrap justify-center gap-3'>
-                        {['Manage Pages', 'Manage Widgets', 'New Chat'].map((action, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => {
-                                    if (action === 'Manage Pages') router.visit(route('page-editor.index'));
-                                    if (action === 'Manage Widgets') router.visit(route('widget-editor.index'));
-                                    if (action === 'New Chat') router.visit(route('chat'));
-                                }}
-                                className='group flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-600 shadow-sm transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700'
-                            >
-                                {action === 'Manage Pages' && <Layout className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />}
-                                {action === 'Manage Widgets' && <Zap className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />}
-                                {action === 'New Chat' && <MessageSquare className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />}
-                                <span>{action}</span>
-                            </button>
-                        ))}
+                            {/* Input Area */}
+                            <form onSubmit={handleSearch} className="relative mt-1 flex flex-col rounded-[24px] bg-white p-2 shadow-lg transition-all focus-within:shadow-xl">
+                                <div className="relative px-2 pt-2">
+                                    <div className="absolute left-3 top-4">
+                                        <Sparkles className="h-5 w-5 text-purple-400 fill-purple-400" />
+                                    </div>
+                                    <textarea
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        onFocus={() => setIsFocused(true)}
+                                        onBlur={() => setIsFocused(false)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                handleSearch(e as any);
+                                            }
+                                        }}
+                                        placeholder="Which districts show abnormal spikes in complaints compared to the seasonal average?"
+                                        className="min-h-[90px] w-full resize-none border-none bg-transparent py-3 pl-10 pr-4 text-[15px] text-slate-600 placeholder-slate-400 focus:ring-0 leading-relaxed scrollbar-hide"
+                                    />
+                                </div>
+                                <div className="flex justify-end px-2 pb-2">
+                                    <button
+                                        type="submit"
+                                        disabled={!query.trim()}
+                                        className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4ade80] text-white shadow-md transition-all hover:bg-[#22c55e] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                    >
+                                        <Send className="h-5 w-5 ml-0.5" />
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                </motion.div>
+
+                {/* Footer Links */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="mt-10 flex gap-12"
+                >
+                    <button
+                        onClick={() => router.visit(route('page-editor.index'))}
+                        className="group flex items-center gap-2 text-sm font-medium text-white transition-all hover:opacity-90"
+                    >
+                        <LayoutDashboard className="h-5 w-5 text-[#86efac]" />
+                        <span className="border-b border-dashed border-white/40 pb-0.5 decoration-white/40 group-hover:border-white">Manage Dashboard</span>
+                    </button>
+                    <button
+                        onClick={() => router.visit(route('widget-collection.index'))}
+                        className="group flex items-center gap-2 text-sm font-medium text-white transition-all hover:opacity-90"
+                    >
+                        <Box className="h-5 w-5 text-[#86efac]" />
+                        <span className="border-b border-dashed border-white/40 pb-0.5 decoration-white/40 group-hover:border-white">Manage widgets</span>
+                    </button>
+                </motion.div>
             </div>
         </div>
     )
