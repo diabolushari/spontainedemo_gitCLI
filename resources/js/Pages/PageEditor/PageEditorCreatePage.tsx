@@ -13,6 +13,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import WidgetListView from '@/Components/WidgetsEditor/WidgetListView'
 import WidgetDetailView from '@/Components/WidgetsEditor/WidgetDetailView'
 import HeadingStyleComponent from '@/Components/PageEditor/HeadingStyleComponent'
+import PageEditorHeader from '@/Components/PageEditor/PageEditorHeader'
 
 interface Props {
   page_agent_url?: string
@@ -151,31 +152,25 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets, au
       <DashboardPadding>
         {!selectWidget && (
           <div className='relative flex h-[calc(100vh-100px)] overflow-hidden rounded-xl bg-gray-50/50'>
-            {/* New Component: Configuration Sidebar */}
-            <PageConfigurationSidebar
-              pageStructure={pageStructure}
-              pageWidgets={pageWidgets}
-              isOpen={isSidebarOpen}
-              setIsOpen={setIsSidebarOpen}
-              onTitleChange={handleTitleChange}
-              onDescriptionChange={handleDescriptionChange}
-              onLinkChange={handleLinkChange}
-              setAnchorWidget={setAnchorWidget}
-              onSaveDraft={handleSaveDraft}
-              onPublish={handlePublish}
-              onPreview={handlePreview}
-              isEditMode={!!page}
-              onPageUpdate={setAll}
-              agentUrl={page_agent_url}
-              onThinking={setThinkingMessage}
-              userId={auth.user.id}
-            />
-
             {/* Main Content Area */}
             <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50/50 p-8 transition-all'>
               <div
-                className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pl-4' : ''}`}
+                className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pr-4' : ''}`}
               >
+                {/* Dashboard Builder Header */}
+                <PageEditorHeader
+                  onSaveDraft={handleSaveDraft}
+                  onPreview={handlePreview}
+                  onPublish={handlePublish}
+                  isEditMode={!!page}
+                  pageStructure={pageStructure}
+                  pageWidgets={pageWidgets}
+                  onTitleChange={handleTitleChange}
+                  onDescriptionChange={handleDescriptionChange}
+                  onLinkChange={handleLinkChange}
+                  setAnchorWidget={setAnchorWidget}
+                />
+
                 {/* AI Glow Effect Overlay */}
                 {thinkingMessage && (
                   <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
@@ -220,6 +215,18 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets, au
                 />
               </div>
             </div>
+
+            {/* AI Chat Sidebar */}
+            <PageConfigurationSidebar
+              pageStructure={pageStructure}
+              isOpen={isSidebarOpen}
+              setIsOpen={setIsSidebarOpen}
+              onPageUpdate={setAll}
+              agentUrl={page_agent_url ?? ''}
+              onThinking={setThinkingMessage}
+              userId={auth.user.id}
+              onSave={handlePublish}
+            />
           </div>
         )}
         {selectWidget && !selectedWidget && <WidgetListView onSelectWidget={setSelectedWidget} />}

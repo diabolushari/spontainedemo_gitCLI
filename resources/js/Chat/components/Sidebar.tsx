@@ -47,7 +47,9 @@ export default function Sidebar({ chatHistory, sessionId, onSessionChange, favor
     {
       icon: ArchiveIcon,
       label: 'Generated Widgets',
-      onClick: () => console.log('Generated Widgets clicked'),
+      onClick: () => {
+        router.visit('/widget-collection')
+      },
     },
     {
       icon: DocumentAttachmentIcon,
