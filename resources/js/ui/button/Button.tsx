@@ -79,7 +79,7 @@ export default function Button({
           as='a'
           className={cn(
             'lgButtonText flex items-center justify-center px-8 py-2 capitalize tracking-wider transition duration-150' +
-              ' ease-in-out focus:outline-none focus:ring-4',
+            ' ease-in-out focus:outline-none focus:ring-4',
             buttonStyle
           )}
         >
@@ -92,7 +92,7 @@ export default function Button({
           disabled={disabled}
           className={cn(
             'lgButtonText flex items-center justify-center px-8 py-2 capitalize tracking-wider transition duration-150' +
-              ' ease-in-out focus:outline-none focus:ring-4',
+            ' ease-in-out focus:outline-none focus:ring-4',
             buttonStyle
           )}
           type={type}
