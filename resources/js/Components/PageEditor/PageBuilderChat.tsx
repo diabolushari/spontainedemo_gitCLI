@@ -170,10 +170,10 @@ export default function PageBuilderChat({
     const payload: any = {
       message: chatMessage,
       existing_page: existingPage,
+      user_id: userId,
     }
 
     if (isFirstMessage) {
-      payload.user_id = userId
       setIsFirstMessage(false)
     }
 
@@ -182,6 +182,7 @@ export default function PageBuilderChat({
     } else {
       sendMessage(payload)
     }
+    console.log('payload : ', payload)
 
     setChatMessage('')
   }
@@ -233,8 +234,8 @@ export default function PageBuilderChat({
                     key={widget.plan_item_id}
                     onClick={() => toggleSelected(widget.plan_item_id)}
                     className={`w-full rounded-md border p-3 text-left transition ${checked
-                        ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
-                        : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                      ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
+                      : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
                       }`}
                   >
                     <div className='flex items-start gap-2'>
@@ -372,8 +373,8 @@ export default function PageBuilderChat({
 
                 <div
                   className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
-                      ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                      : 'rounded-tl-sm bg-white text-gray-800'
+                    ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                    : 'rounded-tl-sm bg-white text-gray-800'
                     }`}
                 >
                   <div className='whitespace-pre-wrap text-sm leading-relaxed'>

@@ -16,8 +16,11 @@ class HomepageController extends Controller
         
         // Fetch user's widgets (limit to 8 for homepage display)
         $widgets = Widget::with('collection')
-            ->whereHas('collection', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->orWhereHas('collection', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    });
             })
             ->orderBy('updated_at', 'desc')
             ->limit(8)

@@ -31,6 +31,7 @@ interface Props {
   dimensions?: BlockDimension
   colorScheme?: string
   editMode?: boolean
+  suppressError?: boolean
 }
 
 export default function TrendGraph({
@@ -48,6 +49,7 @@ export default function TrendGraph({
   yAxisLabel,
   tooltipIndicator,
   colorScheme = 'boldWarm',
+  suppressError = false,
 }: Readonly<Props>) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -92,7 +94,7 @@ export default function TrendGraph({
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
-  }>(fetchUrl)
+  }>(fetchUrl, { suppressError })
 
   console.log('trend fetchUrl : ', fetchUrl)
   console.log('trend graphValues : ', graphValues)
@@ -160,7 +162,12 @@ export default function TrendGraph({
             className='h-full w-full'
           />
         )}
-        {!isLoading && chartType === 'area' && (
+        {!isLoading && (!graphValues?.data || graphValues.data.length === 0) && (
+          <div className='flex h-full w-full items-center justify-center text-gray-400'>
+            No data
+          </div>
+        )}
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'area' && (
           <CustomAreaChart
             data={chartData}
             dataKey='month'
@@ -172,7 +179,7 @@ export default function TrendGraph({
             containerClassName='h-full w-full'
           />
         )}
-        {!isLoading && chartType === 'bar' && (
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'bar' && (
           <CustomBarChart
             data={chartData}
             dataKey='month'

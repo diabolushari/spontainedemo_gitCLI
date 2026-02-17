@@ -22,6 +22,7 @@ interface OverviewProps {
   overviewLevel: string | null
   overviewNameField: string | null
   onEditSection?: (section: string) => void
+  suppressError?: boolean
 }
 
 export default function OverviewWidgetContent({
@@ -37,6 +38,7 @@ export default function OverviewWidgetContent({
   compact = false,
   overviewNameField,
   onEditSection,
+  suppressError = false,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -109,9 +111,9 @@ export default function OverviewWidgetContent({
 
   console.log('overview url', url)
 
-  const [data] = useFetchRecord<{
+  const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
-  }>(url)
+  }>(url, { suppressError })
 
   const fieldsToPlot = useMemo(() => {
     const allMeasures = Array.isArray(measure)
@@ -177,6 +179,12 @@ export default function OverviewWidgetContent({
             fontSize={'text-sm'}
             containerClassName={containerClass}
           />
+        </div>
+      )}
+
+      {!loading && (!data || !data.data || data.data.length === 0) && (
+        <div className='flex h-full w-full items-center justify-center text-gray-400'>
+          No data
         </div>
       )}
     </div>

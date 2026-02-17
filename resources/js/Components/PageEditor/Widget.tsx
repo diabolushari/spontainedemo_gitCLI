@@ -45,7 +45,9 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       ? `${widget_data_url}${route('subset-field-max-value', { subsetDetail: subsetId, field: 'month' }, false)}`
       : null
 
-  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
+  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url, {
+    suppressError: true,
+  })
 
   useEffect(() => {
     if (!loading && maxValueData != null && maxValueData.max_value) {
@@ -181,6 +183,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           hierarchy_item_id={data?.overview?.hierarchy_item_id ?? null}
           overviewLevel={data?.overview?.level}
           overviewNameField={data?.overview?.name_field}
+          suppressError={true}
         />
       )}
 
@@ -194,6 +197,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           trendColor={data.trend.color ?? null}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
+          suppressError={true}
         />
       )}
 
@@ -209,6 +213,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           hierarchyId={widget.data.rank.hierarchy_id}
           dimension={widget.data.rank.dimension_column}
           fieldColumn={widget.data.rank.field_column}
+          suppressError={true}
         />
       )}
 

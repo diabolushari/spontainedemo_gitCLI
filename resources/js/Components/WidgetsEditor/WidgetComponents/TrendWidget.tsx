@@ -11,6 +11,7 @@ interface TrendWidgetProps {
   selectedMonth: Date | null
   setSelectedMonth: Dispatch<SetStateAction<Date | null>>
   onEditSection?: (section: string) => void
+  suppressError?: boolean
 }
 
 export default function TrendWidget({
@@ -22,6 +23,7 @@ export default function TrendWidget({
   setSelectedMonth,
   trendColor,
   onEditSection,
+  suppressError = false,
 }: Readonly<TrendWidgetProps>) {
   if (trendSubsetId == null || subsetColumn == null || subsetFieldName == null) {
     return null
@@ -40,6 +42,7 @@ export default function TrendWidget({
         setSelectedMonth={setSelectedMonth}
         chartType={trendChartType ?? 'area'}
         colorScheme={trendColor ?? undefined}
+        suppressError={suppressError}
       />
     </div>
   )

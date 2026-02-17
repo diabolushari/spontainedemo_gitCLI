@@ -14,6 +14,7 @@ interface RankingWidgetProps {
   dimension: string | null
   fieldColumn: string | null
   onEditSection?: (section: string) => void
+  suppressError?: boolean
 }
 
 interface SubsetGroupDetail {
@@ -32,6 +33,7 @@ export default function RankingWidget({
   dimension,
   fieldColumn,
   onEditSection,
+  suppressError = false,
 }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -58,6 +60,7 @@ export default function RankingWidget({
             level={level}
             dimension={dimension ?? undefined}
             fieldColumn={fieldColumn ?? undefined}
+            suppressError={suppressError}
           />
         </div>
       )}

@@ -34,16 +34,10 @@ interface Props {
   hierarchyId?: number
   dimension?: string
   fieldColumn?: string
+  suppressError?: boolean
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
-const levelTypes: { name: string; value: string }[] = [
-  { name: 'Section', value: 'section' },
-  { name: 'Subdivision', value: 'subdivision' },
-  { name: 'Division', value: 'division' },
-  { name: 'Circle', value: 'circle' },
-  { name: 'Region', value: 'region' },
-]
 
 type SummaryItem = Record<string, number | string | null | undefined>
 
@@ -63,6 +57,7 @@ export default function RankedList({
   hierarchyId,
   dimension,
   fieldColumn,
+  suppressError = false,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
@@ -122,7 +117,9 @@ export default function RankedList({
     pageNumber,
     dimension,
   ])
-  const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
+  const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl, {
+    suppressError,
+  })
   console.log('ranking fetchUrl : ', fetchUrl)
   console.log('ranking graphValues : ', graphValues)
   const headers = useMemo(() => {
@@ -293,7 +290,12 @@ export default function RankedList({
           height={200}
         />
       )}
-      {!isLoading && (
+      {!isLoading && (!graphValues?.data?.data || graphValues.data.data.length === 0) && (
+        <div className='flex h-[200px] w-full items-center justify-center text-gray-400'>
+          No data
+        </div>
+      )}
+      {!isLoading && graphValues?.data?.data && graphValues.data.data.length > 0 && (
         <>
           <div className='mx-4 mt-5'>
             <Table>
