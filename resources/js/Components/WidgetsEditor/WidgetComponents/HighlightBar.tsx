@@ -11,7 +11,7 @@ interface Props {
 export default function HighlightBar({ highlightCards, selectedMonth, onEditSection }: Props) {
   return (
     <div
-      className='flex w-full gap-4 overflow-x-auto pb-2'
+      className='flex w-full gap-[4cqw] overflow-x-auto pb-[2cqw] [container-type:inline-size]'
       onClick={() => onEditSection?.('highlight_cards')}
     >
       {highlightCards.map((card, index) => (

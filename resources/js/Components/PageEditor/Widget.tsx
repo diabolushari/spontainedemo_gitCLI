@@ -159,13 +159,6 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
         </div>
       )}
 
-      {widget.data.highlight_cards && selectView === 'overview' && (
-        <HighlightBar
-          highlightCards={widget.data.highlight_cards}
-          selectedMonth={selectedMonth ?? new Date()}
-        />
-      )}
-
       {/* Overview Widget */}
       {selectView == 'overview' && selectedMonth != null && (
         <OverviewWidgetContent

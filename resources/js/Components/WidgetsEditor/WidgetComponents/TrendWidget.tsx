@@ -30,20 +30,22 @@ export default function TrendWidget({
   }
 
   return (
-    <div
-      className='cursor-pointer transition-all hover:scale-[1.005]'
-      onClick={() => onEditSection?.('trend')}
-    >
-      <TrendGraph
-        subsetId={trendSubsetId}
-        dataField={subsetColumn}
-        dataFieldName={subsetFieldName ?? ''}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        chartType={trendChartType ?? 'area'}
-        colorScheme={trendColor ?? undefined}
-        suppressError={suppressError}
-      />
+    <div className='h-full w-full [container-type:inline-size]'>
+      <div
+        className='h-full w-full cursor-pointer transition-all hover:scale-[1.005]'
+        onClick={() => onEditSection?.('trend')}
+      >
+        <TrendGraph
+          subsetId={trendSubsetId}
+          dataField={subsetColumn}
+          dataFieldName={subsetFieldName ?? ''}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          chartType={trendChartType ?? 'area'}
+          colorScheme={trendColor ?? undefined}
+          suppressError={suppressError}
+        />
+      </div>
     </div>
   )
 }

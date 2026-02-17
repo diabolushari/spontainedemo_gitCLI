@@ -8,6 +8,7 @@ import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor
 import { PageProps } from '@/types'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
+import HighlightBar from './HighlightBar'
 
 interface OverviewProps {
   subsetId: number
@@ -132,18 +133,27 @@ export default function OverviewWidgetContent({
   }, [measure, chartType])
 
   const containerClass = compact ? 'h-full w-full aspect-auto' : 'h-full w-full'
-  const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : undefined
-  const axisHeight = compact ? 30 : undefined
+  const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : { top: 10, right: 10, left: 10, bottom: 40 }
+  const axisHeight = compact ? 30 : 60
 
   console.log('overviewNameField', overviewNameField)
 
   return (
     <div
-      className='min-h-0 w-full flex-1 cursor-pointer transition-all hover:scale-[1.005]'
+      className='flex min-h-0 w-full flex-1 cursor-pointer flex-col [container-type:inline-size]'
       onClick={() => onEditSection?.('chart')}
     >
-      {chartType === 'bar' && data != null && (
-        <div className='h-full w-full'>
+      {highlightCards && highlightCards.length > 0 && (
+        <div className='mb-[2cqw]'>
+          <HighlightBar
+            highlightCards={highlightCards}
+            selectedMonth={selectedMonth}
+            onEditSection={onEditSection}
+          />
+        </div>
+      )}
+      <div className='relative h-[50cqw] min-h-[250px] w-full transition-all hover:scale-[1.005]'>
+        {chartType === 'bar' && data != null && (
           <CustomBarChart
             data={data.data}
             dataKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
@@ -153,10 +163,8 @@ export default function OverviewWidgetContent({
             margin={chartMargin}
             xAxisHeight={axisHeight}
           />
-        </div>
-      )}
-      {chartType === 'line' && data != null && (
-        <div className='h-full w-full'>
+        )}
+        {chartType === 'line' && data != null && (
           <CustomLineChart
             data={data.data}
             dataKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
@@ -166,27 +174,25 @@ export default function OverviewWidgetContent({
             margin={chartMargin}
             xAxisHeight={axisHeight}
           />
-        </div>
-      )}
-      {chartType === 'pie' && data != null && (
-        <div className='h-full w-full'>
+        )}
+        {chartType === 'pie' && data != null && (
           <CustomPieChart
             data={data.data}
             dataKey={fieldsToPlot[0].key}
             nameKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
-            fontSize={'text-sm'}
+            fontSize={'text-[1.8cqw]'}
             containerClassName={containerClass}
           />
-        </div>
-      )}
+        )}
 
-      {!loading && (!data || !data.data || data.data.length === 0) && (
-        <div className='flex h-full w-full items-center justify-center text-gray-400'>
-          No data
-        </div>
-      )}
-    </div>
+        {!loading && (!data || !data.data || data.data.length === 0) && (
+          <div className='flex h-full w-full items-center justify-center text-gray-400 text-[1.4cqw]'>
+            No data
+          </div>
+        )}
+      </div>
+    </div >
   )
 }
