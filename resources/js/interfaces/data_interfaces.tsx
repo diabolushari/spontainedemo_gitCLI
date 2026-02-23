@@ -559,7 +559,7 @@ export interface Widget {
       subset_id: number | null
       subset_name?: string
       chart_type: 'area' | 'bar'
-      measure: SelectedMeasure | null
+      measures: SelectedMeasure[]
       dimension: string
       color: string
     }

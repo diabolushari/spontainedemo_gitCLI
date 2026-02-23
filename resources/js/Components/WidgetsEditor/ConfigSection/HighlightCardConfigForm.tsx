@@ -171,9 +171,21 @@ export default function HighlightCardConfigForm({
   )
 
   const handleSubsetChangeAi = useCallback(
-    (value: SubsetDetail | Record<string, any>) => {
+    (value: SubsetDetail | Record<string, any> | null) => {
       setSubset(value)
-      setLocalCard((prev) => ({ ...prev, subset_id: value.id }))
+      setLocalCard((prev) => ({
+        ...prev,
+        subset_id: value?.id,
+        // Reset measures
+        measure: { subset_column: '', subset_field_name: '', unit: '' },
+        // Reset dimension & metadata
+        dimension_column: null,
+        dimension_name: null,
+        hierarchy_id: null,
+        hierarchy_item_id: null,
+        hierarchy_item_name: null,
+        metadata: null,
+      }))
     },
     [setLocalCard]
   )
@@ -248,7 +260,7 @@ export default function HighlightCardConfigForm({
           placeholder='Enter subtitle'
         />
       </div>
-      <div>
+      <div className='relative z-40'>
         {ai_agent ? (
           <ComboBox
             label='Subset'
@@ -271,7 +283,7 @@ export default function HighlightCardConfigForm({
       </div>
 
       {localCard.subset_id && rawDimensions && rawDimensions.length > 0 && (
-        <div className='flex flex-col gap-3 border-t border-slate-200 pt-3'>
+        <div className='relative z-30 flex flex-col gap-3 border-t border-slate-200 pt-3'>
           <SelectList
             label='Dimension'
             list={rawDimensions}
@@ -307,7 +319,7 @@ export default function HighlightCardConfigForm({
       )}
 
       {localCard.subset_id && (
-        <div className='border-t border-slate-200 pt-3'>
+        <div className='relative z-20 border-t border-slate-200 pt-3'>
           <MeasureFieldSelector
             subsetId={localCard.subset_id.toString()}
             measures={measures}

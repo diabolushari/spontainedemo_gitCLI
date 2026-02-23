@@ -38,7 +38,7 @@ export interface WidgetFormData {
   trend_subset_id: string
   trend_subset_name: string
   trend_chart_type: 'area' | 'bar'
-  trend_measure: SelectedMeasure | null
+  trend_measures: SelectedMeasure[]
   trend_dimension: string
   trend_color: string
   rank_subset_group_name: string
@@ -118,10 +118,7 @@ function parseFormDataToWidget(
         subset_id: formData.trend_subset_id == '' ? null : Number(formData.trend_subset_id),
         subset_name: formData.trend_subset_name,
         chart_type: formData.trend_chart_type,
-        measure: formData.trend_measure ?? {
-          subset_field_name: '',
-          subset_column: '',
-        },
+        measures: formData.trend_measures ?? [],
         dimension: formData.trend_dimension,
         color: formData.trend_color,
       },
@@ -204,7 +201,7 @@ export default function OverviewWidgetEditor({
     trend_subset_id: widget?.data?.trend?.subset_id?.toString() ?? '',
     trend_subset_name: widget?.data?.trend?.subset_name ?? '',
     trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
-    trend_measure: widget?.data?.trend?.measure ?? null,
+    trend_measures: widget?.data?.trend?.measures ?? [],
     trend_dimension: widget?.data?.trend?.dimension ?? 'month',
     trend_color: widget?.data?.trend?.color ?? 'boldWarm',
     rank_subset_group_name: widget?.data?.rank?.subset_group_name ?? '',
@@ -284,7 +281,7 @@ export default function OverviewWidgetEditor({
       trend_subset_id: widget.data?.trend?.subset_id?.toString() ?? '',
       trend_subset_name: widget.data?.trend?.subset_name ?? '',
       trend_chart_type: widget.data?.trend?.chart_type ?? 'area',
-      trend_measure: widget.data?.trend?.measure ?? null,
+      trend_measures: widget.data?.trend?.measures ?? [],
       trend_dimension: widget.data?.trend?.dimension ?? 'month',
       trend_color: widget.data?.trend?.color ?? 'boldWarm',
       rank_subset_group_name: widget.data?.rank?.subset_group_name ?? '',
@@ -329,7 +326,7 @@ export default function OverviewWidgetEditor({
         color_palette: 'boldWarm',
         trend_subset_id: '',
         trend_chart_type: 'area',
-        trend_measure: null,
+        trend_measures: [],
         trend_dimension: 'month',
         trend_color: '#5A0F35',
         rank_subset_group_name: '',
@@ -359,7 +356,7 @@ export default function OverviewWidgetEditor({
         color_palette: 'boldWarm',
         trend_subset_id: '',
         trend_chart_type: 'area',
-        trend_measure: null,
+        trend_measures: [],
         trend_dimension: 'month',
         trend_color: '#5A0F35',
         rank_subset_group_name: '',

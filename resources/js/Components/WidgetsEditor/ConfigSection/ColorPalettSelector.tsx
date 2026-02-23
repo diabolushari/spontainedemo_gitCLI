@@ -1,5 +1,6 @@
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { camelToNormal } from '@/formaters/NameFormater'
+import { MouseEvent } from 'react'
 
 interface ColorPaletteSelectorProps {
   selectedPalette: string
@@ -20,12 +21,20 @@ export default function ColorPaletteSelector({
       <label className='mb-3 text-sm font-medium text-slate-700'>Color palette</label>
       <div className='grid grid-cols-4 gap-2'>
         {paletteOptions.map((palette) => (
-          <label
+          <div
             key={palette.value}
-            className={`group cursor-pointer rounded-lg border-2 p-2 transition-all hover:border-blue-400 ${
+            role='button'
+            tabIndex={0}
+            onClick={() => onPaletteChange(palette.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onPaletteChange(palette.value)
+              }
+            }}
+            className={`group cursor-pointer rounded-lg border-2 p-2 transition-all hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
               selectedPalette === palette.value ? 'border-blue-600 bg-blue-50' : 'border-slate-200'
             }`}
-            htmlFor={palette.value}
           >
             <input
               name='color_palette'
@@ -34,7 +43,7 @@ export default function ColorPaletteSelector({
               id={palette.value}
               value={palette.value}
               checked={selectedPalette === palette.value}
-              onChange={(e) => onPaletteChange(e.target.value)}
+              readOnly
             />
             <div className='mb-2 flex gap-0.5'>
               {chartPallet[palette.value as keyof typeof chartPallet]
@@ -54,7 +63,7 @@ export default function ColorPaletteSelector({
             >
               {palette.label}
             </span>
-          </label>
+          </div>
         ))}
       </div>
     </div>
