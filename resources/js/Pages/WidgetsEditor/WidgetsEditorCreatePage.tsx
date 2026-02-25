@@ -32,7 +32,11 @@ export default function WidgetsEditorCreatePage({
 
   useEffect(() => {
     if (sourceQuery && !hasSentSourceQuery.current) {
-      sendMessage({ message: sourceQuery, widget: previewWidget, widget_id: currentWidget?.id?.toString() })
+      sendMessage({
+        message: sourceQuery,
+        widget: previewWidget,
+        widget_id: currentWidget?.id?.toString(),
+      })
       hasSentSourceQuery.current = true
     }
   }, [sourceQuery])

@@ -10,6 +10,7 @@ import OverviewWidget from '../Widgets/OverviewWidget'
 import EditorHeader from './Parts/EditorHeader'
 import EditorPreview from './Parts/EditorPreview'
 import EditorSidebar from './Parts/EditorSidebar'
+import { source } from 'framer-motion/client'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -160,8 +161,9 @@ export default function OverviewWidgetEditor({
   onPreviewWidgetChange,
   messages,
   sourceQuery,
-  connectionStatus
+  connectionStatus,
 }: Readonly<Props>) {
+  console.log(sourceQuery)
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking' | null>(null)
@@ -216,7 +218,6 @@ export default function OverviewWidgetEditor({
     ai_agent: widget?.data?.ai_agent ?? false,
 
     view: widget?.data?.view ?? { overview: false, trend: false, ranking: false },
-
   })
 
   // Synchronize selectedView with formData.view
@@ -388,7 +389,7 @@ export default function OverviewWidgetEditor({
     const widgetData = parseFormDataToWidget(formData, highlightCards, collectionId)
     const postData = {
       ...widgetData,
-      save_mode: mode
+      save_mode: mode,
     }
 
     if (isEditMode) {
@@ -514,5 +515,3 @@ export default function OverviewWidgetEditor({
     </div>
   )
 }
-
-

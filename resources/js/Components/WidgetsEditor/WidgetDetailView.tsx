@@ -56,7 +56,7 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
     <div className='min-h-screen bg-gray-50 p-8'>
       <div className='mx-auto max-w-7xl'>
         {/* Navigation / Header */}
-        <div className='mb-6'>
+        <div className='mb-6 flex items-center justify-between'>
           <button
             onClick={onBack}
             className='flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900'
@@ -64,6 +64,34 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
             <ArrowLeft className='h-4 w-4' />
             Back to Widgets
           </button>
+
+          <div className='flex items-center gap-3'>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className='inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50'
+            >
+              <Trash2 className='h-4 w-4' />
+              Delete
+            </button>
+
+            {onAddToDashboard && (
+              <button
+                onClick={() => onAddToDashboard(widget)}
+                className='inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
+              >
+                <Plus className='h-4 w-4' />
+                Add to Dashboard
+              </button>
+            )}
+
+            <Link
+              href={`/widget-editor/${widget.id}/edit`}
+              className='inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+            >
+              <Edit className='h-4 w-4' />
+              Edit Widget
+            </Link>
+          </div>
         </div>
 
         <div className='grid grid-cols-1 gap-12 lg:grid-cols-12'>
@@ -112,15 +140,6 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
                   <span className='inline-flex items-center rounded bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700'>
                     Preview
                   </span>
-
-                  {/* Primary Edit Action placed here for easy access */}
-                  <Link
-                    href={`/widget-editor/${widget.id}/edit`}
-                    className='inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-                  >
-                    <Edit className='h-3.5 w-3.5' />
-                    Edit Widget
-                  </Link>
                 </div>
 
                 <div className='p-8'>
@@ -188,33 +207,6 @@ export default function WidgetDetailView({ widget, onBack, onAddToDashboard }: P
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Actions Footer */}
-              <div className='flex items-center justify-end gap-3 pt-4'>
-                <button
-                  onClick={onBack}
-                  className='rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className='inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50'
-                >
-                  <Trash2 className='h-4 w-4' />
-                  Delete
-                </button>
-
-                {onAddToDashboard && (
-                  <button
-                    onClick={() => onAddToDashboard(widget)}
-                    className='inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'
-                  >
-                    <Plus className='h-4 w-4' />
-                    Add to Dashboard
-                  </button>
-                )}
               </div>
             </div>
           </div>
