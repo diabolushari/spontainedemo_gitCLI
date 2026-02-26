@@ -61,6 +61,15 @@ export default function WidgetChatSection({
   }
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+  const messagesEndRef = React.useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, thinkingMessage])
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -240,6 +249,7 @@ export default function WidgetChatSection({
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <div className='m-3 rounded-lg bg-white p-2'>
         <div className={`mb-2 flex items-center gap-2 px-1 text-xs transition-colors ${connectionStatus ? 'text-gray-500' : 'text-gray-400'}`}>

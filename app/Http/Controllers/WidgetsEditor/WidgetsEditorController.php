@@ -20,16 +20,16 @@ class WidgetsEditorController extends Controller
     {
         $collectionId = $request->get('collection_id');
         $type = $request->get('type');
-        $source_query = $request->get('source_query');
+        $sourceQuery = $request->get('sourceQuery');
         $metaHierarchy = MetaHierarchy::all();
 
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
-            'collection_id' => $collectionId,
+            'collectionId' => $collectionId,
             'type' => $type,
-            'source_query' => $source_query,
-            'meta_hierarchy' => $metaHierarchy,
-            'widget_agent_url' => config('app.widget_agent_url'),
+            'sourceQuery' => $sourceQuery,
+            'metaHierarchy' => $metaHierarchy,
+            'widgetAgentUrl' => config('app.widget_agent_url'),
         ]);
     }
 
@@ -83,10 +83,10 @@ class WidgetsEditorController extends Controller
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'widget' => $widget,
-            'collection_id' => $collectionId,
+            'collectionId' => $collectionId,
             'type' => $type,
-            'meta_hierarchy' => $metaHierarchy,
-            'widget_agent_url' => config('app.widget_agent_url'),
+            'metaHierarchy' => $metaHierarchy,
+            'widgetAgentUrl' => config('app.widget_agent_url'),
         ]);
     }
 

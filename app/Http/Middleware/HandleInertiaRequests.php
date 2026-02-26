@@ -45,6 +45,9 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'widget_data_url' => config('app.widget_data_url'),
+            'chatToken' => config('app.chat_token'),
+            'chatURL' => config('app.chat_url'),
+            'agentURL' => config('app.agent_url'),
         ];
     }
 }

@@ -77,7 +77,9 @@ export default function SubsetEdit({
   const [showDuplicateModal, setShowDuplicateModal] = useState(false)
 
   const handleDuplicate = () => {
-    router.get(route('subset.duplicate', subsetDetail.id))
+    router.post(route('subset.duplicate', subsetDetail.id), {}, {
+      onFinish: () => setShowDuplicateModal(false),
+    })
   }
 
   const formItems = useMemo(<

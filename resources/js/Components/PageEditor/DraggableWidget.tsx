@@ -22,11 +22,26 @@ export default function DraggableWidget({ widget, source }: DraggableWidgetProps
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={`cursor-move rounded-md border border-gray-200 bg-white p-3 hover:border-blue-400 hover:shadow-sm ${
+      className={`relative cursor-move rounded-md border border-gray-200 bg-white p-3 hover:border-blue-400 hover:shadow-sm ${
         isDragging ? 'opacity-50' : ''
       }`}
     >
-      <div className='mb-1 flex items-center gap-2'>
+      <div className='absolute right-2 top-2 rounded-full bg-gray-100 p-1.5 text-gray-500 shadow-sm transition-colors hover:bg-gray-200 hover:text-gray-700'>
+        <svg
+          className='h-3 w-3'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M4 6h16M4 12h16M4 18h16'
+          />
+        </svg>
+      </div>
+      <div className='mb-1 flex items-center gap-2 pr-8'>
         <svg
           className='h-4 w-4 text-gray-400'
           fill='none'

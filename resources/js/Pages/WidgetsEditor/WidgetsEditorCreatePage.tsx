@@ -8,34 +8,38 @@ import { useWebSocket } from '@/Pages/WidgetsEditor/hook/useWebsocket'
 
 interface Props {
   widget?: Widget
-  collection_id: number
+  collectionId: number
   type: string
-  source_query: string
-  meta_hierarchy: MetaHierarchy[]
-  widget_agent_url: string
+  sourceQuery: string
+  metaHierarchy: MetaHierarchy[]
+  widgetAgentUrl: string
 }
 
 export default function WidgetsEditorCreatePage({
   widget,
-  collection_id,
+  collectionId,
   type,
-  source_query,
-  meta_hierarchy,
-  widget_agent_url,
+  sourceQuery,
+  metaHierarchy,
+  widgetAgentUrl,
 }: Readonly<Props>) {
   const [currentWidget, setCurrentWidget] = useState<Widget | undefined>(widget)
   const [previewWidget, setPreviewWidget] = useState<Widget | undefined>(widget)
   const [thinking, setThinking] = useState<string | null>(null)
-  const { messages, sendMessage, connectionStatus } = useWebSocket(widget_agent_url)
+  const { messages, sendMessage, connectionStatus } = useWebSocket(widgetAgentUrl)
   const [input, setInput] = React.useState('')
   const hasSentSourceQuery = React.useRef(false)
 
   useEffect(() => {
-    if (source_query && !hasSentSourceQuery.current) {
-      sendMessage({ message: source_query, widget: previewWidget, widget_id: currentWidget?.id?.toString() })
+    if (sourceQuery && !hasSentSourceQuery.current) {
+      sendMessage({
+        message: sourceQuery,
+        widget: previewWidget,
+        widget_id: currentWidget?.id?.toString(),
+      })
       hasSentSourceQuery.current = true
     }
-  }, [source_query])
+  }, [sourceQuery])
 
   const handleSend = () => {
     if (!input.trim()) return
@@ -74,9 +78,9 @@ export default function WidgetsEditorCreatePage({
         {type == 'overview' && (
           <OverviewWidgetEditor
             widget={currentWidget}
-            collectionId={collection_id}
+            collectionId={collectionId}
             type={type}
-            metaHierarchy={meta_hierarchy}
+            metaHierarchy={metaHierarchy}
             thinkingMessage={thinking}
             chatInput={input}
             setChatInput={setInput}
@@ -84,7 +88,7 @@ export default function WidgetsEditorCreatePage({
             onActionSend={handleAction}
             onPreviewWidgetChange={setPreviewWidget}
             messages={messages}
-            source_query={source_query}
+            sourceQuery={sourceQuery}
             connectionStatus={connectionStatus}
           />
         )}

@@ -233,10 +233,11 @@ export default function PageBuilderChat({
                     type='button'
                     key={widget.plan_item_id}
                     onClick={() => toggleSelected(widget.plan_item_id)}
-                    className={`w-full rounded-md border p-3 text-left transition ${checked
-                      ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
-                      : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-                      }`}
+                    className={`w-full rounded-md border p-3 text-left transition ${
+                      checked
+                        ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
+                        : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                    }`}
                   >
                     <div className='flex items-start gap-2'>
                       <input
@@ -340,7 +341,10 @@ export default function PageBuilderChat({
 
             if (isError) {
               return (
-                <div key={idx} className='mb-4 flex justify-center'>
+                <div
+                  key={idx}
+                  className='mb-4 flex justify-center'
+                >
                   <div className='rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600'>
                     Connection lost. Please refresh to reconnect.
                   </div>
@@ -372,10 +376,11 @@ export default function PageBuilderChat({
                 )}
 
                 <div
-                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
-                    ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                    : 'rounded-tl-sm bg-white text-gray-800'
-                    }`}
+                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
+                    isUser
+                      ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                      : 'rounded-tl-sm bg-white text-gray-800'
+                  }`}
                 >
                   <div className='whitespace-pre-wrap text-sm leading-relaxed'>
                     {renderMessageContent(msg as AgentMessage)}
@@ -414,8 +419,12 @@ export default function PageBuilderChat({
       </div>
 
       <div className='m-3 rounded-lg bg-white p-2'>
-        <div className={`mb-2 flex items-center gap-2 px-1 text-xs transition-colors ${connectionStatus ? 'text-gray-500' : 'text-gray-400'}`}>
-          <span className={`h-1.5 w-1.5 rounded-full transition-all ${connectionStatus ? 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]' : 'bg-gray-300'}`}></span>
+        <div
+          className={`mb-2 flex items-center gap-2 px-1 text-xs transition-colors ${connectionStatus ? 'text-gray-500' : 'text-gray-400'}`}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full transition-all ${connectionStatus ? 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]' : 'bg-gray-300'}`}
+          ></span>
           {connectionStatus ? 'Talking to Chat Agent' : 'Agent Offline'}
         </div>
         <div className='relative flex items-center gap-1.5 rounded-xl border border-blue-100 bg-[#F5F9FF] p-0.5 shadow-sm transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50'>

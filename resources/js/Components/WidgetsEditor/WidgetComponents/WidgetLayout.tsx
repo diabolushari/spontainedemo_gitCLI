@@ -3,7 +3,7 @@ import NormalText from '@/typography/NormalText'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
 import React from 'react'
 import Heading from '@/typography/Heading'
-import { EllipsisIcon } from 'lucide-react'
+import { EllipsisIcon, Sparkles } from 'lucide-react'
 
 import { Link } from '@inertiajs/react'
 
@@ -25,6 +25,7 @@ interface WidgetLayoutProps {
   isEditable?: boolean
   onTitleChange?: (value: string) => void
   onSubtitleChange?: (value: string) => void
+  onAiClick?: () => void
 }
 
 const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
@@ -52,6 +53,7 @@ export default function WidgetLayout({
   isEditable = false,
   onTitleChange,
   onSubtitleChange,
+  onAiClick,
 }: Readonly<WidgetLayoutProps>) {
   const handleViewChange = (view: string) => {
     if (onViewChange) {
@@ -60,22 +62,24 @@ export default function WidgetLayout({
   }
 
   return (
-    <Card className='w-full '>
+    <Card className='w-full'>
       <div className='flex max-h-[600px] min-h-[500px] w-full'>
         {/* Sidebar - Always Vertical */}
         <div className='flex shrink-0 flex-col items-center gap-3 border-r border-gray-200 bg-slate-50 px-2 py-3'>
           {(hasOverview || hasHighlightCards) && (
             <button
               onClick={() => handleViewChange('overview')}
-              className={`${BASE_BUTTON_CLASSES} ${selectedView === 'overview' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
-                }`}
+              className={`${BASE_BUTTON_CLASSES} ${
+                selectedView === 'overview' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
+              }`}
               aria-label='Overview'
               aria-pressed={selectedView === 'overview'}
               title='Overview'
             >
               <svg
-                className={`${BASE_ICON_CLASSES} ${selectedView === 'overview' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
-                  }`}
+                className={`${BASE_ICON_CLASSES} ${
+                  selectedView === 'overview' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
+                }`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -93,15 +97,17 @@ export default function WidgetLayout({
           {hasTrend && (
             <button
               onClick={() => handleViewChange('trend')}
-              className={`${BASE_BUTTON_CLASSES} ${selectedView === 'trend' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
-                }`}
+              className={`${BASE_BUTTON_CLASSES} ${
+                selectedView === 'trend' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
+              }`}
               aria-label='Trend'
               aria-pressed={selectedView === 'trend'}
               title='Trend'
             >
               <svg
-                className={`${BASE_ICON_CLASSES} ${selectedView === 'trend' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
-                  }`}
+                className={`${BASE_ICON_CLASSES} ${
+                  selectedView === 'trend' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
+                }`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -119,15 +125,17 @@ export default function WidgetLayout({
           {hasRanking && (
             <button
               onClick={() => handleViewChange('ranking')}
-              className={`${BASE_BUTTON_CLASSES} ${selectedView === 'ranking' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
-                }`}
+              className={`${BASE_BUTTON_CLASSES} ${
+                selectedView === 'ranking' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
+              }`}
               aria-label='Ranking'
               aria-pressed={selectedView === 'ranking'}
               title='Ranking'
             >
               <svg
-                className={`${BASE_ICON_CLASSES} ${selectedView === 'ranking' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
-                  }`}
+                className={`${BASE_ICON_CLASSES} ${
+                  selectedView === 'ranking' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
+                }`}
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -139,6 +147,21 @@ export default function WidgetLayout({
                   d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'
                 />
               </svg>
+            </button>
+          )}
+
+          {onAiClick && (
+            <button
+              onClick={onAiClick}
+              className='group relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-indigo-500/90 to-purple-500/90 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-purple-400/20 hover:brightness-110 active:scale-95'
+              aria-label='AI Assistant'
+              title='AI Assistant'
+            >
+              <div className='absolute inset-0 bg-white/0 transition-colors group-hover:bg-white/5' />
+              <Sparkles
+                className='h-4 w-4 transition-transform duration-500 group-hover:rotate-12'
+                strokeWidth={2}
+              />
             </button>
           )}
           {subsetGroupName && (

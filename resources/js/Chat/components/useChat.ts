@@ -26,7 +26,7 @@ function startNewChat(
   })
 }
 
-export default function useChat(currentSession: CurrentSession) {
+export default function useChat(currentSession: CurrentSession, persist: boolean = true) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
     chatURL: string
@@ -220,6 +220,18 @@ export default function useChat(currentSession: CurrentSession) {
     setInput('')
   }
 
+  const handleSendWidgetContext = (widget: any) => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(
+        JSON.stringify({
+          type: 'widget',
+          widget: widget,
+        })
+      )
+      console.log(widget)
+    }
+  }
+
   useEffect(() => {
     if (isBeingStreamed.current || wsStatus !== 'connected') {
       return
@@ -245,7 +257,7 @@ export default function useChat(currentSession: CurrentSession) {
   }
 
   useEffect(() => {
-    if (isBeingStreamed.current) {
+    if (isBeingStreamed.current || !persist) {
       return
     }
 
@@ -316,5 +328,6 @@ export default function useChat(currentSession: CurrentSession) {
     handleRetryConnection,
     wsStatus,
     handleToggleFavorite,
+    handleSendWidgetContext,
   }
 }

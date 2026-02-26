@@ -5,6 +5,8 @@ import OverviewWidgetContent from '@/Components/WidgetsEditor/WidgetComponents/O
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
+import Modal from '@/Components/Modal'
+import WidgetChat from '@/Chat/WidgetChat'
 import axios from 'axios'
 import HighlightBar from '../WidgetsEditor/WidgetComponents/HighlightBar'
 
@@ -25,6 +27,7 @@ const EmptyState = ({ message }: { message: string }) => (
 )
 
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { ChevronRight, Sparkles, X } from 'lucide-react'
 import { PageProps } from '@/types'
 import { usePage } from '@inertiajs/react'
 
@@ -37,6 +40,7 @@ interface SubsetMaxValueResponse {
 export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(anchorMonth)
   const [selectView, setSelectView] = useState<'overview' | 'trend' | 'ranking' | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   const subsetId = widget?.data?.overview?.subset_id
@@ -149,6 +153,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       hasRanking={hasRanking}
       hasHighlightCards={hasHighlightCards}
       subsetGroupName={widget.data.explore?.subset_group_name}
+      onAiClick={() => setIsModalOpen(true)}
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}
@@ -210,11 +215,31 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
         />
       )}
 
-      {/* Unsupported widget type */}
       {data &&
         normalizedType !== 'overview' &&
         normalizedType !== 'trend' &&
         normalizedType !== 'ranking' && <EmptyState message='Unsupported widget type' />}
+
+      <Modal
+        show={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        maxWidth='2xl'
+      >
+        <div className='relative p-4 md:p-5'>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className='absolute right-4 top-4 rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
+            aria-label='Close modal'
+          >
+            <X className='h-5 w-5' />
+          </button>
+
+          <h2 className='mb-4 text-[17px] font-semibold tracking-tight text-gray-800'>
+            AI Assistant
+          </h2>
+          <WidgetChat widget={widget} />
+        </div>
+      </Modal>
     </WidgetLayout>
   )
 }

@@ -1,11 +1,11 @@
 import TrendGraph from '@/Components/WidgetsEditor/WidgetComponents/TrendGraph'
 import React, { Dispatch, SetStateAction } from 'react'
 import { TrendSkeleton } from '../CustomChartSkeleton'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 
 interface TrendWidgetProps {
   trendSubsetId: number | null
-  subsetColumn: string | null
-  subsetFieldName: string | null
+  trendMeasures: SelectedMeasure[]
   trendChartType: 'area' | 'bar' | null
   trendColor: string | null
   selectedMonth: Date | null
@@ -16,8 +16,7 @@ interface TrendWidgetProps {
 
 export default function TrendWidget({
   trendSubsetId,
-  subsetColumn,
-  subsetFieldName,
+  trendMeasures,
   trendChartType,
   selectedMonth,
   setSelectedMonth,
@@ -25,7 +24,7 @@ export default function TrendWidget({
   onEditSection,
   suppressError = false,
 }: Readonly<TrendWidgetProps>) {
-  if (trendSubsetId == null || subsetColumn == null || subsetFieldName == null) {
+  if (trendSubsetId == null || trendMeasures.length === 0) {
     return null
   }
 
@@ -37,8 +36,7 @@ export default function TrendWidget({
       >
         <TrendGraph
           subsetId={trendSubsetId}
-          dataField={subsetColumn}
-          dataFieldName={subsetFieldName ?? ''}
+          trendMeasures={trendMeasures}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
           chartType={trendChartType ?? 'area'}

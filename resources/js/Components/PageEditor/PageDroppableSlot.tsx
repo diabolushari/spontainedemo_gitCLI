@@ -67,31 +67,61 @@ export default function PageDroppableSlot({
         </div>
       ) : widgetId && widget ? (
         // CASE 2: WIDGET
-        <div className='relative w-full p-4'>
-          <div className='absolute right-2 top-2 z-30 flex gap-2'>
-            <a
-              href={route('widget-editor.edit', widget.id)}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='rounded-full bg-blue-500 p-1.5 text-white shadow-md hover:bg-blue-600'
-              title='Edit widget'
+        <DraggableWidgetWrapper
+          widget={widget}
+          source={{ rowId, position }}
+        >
+          {({ attributes, listeners, setNodeRef, isDragging }) => (
+            <div
+              ref={setNodeRef}
+              className={`relative w-full p-4 ${isDragging ? 'opacity-50' : ''}`}
             >
-              <Pencil className='h-4 w-4' />
-            </a>
-            <button
-              onClick={onRemove}
-              className='rounded-full bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600'
-              title='Remove widget'
-            >
-              <XIcon className='h-4 w-4' />
-            </button>
-          </div>
+              <div className='absolute right-2 top-2 z-30 flex gap-2'>
+                <div
+                  {...attributes}
+                  {...listeners}
+                  className='cursor-move rounded-full bg-gray-100 p-1.5 text-gray-500 shadow-md transition-colors hover:bg-gray-200 hover:text-gray-700'
+                  title='Drag to move'
+                >
+                  <svg
+                    className='h-4 w-4'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M4 6h16M4 12h16M4 18h16'
+                    />
+                  </svg>
+                </div>
+                <a
+                  href={route('widget-editor.edit', widget.id)}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='rounded-full bg-blue-500 p-1.5 text-white shadow-md transition-colors hover:bg-blue-600'
+                  title='Edit widget'
+                >
+                  <Pencil className='h-4 w-4' />
+                </a>
+                <button
+                  onClick={onRemove}
+                  className='rounded-full bg-red-500 p-1.5 text-white shadow-md transition-colors hover:bg-red-600'
+                  title='Remove widget'
+                >
+                  <XIcon className='h-4 w-4' />
+                </button>
+              </div>
 
-          <Widget
-            widget={widget}
-            anchorMonth={selectedMonth}
-          />
-        </div>
+              <Widget
+                widget={widget}
+                anchorMonth={selectedMonth}
+              />
+            </div>
+          )}
+        </DraggableWidgetWrapper>
       ) : (
         // CASE 3: EMPTY SLOT (Buttons)
         <div className='flex h-full min-h-[200px] flex-col items-center justify-center gap-4 p-6'>

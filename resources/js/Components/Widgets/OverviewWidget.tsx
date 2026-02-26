@@ -67,8 +67,7 @@ export default function OverviewWidget({
 
     const hasTrend =
       widget.data.trend?.subset_id != null &&
-      widget.data.trend?.measure?.subset_column != null &&
-      widget.data.trend?.measure?.subset_field_name != null
+      widget.data.trend?.measures?.length > 0
 
     const hasHighlightCards =
       widget.data.highlight_cards != null && widget.data.highlight_cards.length > 0
@@ -213,8 +212,7 @@ export default function OverviewWidget({
       {selectedView === 'trend' && widget.data.trend.subset_id != null && (
         <TrendWidget
           trendSubsetId={widget.data.trend.subset_id}
-          subsetColumn={widget.data.trend.measure?.subset_column ?? null}
-          subsetFieldName={widget.data.trend.measure?.subset_field_name ?? null}
+          trendMeasures={widget.data.trend.measures ?? []}
           trendChartType={widget.data.trend.chart_type ?? null}
           trendColor={widget.data.trend.color ?? null}
           selectedMonth={selectedMonth ?? new Date()}

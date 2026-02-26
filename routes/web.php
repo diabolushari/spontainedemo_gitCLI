@@ -302,7 +302,7 @@ Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
 Route::delete('subset/{detail}', SubsetDeleteController::class)
     ->name('subset.destroy');
 
-Route::get('subset/{subsetDetail}/duplicate', SubsetDuplicateController::class)
+Route::post('subset/{subsetDetail}/duplicate', SubsetDuplicateController::class)
     ->name('subset.duplicate');
 
 Route::get('subset-list', SubsetListController::class)

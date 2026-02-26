@@ -7,6 +7,8 @@ use App\Models\Subset\SubsetDetail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Libs\ExceptionMessage;
 use Throwable;
 
 class SubsetDuplicateController extends Controller implements HasMiddleware
@@ -26,6 +28,7 @@ class SubsetDuplicateController extends Controller implements HasMiddleware
      */
     public function __invoke(SubsetDetail $subsetDetail): RedirectResponse
     {
+        Log::info('Duplicating subset: '.$subsetDetail->id);
         DB::beginTransaction();
 
         try {
@@ -67,20 +70,21 @@ class SubsetDuplicateController extends Controller implements HasMiddleware
 
             DB::commit();
 
-        } catch (Throwable $e) {
+            
+
+        } catch (\Exception $e) {
             DB::rollBack();
 
             return redirect()
                 ->back()
                 ->with([
-                    'error' => 'Failed to duplicate subset: '.$e->getMessage(),
+                    'error' => ExceptionMessage::getMessage($e),
                 ]);
         }
 
-        return redirect()
-            ->route('subset.edit', $newSubset->id)
-            ->with([
-                'message' => 'Subset duplicated successfully',
-            ]);
+        return to_route('subset.edit', ['subsetDetail' => $newSubset->id])
+                ->with([
+                    'message' => 'Subset duplicated successfully',
+                ]);
     }
 }
