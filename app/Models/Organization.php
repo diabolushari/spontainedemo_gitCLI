@@ -17,6 +17,10 @@ class Organization extends Model
         'objectives',
         'meta_hierarchy_item_id',
         'hierarchy_connection',
+        'logo',
+        'primary_colour',
+        'secondary_colour',
+        'teritiary_colour'
     ];
 
     protected $casts = [

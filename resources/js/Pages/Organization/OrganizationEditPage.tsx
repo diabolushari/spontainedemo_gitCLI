@@ -13,6 +13,8 @@ import TextArea from '@/ui/form/TextArea'
 import Button from '@/ui/button/Button'
 import SelectList from '@/ui/form/SelectList'
 import ComboBox from '@/ui/form/ComboBox'
+import { OrganizationForm } from './OrganizationCreatePage'
+import Input from '@/ui/form/Input'
 
 export interface OrganizationObjective {
   id: string
@@ -21,20 +23,23 @@ export interface OrganizationObjective {
   objective: string
 }
 
-export interface OrganizationForm {
-  name: string
-  address: string
-  state: string
-  country: string
-  industry_context: string
-  hierarchy_connection: string
-}
+// export interface OrganizationForm {
+//   name: string
+//   address: string
+//   state: string
+//   country: string
+//   industry_context: string
+//   hierarchy_connection: string
+// }
 
 interface Organization extends OrganizationForm {
   id: number
   objectives: OrganizationObjective[]
   meta_hierarchy_item_id: number | null
   meta_hierarchy_item: MetaHierarchyItem | null
+  primary_colour?: string
+  secondary_colour?: string
+  teritiary_colour?: string
 }
 
 interface MetaHierarchy {
@@ -70,6 +75,10 @@ export default function OrganizationEditPage({ organization, metaHierarchies }: 
     country: organization.country,
     industry_context: organization.industry_context,
     hierarchy_connection: organization.hierarchy_connection || '',
+    logo: null,
+    primary_colour: organization.primary_colour ?? '',
+    secondary_colour: organization.secondary_colour ?? '',
+    teritiary_colour: organization.teritiary_colour ?? '',
   })
 
   const [objectives, setObjectives] = useState<OrganizationObjective[]>(
@@ -137,6 +146,11 @@ export default function OrganizationEditPage({ organization, metaHierarchies }: 
         label: 'Country',
         setValue: setFormValue('country'),
         placeholder: 'Enter country',
+      },
+      logo: {
+        type: 'file',
+        label: 'Logo',
+        setValue: setFormValue('logo'),
       },
       industry_context: {
         type: 'textarea',
@@ -222,6 +236,42 @@ export default function OrganizationEditPage({ organization, metaHierarchies }: 
                   formStyles='gap-y-6 gap-x-8'
                 />
 
+                <div className='mt-8 border-t border-gray-100 pt-8'>
+                  <div className='mb-6'>
+                    <h3 className='text-lg font-semibold text-gray-900'>Colour Scheme</h3>
+                  </div>
+
+                  <div className='space-y-6'>
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      <div className='flex w-full flex-col'>
+                        <Input
+                          label='Primary Colour'
+                          value={formData.primary_colour}
+                          setValue={setFormValue('primary_colour')}
+                          // error={errors}
+                        />
+                      </div>
+                      <div className='flex w-full flex-col'>
+                        <Input
+                          label='Secondary Colour'
+                          value={formData.secondary_colour}
+                          setValue={setFormValue('secondary_colour')}
+                          // error={errors}
+                        />
+                      </div>
+                      <div className='flex w-full flex-col'>
+                        <Input
+                          label='Teritiary Colour'
+                          value={formData.teritiary_colour}
+                          setValue={setFormValue('teritiary_colour')}
+                          // error={errors}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Fixed Full Width Layout for Description */}
+                  </div>
+                </div>
                 {/* Meta Hierarchy Item Selection */}
                 <div className='mt-8 border-t border-gray-100 pt-8'>
                   <div className='mb-6'>
