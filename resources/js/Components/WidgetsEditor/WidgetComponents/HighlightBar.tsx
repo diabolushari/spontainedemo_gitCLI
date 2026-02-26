@@ -12,8 +12,14 @@ export default function HighlightBar({ highlightCards, selectedMonth, onEditSect
   return (
     <div
       className='flex w-full gap-[4cqw] overflow-x-auto pb-[2cqw] [container-type:inline-size]'
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       onClick={() => onEditSection?.('highlight_cards')}
     >
+      <style>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
       {highlightCards.map((card, index) => (
         <div
           key={index}

@@ -28,8 +28,6 @@ interface ChatHistory {
 
 export type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 
-
-
 interface MainAreaProps {
   currentSession: ChatHistory
   messages: ChatMessage[]
@@ -42,8 +40,8 @@ interface MainAreaProps {
   wsStatus: WebSocketStatus
   handleToggleFavorite: (messageId: number) => void
   aiSuggestionUrl?: string
+  widget?: any
 }
-
 
 export default function MainArea({
   messages,
@@ -57,13 +55,14 @@ export default function MainArea({
   currentSession,
   handleToggleFavorite,
   aiSuggestionUrl,
+  widget,
 }: Readonly<MainAreaProps>) {
   const [isFocused, setIsFocused] = useState(false)
   const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([
-    "How many complaints are unresolved in this section?",
-    "Has the maintenance schedule been updated?",
-    "What is the pending workload for the field staff?",
-    "How many consumers are still in arrears this quarter?"
+    'How many complaints are unresolved in this section?',
+    'Has the maintenance schedule been updated?',
+    'What is the pending workload for the field staff?',
+    'How many consumers are still in arrears this quarter?',
   ])
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false)
 
@@ -71,15 +70,15 @@ export default function MainArea({
     if (aiSuggestionUrl) {
       setIsSuggestionsLoading(true)
       fetch(aiSuggestionUrl)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           console.log('suggestion data: ', data.questions)
           if (Array.isArray(data.questions) && data.questions.length > 0) {
             setDynamicSuggestions(data.questions.slice(0, 4))
           }
         })
-        .catch(error => {
-          console.error("Error fetching AI suggestions:", error)
+        .catch((error) => {
+          console.error('Error fetching AI suggestions:', error)
         })
         .finally(() => {
           setIsSuggestionsLoading(false)
@@ -92,7 +91,7 @@ export default function MainArea({
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInput(e.target.value)
     },
-    [setInput],
+    [setInput]
   )
 
   const onSendMessage = useCallback(() => {
@@ -136,6 +135,7 @@ export default function MainArea({
           dynamicSuggestions={dynamicSuggestions}
           isSuggestionsLoading={isSuggestionsLoading}
           handleSendMessage={handleSendMessage}
+          widget={widget}
         />
       )}
     </main>
