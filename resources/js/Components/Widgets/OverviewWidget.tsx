@@ -162,14 +162,6 @@ export default function OverviewWidget({
         </div>
       )}
 
-      {hasHighlightData && selectedView === 'overview' && (
-        <HighlightBar
-          highlightCards={widget.data.highlight_cards}
-          selectedMonth={selectedMonth ?? new Date()}
-          onEditSection={onEditSection}
-        />
-      )}
-
       {selectedView === 'overview' && !hasHighlightData && (
         <div
           className='w-full cursor-pointer rounded-lg bg-white p-4 px-6 text-left shadow-md transition-all hover:shadow-lg hover:scale-[1.02]'

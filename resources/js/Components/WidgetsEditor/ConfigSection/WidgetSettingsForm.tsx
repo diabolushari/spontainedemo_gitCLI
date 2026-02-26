@@ -92,7 +92,7 @@ export default function WidgetSettingsForm({
           <ViewSelectionSection
             formData={formData}
             setFormValue={setFormValue}
-            disabled={!formData.subset_group_id}
+            disabled={!formData.subset_group_id && !formData.ai_agent}
           />
         </div>
 

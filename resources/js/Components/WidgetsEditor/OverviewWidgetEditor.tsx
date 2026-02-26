@@ -378,7 +378,7 @@ export default function OverviewWidgetEditor({
       item === 'data_source' ||
       (formData.data_table_id && formData.subset_group_id) ||
       item === 'data_exploration' ||
-      widget?.data?.ai_agent
+      formData.ai_agent
     ) {
       setOpenItem(item)
     } else {
@@ -432,6 +432,7 @@ export default function OverviewWidgetEditor({
         >
           <EditorHeader
             breadcrumbItems={[
+              { item: 'Home', link: route('homepage') },
               { item: 'Widgets', link: route('widget-collection.index') },
               {
                 item: 'Widget Editor',
@@ -479,7 +480,10 @@ export default function OverviewWidgetEditor({
             setSelectedView={setSelectedView}
             onTitleChange={setFormValue('title')}
             onSubtitleChange={setFormValue('subtitle')}
-            onEditSection={setOpenItem}
+            onEditSection={(section) => {
+              setOpenItem(section)
+              setIsSidebarOpen(true)
+            }}
           />
         </div>
       </div>
@@ -500,7 +504,7 @@ export default function OverviewWidgetEditor({
         handleSubmit={handleSubmit}
         loading={loading}
         metaHierarchy={metaHierarchy}
-        ai_agent={widget?.data?.ai_agent}
+        ai_agent={formData.ai_agent}
         widget_data_url={widget_data_url}
         messages={messages}
         thinkingMessage={thinkingMessage}

@@ -8,6 +8,7 @@ import DynamicOverviewWidgetPreview from '@/Components/WidgetsEditor/WidgetCompo
 import { Widget, WidgetCollection } from '@/interfaces/data_interfaces'
 import axios from 'axios'
 import { Loader2, PlusIcon } from 'lucide-react'
+import BreadCrumbs from '@/Components/BreadCrumbs'
 
 declare function route(name: string, params?: any): string
 
@@ -241,6 +242,15 @@ export default function WidgetListView({
       >
         <DashboardPadding>
           <div className='flex min-h-[85vh] flex-col'>
+            {/* Header Section */}
+            <div className='mb-8'>
+              <h1 className='text-3xl font-bold text-gray-900 mb-3'>Widgets</h1>
+              <BreadCrumbs breadcrumbItems={[
+                { item: 'Home', link: route('homepage') },
+                { item: 'Widgets', link: '' }
+              ]} />
+            </div>
+
             {/* Search Bar & Add Button */}
             <div className='mb-6 flex items-center justify-between gap-4'>
               <div className='relative flex-1'>

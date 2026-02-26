@@ -1,6 +1,6 @@
 import { DashboardPage } from '@/interfaces/data_interfaces'
 import { useWebSocket } from '@/Pages/WidgetsEditor/hook/useWebsocket'
-import { Bot, CheckCircle, RotateCcw, Sparkles, User } from 'lucide-react'
+import { Bot, CheckCircle, RotateCcw, Send, User } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 interface PlannedWidget {
@@ -78,10 +78,9 @@ export default function PageBuilderChat({
   const [thinkingMessage, setThinkingMessage] = useState<string | null>(null)
   const [selectedPlanItemIds, setSelectedPlanItemIds] = useState<Set<string>>(new Set())
   const [isFirstMessage, setIsFirstMessage] = useState(true)
+  const [connectionStatus, setConnectionStatus] = useState(false)
 
-  // Ref to track the last plan we actually initialized to prevent constant resets
   const lastInitializedPlanRef = useRef<string | null>(null)
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -95,25 +94,34 @@ export default function PageBuilderChat({
 
   const isAwaitingApproval = lastAgentMessage?.type === 'awaiting_approval'
 
+  // Update connection status based on websocket state
+  useEffect(() => {
+    setConnectionStatus(!hasError)
+  }, [hasError])
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, thinkingMessage])
 
-  // Auto-grow textarea when content changes
+  // Auto-grow textarea
   useEffect(() => {
     const el = textAreaRef.current
     if (!el) return
     el.style.height = 'auto'
-    const maxPx = 160
+    const maxPx = 200
     el.style.height = `${Math.min(el.scrollHeight, maxPx)}px`
   }, [chatMessage])
+
+  // Focus textarea on mount
+  useEffect(() => {
+    textAreaRef.current?.focus()
+  }, [])
 
   // Monitor incoming messages
   useEffect(() => {
     if (!messages.length) return
     const lastMessage = messages[messages.length - 1] as AgentMessage
 
-    // Handle thinking state
     if (lastMessage.type === 'thinking') {
       setThinkingMessage(lastMessage.message)
       onThinking?.(lastMessage.message)
@@ -122,19 +130,16 @@ export default function PageBuilderChat({
       onThinking?.(null)
     }
 
-    // Handle complete state
     if (lastMessage.type === 'complete' && lastMessage.page) {
       const { id, created_at, updated_at, ...pageData } = lastMessage.page
       onPageUpdate(pageData)
     }
   }, [messages, onPageUpdate, onThinking])
 
-  // FIX 1: Stable initialization of selected items
-  // Only update selection if the plan content has actually changed, avoiding resets on re-renders
+  // Initialize selected items
   useEffect(() => {
     if (lastAgentMessage?.type === 'awaiting_approval') {
       const planned = lastAgentMessage.planned_widgets ?? []
-      // Create a signature of the current plan to check if it's new
       const planSignature = planned
         .map((w) => w.plan_item_id)
         .sort()
@@ -164,12 +169,11 @@ export default function PageBuilderChat({
 
     const payload: any = {
       message: chatMessage,
-      // If editing, pass the page object. If creating new, this can be null/undefined.
       existing_page: existingPage,
+      user_id: userId,
     }
 
     if (isFirstMessage) {
-      payload.user_id = userId
       setIsFirstMessage(false)
     }
 
@@ -178,14 +182,12 @@ export default function PageBuilderChat({
     } else {
       sendMessage(payload)
     }
+    console.log('payload : ', payload)
 
     setChatMessage('')
   }
 
-  // FIX 2: Context-aware approval
-  // We pass the widgets from the specific message being approved to ensure we only send relevant IDs
   const handleApprove = (messageWidgets: PlannedWidget[]) => {
-    // Filter the selected IDs to ensure they belong to the current plan context
     const validSelectedIds = messageWidgets
       .map((w) => w.plan_item_id)
       .filter((id) => selectedPlanItemIds.has(id))
@@ -201,7 +203,6 @@ export default function PageBuilderChat({
   const renderMessageContent = (msg: AgentMessage) => {
     if (msg.type === 'awaiting_approval' || msg.type === 'planning') {
       const isPlanning = msg.type === 'planning'
-      // Ensure we have an array to avoid crashes
       const widgets = msg.planned_widgets || []
 
       return (
@@ -241,8 +242,8 @@ export default function PageBuilderChat({
                       <input
                         type='checkbox'
                         checked={checked}
-                        readOnly // FIX 3: Make input readOnly so the button handles the toggle logic exclusively
-                        className='pointer-events-none mt-0.5' // Disable pointer events on checkbox to prevent double-firing
+                        readOnly
+                        className='pointer-events-none mt-0.5'
                       />
                       <div className='min-w-0'>
                         <h4 className='text-xs font-bold text-gray-800'>{widget.title}</h4>
@@ -261,22 +262,15 @@ export default function PageBuilderChat({
             <>
               <div className='flex gap-2 pt-1'>
                 <button
-                  // FIX 4: Pass the specific widgets from this message to the handler
                   onClick={() => handleApprove(widgets)}
                   disabled={selectedPlanItemIds.size === 0}
-                  className='flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-xs font-medium text-white hover:bg-emerald-700 disabled:opacity-60'
+                  className='flex-1 rounded-lg bg-[#007AFF] px-3 py-2 font-medium text-white transition-colors hover:bg-blue-600 disabled:opacity-60'
                 >
-                  <CheckCircle className='h-3.5 w-3.5' /> Approve
-                </button>
-                <button
-                  onClick={handleRetry}
-                  className='flex flex-1 items-center justify-center gap-1.5 rounded-md bg-amber-500 px-3 py-2 text-xs font-medium text-white hover:bg-amber-600'
-                >
-                  <RotateCcw className='h-3.5 w-3.5' /> Retry
+                  Proceed
                 </button>
               </div>
               <p className='text-center text-[10px] italic text-gray-400'>
-                Or type below to create a new query
+                Type feedback above to modify
               </p>
             </>
           )}
@@ -284,7 +278,6 @@ export default function PageBuilderChat({
       )
     }
 
-    // ... (Rest of renderMessageContent remains the same: complete, progress, user, error)
     if (msg.type === 'complete') {
       return (
         <div className='flex flex-col gap-3'>
@@ -305,7 +298,6 @@ export default function PageBuilderChat({
     if (msg.type === 'progress') {
       return (
         <div className='flex items-center gap-2 text-blue-600'>
-          <Sparkles className='h-4 w-4' />
           <p className='text-sm'>{msg.message}</p>
         </div>
       )
@@ -331,67 +323,77 @@ export default function PageBuilderChat({
     )
   }
 
-  // ... (Rest of component remains the same)
   return (
-    <div className='flex flex-grow flex-col overflow-hidden bg-slate-50'>
+    <div className='relative flex h-full flex-col bg-slate-50'>
       <div className='flex-1 overflow-y-auto p-4'>
-        {messages.length === 0 ? (
+        {messages.length === 0 && (
           <div className='flex h-full flex-col items-center justify-center text-gray-400'>
             <p>No messages yet.</p>
             <p className='text-sm'>Start chatting to edit the page.</p>
           </div>
-        ) : (
-          messages
-            .filter((msg) => msg.type !== 'thinking' && msg.type !== 'planning')
-            .map((msg, idx) => {
-              const isUser = msg.type === 'user'
-              const isError = msg.type === 'error'
+        )}
+        {messages
+          .filter((msg) => msg.type !== 'thinking' && msg.type !== 'planning')
+          .map((msg, idx) => {
+            const isUser = msg.type === 'user'
+            const isError = msg.type === 'error'
 
-              if (isError) {
-                return (
-                  <div
-                    key={idx}
-                    className='mb-4 flex justify-center'
-                  >
-                    <div className='rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600'>
-                      Connection lost. Please refresh to reconnect.
-                    </div>
-                  </div>
-                )
-              }
-
+            if (isError) {
               return (
-                <div
-                  key={idx}
-                  className={`mb-6 flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}
-                >
-                  {!isUser && (
-                    <div className='mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600'>
-                      <Bot className='h-5 w-5' />
-                    </div>
-                  )}
-
-                  <div
-                    className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
-                      ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                      : 'rounded-tl-sm bg-white text-gray-800'
-                      }`}
-                  >
-                    <div className='whitespace-pre-wrap text-sm leading-relaxed'>
-                      {renderMessageContent(msg as AgentMessage)}
-                    </div>
+                <div key={idx} className='mb-4 flex justify-center'>
+                  <div className='rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600'>
+                    Connection lost. Please refresh to reconnect.
                   </div>
-
-                  {isUser && (
-                    <div className='ml-2 h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100'>
-                      <User className='h-5 w-5 text-gray-400' />
-                    </div>
-                  )}
                 </div>
               )
-            })
-        )}
-        {/* ... (Thinking and Input UI remain the same) ... */}
+            }
+
+            return (
+              <div
+                key={idx}
+                className={`mb-6 flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}
+              >
+                {!isUser && (
+                  <div className='mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600'>
+                    <svg
+                      className='h-5 w-5'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      stroke='currentColor'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M13 10V3L4 14h7v7l9-11h-7z'
+                      />
+                    </svg>
+                  </div>
+                )}
+
+                <div
+                  className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
+                    ? 'rounded-tr-sm bg-[#007AFF] text-white'
+                    : 'rounded-tl-sm bg-white text-gray-800'
+                    }`}
+                >
+                  <div className='whitespace-pre-wrap text-sm leading-relaxed'>
+                    {renderMessageContent(msg as AgentMessage)}
+                  </div>
+                </div>
+
+                {isUser && (
+                  <div className='ml-2 h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100'>
+                    <img
+                      src='https://ui-avatars.com/api/?name=User&background=random'
+                      alt='User'
+                      className='h-full w-full object-cover'
+                    />
+                  </div>
+                )}
+              </div>
+            )
+          })}
         {thinkingMessage && (
           <div className='mb-4 flex justify-start'>
             <div className='mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center'>
@@ -411,32 +413,34 @@ export default function PageBuilderChat({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className='p-4'>
-        <div className='relative flex items-end rounded-3xl bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
+      <div className='m-3 rounded-lg bg-white p-2'>
+        <div className={`mb-2 flex items-center gap-2 px-1 text-xs transition-colors ${connectionStatus ? 'text-gray-500' : 'text-gray-400'}`}>
+          <span className={`h-1.5 w-1.5 rounded-full transition-all ${connectionStatus ? 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]' : 'bg-gray-300'}`}></span>
+          {connectionStatus ? 'Talking to Chat Agent' : 'Agent Offline'}
+        </div>
+        <div className='relative flex items-center gap-1.5 rounded-xl border border-blue-100 bg-[#F5F9FF] p-0.5 shadow-sm transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50'>
           <textarea
             ref={textAreaRef}
-            rows={1}
-            placeholder={
-              isAwaitingApproval ? 'Type a new query to re-plan...' : 'Ask your questions'
-            }
-            className='w-full resize-none overflow-y-auto border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
-            disabled={hasError}
+            placeholder={isAwaitingApproval ? 'Type feedback to modify...' : 'Ask your questions'}
+            className='max-h-[150px] min-h-[36px] w-full resize-none border-none bg-transparent py-2 pl-4 pr-10 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
+            disabled={!connectionStatus || !!thinkingMessage || hasError}
             value={chatMessage}
             onChange={(e) => setChatMessage(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && !hasError) {
+              if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
-                handleSendMessage()
+                if (!hasError && connectionStatus) handleSendMessage()
               }
             }}
+            rows={1}
           />
           <button
             type='button'
-            disabled={hasError}
-            onClick={() => handleSendMessage()}
-            className='absolute bottom-1.5 right-1.5 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
+            disabled={!connectionStatus || !!thinkingMessage || hasError}
+            onClick={handleSendMessage}
+            className='absolute right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500 text-white shadow-sm transition-all hover:bg-blue-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:shadow-none'
           >
-            Ask
+            <Send className='h-4 w-4' />
           </button>
         </div>
       </div>

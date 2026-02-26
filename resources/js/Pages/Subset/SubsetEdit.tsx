@@ -22,6 +22,8 @@ import SubsetManageMeasures from '@/Components/Subset/SubsetManageMeasures'
 import Button from '@/ui/button/Button'
 import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
+import Modal from '@/ui/Modal/Modal'
+import { router } from '@inertiajs/react'
 
 interface Props {
   subsetDetail: SubsetDetail
@@ -71,6 +73,12 @@ export default function SubsetEdit({
   const { post, loading, errors } = useInertiaPost(route('subset.update', subsetDetail.id), {
     showErrorToast: true,
   })
+
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false)
+
+  const handleDuplicate = () => {
+    router.get(route('subset.duplicate', subsetDetail.id))
+  }
 
   const formItems = useMemo(<
     T,
@@ -229,12 +237,39 @@ export default function SubsetEdit({
           measureFields={measureFields}
           usingGroup={formData.group_data}
         />
-        <div className='flex'>
+        <div className='flex gap-3'>
           <Button
             onClick={() => submitForm()}
             label='Submit'
+            processing={loading}
+          />
+          <Button
+            onClick={() => setShowDuplicateModal(true)}
+            label='Duplicate'
+            variant='secondary'
           />
         </div>
+        {showDuplicateModal && (
+          <Modal
+            setShowModal={setShowDuplicateModal}
+            title='Duplicate Subset'
+          >
+            <div className='p-5'>
+              <p className='mb-5'>Are you sure you want to duplicate this subset?</p>
+              <div className='flex justify-end gap-3'>
+                <Button
+                  onClick={() => setShowDuplicateModal(false)}
+                  label='Cancel'
+                  variant='secondary'
+                />
+                <Button
+                  onClick={handleDuplicate}
+                  label='Confirm'
+                />
+              </div>
+            </div>
+          </Modal>
+        )}
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

@@ -50,6 +50,10 @@ export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
           title='Pages'
           subheading='Manage and organize your pages'
           onAddClick={() => router.visit(route('page-editor.create'))}
+          breadCrumb={[
+            { item: 'Home', link: route('homepage') },
+            { item: 'Pages', link: '' }
+          ]}
         />
 
         {/* Search and Filter Bar */}
@@ -144,9 +148,8 @@ export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
                       </svg>
                     </div>
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${
-                        page.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                      }`}
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${page.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                        }`}
                     >
                       {page.published ? 'Published' : 'Draft'}
                     </span>
@@ -224,11 +227,10 @@ export default function PageEditorIndexPage({ pages }: Readonly<Props>) {
                         {page.title || 'Untitled Page'}
                       </h3>
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          page.published
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${page.published
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-600'
+                          }`}
                       >
                         {page.published ? 'Published' : 'Draft'}
                       </span>

@@ -100,7 +100,7 @@ export default function EditorPreview({
                     widget={previewWidget}
                     selectedView={selectedView}
                     setSelectedView={setSelectedView}
-                    isEditable={true}
+                    isEditable={false}
                     onTitleChange={onTitleChange}
                     onSubtitleChange={onSubtitleChange}
                     onEditSection={onEditSection}

@@ -14,6 +14,7 @@ interface RankingWidgetProps {
   dimension: string | null
   fieldColumn: string | null
   onEditSection?: (section: string) => void
+  suppressError?: boolean
 }
 
 interface SubsetGroupDetail {
@@ -32,6 +33,7 @@ export default function RankingWidget({
   dimension,
   fieldColumn,
   onEditSection,
+  suppressError = false,
 }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -40,11 +42,11 @@ export default function RankingWidget({
   console.log('dimenstion in ranked : ', dimension)
 
   return (
-    <>
+    <div className='h-full w-full [container-type:inline-size]'>
       {subsetId == null && <RankingSkeleton />}
       {subsetColumn != null && subsetFieldName != null && subsetId != null && (
         <div
-          className='cursor-pointer transition-all hover:scale-[1.005]'
+          className='h-full w-full cursor-pointer transition-all hover:scale-[1.005]'
           onClick={() => onEditSection?.('ranking')}
         >
           <RankedList
@@ -58,10 +60,11 @@ export default function RankingWidget({
             level={level}
             dimension={dimension ?? undefined}
             fieldColumn={fieldColumn ?? undefined}
+            suppressError={suppressError}
           />
         </div>
       )}
-    </>
+    </div>
   )
 }
 

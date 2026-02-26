@@ -276,7 +276,7 @@ export function usePageEditor(
   )
 
   const handleDescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setFormValue('description')(e.target.value)
     },
     [setFormValue]

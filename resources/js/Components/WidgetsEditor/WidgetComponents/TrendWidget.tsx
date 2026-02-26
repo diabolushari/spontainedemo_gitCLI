@@ -11,6 +11,7 @@ interface TrendWidgetProps {
   selectedMonth: Date | null
   setSelectedMonth: Dispatch<SetStateAction<Date | null>>
   onEditSection?: (section: string) => void
+  suppressError?: boolean
 }
 
 export default function TrendWidget({
@@ -22,25 +23,29 @@ export default function TrendWidget({
   setSelectedMonth,
   trendColor,
   onEditSection,
+  suppressError = false,
 }: Readonly<TrendWidgetProps>) {
   if (trendSubsetId == null || subsetColumn == null || subsetFieldName == null) {
     return null
   }
 
   return (
-    <div
-      className='cursor-pointer transition-all hover:scale-[1.005]'
-      onClick={() => onEditSection?.('trend')}
-    >
-      <TrendGraph
-        subsetId={trendSubsetId}
-        dataField={subsetColumn}
-        dataFieldName={subsetFieldName ?? ''}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        chartType={trendChartType ?? 'area'}
-        colorScheme={trendColor ?? undefined}
-      />
+    <div className='h-full w-full [container-type:inline-size]'>
+      <div
+        className='h-full w-full cursor-pointer transition-all hover:scale-[1.005]'
+        onClick={() => onEditSection?.('trend')}
+      >
+        <TrendGraph
+          subsetId={trendSubsetId}
+          dataField={subsetColumn}
+          dataFieldName={subsetFieldName ?? ''}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          chartType={trendChartType ?? 'area'}
+          colorScheme={trendColor ?? undefined}
+          suppressError={suppressError}
+        />
+      </div>
     </div>
   )
 }

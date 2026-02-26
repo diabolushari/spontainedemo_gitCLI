@@ -31,6 +31,7 @@ interface Props {
   dimensions?: BlockDimension
   colorScheme?: string
   editMode?: boolean
+  suppressError?: boolean
 }
 
 export default function TrendGraph({
@@ -48,11 +49,12 @@ export default function TrendGraph({
   yAxisLabel,
   tooltipIndicator,
   colorScheme = 'boldWarm',
+  suppressError = false,
 }: Readonly<Props>) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
   const chartContainerClassName =
-    'h-[450px] w-full overflow-hidden rounded-xl border border-border bg-background'
+    'h-[40cqw] min-h-[250px] w-full overflow-hidden rounded-[1.5cqw] border border-border bg-background'
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
@@ -92,7 +94,7 @@ export default function TrendGraph({
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
-  }>(fetchUrl)
+  }>(fetchUrl, { suppressError })
 
   console.log('trend fetchUrl : ', fetchUrl)
   console.log('trend graphValues : ', graphValues)
@@ -136,8 +138,8 @@ export default function TrendGraph({
   }, [dataFieldName, tooltipIndicator])
 
   return (
-    <div className='flex w-full flex-col pr-4'>
-      <div className='relative flex w-full justify-between gap-2 px-2 pb-2'>
+    <div className='flex w-full flex-col pr-[1cqw] [container-type:inline-size]'>
+      <div className='relative flex w-full justify-between gap-[1cqw] px-[1cqw] pb-[1cqw]'>
         <SampleMonthSelector
           selectedValue={selectedMonthValue}
           setSelectedValue={setSelectedMonthValue}
@@ -160,7 +162,12 @@ export default function TrendGraph({
             className='h-full w-full'
           />
         )}
-        {!isLoading && chartType === 'area' && (
+        {!isLoading && (!graphValues?.data || graphValues.data.length === 0) && (
+          <div className='flex h-full w-full items-center justify-center text-gray-400 text-[1.4cqw]'>
+            No data
+          </div>
+        )}
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'area' && (
           <CustomAreaChart
             data={chartData}
             dataKey='month'
@@ -172,7 +179,7 @@ export default function TrendGraph({
             containerClassName='h-full w-full'
           />
         )}
-        {!isLoading && chartType === 'bar' && (
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'bar' && (
           <CustomBarChart
             data={chartData}
             dataKey='month'
