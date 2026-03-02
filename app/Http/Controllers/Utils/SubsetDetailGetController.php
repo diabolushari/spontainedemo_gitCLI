@@ -10,6 +10,14 @@ class SubsetDetailGetController extends Controller
 {
     public function __invoke(SubsetDetail $subsetDetail): JsonResponse
     {
+        $subsetDetail->load([
+            'dates.info',
+            'dimensions.info',
+            'dimensions.hierarchy',
+            'measures.info',
+            'measures.weightInfo',
+        ]);
+
         return response()->json($subsetDetail);
     }
 }

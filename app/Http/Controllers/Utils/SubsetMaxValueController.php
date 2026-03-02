@@ -7,19 +7,12 @@ use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetFindMaxValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-final class SubsetMaxValueController extends Controller implements HasMiddleware
+final class SubsetMaxValueController extends Controller
 {
     /**
      * @return string[]
      */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
 
     public function __invoke(
         SubsetDetail $subsetDetail,

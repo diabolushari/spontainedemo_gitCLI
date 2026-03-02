@@ -5,7 +5,12 @@ import { DragSource } from './DraggableWidget'
 interface DraggableWidgetWrapperProps {
   widget: WidgetType
   source: DragSource
-  children: React.ReactNode
+  children: (props: {
+    attributes: any
+    listeners: any
+    setNodeRef: (node: HTMLElement | null) => void
+    isDragging: boolean
+  }) => React.ReactNode
 }
 
 export default function DraggableWidgetWrapper({
@@ -18,32 +23,5 @@ export default function DraggableWidgetWrapper({
     data: { widgetId: widget.id, widget, source },
   })
 
-  return (
-    <div
-      ref={setNodeRef}
-      className={`relative ${isDragging ? 'opacity-50' : ''}`}
-    >
-      <div
-        {...attributes}
-        {...listeners}
-        className='absolute right-2 top-2 z-20 cursor-move rounded bg-white p-1.5 shadow-md hover:bg-gray-100'
-        title='Drag to move'
-      >
-        <svg
-          className='h-4 w-4 text-gray-600'
-          fill='none'
-          stroke='currentColor'
-          viewBox='0 0 24 24'
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeWidth={2}
-            d='M4 6h16M4 12h16M4 18h16'
-          />
-        </svg>
-      </div>
-      {children}
-    </div>
-  )
+  return <>{children({ attributes, listeners, setNodeRef, isDragging })}</>
 }

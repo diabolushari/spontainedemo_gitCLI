@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { DataLoaderJob } from '@/interfaces/data_interfaces'
+import { calculateNextRunTime } from '@/libs/jobSchedule'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
@@ -25,6 +26,8 @@ export default function DataLoaderJobEdit({ dataLoaderJob }: Readonly<Props>) {
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [])
 
+  const nextRunTime = useMemo(() => calculateNextRunTime(formData), [formData])
+
   const backUrl = route('data-detail.show', {
     dataDetail: dataLoaderJob.data_detail_id,
     type: 'jobs',
@@ -41,6 +44,12 @@ export default function DataLoaderJobEdit({ dataLoaderJob }: Readonly<Props>) {
       isPatchRequest
       type='data'
       subtype='data-tables'
-    />
+    >
+      {nextRunTime && (
+        <div className='mb-6 rounded-md bg-blue-50 p-3'>
+          <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
+        </div>
+      )}
+    </FormPage>
   )
 }

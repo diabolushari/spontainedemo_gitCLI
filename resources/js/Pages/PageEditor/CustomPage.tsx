@@ -6,6 +6,7 @@ import CustomPageRow from '@/Components/PageEditor/CustomPage/CustomPageRow'
 import { useState, useEffect } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import HeadingStyleComponent from '@/Components/PageEditor/HeadingStyleComponent'
+import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 
 interface PageWidget {
   position: number
@@ -112,6 +113,15 @@ export default function CustomPage({ page }: Readonly<CustomPageProps>) {
             </div>
           )}
         </header>
+
+        {page.config?.highlight_cards && page.config.highlight_cards.length > 0 && (
+          <div className='mb-8'>
+            <HighlightBar
+              highlightCards={page.config.highlight_cards}
+              selectedMonth={selectedMonth}
+            />
+          </div>
+        )}
 
         {/* Page Content */}
         <main>

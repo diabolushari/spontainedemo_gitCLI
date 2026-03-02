@@ -1,15 +1,17 @@
 import axios from 'axios'
+import { router } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
 import useChat from './components/useChat'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 export interface ChatMessage {
   id: number
   role: 'user' | 'assistant' | 'action' | 'error'
   content: string
   description?: string
-  contentType: 'text' | 'table' | 'chart'
+  contentType: 'text' | 'table' | 'chart' | 'explore' | 'final_response'
   suggestions?: string[]
 }
 
@@ -17,15 +19,20 @@ interface ChatHistory {
   title: string
   messages: ChatMessage[]
   id: number
-  timestamp: string
+  timestamp?: string
 }
+
+import { Favorite } from '@/Pages/Chat/ChatIndexPage'
 
 interface ChatProps {
   chatHistory: ChatHistory[]
   currentSession: ChatHistory
+  aiSuggestionUrl?: string
+  favorites?: Favorite[]
+  initialMessage?: string
 }
 
-export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps>) {
+export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, favorites = [], initialMessage }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -37,6 +44,7 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
     setMessageFromHistory,
     handleRetryConnection,
     wsStatus,
+    handleToggleFavorite,
   } = useChat(_currentSession)
 
   // Listen for AI Insights custom event to send a message
@@ -51,40 +59,56 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
     return () => window.removeEventListener('ai-insight-send-message', handler)
   }, [handleSendMessage])
 
+  // Handle initial message from homepage
+  useEffect(() => {
+    if (wsStatus === 'connected' && initialMessage && messages.length === 0 && !isLoading) {
+      handleSendMessage(initialMessage)
+    }
+  }, [wsStatus, initialMessage, messages.length, isLoading, handleSendMessage])
+
+  // Sync currentSession prop with local state when it changes (e.g. navigation)
+  useEffect(() => {
+    setCurrentSession(currentSession)
+    setMessageFromHistory(currentSession.messages)
+  }, [currentSession])
+
   const switchConversation = (sessionId: number) => {
-    console.log(sessionId)
-    axios.get(`/chat-history/${sessionId}`).then((res) => {
-      // console.log('from res: ', res.data.messages)
-      setCurrentSession(res.data)
-      setMessageFromHistory(res.data.messages)
-      // console.log('current session: ', _currentSession)
-    })
+    router.visit(`/chat/${sessionId}`)
   }
 
   return (
-    <div className='flex h-screen bg-gradient-to-br from-slate-50/80 via-blue-50/40 to-indigo-50/30'>
-      {/* Sidebar with enhanced visual separation */}
-      <div className='relative'>
-        <Sidebar
-          chatHistory={chatHistory}
-          sessionId={_currentSession.id}
-          onSessionChange={switchConversation}
-        />
-        {/* Subtle separator line */}
-        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/40 to-transparent' />
-      </div>
+    <AnalyticsDashboardLayout
+      type='chat'
+      subtype='chat'
+    >
+      <div className='flex h-[calc(100vh-80px)] overflow-hidden w-full'>
+        {/* Sidebar with fixed width */}
+        <div className='w-[280px] flex-shrink-0 border-r border-gray-100 bg-white'>
+          <Sidebar
+            chatHistory={chatHistory}
+            sessionId={_currentSession.id}
+            onSessionChange={switchConversation}
+            favorites={favorites}
+          />
+        </div>
 
-      <MainArea
-        currentSession={_currentSession}
-        messages={messages}
-        handleSendMessage={handleSendMessage}
-        isLoading={isLoading}
-        status={status}
-        input={input}
-        setInput={setInput}
-        onRetry={handleRetryConnection}
-        wsStatus={wsStatus}
-      />
-    </div>
+        {/* Main content - flex-1 to take remaining space */}
+        <div className='flex-1 min-w-0'>
+          <MainArea
+            currentSession={_currentSession}
+            messages={messages}
+            handleSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            status={status}
+            input={input}
+            setInput={setInput}
+            onRetry={handleRetryConnection}
+            wsStatus={wsStatus}
+            handleToggleFavorite={handleToggleFavorite}
+            aiSuggestionUrl={aiSuggestionUrl}
+          />
+        </div>
+      </div>
+    </AnalyticsDashboardLayout>
   )
 }

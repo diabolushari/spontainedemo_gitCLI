@@ -30,6 +30,19 @@ export function handleAgentMetaResponse(
 ) {
   if (response.visualization != null && response.visualization.length > 0) {
     setMessages((oldValues) => {
+      const lastItem = oldValues[oldValues.length - 1]
+      if (lastItem && lastItem.contentType === 'final_response') {
+        return oldValues.map((oldMessage) => {
+          if (oldMessage.id === lastItem.id) {
+            return {
+              ...oldMessage,
+              chart_data: response.visualization,
+            }
+          }
+          return oldMessage
+        })
+      }
+
       const newMessages = response.visualization!.map((visualization) => ({
         id: currentIdRef.current++,
         role: 'assistant' as const,
@@ -59,6 +72,19 @@ export function handleAgentMetaResponse(
 
   if (response.data_explore != null) {
     setMessages((oldValues) => {
+      const lastItem = oldValues[oldValues.length - 1]
+      if (lastItem && lastItem.contentType === 'final_response') {
+        return oldValues.map((oldMessage) => {
+          if (oldMessage.id === lastItem.id) {
+            return {
+              ...oldMessage,
+              explore_data: response.data_explore,
+            }
+          }
+          return oldMessage
+        })
+      }
+
       return [
         ...oldValues,
         {

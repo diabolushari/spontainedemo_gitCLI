@@ -34,16 +34,10 @@ interface Props {
   hierarchyId?: number
   dimension?: string
   fieldColumn?: string
+  suppressError?: boolean
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
-const levelTypes: { name: string; value: string }[] = [
-  { name: 'Section', value: 'section' },
-  { name: 'Subdivision', value: 'subdivision' },
-  { name: 'Division', value: 'division' },
-  { name: 'Circle', value: 'circle' },
-  { name: 'Region', value: 'region' },
-]
 
 type SummaryItem = Record<string, number | string | null | undefined>
 
@@ -63,6 +57,7 @@ export default function RankedList({
   hierarchyId,
   dimension,
   fieldColumn,
+  suppressError = false,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
@@ -122,7 +117,9 @@ export default function RankedList({
     pageNumber,
     dimension,
   ])
-  const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
+  const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl, {
+    suppressError,
+  })
   console.log('ranking fetchUrl : ', fetchUrl)
   console.log('ranking graphValues : ', graphValues)
   const headers = useMemo(() => {
@@ -152,8 +149,8 @@ export default function RankedList({
   }, [graphValues?.data?.data, dataFieldName, dataField, fieldColumn])
 
   return (
-    <div className='relative flex w-full flex-col'>
-      <div className='flex items-center justify-end gap-5 pr-4'>
+    <div className='relative flex w-full flex-col [container-type:inline-size]'>
+      <div className='flex items-center justify-end gap-[2cqw] pr-[1.5cqw]'>
         {filterListFetchURL != null && filterFieldName != null && filterListKey != null && (
           <FieldUniqueValueDropdown
             listFetchURL={filterListFetchURL}
@@ -162,16 +159,16 @@ export default function RankedList({
             dataKey={filterListKey}
           />
         )}
-        <div className='flex rounded-lg bg-1stop-white p-1'>
+        <div className='flex rounded-[0.8cqw] bg-1stop-white p-[0.4cqw]'>
           <button
-            className={`${sortOrder === 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`${sortOrder === 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-[0.8cqw] p-[0.4cqw]`}
             onClick={() => {
               setSortOrder('desc')
             }}
           >
             <svg
-              width='14'
-              height='14'
+              width='1.2cqw'
+              height='1.2cqw'
               viewBox='0 0 14 14'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
@@ -215,14 +212,14 @@ export default function RankedList({
             </svg>
           </button>
           <button
-            className={`rotate-180 ${sortOrder === 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`rotate-180 ${sortOrder === 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-[0.8cqw] p-[0.4cqw]`}
             onClick={() => {
               setSortOrder('asc')
             }}
           >
             <svg
-              width='14'
-              height='14'
+              width='1.2cqw'
+              height='1.2cqw'
               viewBox='0 0 14 14'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
@@ -293,14 +290,19 @@ export default function RankedList({
           height={200}
         />
       )}
-      {!isLoading && (
+      {!isLoading && (!graphValues?.data?.data || graphValues.data.data.length === 0) && (
+        <div className='flex h-[20cqw] w-full items-center justify-center text-gray-400 text-[2.2cqw]'>
+          No data
+        </div>
+      )}
+      {!isLoading && graphValues?.data?.data && graphValues.data.data.length > 0 && (
         <>
-          <div className='mx-4 mt-5'>
+          <div className='mx-[1.5cqw] mt-[2cqw]'>
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className='h-auto'>
                   {headers.map((head) => (
-                    <TableHead key={head}>{head}</TableHead>
+                    <TableHead key={head} className='h-auto px-[1.5cqw] py-[0.8cqw] text-[2.2cqw] font-semibold leading-tight'>{head}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
@@ -323,9 +325,9 @@ export default function RankedList({
                   const columnValue = value[dataField] ?? null
 
                   return (
-                    <TableRow key={rowKey}>
-                      <TableCell>{displayValue}</TableCell>
-                      <TableCell>{formatNumber(columnValue as number)}</TableCell>
+                    <TableRow key={rowKey} className='h-auto'>
+                      <TableCell className='px-[1.5cqw] py-[0.8cqw] text-[2.2cqw] leading-tight'>{displayValue}</TableCell>
+                      <TableCell className='px-[1.5cqw] py-[0.8cqw] text-[2.2cqw] leading-tight'>{formatNumber(columnValue as number)}</TableCell>
                     </TableRow>
                   )
                 })}
@@ -341,7 +343,7 @@ export default function RankedList({
                 />
               )}
             </div>
-            <div className='flex flex-shrink-0 justify-end pt-4'>
+            <div className='flex flex-shrink-0 justify-end pt-[1.5cqw]'>
               {(fieldColumn === 'office_code' || fieldColumn === 'office_name') && (
                 <Link
                   href={rankingPageUrl}
@@ -349,7 +351,7 @@ export default function RankedList({
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  <div className='bg-2stop-highlight2 rounded-md px-1 text-xl hover:opacity-70'>
+                  <div className='bg-2stop-highlight2 rounded-[0.5cqw] px-[0.4cqw] text-[3cqw] hover:opacity-70'>
                     <i className='las la-expand-arrows-alt'></i>
                   </div>
                 </Link>

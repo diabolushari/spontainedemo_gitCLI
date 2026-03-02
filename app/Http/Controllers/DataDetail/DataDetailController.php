@@ -57,8 +57,9 @@ class DataDetailController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $source = $request->input('source');
 
         $referenceData = ReferenceData::fullData()
             ->where('domain', 'Data Detail')
@@ -67,6 +68,7 @@ class DataDetailController extends Controller implements HasMiddleware
 
         return Inertia::render('SetupDatatable/SetupDatatablePage', [
             'types' => $referenceData,
+            'source' => $source
         ]);
     }
 

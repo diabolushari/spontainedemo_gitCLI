@@ -23,6 +23,7 @@ import Button from '@/ui/button/Button'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import CheckBox from '@/ui/form/CheckBox'
 import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
+import { calculateNextRunTime } from '@/libs/jobSchedule'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -53,6 +54,8 @@ interface FormData {
   predecessor_job_id: string
   schedule_start_time?: string
   sub_hour_interval?: number
+  retries?: number
+  retries_interval?: number
 }
 
 const sourceTypes = [
@@ -105,6 +108,8 @@ export default function DataLoaderJobCreate({
     predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
     schedule_start_time: job?.schedule_start_time ?? '',
     sub_hour_interval: job?.sub_hour_interval ?? 0,
+    retries: job?.retries ?? 0,
+    retries_interval: job?.retries_interval ?? 0,
   })
   const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
@@ -137,6 +142,8 @@ export default function DataLoaderJobCreate({
 
     return jobs
   }, [dataDetails])
+
+  const nextRunTime = useMemo(() => calculateNextRunTime(formData), [formData])
 
   useEffect(() => {
     if (formData.cron_type === HOURLY_CRON) {
@@ -254,8 +261,20 @@ export default function DataLoaderJobCreate({
       },
       sub_hour_interval: {
         type: 'number',
-        label: 'Sub Hour Interval',
+        label: 'Sub Hour Interval (in minutes)',
         setValue: setFormValue('sub_hour_interval'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
+      },
+      retries: {
+        type: 'number',
+        label: 'Max Retries',
+        setValue: setFormValue('retries'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
+      },
+      retries_interval: {
+        type: 'number',
+        label: 'Retry Interval (in minutes)',
+        setValue: setFormValue('retries_interval'),
         hidden: formData.cron_type !== 'SUB_HOUR',
       },
 
@@ -375,6 +394,13 @@ export default function DataLoaderJobCreate({
       hideSubmitButton
       customSubmitData={customFormData}
     >
+      <div className='mb-6'>
+        {nextRunTime && (
+          <div className='rounded-md bg-blue-50 p-3'>
+            <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
+          </div>
+        )}
+      </div>
       <div>
         <div className='flex flex-col md:col-span-2'>
           <CheckBox

@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $completed_at
  * @property int $is_successful
  * @property string|null $error_message
+ * @property bool $is_retry
+ * @property int $retry_attempt
  * @property int|null $total_records
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -48,6 +50,8 @@ class DataLoaderJobStatus extends Model
         'completed_at',
         'is_successful',
         'error_message',
+        'is_retry',
+        'retry_attempt',
         'total_records',
     ];
 }

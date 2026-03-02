@@ -23,6 +23,9 @@ export default function OverviewChartConfigForm({
   ai_agent,
   widget_data_url,
 }: Readonly<OverviewChartSectionProps>) {
+  const [fieldName, setFieldName] = useState<any>(null)
+  const [selectedHierarchy, setSelectedHierarchy] = useState<any>(null)
+
   const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
     id: Number(formData?.subset_id),
     name: formData?.subset_name,
@@ -63,6 +66,7 @@ export default function OverviewChartConfigForm({
     id: number
     subset_field_name: string
     subset_column: string
+    hierarchy_id: number | null
   }>(dimensionUrl)
 
   const filteredDimensions = useMemo(() => {
@@ -117,6 +121,7 @@ export default function OverviewChartConfigForm({
 
   const handleHierarchyChange = (value: string) => {
     setFormValue('hierarchy_id')(value)
+    setFormValue('overview_level')('')
     setFormValue('hierarchy_item_id')(null)
     setHierarchyItem(null)
   }
@@ -129,6 +134,26 @@ export default function OverviewChartConfigForm({
     },
     [setFormValue]
   )
+
+  useEffect(() => {
+    if (formData.hierarchy_id) {
+      axios.get(`${widget_data_url}/meta-hierarchy-data/${formData.hierarchy_id}`).then((res) => {
+        setSelectedHierarchy(res.data)
+        setFieldName([
+          {
+            id: 1,
+            column: res.data.primary_column,
+            name: res.data.primary_field_name,
+          },
+          {
+            id: 2,
+            column: res.data.secondary_column,
+            name: res.data.secondary_field_name,
+          },
+        ])
+      })
+    }
+  }, [formData.hierarchy_id])
 
   return (
     <div className='space-y-4 px-4'>
@@ -168,7 +193,15 @@ export default function OverviewChartConfigForm({
           dataKey='subset_column'
           displayKey='subset_field_name'
           value={formData.dimension ?? ''}
-          setValue={setFormValue('dimension')}
+          setValue={(value) => {
+            setFormValue('dimension')(value)
+            const dim = filteredDimensions.find((dim) => dim.subset_column === value)
+            setFormValue('hierarchy_id')(dim?.hierarchy_id ? String(dim.hierarchy_id) : '')
+            setFormValue('hierarchy_item_id')(null)
+            setFormValue('hierarchy_item_name')(null)
+            setFormValue('overview_level')(null)
+            setHierarchyItem(null)
+          }}
         />
       </div>
 
@@ -192,29 +225,43 @@ export default function OverviewChartConfigForm({
             </label>
           </div>
           <div className='space-y-4'>
-            <div>
-              <SelectList
-                label='Hierarchy Filter'
-                list={hierarchyOptions}
-                dataKey='id'
-                displayKey='name'
-                value={formData.hierarchy_id ?? ''}
-                setValue={handleHierarchyChange}
-              />
-            </div>
-
             {/* Hierarchy Item Search */}
             {formData.hierarchy_id && (
-              <div className='flex flex-col'>
-                <ComboBox
-                  label='Hierarchy Item'
-                  url={`${widget_data_url}/meta-hierarchy-item-search?hierarchy_id=${formData.hierarchy_id}&search=`}
-                  dataKey='id'
-                  displayKey='name'
-                  value={hierarchyItem}
-                  setValue={handleHierarchyItemChange}
-                  placeholder='Search hierarchy items...'
-                />
+              <div className='flex flex-col gap-4'>
+                {fieldName && (
+                  <div>
+                    <SelectList
+                      label='X Axis Label'
+                      list={fieldName}
+                      dataKey='column'
+                      displayKey='name'
+                      setValue={setFormValue('overview_name_field')}
+                      value={formData.overview_name_field}
+                    />
+                  </div>
+                )}
+                <div>
+                  <ComboBox
+                    label='Hierarchy Item'
+                    url={`${widget_data_url}/meta-hierarchy-item-search?hierarchy_id=${formData.hierarchy_id}&search=`}
+                    dataKey='id'
+                    displayKey='name'
+                    value={hierarchyItem}
+                    setValue={handleHierarchyItemChange}
+                    placeholder='Search hierarchy items...'
+                  />
+                </div>
+
+                <div>
+                  <DynamicSelectList
+                    label={'Level'}
+                    url={`${widget_data_url}/meta-hierarchy/${formData.hierarchy_id}/levels`}
+                    dataKey={'name'}
+                    displayKey={'name'}
+                    setValue={setFormValue('overview_level')}
+                    value={formData.overview_level ?? undefined}
+                  />
+                </div>
               </div>
             )}
           </div>

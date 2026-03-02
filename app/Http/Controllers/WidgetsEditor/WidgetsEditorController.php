@@ -20,20 +20,47 @@ class WidgetsEditorController extends Controller
     {
         $collectionId = $request->get('collection_id');
         $type = $request->get('type');
+        $sourceQuery = $request->get('sourceQuery');
         $metaHierarchy = MetaHierarchy::all();
 
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
-            'collection_id' => $collectionId,
+            'collectionId' => $collectionId,
             'type' => $type,
-            'meta_hierarchy' => $metaHierarchy,
-            'widget_agent_url' => config('app.widget_agent_url'),
+            'sourceQuery' => $sourceQuery,
+            'metaHierarchy' => $metaHierarchy,
+            'widgetAgentUrl' => config('app.widget_agent_url'),
         ]);
     }
 
     public function store(WidgetEditorFormRequest $request)
     {
-        $widget = Widget::create($request->toArray());
+        $data = $request->toArray();
+
+        if ($request->saveMode) {
+            $collectionName = $request->saveMode;
+            $userId = auth()->id();
+
+            if ($request->saveMode === 'community') {
+                $userId = null;
+            }
+
+            $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
+                'user_id' => $userId,
+                'name' => $collectionName,
+            ]);
+
+            // If we found an existing collection, ensure the user owns it (if it's not community)
+            if ($collection->user_id !== null && $collection->user_id !== auth()->id()) {
+                abort(403, 'Unauthorized to save to this collection');
+            }
+
+            $data['collection_id'] = $collection->id;
+        }
+
+        $data['user_id'] = auth()->id();
+
+        $widget = Widget::create($data);
 
         return to_route('widget-collection.index')
             ->with('success', 'Widget created successfully');
@@ -56,17 +83,45 @@ class WidgetsEditorController extends Controller
 
         return Inertia::render('WidgetsEditor/WidgetsEditorCreatePage', [
             'widget' => $widget,
-            'collection_id' => $collectionId,
+            'collectionId' => $collectionId,
             'type' => $type,
-            'meta_hierarchy' => $metaHierarchy,
-            'widget_agent_url' => config('app.widget_agent_url'),
+            'metaHierarchy' => $metaHierarchy,
+            'widgetAgentUrl' => config('app.widget_agent_url'),
         ]);
     }
 
     public function update(WidgetEditorFormRequest $request, Widget $widget)
     {
+        if ($widget->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized to update this widget');
+        }
 
-        $widget->update($request->toArray());
+        $data = $request->toArray();
+
+        if ($request->saveMode) {
+            $collectionName = $request->saveMode;
+            $userId = auth()->id();
+
+            if ($request->saveMode === 'community') {
+                $userId = null;
+            }
+
+            $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
+                'user_id' => $userId,
+                'name' => $collectionName,
+            ]);
+
+            // Ensure the user owns the collection (if it's not community)
+            if ($collection->user_id !== null && $collection->user_id !== auth()->id()) {
+                abort(403, 'Unauthorized to save to this collection');
+            }
+
+            $data['collection_id'] = $collection->id;
+        }
+
+        $data['user_id'] = auth()->id();
+
+        $widget->update($data);
 
         return to_route('widget-collection.index')
             ->with('success', 'Widget updated successfully');
@@ -74,6 +129,10 @@ class WidgetsEditorController extends Controller
 
     public function destroy(Widget $widget)
     {
+        if ($widget->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized to delete this widget');
+        }
+
         $widget->delete();
 
         return to_route('widget-collection.index')->with('success', 'Widget deleted successfully');

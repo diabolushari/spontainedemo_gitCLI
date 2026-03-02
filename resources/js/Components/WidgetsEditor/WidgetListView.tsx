@@ -5,10 +5,10 @@ import DashboardPadding from '@/Layouts/DashboardPadding'
 import WidgetCollectionCreateModal from '@/Components/WidgetsEditor/WidgetCollections/WidgetCollectionCreateModal'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import DynamicOverviewWidgetPreview from '@/Components/WidgetsEditor/WidgetComponents/DynamicOverviewWidgetPreview'
-import { AddWidgetSheet } from '@/Components/WidgetsEditor/AddWidgetSheet'
 import { Widget, WidgetCollection } from '@/interfaces/data_interfaces'
 import axios from 'axios'
-import { Loader2 } from 'lucide-react'
+import { Loader2, PlusIcon } from 'lucide-react'
+import BreadCrumbs from '@/Components/BreadCrumbs'
 
 declare function route(name: string, params?: any): string
 
@@ -232,12 +232,6 @@ export default function WidgetListView({
             ))}
           </div>
 
-          <button
-            onClick={() => setShowCollectionModal(true)}
-            className='w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50'
-          >
-            Manage Collections
-          </button>
         </aside>
       )}
 
@@ -248,6 +242,15 @@ export default function WidgetListView({
       >
         <DashboardPadding>
           <div className='flex min-h-[85vh] flex-col'>
+            {/* Header Section */}
+            <div className='mb-8'>
+              <h1 className='text-3xl font-bold text-gray-900 mb-3'>Widgets</h1>
+              <BreadCrumbs breadcrumbItems={[
+                { item: 'Home', link: route('homepage') },
+                { item: 'Widgets', link: '' }
+              ]} />
+            </div>
+
             {/* Search Bar & Add Button */}
             <div className='mb-6 flex items-center justify-between gap-4'>
               <div className='relative flex-1'>
@@ -278,24 +281,13 @@ export default function WidgetListView({
                   className='w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
                 />
               </div>
-              <AddWidgetSheet collections={collections}>
-                <button className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700'>
-                  <svg
-                    className='h-5 w-5'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M12 4v16m8-8H4'
-                    />
-                  </svg>
-                  Add Widget
-                </button>
-              </AddWidgetSheet>
+              <Link
+                href='/widget-editor/create?type=overview'
+                className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700'
+              >
+                <PlusIcon className='h-5 w-5' />
+                Add Widget
+              </Link>
             </div>
 
             {/* Content */}

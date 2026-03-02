@@ -3,7 +3,7 @@ import NormalText from '@/typography/NormalText'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
 import React from 'react'
 import Heading from '@/typography/Heading'
-import { EllipsisIcon } from 'lucide-react'
+import { EllipsisIcon, Sparkles } from 'lucide-react'
 
 import { Link } from '@inertiajs/react'
 
@@ -15,13 +15,17 @@ interface WidgetLayoutProps {
   link?: string
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  selectedView?: string
+  selectedView?: string | null
   onViewChange?: (view: string) => void
   hasOverview?: boolean
   hasRanking?: boolean
   hasTrend?: boolean
   hasHighlightCards?: boolean
   subsetGroupName: string | null
+  isEditable?: boolean
+  onTitleChange?: (value: string) => void
+  onSubtitleChange?: (value: string) => void
+  onAiClick?: () => void
 }
 
 const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
@@ -46,6 +50,10 @@ export default function WidgetLayout({
   hasTrend = false,
   hasHighlightCards = false,
   subsetGroupName,
+  isEditable = false,
+  onTitleChange,
+  onSubtitleChange,
+  onAiClick,
 }: Readonly<WidgetLayoutProps>) {
   const handleViewChange = (view: string) => {
     if (onViewChange) {
@@ -141,6 +149,21 @@ export default function WidgetLayout({
               </svg>
             </button>
           )}
+
+          {onAiClick && (
+            <button
+              onClick={onAiClick}
+              className='group relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-indigo-500/90 to-purple-500/90 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-purple-400/20 hover:brightness-110 active:scale-95'
+              aria-label='AI Assistant'
+              title='AI Assistant'
+            >
+              <div className='absolute inset-0 bg-white/0 transition-colors group-hover:bg-white/5' />
+              <Sparkles
+                className='h-4 w-4 transition-transform duration-500 group-hover:rotate-12'
+                strokeWidth={2}
+              />
+            </button>
+          )}
           {subsetGroupName && (
             <div className='mt-auto flex justify-center'>
               <Link
@@ -158,12 +181,36 @@ export default function WidgetLayout({
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='flex shrink-0 items-center justify-between px-4 py-3'>
             <div className='flex flex-col gap-2'>
-              {title && <Heading className={`subheader-1stop line-clamp-2`}>{title}</Heading>}
-              {!title && (
-                <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
+              {isEditable && onTitleChange ? (
+                <input
+                  type='text'
+                  value={title}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  placeholder='Enter title'
+                  className='subheader-1stop line-clamp-2 w-full border-b border-transparent bg-transparent px-0 py-1 outline-none transition-colors placeholder:text-gray-300 hover:border-gray-200 focus:border-blue-400'
+                />
+              ) : (
+                <>
+                  {title && <Heading className={`subheader-1stop line-clamp-2`}>{title}</Heading>}
+                  {!title && (
+                    <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
+                  )}
+                </>
               )}
-              {subtitle && <NormalText className='text-gray-500'>{subtitle}</NormalText>}
-              {!subtitle && <NormalText className='text-gray-400'>subtitle</NormalText>}
+              {isEditable && onSubtitleChange ? (
+                <input
+                  type='text'
+                  value={subtitle}
+                  onChange={(e) => onSubtitleChange(e.target.value)}
+                  placeholder='Enter subtitle'
+                  className='w-full border-b border-transparent bg-transparent px-0 py-1 text-sm text-gray-500 outline-none transition-colors placeholder:text-gray-300 hover:border-gray-200 focus:border-blue-400'
+                />
+              ) : (
+                <>
+                  {subtitle && <NormalText className='text-gray-500'>{subtitle}</NormalText>}
+                  {!subtitle && <NormalText className='text-gray-400'>subtitle</NormalText>}
+                </>
+              )}
             </div>
             <PageBuilderMonthPicker
               selectedMonth={selectedMonth}

@@ -13,7 +13,7 @@ class ChatHistoryController extends Controller
     {
         $perPage = $request->input('per_page', 7);
 
-        $chatHistories = ChatHistory::select(['id', 'title'])
+        $chatHistories = ChatHistory::select(['id', 'title', 'is_favorite'])
             ->paginate($perPage);
 
         return response()->json($chatHistories);
@@ -27,7 +27,9 @@ class ChatHistoryController extends Controller
     public function update(Request $request, ChatHistory $chatHistory): JsonResponse
     {
         $validated = $request->validate([
-            'messages' => 'required|array',
+            'messages' => 'nullable|array',
+            'is_favorite' => 'nullable|boolean',
+            'title' => 'nullable|string',
         ]);
 
         if ($validated === false) {
@@ -36,9 +38,7 @@ class ChatHistoryController extends Controller
             ], 422);
         }
 
-        $chatHistory->update([
-            'messages' => request('messages'),
-        ]);
+        $chatHistory->update($validated);
 
         return response()->json([
             'message' => 'Message updated',

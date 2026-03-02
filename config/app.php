@@ -20,10 +20,19 @@ return [
     'widget_agent_url' => env('WIDGET_AGENT_URL', null),
     'page_agent_url' => env('PAGE_AGENT_URL', null),
     'widget_data_url' => env('WIDGET_DATA_URL', null),
+    'ai_suggestion_url' => env('AI_SUGGESTION_URL', null),
 
     'gemini_api_key' => env('GEMINI_API_KEY', null),
     'gemini_base_url' => env('GEMINI_BASE_URL', null),
     'gemini_model' => env('GEMINI_MODEL', null),
+
+    'qdrant_host' => env('QDRANT_HOST', 'localhost'),
+    'qdrant_port' => env('QDRANT_PORT', '6333'),
+    'qdrant_api_key' => env('QDRANT_API_KEY'),
+
+    'chat_summarization_url' => env('CHAT_SUMMARIZATION_URL', 'http://127.0.0.1:8080'),
+    'openai_api_key' => env('OPENAI_API', null),
+
 
     /*
     |--------------------------------------------------------------------------

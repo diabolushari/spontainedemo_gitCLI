@@ -8,6 +8,7 @@ import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor
 import { PageProps } from '@/types'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
+import HighlightBar from './HighlightBar'
 
 interface OverviewProps {
   subsetId: number
@@ -19,6 +20,10 @@ interface OverviewProps {
   selectedMonth: Date
   hierarchy_item_id: number | null
   compact?: boolean
+  overviewLevel: string | null
+  overviewNameField: string | null
+  onEditSection?: (section: string) => void
+  suppressError?: boolean
 }
 
 export default function OverviewWidgetContent({
@@ -30,7 +35,11 @@ export default function OverviewWidgetContent({
   highlightCards,
   selectedMonth,
   hierarchy_item_id,
+  overviewLevel,
   compact = false,
+  overviewNameField,
+  onEditSection,
+  suppressError = false,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -82,37 +91,38 @@ export default function OverviewWidgetContent({
   const url = useMemo(() => {
     if (!subsetId || !fieldsParam) return null
 
-    let baseUrl = `/subset/${subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
-
-    // Logic:
-    // - If hierarchy_item_id is selected AND data is loaded -> append filter
-    // - If hierarchy_item_id is selected BUT data is NOT loaded -> return null (wait)
-    // - If hierarchy_item_id is NOT selected -> return base URL (no filter)
-
-    if (hierarchy_item_id) {
-      if (hierarchyFilter) {
-        return `${widget_data_url}${baseUrl}&${hierarchyFilter.col}=${hierarchyFilter.val}`
-      } else {
-        return null // Wait for filter details to load
-      }
+    const params: Record<string, string> = {
+      month: formattedMonth,
+      fields: fieldsParam,
     }
 
+    if (hierarchyFilter?.col && hierarchyFilter?.val) {
+      params[hierarchyFilter.col] = hierarchyFilter.val
+    }
+
+    if (overviewLevel) {
+      params['level'] = overviewLevel
+    }
+
+    const queryString = new URLSearchParams(params).toString()
+    let baseUrl = `/subset-level-data/${subsetId}?${queryString}`
+
     return `${widget_data_url}${baseUrl}`
-  }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, hierarchy_item_id])
+  }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, widget_data_url, overviewLevel])
 
   console.log('overview url', url)
 
-  const [data] = useFetchRecord<{
+  const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
-  }>(url)
+  }>(url, { suppressError })
 
   const fieldsToPlot = useMemo(() => {
     const allMeasures = Array.isArray(measure)
       ? measure.map((m: SelectedMeasure) => ({
-          key: m.subset_column,
-          label: m.subset_field_name,
-          unit: m.unit,
-        }))
+        key: m.subset_column,
+        label: m.subset_field_name,
+        unit: m.unit,
+      }))
       : []
 
     if (chartType === 'pie') {
@@ -123,50 +133,66 @@ export default function OverviewWidgetContent({
   }, [measure, chartType])
 
   const containerClass = compact ? 'h-full w-full aspect-auto' : 'h-full w-full'
-  const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : undefined
-  const axisHeight = compact ? 30 : undefined
+  const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : { top: 10, right: 10, left: 10, bottom: 40 }
+  const axisHeight = compact ? 30 : 60
+
+  console.log('overviewNameField', overviewNameField)
 
   return (
-    <div className='min-h-0 w-full flex-1'>
-      {chartType === 'bar' && data != null && (
-        <div className='h-full w-full'>
+    <div
+      className='flex min-h-0 w-full flex-1 cursor-pointer flex-col [container-type:inline-size]'
+
+    >
+      {highlightCards && highlightCards.length > 0 && (
+        <div className='mb-[2cqw]'>
+          <HighlightBar
+            highlightCards={highlightCards}
+            selectedMonth={selectedMonth}
+            onEditSection={onEditSection}
+          />
+        </div>
+      )}
+      <div className='relative h-[50cqw] min-h-[250px] w-full transition-all hover:scale-[1.005]' onClick={() => onEditSection?.('chart')}>
+        {chartType === 'bar' && data != null && (
           <CustomBarChart
             data={data.data}
-            dataKey={dimension}
+            dataKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
             margin={chartMargin}
             xAxisHeight={axisHeight}
           />
-        </div>
-      )}
-      {chartType === 'line' && data != null && (
-        <div className='h-full w-full'>
+        )}
+        {chartType === 'line' && data != null && (
           <CustomLineChart
             data={data.data}
-            dataKey={dimension}
+            dataKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
             margin={chartMargin}
             xAxisHeight={axisHeight}
           />
-        </div>
-      )}
-      {chartType === 'pie' && data != null && (
-        <div className='h-full w-full'>
+        )}
+        {chartType === 'pie' && data != null && (
           <CustomPieChart
             data={data.data}
             dataKey={fieldsToPlot[0].key}
-            nameKey={dimension}
+            nameKey={(overviewLevel ? overviewNameField : dimension) ?? dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
-            fontSize={'text-sm'}
+            fontSize={'text-[1.8cqw]'}
             containerClassName={containerClass}
           />
-        </div>
-      )}
-    </div>
+        )}
+
+        {!loading && (!data || !data.data || data.data.length === 0) && (
+          <div className='flex h-full w-full items-center justify-center text-gray-400 text-[1.4cqw]'>
+            No data
+          </div>
+        )}
+      </div>
+    </div >
   )
 }

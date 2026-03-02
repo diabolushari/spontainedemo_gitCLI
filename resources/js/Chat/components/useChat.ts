@@ -1,15 +1,11 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import extractJsonMarkdown from '@/Chat/libs/extract-json-markdown'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { handleAgentMetaResponse } from '../libs/handle-agent-response'
-
-export interface AgentResponseMetaData {
-  suggestions?: string[]
-  visualization?: object[]
-  data_explore?: { subsetID: number }
-}
+import { CurrentSession, WebSocketStatus } from './chatTypes'
+import { handleWebSocketMessage } from './useChatSocketHandler'
+import { MARKERS, STATUS, StreamProcessor } from './useChatStreamUtils'
 
 function startNewChat(
   newId: number,
@@ -30,54 +26,33 @@ function startNewChat(
   })
 }
 
-const STATUS_SEARCH_VECTOR = 'Searching Knowledge Base'
-const STATUS_FETCH_DATA = 'Retrieving Relevant Data'
-const STATUS_AFTER_FETCH = 'Finalizing Result'
-const STATUS_AFTER_VECTOR = 'Constructing Search'
-const STATUS_START = 'Analyzing User Query'
-const STATUS_STREAMING_META = 'Processing Results'
-
-function updateStatus(status: string, setStatus: Dispatch<SetStateAction<string>>): void {
-  setStatus((oldStatus) => {
-    if (oldStatus === STATUS_SEARCH_VECTOR && status === 'Tool Call End') {
-      return STATUS_AFTER_VECTOR
-    }
-    if (status === 'Tool Call End') {
-      return STATUS_AFTER_FETCH
-    }
-    return status
-  })
-}
-
-interface CurrentSession {
-  id: number
-  title: string
-  messages: ChatMessage[]
-}
-
-const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
-
-type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
-
-export default function useChat(currentSession: CurrentSession) {
+export default function useChat(currentSession: CurrentSession, persist: boolean = true) {
   const { chatToken, chatURL, agentURL } = usePage<{
     chatToken: string
     chatURL: string
     agentURL: string
   }>().props
+
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const socketRef = useRef<WebSocket | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState<string>('')
   const [input, setInput] = useState('')
   const [wsStatus, setWsStatus] = useState<WebSocketStatus>('connecting')
+  const [reconnectTrigger, setReconnectTrigger] = useState(0)
+
+  // Refs for state that doesn't trigger re-renders
   const uuid = useRef(1)
   const isBeingStreamed = useRef(false)
-  const tempMetaInfo = useRef('')
-  const isCollectingMeta = useRef(false)
-  const [reconnectTrigger, setReconnectTrigger] = useState(0)
   const contentBuffer = useRef('')
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+
+  // Meta data collection state
+  const isCollectingMeta = useRef(false)
+  const tempMetaInfo = useRef('')
+
+  // Stream processor to handle complex stream parsing
+  const streamProcessor = useRef(new StreamProcessor())
 
   useEffect(() => {
     setWsStatus('connecting')
@@ -91,32 +66,77 @@ export default function useChat(currentSession: CurrentSession) {
       if (contentBuffer.current == '') {
         return
       }
-      const contentToFlush = contentBuffer.current
+
+      // Append new content to the stream processor
+      streamProcessor.current.append(contentBuffer.current)
       contentBuffer.current = ''
+
+      // Process the stream
+      const { text: textToAdd, meta: extractedMeta, extras: extractedExtras } = streamProcessor.current.process()
+
+      if (textToAdd === '' && extractedMeta === null && extractedExtras === null) {
+        return
+      }
 
       setMessages((oldValues) => {
         if (oldValues.length === 0) {
           return oldValues
         }
         const lastItem = oldValues[oldValues.length - 1]
-        //check if the message contains end of answer marker
-        const contentStreamedSoFar = lastItem.content + contentToFlush
+
+        // Use textToAdd to update content
+        let contentStreamedSoFar = lastItem.content + textToAdd
         let lastMessageContent = contentStreamedSoFar
-        if (contentStreamedSoFar.includes(END_OF_ANSWER_MARKER)) {
-          const parts = contentStreamedSoFar.split(END_OF_ANSWER_MARKER)
-          if (parts.length === 2) {
+        let newContentType = lastItem.contentType
+
+        // Check for START_OF_ANSWER_MARKER and extract content after it
+        if (contentStreamedSoFar.includes(MARKERS.START_OF_ANSWER)) {
+          const afterStartMarker = contentStreamedSoFar.split(MARKERS.START_OF_ANSWER)[1] || ''
+          lastMessageContent = afterStartMarker
+          newContentType = 'final_response'
+        }
+
+        // Check for END_OF_ANSWER_MARKER and extract content before it
+        if (lastMessageContent.includes(MARKERS.END_OF_ANSWER)) {
+          const parts = lastMessageContent.split(MARKERS.END_OF_ANSWER)
+          if (parts.length >= 2) {
             isCollectingMeta.current = true
             tempMetaInfo.current = parts[1].trim()
             lastMessageContent = parts[0]
-            setStatus(STATUS_STREAMING_META)
+            setStatus(STATUS.STREAMING_META)
           }
         }
+
+        // Prepare update object
+        const updatedMessage = {
+          ...lastItem,
+          content: lastMessageContent,
+          contentType: newContentType,
+        }
+
+        // Apply extracted meta if any
+        if (extractedMeta) {
+          if (extractedMeta.visualization) {
+            updatedMessage.chart_data = extractedMeta.visualization
+          }
+          if (extractedMeta.data_explore) {
+            updatedMessage.explore_data = extractedMeta.data_explore
+          }
+          if (extractedMeta.suggestions) {
+            updatedMessage.suggestions = extractedMeta.suggestions
+          }
+          if (extractedMeta.widget_generation) {
+            updatedMessage.widget_generation = extractedMeta.widget_generation
+          }
+        }
+
+        if (extractedExtras) {
+          updatedMessage.extras = extractedExtras
+        }
+
         return oldValues.map((oldMessage) => {
           if (oldMessage.id === lastItem.id) {
-            return {
-              ...oldMessage,
-              content: lastMessageContent,
-            }
+            return updatedMessage
           }
           return oldMessage
         })
@@ -128,142 +148,33 @@ export default function useChat(currentSession: CurrentSession) {
       isBeingStreamed.current = false
       isCollectingMeta.current = false
       tempMetaInfo.current = ''
+      contentBuffer.current = ''
+      streamProcessor.current.reset()
       setStatus('')
       setIsLoading(false)
     }
 
     ws.onmessage = (event) => {
-      try {
-        // Validate event data
-        if (!event.data || typeof event.data !== 'string') {
-          console.warn('⚠️ Invalid websocket message data:', event.data)
-          return
-        }
-
-        // Parse structured message format
-        const messageData = JSON.parse(event.data)
-
-        // Handle new structured message format
-        switch (messageData.type) {
-          case 'start':
-            flushBuffer()
-            isBeingStreamed.current = true
-            isCollectingMeta.current = false
-            contentBuffer.current = ''
-            tempMetaInfo.current = ''
-            updateStatus(STATUS_START, setStatus)
-            startNewChat(uuid.current++, 'text', setMessages)
-            break
-
-          case 'token':
-            if (isCollectingMeta.current && messageData.content != null) {
-              tempMetaInfo.current += messageData.content
-            } else if (isBeingStreamed.current && messageData.content) {
-              contentBuffer.current += messageData.content
-              if (debounceTimer.current) {
-                clearTimeout(debounceTimer.current)
-              }
-              debounceTimer.current = setTimeout(() => {
-                flushBuffer()
-                debounceTimer.current = null
-              }, 50)
-            }
-            break
-
-          case 'tool_call_start':
-            console.log('🔧 Tool call started:', messageData.tool_name, messageData.tool_input)
-            flushBuffer()
-            if (messageData.tool_name?.toLowerCase().includes('vector')) {
-              updateStatus(STATUS_SEARCH_VECTOR, setStatus)
-            } else if (
-              messageData.tool_name &&
-              (messageData.tool_name.toLowerCase().includes('data') ||
-                messageData.tool_name.toLowerCase().includes('fetch'))
-            ) {
-              updateStatus(STATUS_FETCH_DATA, setStatus)
-            }
-
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: uuid.current++,
-                role: 'action',
-                content: messageData.tool_name,
-                description: JSON.stringify(messageData.tool_input),
-                contentType: 'text',
-                suggestions: [],
-              },
-              {
-                id: uuid.current++,
-                role: 'assistant',
-                content: '',
-                contentType: 'text',
-                suggestions: [],
-              },
-            ])
-            break
-
-          case 'tool_call_end':
-            console.log('✅ Tool call completed')
-            updateStatus('Tool Call End', setStatus)
-            // Tool call finished, continue with normal flow
-            break
-
-          case 'error':
-            console.error('❌ Agent error:', messageData.message)
-            resetStreamingState()
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: uuid.current++,
-                role: 'error',
-                content: `❌ Error: ${messageData.message}`,
-                contentType: 'text',
-                suggestions: [],
-              },
-            ])
-            break
-
-          case 'stop':
-            console.log('🛑 Stopping chat stream')
-            setIsLoading(false)
-            setStatus('')
-            flushBuffer()
-            isBeingStreamed.current = false
-            if (tempMetaInfo.current != null && tempMetaInfo.current != '') {
-              const parsedMetaInfo = extractJsonMarkdown(tempMetaInfo.current)
-              console.log('Meta Information:', parsedMetaInfo)
-              handleAgentMetaResponse(parsedMetaInfo as AgentResponseMetaData, uuid, setMessages)
-            }
-            isCollectingMeta.current = false
-            tempMetaInfo.current = ''
-            break
-
-          default:
-            console.warn('⚠️ Unknown message type:', messageData.type)
-        }
-      } catch (error) {
-        console.error('❌ WebSocket Message Processing Error:', error)
-        console.error('❌ Event data that caused error:', event.data)
-
-        // Reset streaming state
-        resetStreamingState()
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: uuid.current++,
-            role: 'assistant',
-            content: '❌ Error processing response.',
-            contentType: 'text',
-            suggestions: [],
-          },
-        ])
-      }
+      handleWebSocketMessage({
+        event,
+        uuid,
+        setMessages,
+        setStatus,
+        setIsLoading,
+        isBeingStreamed,
+        isCollectingMeta,
+        tempMetaInfo,
+        contentBuffer,
+        debounceTimer,
+        flushBuffer,
+        resetStreamingState,
+        startNewChat,
+        streamProcessor,
+      })
     }
 
     ws.onerror = (error) => {
       console.error('❌ WebSocket Error:', error)
-
       resetStreamingState()
       setWsStatus('disconnected')
     }
@@ -309,6 +220,18 @@ export default function useChat(currentSession: CurrentSession) {
     setInput('')
   }
 
+  const handleSendWidgetContext = (widget: any) => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(
+        JSON.stringify({
+          type: 'widget',
+          widget: widget,
+        })
+      )
+      console.log(widget)
+    }
+  }
+
   useEffect(() => {
     if (isBeingStreamed.current || wsStatus !== 'connected') {
       return
@@ -334,7 +257,7 @@ export default function useChat(currentSession: CurrentSession) {
   }
 
   useEffect(() => {
-    if (isBeingStreamed.current) {
+    if (isBeingStreamed.current || !persist) {
       return
     }
 
@@ -357,8 +280,41 @@ export default function useChat(currentSession: CurrentSession) {
     isCollectingMeta.current = false
     tempMetaInfo.current = ''
     contentBuffer.current = ''
+    streamProcessor.current.reset()
     setWsStatus('reconnecting')
     setReconnectTrigger((prev) => prev + 1)
+  }
+
+  const handleToggleFavorite = async (messageId: number, summary?: string) => {
+    // Find the current message to check its favorite status
+    const currentMessage = messages.find((msg) => msg.id === messageId)
+    const isCurrentlyFavorite = currentMessage?.is_favorite ?? false
+
+    // Optimistically update UI
+    setMessages((prev) =>
+      prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: !msg.is_favorite } : msg))
+    )
+
+    try {
+      if (isCurrentlyFavorite) {
+        // Remove from favorites
+        await axios.delete(`/chat-history/${currentSession.id}/favorite/${messageId}`)
+        console.log('Favorite removed successfully')
+      } else {
+        // Add to favorites
+        await axios.post(`/chat-history/${currentSession.id}/favorite`, {
+          message_id: messageId,
+          summary: summary ?? '',
+        })
+        console.log('Favorite added successfully')
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err)
+      // Revert the optimistic update on error
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: isCurrentlyFavorite } : msg))
+      )
+    }
   }
 
   return {
@@ -371,5 +327,7 @@ export default function useChat(currentSession: CurrentSession) {
     setMessageFromHistory,
     handleRetryConnection,
     wsStatus,
+    handleToggleFavorite,
+    handleSendWidgetContext,
   }
 }

@@ -1,10 +1,12 @@
 import type { Widget as WidgetType } from '@/interfaces/data_interfaces'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 import OverviewWidgetContent from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidgetContent'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
+import Modal from '@/Components/Modal'
+import WidgetChat from '@/Chat/WidgetChat'
 import axios from 'axios'
 import HighlightBar from '../WidgetsEditor/WidgetComponents/HighlightBar'
 
@@ -25,6 +27,7 @@ const EmptyState = ({ message }: { message: string }) => (
 )
 
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { ChevronRight, Sparkles, X } from 'lucide-react'
 import { PageProps } from '@/types'
 import { usePage } from '@inertiajs/react'
 
@@ -36,7 +39,8 @@ interface SubsetMaxValueResponse {
 
 export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(anchorMonth)
-  const [selectView, setSelectView] = useState('overview')
+  const [selectView, setSelectView] = useState<'overview' | 'trend' | 'ranking' | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   const subsetId = widget?.data?.overview?.subset_id
@@ -45,7 +49,9 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       ? `${widget_data_url}${route('subset-field-max-value', { subsetDetail: subsetId, field: 'month' }, false)}`
       : null
 
-  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
+  const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url, {
+    suppressError: true,
+  })
 
   useEffect(() => {
     if (!loading && maxValueData != null && maxValueData.max_value) {
@@ -60,9 +66,72 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
     }
   }, [loading, maxValueData, anchorMonth])
 
+  const { hasOverview, hasRanking, hasTrend, hasHighlightCards } = useMemo(() => {
+    if (widget.data.view) {
+      return {
+        hasOverview: widget.data.view.overview,
+        hasRanking: widget.data.view.ranking,
+        hasTrend: widget.data.view.trend,
+        hasHighlightCards: widget.data.view.overview,
+      }
+    }
+
+    const hasOverview =
+      widget.data.overview?.subset_id != null &&
+      widget.data.overview?.measures != null &&
+      widget.data.overview?.dimension != null &&
+      widget.data.overview?.measures?.length > 0
+
+    const hasRanking =
+      widget.data.rank?.subset_id != null &&
+      widget.data.rank?.order_by?.subset_column != null &&
+      widget.data.rank?.order_by?.subset_field_name != null
+
+    const hasTrend =
+      widget.data.trend?.subset_id != null &&
+      widget.data.trend?.measure?.subset_column != null &&
+      widget.data.trend?.measure?.subset_field_name != null
+
+    const hasHighlightCards =
+      widget.data.highlight_cards != null && widget.data.highlight_cards.length > 0
+
+    return {
+      hasOverview,
+      hasRanking,
+      hasTrend,
+      hasHighlightCards,
+    }
+  }, [widget.data])
+
   useEffect(() => {
-    console.log(selectView)
-  }, [selectView])
+    // If no views are selected, set selectView to null
+    if (!hasOverview && !hasTrend && !hasRanking) {
+      if (selectView !== null) setSelectView(null)
+      return
+    }
+
+    // If selectView is null but some views are selected, pick the first available one
+    if (selectView === null) {
+      if (hasOverview) setSelectView('overview')
+      else if (hasTrend) setSelectView('trend')
+      else if (hasRanking) setSelectView('ranking')
+    } else {
+      // If the currently selectView is no longer active, fallback to another active one
+      if (selectView === 'overview' && !hasOverview) {
+        if (hasTrend) setSelectView('trend')
+        else if (hasRanking) setSelectView('ranking')
+        else setSelectView(null)
+      } else if (selectView === 'trend' && !hasTrend) {
+        if (hasOverview) setSelectView('overview')
+        else if (hasRanking) setSelectView('ranking')
+        else setSelectView(null)
+      } else if (selectView === 'ranking' && !hasRanking) {
+        if (hasOverview) setSelectView('overview')
+        else if (hasTrend) setSelectView('trend')
+        else setSelectView(null)
+      }
+    }
+  }, [hasOverview, hasTrend, hasRanking, selectView])
 
   if (!widget) return null
 
@@ -78,27 +147,27 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectView}
-      onViewChange={setSelectView}
-      hasOverview={widget.data.overview?.subset_id != null}
-      hasTrend={widget.data.trend?.subset_id != null}
-      hasRanking={widget.data.rank?.subset_id != null}
-      hasHighlightCards={widget.data.highlight_cards != null}
+      onViewChange={(view) => setSelectView(view as 'overview' | 'trend' | 'ranking' | null)}
+      hasOverview={hasOverview}
+      hasTrend={hasTrend}
+      hasRanking={hasRanking}
+      hasHighlightCards={hasHighlightCards}
       subsetGroupName={widget.data.explore?.subset_group_name}
+      onAiClick={() => setIsModalOpen(true)}
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}
 
-      {widget.data.highlight_cards && selectView === 'overview' && (
-        <HighlightBar
-          highlightCards={widget.data.highlight_cards}
-          selectedMonth={selectedMonth ?? new Date()}
-        />
+      {selectView === null && (
+        <div className='flex h-[300px] items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50'>
+          <p className='text-sm text-gray-500'>Please select at least one view in the sidebar</p>
+        </div>
       )}
 
       {/* Overview Widget */}
       {selectView == 'overview' && selectedMonth != null && (
         <OverviewWidgetContent
-          subsetId={data.overview.subset_id}
+          subsetId={data.overview.subset_id!}
           measure={(data.overview.measures || []).map((m) => ({
             subset_column: m.subset_column,
             subset_field_name: m.subset_field_name,
@@ -109,7 +178,10 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           colorPalette={data.overview.color_palette}
           highlightCards={data.highlight_cards}
           selectedMonth={selectedMonth}
-          hierarchy_item_id={data?.overview?.hierarchy_item_id}
+          hierarchy_item_id={data?.overview?.hierarchy_item_id ?? null}
+          overviewLevel={data?.overview?.level}
+          overviewNameField={data?.overview?.name_field}
+          suppressError={true}
         />
       )}
 
@@ -123,13 +195,14 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           trendColor={data.trend.color ?? null}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
+          suppressError={true}
         />
       )}
 
       {/* Ranking Widget */}
       {selectView == 'ranking' && selectedMonth != null && (
         <RankingWidget
-          subsetId={data.rank.subset_id}
+          subsetId={data.rank.subset_id!}
           subsetGroupName={data.rank.subset_group_name}
           subsetColumn={data.rank.order_by?.subset_column ?? null}
           subsetFieldName={data.rank.order_by?.subset_field_name ?? null}
@@ -138,14 +211,35 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           hierarchyId={widget.data.rank.hierarchy_id}
           dimension={widget.data.rank.dimension_column}
           fieldColumn={widget.data.rank.field_column}
+          suppressError={true}
         />
       )}
 
-      {/* Unsupported widget type */}
       {data &&
         normalizedType !== 'overview' &&
         normalizedType !== 'trend' &&
         normalizedType !== 'ranking' && <EmptyState message='Unsupported widget type' />}
+
+      <Modal
+        show={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        maxWidth='2xl'
+      >
+        <div className='relative p-4 md:p-5'>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className='absolute right-4 top-4 rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
+            aria-label='Close modal'
+          >
+            <X className='h-5 w-5' />
+          </button>
+
+          <h2 className='mb-4 text-[17px] font-semibold tracking-tight text-gray-800'>
+            AI Assistant
+          </h2>
+          <WidgetChat widget={widget} />
+        </div>
+      </Modal>
     </WidgetLayout>
   )
 }

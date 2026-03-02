@@ -8,30 +8,48 @@ import { useWebSocket } from '@/Pages/WidgetsEditor/hook/useWebsocket'
 
 interface Props {
   widget?: Widget
-  collection_id: number
+  collectionId: number
   type: string
-  meta_hierarchy: MetaHierarchy[]
-  widget_agent_url: string
+  sourceQuery: string
+  metaHierarchy: MetaHierarchy[]
+  widgetAgentUrl: string
 }
 
 export default function WidgetsEditorCreatePage({
   widget,
-  collection_id,
+  collectionId,
   type,
-  meta_hierarchy,
-  widget_agent_url,
+  sourceQuery,
+  metaHierarchy,
+  widgetAgentUrl,
 }: Readonly<Props>) {
   const [currentWidget, setCurrentWidget] = useState<Widget | undefined>(widget)
   const [previewWidget, setPreviewWidget] = useState<Widget | undefined>(widget)
   const [thinking, setThinking] = useState<string | null>(null)
-  const { messages, sendMessage } = useWebSocket(widget_agent_url)
+  const { messages, sendMessage, connectionStatus } = useWebSocket(widgetAgentUrl)
   const [input, setInput] = React.useState('')
+  const hasSentSourceQuery = React.useRef(false)
+
+  useEffect(() => {
+    if (sourceQuery && !hasSentSourceQuery.current) {
+      sendMessage({
+        message: sourceQuery,
+        widget: previewWidget,
+        widget_id: currentWidget?.id?.toString(),
+      })
+      hasSentSourceQuery.current = true
+    }
+  }, [sourceQuery])
 
   const handleSend = () => {
     if (!input.trim()) return
     // Send the preview widget which reflects the current form state
-    sendMessage({ message: input, existing_widget: previewWidget })
+    sendMessage({ message: input, widget: previewWidget, widget_id: currentWidget?.id?.toString() })
     setInput('')
+  }
+
+  const handleAction = (action: string, message?: string) => {
+    sendMessage({ action, message, type: 'user_action' })
   }
 
   useEffect(() => {
@@ -39,7 +57,14 @@ export default function WidgetsEditorCreatePage({
       const lastMessage = messages[messages.length - 1]
       if (lastMessage.type == 'thinking') {
         setThinking(lastMessage.message)
-      } else if (lastMessage.type == 'review_required' || lastMessage.type == 'complete') {
+      } else if (lastMessage.type == 'review_required') {
+        lastMessage.widget_state.data.ai_agent = true
+        setCurrentWidget(lastMessage.widget_state)
+        setThinking(null)
+      } else if (lastMessage.type == 'approval_required') {
+        setThinking(null)
+      } else if (lastMessage.type == 'complete') {
+        lastMessage.widget.data.ai_agent = true
         setCurrentWidget(lastMessage.widget)
         setThinking(null)
         console.log('widget', lastMessage.widget)
@@ -53,15 +78,18 @@ export default function WidgetsEditorCreatePage({
         {type == 'overview' && (
           <OverviewWidgetEditor
             widget={currentWidget}
-            collectionId={collection_id}
+            collectionId={collectionId}
             type={type}
-            metaHierarchy={meta_hierarchy}
+            metaHierarchy={metaHierarchy}
             thinkingMessage={thinking}
             chatInput={input}
             setChatInput={setInput}
             onChatSend={handleSend}
+            onActionSend={handleAction}
             onPreviewWidgetChange={setPreviewWidget}
             messages={messages}
+            sourceQuery={sourceQuery}
+            connectionStatus={connectionStatus}
           />
         )}
       </DashboardPadding>

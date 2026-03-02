@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\User\ManageUserController;
 use App\Http\Controllers\User\ManageUserGroupController;
+use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\Subset\SubsetLevelDataController;
 use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
 use App\Http\Controllers\Utils\OrganizationExportController;
 use App\Http\Controllers\OrganizationController;
@@ -35,6 +37,7 @@ use App\Http\Controllers\ChartData\SubsetGroupNameController;
 use App\Http\Controllers\ChartData\SubsetMeasuresController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
+use App\Http\Controllers\ChatHistory\FavoriteController;
 use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -112,6 +115,7 @@ use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\Subset\SubsetUpdateController;
 use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
+use App\Http\Controllers\Subset\SubsetDuplicateController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
@@ -135,12 +139,14 @@ Route::get('/', function () {
         return redirect()->route('login');
     }
 
-    return redirect()->route('data-detail.index');
+    return redirect()->route('homepage');
 });
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/home', [HomepageController::class, 'index'])->name('homepage');
 
 // Page building
 Route::resource('page-builder', PageBuilderController::class);
@@ -299,6 +305,9 @@ Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
 Route::delete('subset/{detail}', SubsetDeleteController::class)
     ->name('subset.destroy');
 
+Route::post('subset/{subsetDetail}/duplicate', SubsetDuplicateController::class)
+    ->name('subset.duplicate');
+
 Route::get('subset-list', SubsetListController::class)
     ->name('subset.list');
 
@@ -341,7 +350,7 @@ Route::get('subset-fields', SubsetFieldsListController::class)
 Route::get('static-list', StaticListController::class)
     ->name('static-list');
 
-Route::get('chat', ChatController::class)
+Route::get('chat/{chatHistory?}', ChatController::class)
     ->name('chat');
 
 Route::get('subset-documentation', SubsetDocumentationController::class)
@@ -393,6 +402,8 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
+Route::post('/chat-history/{chatHistory}/favorite', [FavoriteController::class, 'addFavorite'])->name('chat-history.add-favorite');
+Route::delete('/chat-history/{chatHistory}/favorite/{messageId}', [FavoriteController::class, 'removeFavorite'])->name('chat-history.remove-favorite');
 
 Route::get('/nav-editor', [NavEditorController::class, 'index'])->name('nav.editor');
 
@@ -479,6 +490,12 @@ Route::resource('manage-user-group', ManageUserGroupController::class)
     ->parameters(['manage-user-group' => 'userGroup']);
 
 Route::resource('subset-permissions', SubsetPermissionsController::class);
+
+Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
+    ->name('subset-level-data');
+
+Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
+    ->name('subset-level-data');
 
 require __DIR__ . '/auth.php';
 

@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import { AddWidgetSheet } from '@/Components/WidgetsEditor/AddWidgetSheet'
+import { PlusIcon } from 'lucide-react'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import { useState } from 'react'
 import CardHeader from '@/ui/Card/CardHeader'
@@ -116,7 +116,13 @@ export default function WidgetCollectionShowPage({
                   className='rounded-lg border border-gray-300 py-1.5 pl-9 pr-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500'
                 />
               </div>
-              <AddWidgetSheet collectionId={collection.id} />
+              <Link
+                href='/widget-editor/create?type=overview'
+                className='flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700'
+              >
+                <PlusIcon className='h-4 w-4' />
+                Add Widget
+              </Link>
             </div>
           </div>
 

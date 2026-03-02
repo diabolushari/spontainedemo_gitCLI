@@ -1,5 +1,7 @@
 import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
+import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { BlockDimension } from '@/interfaces/data_interfaces'
@@ -12,8 +14,7 @@ import SampleMonthSelector from '../../Dashboard/SampleMonthSelector'
 
 interface Props {
   subsetId: number
-  dataField: string
-  dataFieldName: string
+  trendMeasures: SelectedMeasure[]
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   filterFieldName?: string
@@ -31,14 +32,14 @@ interface Props {
   dimensions?: BlockDimension
   colorScheme?: string
   editMode?: boolean
+  suppressError?: boolean
 }
 
 export default function TrendGraph({
   selectedMonth,
   setSelectedMonth,
   subsetId,
-  dataField,
-  dataFieldName,
+  trendMeasures,
   filterListFetchURL,
   filterFieldName,
   defaultFilterValue,
@@ -48,11 +49,12 @@ export default function TrendGraph({
   yAxisLabel,
   tooltipIndicator,
   colorScheme = 'boldWarm',
+  suppressError = false,
 }: Readonly<Props>) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
   const chartContainerClassName =
-    'h-[450px] w-full overflow-hidden rounded-xl border border-border bg-background'
+    'h-[40cqw] min-h-[250px] w-full overflow-hidden rounded-[1.5cqw] border border-border bg-background'
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
@@ -72,7 +74,7 @@ export default function TrendGraph({
         .format('YYYYMM')
     }
 
-    params['fields'] = `month,${dataField}`
+    params['fields'] = `month,${trendMeasures.map((m) => m.subset_column).join(',')}`
 
     if (filterFieldName != null) {
       params[filterFieldName] = filterValue
@@ -86,13 +88,13 @@ export default function TrendGraph({
     filterValue,
     filterFieldName,
     setSelectedMonth,
-    dataField,
+    trendMeasures,
   ])
 
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
     latest_value: string | null | undefined
-  }>(fetchUrl)
+  }>(fetchUrl, { suppressError })
 
   console.log('trend fetchUrl : ', fetchUrl)
   console.log('trend graphValues : ', graphValues)
@@ -117,27 +119,30 @@ export default function TrendGraph({
     return selectedMonths
       .map((month) => {
         const value = graphValues?.data?.find((v) => v.month === month)
-        return {
+        const rowData: Record<string, string | number> = {
           month: `${month?.slice(4)}/${month?.slice(0, 4)}`,
-          [dataFieldName]: value?.[dataField] ?? 0,
         }
+        
+        trendMeasures.forEach((measure) => {
+          rowData[measure.subset_field_name] = value?.[measure.subset_column] as number ?? 0
+        })
+
+        return rowData
       })
       .reverse()
-  }, [dataFieldName, dataField, graphValues?.data, selectedMonthValue, selectedMonth])
+  }, [trendMeasures, graphValues?.data, selectedMonthValue, selectedMonth])
 
   const keysToPlot = useMemo(() => {
-    return [
-      {
-        key: dataFieldName,
-        label: tooltipIndicator?.label ?? dataFieldName,
-        unit: tooltipIndicator?.unit,
-      },
-    ]
-  }, [dataFieldName, tooltipIndicator])
+    return trendMeasures.map(measure => ({
+      key: measure.subset_field_name,
+      label: measure.subset_field_name,
+      unit: measure.unit,
+    }))
+  }, [trendMeasures])
 
   return (
-    <div className='flex w-full flex-col pr-4'>
-      <div className='relative flex w-full justify-between gap-2 px-2 pb-2'>
+    <div className='flex w-full flex-col pr-[1cqw] [container-type:inline-size]'>
+      <div className='relative flex w-full justify-between gap-[1cqw] px-[1cqw] pb-[1cqw]'>
         <SampleMonthSelector
           selectedValue={selectedMonthValue}
           setSelectedValue={setSelectedMonthValue}
@@ -160,7 +165,12 @@ export default function TrendGraph({
             className='h-full w-full'
           />
         )}
-        {!isLoading && chartType === 'area' && (
+        {!isLoading && (!graphValues?.data || graphValues.data.length === 0) && (
+          <div className='flex h-full w-full items-center justify-center text-gray-400 text-[1.4cqw]'>
+            No data
+          </div>
+        )}
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'area' && trendMeasures.length <= 1 && (
           <CustomAreaChart
             data={chartData}
             dataKey='month'
@@ -172,7 +182,18 @@ export default function TrendGraph({
             containerClassName='h-full w-full'
           />
         )}
-        {!isLoading && chartType === 'bar' && (
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'area' && trendMeasures.length > 1 && (
+          <CustomLineChart
+            data={chartData}
+            dataKey='month'
+            keysToPlot={keysToPlot}
+            xAxisLabel={xAxisLabel}
+            yAxisLabel={yAxisLabel}
+            colorScheme={colorScheme}
+            containerClassName='h-full w-full'
+          />
+        )}
+        {!isLoading && graphValues?.data && graphValues.data.length > 0 && chartType === 'bar' && (
           <CustomBarChart
             data={chartData}
             dataKey='month'

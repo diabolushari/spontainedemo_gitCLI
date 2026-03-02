@@ -10,7 +10,7 @@ interface Properties {
   showDetails: (status: JobStatuses) => void
 }
 
-const heads = ['DATE', 'RAN AT', 'STATUS', 'ROWS']
+const heads = ['DATE', 'RAN AT', 'STATUS', 'RETRY', 'ROWS']
 export default function JobStatusesTable({ statuses, showDetails }: Readonly<Properties>) {
   return (
     <div className='py-10'>
@@ -29,6 +29,9 @@ export default function JobStatusesTable({ statuses, showDetails }: Readonly<Pro
                     className={` ${status.is_successful === 1 ? 'standard-td text-1stop-highlight' : 'standard-td text-[#DA999A]'}`}
                   >
                     {status.is_successful === 1 ? 'Successful' : 'Failed'}
+                  </td>
+                  <td className='standard-td'>
+                    {status.is_retry === 1 ? `YES (${status.retry_attempt})` : '-'}
                   </td>
                   <td className='standard-td'>{status.total_records}</td>
                   <td className='standard-td small-1stop text-1stop-link'>

@@ -30,6 +30,7 @@ interface Props {
   }
   colorScheme?: string
   containerClassName?: string
+  showTooltip?: boolean
 }
 
 export function CustomAreaChart({
@@ -38,6 +39,7 @@ export function CustomAreaChart({
   keysToPlot,
   colorScheme = 'boldWarm',
   containerClassName = 'aspect-video w-full transition-all xl:w-10/12',
+  showTooltip = true,
 }: Readonly<Props>) {
   const chartColors: string[] = chartPallet[colorScheme as keyof typeof chartPallet] ?? []
 
@@ -83,7 +85,7 @@ export function CustomAreaChart({
             axisLine={false}
             tickMargin={8}
           />
-          <ChartTooltip content={<ChartTooltipContent />} />
+          {showTooltip && <ChartTooltip content={<ChartTooltipContent />} />}
           {keysToPlot.map((plotKey, index) => (
             <Area
               key={plotKey.key}

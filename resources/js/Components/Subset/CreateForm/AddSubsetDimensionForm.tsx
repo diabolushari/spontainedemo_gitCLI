@@ -62,6 +62,11 @@ export default function AddSubsetDimensionForm({
         setValue: (value: string) => {
           setFormValue('field_id')(value)
           setAppliedFilters([])
+          const selected = dimensionFields.find((f) => f.id === Number(value))
+          if (selected != null) {
+            setFormValue('subset_field_name')(selected.field_name)
+            setFormValue('column_expression')(`MYSQL format - EXPR(${selected.column}_record.name)`)
+          }
         },
         label: 'Field',
         list: dimensionFields,

@@ -10,18 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetColumSearchController extends Controller implements HasMiddleware
+class SubsetColumSearchController extends Controller
 {
-    /**
-     * @return string[]
-     */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
-
     public function __invoke(
         SubsetDetail $subsetDetail,
         SubsetGroupedByColumn $groupedByColumn,
@@ -30,7 +20,7 @@ class SubsetColumSearchController extends Controller implements HasMiddleware
     ): JsonResponse {
         $subsetDetail->load('measures.info', 'dates.info', 'dimensions.info', 'dimensions.hierarchy', 'measures.weightInfo');
 
-        if (! $request->filled('column') || ! $request->filled('search')) {
+        if (!$request->filled('column') || !$request->filled('search')) {
             return response()
                 ->json();
         }
@@ -65,7 +55,7 @@ class SubsetColumSearchController extends Controller implements HasMiddleware
             $queryBuilder,
             $subsetDetail,
             [
-                $columnName.'_like' => $request->input('search'),
+                $columnName . '_like' => $request->input('search'),
             ]
         );
 

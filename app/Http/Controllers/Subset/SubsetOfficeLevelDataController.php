@@ -38,6 +38,7 @@ class SubsetOfficeLevelDataController extends Controller
             ->excludeNonMeasurements(false)
             ->withSummaryLevel($request->level ?? 'state')
             ->withSubsetDetail($subsetDetail->id)
+            ->withDimension($request->dimension)
             ->getQuery();
 
         $levelResult = $query?->get();

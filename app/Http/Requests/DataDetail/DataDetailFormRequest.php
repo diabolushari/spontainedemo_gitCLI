@@ -33,7 +33,7 @@ class DataDetailFormRequest extends Data
         public ?array $measures,
         public ?array $texts,
         public ?array $relations,
-        // Job-related fields
+            // Job-related fields
         #[Max(255)]
         public ?string $jobName,
         #[Max(1000)]
@@ -55,5 +55,22 @@ class DataDetailFormRequest extends Data
         public ?array $fieldMapping,
         public ?string $scheduleStartTime,
         public ?int $subHourInterval,
-    ) {}
+        public ?int $retries,
+        public ?int $retriesInterval,
+    ) {
+    }
+
+    public static function withValidator(\Illuminate\Validation\Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $data = $validator->getData();
+            
+            if (
+                isset($data['sub_hour_interval'], $data['retries'], $data['retries_interval']) &&
+                ($data['retries'] * $data['retries_interval'] >= $data['sub_hour_interval'])
+            ) {
+                $validator->errors()->add('retries_interval', 'Retry duration (Retries * Interval) must be less than Sub-hour Interval');
+            }
+        });
+    }
 }

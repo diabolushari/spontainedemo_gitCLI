@@ -12,6 +12,20 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            $user->widgetCollections()->createMany([
+                ['name' => 'draft', 'description' => 'Draft widgets'],
+                ['name' => 'save', 'description' => 'Saved widgets'],
+            ]);
+        });
+    }
+
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -46,4 +60,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the widget collections for the user.
+     */
+    public function widgetCollections()
+    {
+        return $this->hasMany(\App\Models\WidgetEditor\WidgetCollection::class);
+    }
+
 }

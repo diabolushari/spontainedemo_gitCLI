@@ -18,6 +18,8 @@ import {
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import CardHeader from '@/ui/Card/CardHeader'
 import Button from '@/ui/button/Button'
+import * as Accordion from '@radix-ui/react-accordion'
+import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import React, { useMemo, useState } from 'react'
 
 interface Props {
@@ -42,7 +44,7 @@ export default function SubsetCreate({
   hierarchies,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
-    group_data: false,
+    group_data: true,
     name: '',
     description: '',
     use_for_training_ai: false,
@@ -51,7 +53,7 @@ export default function SubsetCreate({
     proactive_insight_instructions: '',
     add_visualization_instructions: false,
     visualization_instructions: '',
-    type: '',
+    type: 'composite_subset',
   })
 
   const { post, loading, errors } = useInertiaPost(route('subset.store', dataDetail.id), {
@@ -65,6 +67,8 @@ export default function SubsetCreate({
   const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]>(
     []
   )
+
+  const [aiOptionsOpen, setAiOptionsOpen] = useState(false)
 
   const formItems = useMemo(<
     T,
@@ -89,14 +93,6 @@ export default function SubsetCreate({
         setValue: setFormValue('max_rows_to_fetch'),
         placeholder: 'Max Rows To Show (Leave Empty To Show All)',
       },
-      type: {
-        type: 'radioGroup' as const,
-        setValue: setFormValue('type'),
-        list: subsetTypes,
-        dataKey: 'value',
-        displayKey: 'name',
-        label: 'Select the type of subset to create',
-      },
       group_data: {
         label: 'Perform Grouping & Aggregation Operations on Data',
         type: 'checkbox' as const,
@@ -105,6 +101,17 @@ export default function SubsetCreate({
         description:
           'Grouping & Aggregation Operations can not be toggled if measures are already added',
       },
+    } as Record<U, FormItem<T[U], K, G, L>>
+  }, [
+    setFormValue,
+    toggleBoolean,
+    measures,
+    formData.add_proactive_insight_instructions,
+    formData.add_visualization_instructions,
+  ])
+
+  const aiFormItems = useMemo(() => {
+    return {
       use_for_training_ai: {
         type: 'checkbox' as const,
         setValue: toggleBoolean('use_for_training_ai'),
@@ -132,7 +139,7 @@ export default function SubsetCreate({
         placeholder: 'Visualization Instructions',
         hidden: !formData.add_visualization_instructions,
       },
-    } as Record<U, FormItem<T[U], K, G, L>>
+    }
   }, [
     setFormValue,
     toggleBoolean,
@@ -180,6 +187,30 @@ export default function SubsetCreate({
           formStyles='md:w-1/2 md:grid-cols-1 gap-5 mb-5'
           hideSubmitButton
         />
+        <div className='mb-5 md:w-1/2'>
+          <Accordion.Root
+            type='single'
+            collapsible
+          >
+            <Accordion.Item
+              value='ai-options'
+              className='rounded-lg border border-slate-200'
+            >
+              <AccordionTrigger>AI Options</AccordionTrigger>
+              <AccordionContent>
+                <FormBuilder
+                  formData={formData}
+                  onFormSubmit={submitForm}
+                  formItems={aiFormItems}
+                  loading={loading}
+                  errors={errors}
+                  formStyles='md:grid-cols-1 gap-5'
+                  hideSubmitButton
+                />
+              </AccordionContent>
+            </Accordion.Item>
+          </Accordion.Root>
+        </div>
         <SubsetManageDates
           dataDetail={dataDetail}
           dateFields={dateFields}

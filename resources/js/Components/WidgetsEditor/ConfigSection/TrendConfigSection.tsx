@@ -36,19 +36,12 @@ export default function TrendConfigSection({
   }))
 
   const selectedMeasures = useMemo(() => {
-    if (formData.trend_measure == null) {
-      return []
-    }
-    return [formData.trend_measure]
-  }, [formData.trend_measure, formData.trend_subset_id])
+    return formData.trend_measures ?? []
+  }, [formData.trend_measures, formData.trend_subset_id])
 
   const updateMeasures = useCallback(
     (measures: SelectedMeasure[]) => {
-      if (measures.length > 0) {
-        setFormValue('trend_measure')(measures[0])
-        return
-      }
-      setFormValue('trend_measure')(null)
+      setFormValue('trend_measures')(measures)
     },
     [setFormValue]
   )
@@ -56,7 +49,7 @@ export default function TrendConfigSection({
   const handleSubsetChange = useCallback(
     (value: string) => {
       setFormValue('trend_subset_id')(value)
-      setFormValue('trend_measure')(null)
+      setFormValue('trend_measures')([])
     },
     [setFormValue]
   )
@@ -75,16 +68,16 @@ export default function TrendConfigSection({
     [setFormValue]
   )
 
-  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+  const [subset, setSubset] = useState<any>({
     id: Number(formData.trend_subset_id),
     name: formData.trend_subset_name,
   })
 
   const handleSubsetChangeAi = useCallback(
-    (value: SubsetDetail | Record<string, any>) => {
+    (value: any) => {
       setSubset(value)
       setFormValue('trend_subset_id')(value.id.toString())
-      setFormValue('trend_measure')(null)
+      setFormValue('trend_measures')([])
     },
     [setFormValue]
   )
@@ -139,7 +132,7 @@ export default function TrendConfigSection({
           subsetId={formData.trend_subset_id}
           measures={selectedMeasures}
           onMeasuresChange={updateMeasures}
-          allowMultiple={false}
+          allowMultiple={true}
         />
       </div>
       <div className='flex flex-col'>

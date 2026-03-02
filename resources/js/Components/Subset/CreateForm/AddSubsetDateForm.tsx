@@ -90,7 +90,18 @@ export default function AddSubsetDateForm({
     return {
       field_id: {
         type: 'select' as const,
-        setValue: setFormValue('field_id'),
+        setValue: (value: string) => {
+          setFormValue('field_id')(value)
+          const selected = dateFields.find((f) => f.id === Number(value))
+          if (selected != null) {
+            setFormValue('subset_field_name')(selected.field_name)
+          }
+          if (selected != null) {
+            setFormValue('date_field_expression')(
+              `MYSQL format - EXPR(${selected.column}_record.name)`
+            )
+          }
+        },
         label: 'Field',
         list: dateFields,
         dataKey: 'id',

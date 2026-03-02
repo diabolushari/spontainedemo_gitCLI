@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -163,36 +165,42 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
+
   @font-face {
     font-family: 'Figtree-Light';
     src: url('/fonts/onestop/Figtree-Light.woff');
     font-style: normal;
     font-weight: 300;
   }
+
   @font-face {
     font-family: 'Figtree-Regular';
     src: url('/fonts/onestop/Figtree-Regular.woff');
     font-style: normal;
     font-weight: 400;
   }
+
   @font-face {
     font-family: 'Figtree-Medium';
     src: url('/fonts/onestop/Figtree-Medium.woff');
     font-style: normal;
     font-weight: 500;
   }
+
   @font-face {
     font-family: 'Figtree-Bold';
     src: url('/fonts/onestop/Figtree-Bold.woff');
     font-style: normal;
     font-weight: 700;
   }
+
   @font-face {
     font-family: 'Figtree-ExtraBold';
     src: url('/fonts/onestop/Figtree-ExtraBold.woff');
     font-style: normal;
     font-weight: 800;
   }
+
   @font-face {
     font-family: 'Poppins-Regular';
     src: url('/fonts/onestop/Poppins-Regular.woff');
@@ -227,6 +235,7 @@ body {
     font-style: normal;
     font-weight: 400;
   }
+
   @font-face {
     font-family: 'DMMono-Medium';
     src: url('/fonts/onestop/DMMono-Medium.woff');
@@ -315,6 +324,7 @@ body {
   .date-picker-input::-webkit-calendar-picker-indicator {
     /* display: none; */
   }
+
   .month-picker-calendar .react-datepicker__month {
     font-size: 10px;
     font-weight: 600;
@@ -382,6 +392,7 @@ body {
     font-weight: 200;
     line-height: 16px;
   }
+
   .small-1stop-header {
     font-family: 'Figtree-Medium';
     font-size: 12px;
@@ -399,6 +410,7 @@ body {
     line-height: 44px;
     letter-spacing: -1px;
   }
+
   .mdmetric-1stop {
     font-family: 'Figtree-Regular';
     font-style: normal;
@@ -416,6 +428,7 @@ body {
     line-height: 28px;
     letter-spacing: -1px;
   }
+
   .axial-label-1stop {
     font-family: 'Figtree-Regular';
     font-style: normal;
@@ -424,6 +437,7 @@ body {
     line-height: 12px;
     letter-spacing: 0px;
   }
+
   .data-xs-1stop {
     font-family: 'DMMono-Regular';
     font-style: normal;
@@ -431,6 +445,7 @@ body {
     font-weight: 200;
     line-height: 14px;
   }
+
   .data-sm-1stop {
     font-family: 'DMMono-Regular';
     font-style: normal;
@@ -438,6 +453,7 @@ body {
     font-weight: 200;
     line-height: 16px;
   }
+
   .data-md-1stop {
     font-family: 'DMMono-Regular';
     font-style: normal;
@@ -453,6 +469,7 @@ body {
     font-weight: 500;
     line-height: 20px;
   }
+
   .dark {
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -493,6 +510,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
