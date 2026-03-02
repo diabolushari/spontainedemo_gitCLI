@@ -13,6 +13,11 @@ import TextArea from '@/ui/form/TextArea'
 import Button from '@/ui/button/Button'
 import SelectList from '@/ui/form/SelectList'
 import ComboBox from '@/ui/form/ComboBox'
+import Input from '@/ui/form/Input'
+import ColorInput from '@/ui/form/ColourInput'
+import MDEditor from '@uiw/react-md-editor'
+import '@uiw/react-md-editor/markdown-editor.css'
+import '@uiw/react-markdown-preview/markdown.css'
 
 export interface OrganizationObjective {
   id: string
@@ -28,6 +33,10 @@ export interface OrganizationForm {
   country: string
   industry_context: string
   hierarchy_connection: string
+  logo: File | null
+  primary_colour?: string
+  secondary_colour?: string
+  tertiary_colour?: string
 }
 
 interface MetaHierarchy {
@@ -65,6 +74,10 @@ export default function OrganizationCreatePage({ metaHierarchies }: Readonly<Cre
     country: '',
     industry_context: '',
     hierarchy_connection: '',
+    logo: null,
+    primary_colour: '',
+    secondary_colour: '',
+    tertiary_colour: '',
   })
 
   const [objectives, setObjectives] = useState<OrganizationObjective[]>([
@@ -107,8 +120,13 @@ export default function OrganizationCreatePage({ metaHierarchies }: Readonly<Cre
         setValue: setFormValue('country'),
         placeholder: 'Enter country',
       },
+      logo: {
+        type: 'file',
+        label: 'Logo',
+        setValue: setFormValue('logo'),
+      },
       industry_context: {
-        type: 'textarea',
+        type: 'markdown',
         label: 'Industry Context',
         setValue: setFormValue('industry_context'),
         placeholder: 'Major lines of businesses and high level strategic objective',
@@ -187,6 +205,42 @@ export default function OrganizationCreatePage({ metaHierarchies }: Readonly<Cre
                   formStyles='gap-y-6 gap-x-8'
                 />
 
+                <div className='mt-8 border-t border-gray-100 pt-8'>
+                  <div className='mb-6'>
+                    <h3 className='text-lg font-semibold text-gray-900'>Colour Scheme</h3>
+                  </div>
+
+                  <div className='space-y-6'>
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      <div className='col-span-2 flex w-full flex-col'>
+                        <ColorInput
+                          label='Primary Color'
+                          value={formData.primary_colour}
+                          setValue={setFormValue('primary_colour')}
+                          error={errors.primary_color}
+                        />
+                      </div>
+                      <div className='col-span-2 flex w-full flex-col'>
+                        <ColorInput
+                          label='Secondary Colour'
+                          value={formData.secondary_colour}
+                          setValue={setFormValue('secondary_colour')}
+                          error={errors.secondary_colour}
+                        />
+                      </div>
+                      <div className='col-span-2 flex w-full flex-col'>
+                        <ColorInput
+                          label='Tertiary Colour'
+                          value={formData.tertiary_colour}
+                          setValue={setFormValue('tertiary_colour')}
+                          error={errors.tertiary_colour}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Fixed Full Width Layout for Description */}
+                  </div>
+                </div>
                 {/* Meta Hierarchy Item Selection */}
                 <div className='mt-8 border-t border-gray-100 pt-8'>
                   <div className='mb-6'>
@@ -234,19 +288,40 @@ export default function OrganizationCreatePage({ metaHierarchies }: Readonly<Cre
                     </div>
 
                     {/* Fixed Full Width Layout for Description */}
-                    <div className='flex w-full flex-col'>
+                    {/* <div className='flex w-full flex-col'>
                       <TextArea
                         label='Description of Connection'
                         value={formData.hierarchy_connection}
                         setValue={setFormValue('hierarchy_connection')}
                         placeholder='Describe how this organization connects to the selected hierarchy item (e.g. "Direct subsidiary of X")...'
                       />
+                    </div> */}
+                    <div className='flex w-full flex-col gap-2'>
+                      <label className='small-1stop tracking-normal text-gray-800'>
+                        Description of Connection
+                      </label>
+
+                      <div
+                        data-color-mode='light'
+                        className='rounded-lg border border-gray-200'
+                      >
+                        <MDEditor
+                          value={formData.hierarchy_connection || ''}
+                          onChange={(value) => setFormValue('hierarchy_connection')(value || '')}
+                          height={300}
+                          preview='edit'
+                        />
+                      </div>
+
+                      {errors.hierarchy_connection && (
+                        <p className='text-sm text-red-600'>{errors.hierarchy_connection}</p>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {/* Reporting Objectives Section */}
-                <div className='mt-8 border-t border-gray-100 pt-8'>
+                {/* <div className='mt-8 border-t border-gray-100 pt-8'>
                   <div className='mb-6'>
                     <h2 className='text-xl font-semibold text-gray-900'>Reporting Objectives</h2>
                     <p className='mt-1 text-sm text-gray-500'>
@@ -306,7 +381,7 @@ export default function OrganizationCreatePage({ metaHierarchies }: Readonly<Cre
                       Add Another Reporting Period
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 <div className='mt-12 flex justify-end border-t border-gray-100 pt-6'>
                   <Button

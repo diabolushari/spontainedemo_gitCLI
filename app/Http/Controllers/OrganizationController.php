@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Organization\OrganizationFormRequest;
-use Illuminate\Http\Request;
+use App\Libs\SaveFile;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Organization;
+use App\Models\OrganizationContextHistory;
+use App\Models\OrganizationHierarchy;
+use App\Models\OrganizationObjectives;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,7 +30,7 @@ final class OrganizationController extends Controller implements HasMiddleware
         $query = Organization::query();
 
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $organizations = $query->latest()->paginate(10)->withQueryString();
@@ -47,21 +52,67 @@ final class OrganizationController extends Controller implements HasMiddleware
 
     public function store(OrganizationFormRequest $request): RedirectResponse
     {
-        // The $request is already validated. 
-        // We use toArray() to get the clean data from the DTO.
-        // Note: This returns keys matching your DTO property names (e.g. camelCase).
-        // If your DB requires snake_case, ensure your Model handles it or map the keys.
-        Organization::create($request->toArray());
+        $saveFile = new SaveFile;
 
-        return redirect()->route('organization.index')
-            ->with('message', 'Organization created successfully.');
+        DB::beginTransaction();
+
+        try {
+            $organization = Organization::create($request->toArray());
+
+            OrganizationContextHistory::create([
+                'organization_id' => $organization->id,
+                'context' => $organization->industry_context,
+            ]);
+
+            if ($request->metaHierarchyItemId) {
+                OrganizationHierarchy::create([
+                    'organization_id' => $organization->id,
+                    'meta_hierarchy_item_id' => $request->metaHierarchyItemId,
+                    'hierarchy_connection' => $request->hierarchyConnection ?? '',
+                ]);
+            }
+            if ($request->logo) {
+
+                $logoFileName = $saveFile->save(
+                    $request->logo,
+                    $organization->id,
+                    'logo',
+                    false
+                );
+
+                if ($logoFileName == '') {
+                    DB::rollBack();
+
+                    return redirect()->back()
+                        ->with(['error' => 'Failed To Upload Logo']);
+                }
+
+                $organization->logo = $logoFileName;
+                $organization->save();
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('organization.index')
+                ->with('message', 'Organization created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->with(['error' => $e->getMessage()]);
+        }
     }
 
     public function show($id): Response
     {
+
         $organization = Organization::with([
-            'metaHierarchyItem.primaryField.metaStructure',
-            'metaHierarchyItem.secondaryField',
+            'hierarchy.metaHierarchyItem.primaryField.metaStructure',
+            'hierarchy.metaHierarchyItem.secondaryField',
+            'objectives'
         ])->findOrFail($id);
 
         return Inertia::render('Organization/OrganizationShowPage', [
@@ -71,9 +122,11 @@ final class OrganizationController extends Controller implements HasMiddleware
 
     public function edit($id): Response
     {
-        $organization = Organization::with('metaHierarchyItem.primaryField.metaStructure')->findOrFail($id);
+        $organization = Organization::with(['hierarchy.metaHierarchyItem.primaryField.metaStructure',
+            'hierarchy.metaHierarchyItem.metaHierarchy'])->findOrFail($id);
         $metaHierarchies = MetaHierarchy::select('id', 'name')->get();
 
+        // dd($organization, $metaHierarchies);
         return Inertia::render('Organization/OrganizationEditPage', [
             'organization' => $organization,
             'metaHierarchies' => $metaHierarchies,
@@ -83,11 +136,78 @@ final class OrganizationController extends Controller implements HasMiddleware
     public function update(OrganizationFormRequest $request, $id): RedirectResponse
     {
         $organization = Organization::findOrFail($id);
+        $saveFile = new SaveFile;
 
-        $organization->update($request->toArray());
+        DB::beginTransaction();
 
-        return redirect()->route('organization.index')
-            ->with('message', 'Organization updated successfully.');
+        try {
+
+            $organization->update(
+                collect($request->toArray())->except('logo')->toArray()
+            );
+
+            $newContext = $organization->industry_context ?? '';
+
+            $lastContextValue = OrganizationContextHistory::where('organization_id', $organization->id)
+                ->latest()
+                ->value('context');
+
+            if ($lastContextValue !== $newContext) {
+                OrganizationContextHistory::create([
+                    'organization_id' => $organization->id,
+                    'context' => $newContext,
+                ]);
+            }
+
+            if ($request->metaHierarchyItemId) {
+
+                $hierarchy = OrganizationHierarchy::updateOrCreate(
+                    ['organization_id' => $organization->id],
+                    [
+                        'meta_hierarchy_item_id' => $request->metaHierarchyItemId,
+                        'hierarchy_connection' => $request->hierarchyConnection ?? '',
+                    ]
+                );
+            } else {
+                OrganizationHierarchy::where('organization_id', $organization->id)->delete();
+                $organization->hierarchy_id = null;
+                $organization->save();
+            }
+
+            if ($request->logo) {
+
+                $logoFileName = $saveFile->save(
+                    $request->logo,
+                    $organization->id,
+                    'logo',
+                    false
+                );
+
+                if ($logoFileName == '') {
+                    DB::rollBack();
+
+                    return redirect()->back()
+                        ->with(['error' => 'Failed To Upload Logo']);
+                }
+
+                $organization->logo = $logoFileName;
+                $organization->save();
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('organization.index')
+                ->with('message', 'Organization updated successfully.');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->with(['error' => $e->getMessage()]);
+        }
     }
 
     public function destroy($id): RedirectResponse
@@ -97,5 +217,71 @@ final class OrganizationController extends Controller implements HasMiddleware
 
         return redirect()->route('organization.index')
             ->with('message', 'Organization deleted successfully.');
+    }
+
+    public function updateObjectives(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'organization_id' => ['required', 'exists:organizations,id'],
+            'objectives' => ['array'],
+            'objectives.*.period_start' => ['required', 'date'],
+            'objectives.*.period_end' => ['required', 'date'],
+            'objectives.*.objective' => ['required', 'string'],
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $organizationId = $request->organization_id;
+            $submittedIds = [];
+
+            foreach ($request->objectives ?? [] as $objectiveData) {
+
+                if (isset($objectiveData['id']) && is_numeric($objectiveData['id'])) {
+
+                    $objective = OrganizationObjectives::where('id', $objectiveData['id'])
+                        ->where('organization_id', $organizationId)
+                        ->first();
+
+                    if ($objective) {
+                        $objective->update([
+                            'period_start' => $objectiveData['period_start'],
+                            'period_end' => $objectiveData['period_end'],
+                            'objective' => $objectiveData['objective'],
+                        ]);
+
+                        $submittedIds[] = $objective->id;
+                    }
+
+                } else {
+
+                    $newObjective = OrganizationObjectives::create([
+                        'organization_id' => $organizationId,
+                        'period_start' => $objectiveData['period_start'],
+                        'period_end' => $objectiveData['period_end'],
+                        'objective' => $objectiveData['objective'],
+                    ]);
+
+                    $submittedIds[] = $newObjective->id;
+                }
+            }
+
+            OrganizationObjectives::where('organization_id', $organizationId)
+                ->whereNotIn('id', $submittedIds)
+                ->delete();
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with('message', 'Objectives updated successfully.');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', $e->getMessage());
+        }
     }
 }

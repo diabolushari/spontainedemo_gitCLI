@@ -13,6 +13,9 @@ import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import { cn } from '@/utils'
 import React, { memo, useMemo } from 'react'
 import RadioGroup from '@/ui/form/RadioGroup'
+import MDEditor from '@uiw/react-md-editor'
+import '@uiw/react-md-editor/markdown-editor.css'
+import '@uiw/react-markdown-preview/markdown.css'
 
 export interface FormItem<
   T,
@@ -31,6 +34,7 @@ export interface FormItem<
     | 'dynamicSelect'
     | 'radioGroup'
     | 'textarea'
+    | 'markdown'
     | 'date'
     | 'file'
     | 'time'
@@ -347,6 +351,36 @@ function FormBuilder<
                 />
               </div>
             )}
+          {formItems[keyValue].type === 'markdown' && !formItems[keyValue].hidden && (
+            <div className={cn('flex flex-col', formItems[keyValue].colPositionAdjustment ?? '')}>
+              {formItems[keyValue].description != null && (
+                <NormalText>{formItems[keyValue].description}</NormalText>
+              )}
+
+              <label className='small-1stop mb-1 tracking-normal text-gray-800'>
+                {formItems[keyValue].label}
+              </label>
+
+              <div
+                data-color-mode='light'
+                className='rounded-lg border border-gray-200'
+              >
+                <MDEditor
+                  value={(formData[keyValue] as string) || ''}
+                  onChange={(value) =>
+                    (formItems[keyValue].setValue as (value: string) => unknown)(value || '')
+                  }
+                  height={250}
+                  preview='edit'
+                  visibleDragbar={false}
+                />
+              </div>
+
+              {errors != null && errors[keyValue] && (
+                <p className='mt-1 text-sm text-red-600'>{errors[keyValue]}</p>
+              )}
+            </div>
+          )}
         </React.Fragment>
       ))}
       {children}

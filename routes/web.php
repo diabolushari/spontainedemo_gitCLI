@@ -477,6 +477,8 @@ Route::get('api/subset-detail/{subsetDetail}', SubsetDetailGetController::class)
     ->name('subset.detail.get');
 
 Route::resource('organization', OrganizationController::class);
+Route::post('update-objectives',[OrganizationController::class, 'updateObjectives'])
+->name('organization.update-objectives');
 Route::get('organization-export', OrganizationExportController::class)
     ->name('organization.export');
 
