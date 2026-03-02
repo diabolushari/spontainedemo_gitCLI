@@ -16,13 +16,11 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('organization_id')
-                ->constrained('organizations')
-                ->cascadeOnDelete();
+                ->constrained('organizations');
 
             $table->foreignId('meta_hierarchy_item_id')
                 ->nullable()
-                ->constrained('meta_hierarchy_items')
-                ->nullOnDelete();
+                ->constrained('meta_hierarchy_items');
 
             $table->text('hierarchy_connection')->nullable();
             $table->softDeletes();
