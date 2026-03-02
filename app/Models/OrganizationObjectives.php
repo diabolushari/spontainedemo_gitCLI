@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrganizationContext extends Model
+class OrganizationObjectives extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'organization_id',
-        'context'
+        'period_start',
+        'period_end',
+        'objective',
     ];
-
-    
 }

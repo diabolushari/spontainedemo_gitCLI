@@ -2,6 +2,7 @@ import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructur
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
+import { MetaHierarchyItem } from '@/Pages/Organization/OrganizationShowPage'
 
 export interface Model {
   id: number
@@ -617,4 +618,11 @@ export interface DashboardPage extends Model {
   config: {
     heading_style: number | null
   } | null
+}
+
+export interface OrganizationHeirarchy extends Model {
+  organization_id: number
+  meta_hierarchy_item_id: number
+  hierarchy_connection: string
+  meta_hierarchy_item?: MetaHierarchyItem | null
 }

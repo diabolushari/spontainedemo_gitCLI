@@ -52,7 +52,7 @@ class OrganizationFormRequest extends Data
         public readonly ?string $secondaryColour,
 
         #[Nullable]
-        public readonly ?string $teritiaryColour,
+        public readonly ?string $tertiaryColour,
 
 
     ) {}

@@ -9,6 +9,10 @@ import DatePicker from '@/ui/form/DatePicker'
 import TextArea from '@/ui/form/TextArea'
 import Button from '@/ui/button/Button'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+import { OrganizationHeirarchy } from '@/interfaces/data_interfaces'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
+import useInertiaPost from '@/hooks/useInertiaPost'
+import MDEditor from '@uiw/react-md-editor'
 
 interface Objective {
   id: string
@@ -17,7 +21,7 @@ interface Objective {
   objective: string
 }
 
-interface MetaHierarchyItem {
+export interface MetaHierarchyItem {
   id: number
   primary_field?: {
     id: number
@@ -31,6 +35,7 @@ interface MetaHierarchyItem {
     id: number
     name: string
   }
+  meta_hierarchy: MetaHierarchy
 }
 
 interface Organization {
@@ -43,6 +48,7 @@ interface Organization {
   hierarchy_connection?: string | null
   objectives: Objective[]
   meta_hierarchy_item?: MetaHierarchyItem | null
+  hierarchy?: OrganizationHeirarchy
 }
 
 interface PageProps {
@@ -81,35 +87,22 @@ export default function OrganizationShowPage({ organization }: Readonly<PageProp
     setObjectives((prev) => prev.map((obj) => (obj.id === id ? { ...obj, [key]: value } : obj)))
   }, [])
 
-  const handleSave = () => {
-    setIsSaving(true)
-
-    // We must send ALL fields required by the backend DTO.
-    // IMPORTANT: Including meta_hierarchy_item_id is critical to preserve the relationship.
-    const finalData = {
-      name: organization.name,
-      address: organization.address,
-      state: organization.state,
-      country: organization.country,
-      industry_context: organization.industry_context,
-      hierarchy_connection: organization.hierarchy_connection ?? '',
-      meta_hierarchy_item_id: organization.meta_hierarchy_item?.id ?? null,
-      objectives: objectives,
+  const { post, loading, errors } = useInertiaPost(
+    route('organization.update-objectives', { organization: organization.id }),
+    {
+      preserveState: true,
+      preserveScroll: true,
+      onComplete: () => {
+        setIsEditMode(false)
+        setIsSaving(false)
+      },
     }
+  )
 
-    router.patch(
-      route('organization.update', { organization: organization.id }),
-      finalData as any,
-      {
-        onSuccess: () => {
-          setIsEditMode(false)
-          setIsSaving(false)
-        },
-        onError: () => {
-          setIsSaving(false)
-        },
-      }
-    )
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    post({ organization_id: organization.id, objectives: objectives, _method: 'POST' })
   }
 
   const handleCancel = () => {
@@ -173,7 +166,7 @@ export default function OrganizationShowPage({ organization }: Readonly<PageProp
               </div>
 
               {/* Hierarchy Assignment */}
-              {organization.meta_hierarchy_item && (
+              {organization.hierarchy?.meta_hierarchy_item && (
                 <div className='rounded-xl border border-indigo-100 bg-indigo-50/50 p-6 shadow-sm md:col-span-2'>
                   <h3 className='mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600'>
                     Hierarchy Assignment
@@ -182,23 +175,25 @@ export default function OrganizationShowPage({ organization }: Readonly<PageProp
                     <div className='flex items-center gap-4'>
                       <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-100'>
                         <span className='text-lg font-bold text-indigo-600'>
-                          {organization.meta_hierarchy_item.primary_field?.name?.charAt(0) ?? 'H'}
+                          {organization.hierarchy?.meta_hierarchy_item.primary_field?.name?.charAt(
+                            0
+                          ) ?? 'H'}
                         </span>
                       </div>
                       <div>
                         <p className='text-lg font-semibold text-gray-900'>
-                          {organization.meta_hierarchy_item.primary_field?.name}
-                          {organization.meta_hierarchy_item.secondary_field?.name && (
+                          {organization.hierarchy?.meta_hierarchy_item.primary_field?.name}
+                          {organization.hierarchy?.meta_hierarchy_item.secondary_field?.name && (
                             <span className='text-gray-500'>
                               {' '}
-                              - {organization.meta_hierarchy_item.secondary_field.name}
+                              - {organization.hierarchy?.meta_hierarchy_item.secondary_field.name}
                             </span>
                           )}
                         </p>
                         <p className='text-sm text-gray-500'>
                           {
-                            organization.meta_hierarchy_item.primary_field?.meta_structure
-                              ?.structure_name
+                            organization.hierarchy?.meta_hierarchy_item.primary_field
+                              ?.meta_structure?.structure_name
                           }
                         </p>
                       </div>
@@ -254,7 +249,7 @@ export default function OrganizationShowPage({ organization }: Readonly<PageProp
                     </button>
                     <Button
                       label='Save Changes'
-                      onClick={handleSave}
+                      onClick={handleSubmit}
                       processing={isSaving}
                       icon={<Save className='h-4 w-4' />}
                     />
@@ -321,12 +316,29 @@ export default function OrganizationShowPage({ organization }: Readonly<PageProp
                             setValue={(val) => updateObjective(obj.id, 'period_end', val)}
                           />
                         </div>
-                        <TextArea
+                        {/* <TextArea
                           label='Objective'
                           value={obj.objective}
                           setValue={(val) => updateObjective(obj.id, 'objective', val)}
                           placeholder='Describe the reporting objective...'
-                        />
+                        /> */}
+                        <div className='flex w-full flex-col gap-2'>
+                          <label className='small-1stop tracking-normal text-gray-800'>
+                            Description of Reporting Objective
+                          </label>
+
+                          <div
+                            data-color-mode='light'
+                            className='rounded-lg border border-gray-200'
+                          >
+                            <MDEditor
+                              value={obj.objective ?? ''}
+                              onChange={(val) => updateObjective(obj.id, 'objective', val ?? '')}
+                              height={300}
+                              preview='edit'
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

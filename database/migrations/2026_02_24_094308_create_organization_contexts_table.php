@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organization_contexts', function (Blueprint $table) {
+        Schema::create('organization_context_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('organization_id')->constrained('organizations');
-            $table->string('context');
+            $table->text('context');
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->string('logo')->nullable()->after('name');
             $table->string('primary_colour')->nullable();
             $table->string('secondary_colour')->nullable();
-            $table->string('teritiary_colour')->nullable();
+            $table->string('tertiary_colour')->nullable();
         });
     }
 
@@ -31,12 +32,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organization_contexts');
+        Schema::dropIfExists('organization_context_histories');
         Schema::table('organizations', function (Blueprint $table) {
             $table->dropColumn('logo');
             $table->dropColumn('primary_colour');
             $table->dropColumn('secondary_colour');
-            $table->dropColumn('teritiary_colour');
+            $table->dropColumn('tertiary_colour');
         });
     }
 };
