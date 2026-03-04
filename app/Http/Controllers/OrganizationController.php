@@ -9,6 +9,7 @@ use App\Models\Organization;
 use App\Models\OrganizationContextHistory;
 use App\Models\OrganizationHierarchy;
 use App\Models\OrganizationObjectives;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -92,18 +93,17 @@ final class OrganizationController extends Controller implements HasMiddleware
             }
 
             DB::commit();
-
-            return redirect()
-                ->route('organization.index')
-                ->with('message', 'Organization created successfully.');
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
 
             return redirect()
                 ->back()
                 ->with(['error' => $e->getMessage()]);
         }
+
+        return redirect()
+            ->route('organization.index')
+            ->with('message', 'Organization created successfully.');
     }
 
     public function show($id): Response
@@ -112,7 +112,7 @@ final class OrganizationController extends Controller implements HasMiddleware
         $organization = Organization::with([
             'hierarchy.metaHierarchyItem.primaryField.metaStructure',
             'hierarchy.metaHierarchyItem.secondaryField',
-            'objectives'
+            'objectives',
         ])->findOrFail($id);
 
         return Inertia::render('Organization/OrganizationShowPage', [
@@ -170,7 +170,6 @@ final class OrganizationController extends Controller implements HasMiddleware
                 );
             } else {
                 OrganizationHierarchy::where('organization_id', $organization->id)->delete();
-                $organization->hierarchy_id = null;
                 $organization->save();
             }
 
@@ -196,11 +195,7 @@ final class OrganizationController extends Controller implements HasMiddleware
 
             DB::commit();
 
-            return redirect()
-                ->route('organization.index')
-                ->with('message', 'Organization updated successfully.');
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             DB::rollBack();
 
@@ -208,6 +203,10 @@ final class OrganizationController extends Controller implements HasMiddleware
                 ->back()
                 ->with(['error' => $e->getMessage()]);
         }
+
+        return redirect()
+            ->route('organization.index')
+            ->with('message', 'Organization updated successfully.');
     }
 
     public function destroy($id): RedirectResponse
@@ -276,7 +275,7 @@ final class OrganizationController extends Controller implements HasMiddleware
             return redirect()->back()
                 ->with('message', 'Objectives updated successfully.');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             DB::rollBack();
 
