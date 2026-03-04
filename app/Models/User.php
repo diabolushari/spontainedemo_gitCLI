@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -24,7 +25,6 @@ class User extends Authenticatable
         });
     }
 
-
     /**
      * The attributes that are mass assignable.
      *
@@ -33,9 +33,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'role',
+        // 'role',
         'password',
-        'group_id'
+        'group_id',
+        'office_code',
+        'photo',
     ];
 
     /**
@@ -69,4 +71,8 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\WidgetEditor\WidgetCollection::class);
     }
 
+    public function organization(): HasOne
+    {
+        return $this->hasOne(Organization::class, 'id', 'office_code');
+    }
 }

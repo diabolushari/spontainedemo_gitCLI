@@ -25,6 +25,15 @@ class CreateUserGroupRequest extends FormRequest
             'group_name' => ['required', 'string', 'max:255'],
             'roles' => ['required', 'array'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'meta_hierarchy_item_id' => [
+                'nullable',
+                'exists:meta_hierarchy_items,id',
+            ],
+
+            'hierarchy_connection' => [
+                'nullable',
+                'string',
+            ],
         ];
     }
 }

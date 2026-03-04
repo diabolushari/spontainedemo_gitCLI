@@ -1,103 +1,85 @@
-import UserGroupShow from '@/Components/UserGroup/UserGroupShow'
+import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { UserGroup } from '@/interfaces/data_interfaces'
-import DashboardLayout from '@/Layouts/DashboardLayout'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import Button from '@/ui/button/Button'
-import Card from '@/ui/Card/Card'
-import CardHeader from '@/ui/Card/CardHeader'
-import SimpleCard from '@/ui/Card/SimpleCard'
-import Input from '@/ui/form/Input'
-import Modal from '@/ui/Modal/Modal'
-import Pagination from '@/ui/Pagination/Pagination'
 import { Paginator } from '@/ui/ui_interfaces'
-import { Link, router } from '@inertiajs/react'
-import { FormEvent, useState } from 'react'
+import { router } from '@inertiajs/react'
+import { useCallback, useMemo } from 'react'
 
-interface Properties {
+interface Props {
   userGroups: Paginator<UserGroup>
-  oldSearch: string
+  oldSearch?: string
 }
-const UserGroupIndexPage = ({ userGroups, oldSearch }: Properties) => {
+
+export default function UserGroupIndexPage({ userGroups, oldSearch }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
-    search: oldSearch,
+    search: oldSearch ?? '',
   })
-  const [showGroupModal, setShowGroupModal] = useState(false)
-  const [selectedGroup, setSelectedGroup] = useState<UserGroup | null>(null)
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    router.get(route('manage-user-group.index'), {
-      ...formData,
-    })
-  }
+
+  const formItems = useMemo<Record<'search', FormItem<string, any, any, any>>>(() => {
+    return {
+      search: {
+        type: 'text',
+        placeholder: 'Search by group name',
+        label: 'Search',
+        setValue: setFormValue('search'),
+      },
+    }
+  }, [setFormValue])
+
+  const data = useMemo(() => {
+    return userGroups.data.map((group) => ({
+      ...group,
+      actions: [
+        {
+          title: 'View',
+          url: route('manage-user-group.show', {
+            userGroup: group.id,
+          }),
+        },
+      ],
+    }))
+  }, [userGroups])
+
+  const keys = useMemo(() => {
+    return [
+      { key: 'group_name', label: 'Group Name', isCardHeader: true },
+      {
+        key: 'description',
+        label: 'Description',
+        isShownInCard: true,
+        hideLabel: false,
+      },
+      {
+        key: 'users_count',
+        label: 'Users',
+        isShownInCard: true,
+        hideLabel: false,
+      },
+    ] as ListItemKeys<UserGroup>[]
+  }, [])
+
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('manage-user-group.show', { manage_user_group: id }))
+  }, [])
+
   return (
-    <DashboardLayout
-      type='Users'
-      sectionCode='users'
-      setSectionCode={() => {}}
-      levelName='users'
-      setLevelName={() => {}}
-      levelCode='users'
-      setLevelCode={() => {}}
-    >
-      <DashboardPadding>
-        <Card className='p-10'>
-          <CardHeader
-            title='User Groups'
-            addUrl='manage-user-group/create'
-          />
-          <form
-            onSubmit={handleFormSubmit}
-            className='flex items-center gap-3'
-          >
-            <div className='flex w-full flex-col'>
-              <Input
-                label='Search'
-                placeholder='Search by group name...'
-                value={formData.search}
-                setValue={setFormValue('search')}
-              />
-            </div>
-            <div className='flex flex-col pt-4'>
-              <Button
-                type='submit'
-                label='Search'
-              />
-            </div>
-          </form>
-          <div className='grid grid-cols-3 gap-3'>
-            {userGroups?.data.map((group) => {
-              return (
-                <SimpleCard key={group.id}>
-                  <div className='flex items-center justify-between'>
-                    <div className='flex flex-col'>
-                      <span>{group.group_name}</span>
-                      <span>{group.description}</span>
-                    </div>
-                    <Link
-                      as='a'
-                      href={route('manage-user-group.show', group.id)}
-                    >
-                      View
-                    </Link>
-                  </div>
-                </SimpleCard>
-              )
-            })}
-          </div>
-        </Card>
-        {/* <Pagination pagination={userGroups} /> */}
-        {/* {showGroupModal && selectedGroup && (
-          <Modal
-            setShowModal={setShowGroupModal}
-            large
-          >
-            <UserGroupShow userGroup={selectedGroup} />
-          </Modal>
-        )} */}
-      </DashboardPadding>
-    </DashboardLayout>
+    <ListResourcePage
+      formData={formData}
+      formItems={formItems}
+      keys={keys}
+      rows={data}
+      paginator={userGroups}
+      searchUrl={route('manage-user-group.index')}
+      addUrl={route('manage-user-group.create')}
+      primaryKey='id'
+      type='users'
+      subtype='user-groups'
+      title='User Groups'
+      subheading='Manage user groups, permissions, and hierarchy assignments.'
+      handleCardClick={handleCardClick}
+      formStyles='bg-white p-4 rounded-lg shadow-sm border border-gray-100'
+      cardStyles='p-4 hover:scale-[1.02] transition-transform duration-200 shadow-sm hover:shadow-md cursor-pointer'
+    />
   )
 }
-
-export default UserGroupIndexPage

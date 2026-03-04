@@ -2,7 +2,7 @@ import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructur
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
-import { MetaHierarchyItem } from '@/Pages/Organization/OrganizationShowPage'
+import { MetaHierarchyItem, Organization } from '@/Pages/Organization/OrganizationShowPage'
 
 export interface Model {
   id: number
@@ -19,6 +19,7 @@ export interface User extends Model {
   office_code?: string
   group_id?: number
   photo?: string
+  organization: Organization
 }
 
 export interface UserGroup extends Model {
@@ -26,8 +27,15 @@ export interface UserGroup extends Model {
   description?: string
   permissions: UserGroupPermissions[]
   users?: User[]
+  hierarchy?: UserGroupHeirarchy
 }
 
+export interface UserGroupHeirarchy extends Model {
+  user_group_id: number
+  meta_hierarchy_item_id: number
+  hierarchy_connection: string
+  meta_hierarchy_item?: MetaHierarchyItem | null
+}
 export interface SubsetPermission extends Model {
   subset_id: string
   group_id: string

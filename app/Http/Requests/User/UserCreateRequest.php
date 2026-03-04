@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserCreateRequest extends FormRequest
 {
@@ -21,20 +22,25 @@ class UserCreateRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             // 'active' => 'required|boolean',
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255|unique:users,email',
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($this->route('user')->id),
+            ],
             'group_id' => 'required|exists:user_groups,id',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'password' => 'required|string|min:10|confirmed'
-                . '|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
-            // 'role' => 'required|string|max:255',
-            // 'department' => [
-            //     'nullable',
-            //     'string',
-            //     'max:255',
-            // ]
+            // 'password' => 'required|string|min:10|confirmed'
+            //     . '|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
+            'password' => $this->isMethod('post')
+                            ? 'required|string|min:10|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/'
+                            : 'nullable|string|min:10|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*#?&]/',
+            'office_code' => 'required|exists:organizations,id',
         ];
     }
 
@@ -42,7 +48,7 @@ class UserCreateRequest extends FormRequest
     {
         return [
             'password.regex' => 'Password should have at least one lower case character, '
-                . ' one uppercase character, one number and one of these symbols @$!%*#?&  ',
+                .' one uppercase character, one number and one of these symbols @$!%*#?&  ',
         ];
     }
 }

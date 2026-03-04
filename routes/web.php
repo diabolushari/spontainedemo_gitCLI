@@ -10,6 +10,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WidgetsEditor\WidgetAiSearchController;
 use App\Http\Controllers\Api\PageEditorApiController;
 use App\Http\Controllers\Api\WidgetApiController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Utils\SubsetGroupDetailedController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
@@ -498,7 +499,8 @@ Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
 
 Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
     ->name('subset-level-data');
-
+Route::get('find-organization',[ApiController::class, 'findOrganization'])
+    ->name('find-organization');
 require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');

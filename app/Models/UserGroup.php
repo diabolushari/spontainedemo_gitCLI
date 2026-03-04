@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserGroup extends Model
@@ -28,5 +29,10 @@ class UserGroup extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'group_id', 'id');
+    }
+
+    public function hierarchy(): HasOne
+    {
+        return $this->hasOne(UserGroupHierarchy::class, 'user_group_id', 'id');
     }
 }
