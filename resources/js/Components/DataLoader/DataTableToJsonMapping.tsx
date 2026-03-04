@@ -125,8 +125,8 @@ const DataTableToJsonMapping = ({
                 )}
               </div>
 
-              {/* Date Format Selection - only show for date fields */}
-              {field.field_type === 'date' && (
+              {/* Date Format Selection - only show for date/datetime fields */}
+              {(field.field_type === 'date' || field.field_type === 'datetime') && (
                 <div>
                   <div className='mb-1 text-sm font-medium text-gray-700'>Date Format</div>
                   <SelectList

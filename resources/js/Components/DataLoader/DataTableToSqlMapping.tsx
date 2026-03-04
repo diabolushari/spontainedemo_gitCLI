@@ -37,15 +37,16 @@ const DataTableToSqlMapping = ({ fieldMapping }: Readonly<Props>) => {
                 </div>
               </div>
 
-              {/* Date Format - only show for date fields */}
-              {field.field_type === 'date' && field.date_format && (
-                <div>
-                  <div className='mb-1 text-sm font-medium text-gray-700'>Date Format</div>
-                  <div className='rounded border bg-white px-3 py-2 text-sm text-gray-900'>
-                    {field.date_format}
+              {/* Date Format - only show for date/datetime fields */}
+              {(field.field_type === 'date' || field.field_type === 'datetime') &&
+                field.date_format && (
+                  <div>
+                    <div className='mb-1 text-sm font-medium text-gray-700'>Date Format</div>
+                    <div className='rounded border bg-white px-3 py-2 text-sm text-gray-900'>
+                      {field.date_format}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         ))}

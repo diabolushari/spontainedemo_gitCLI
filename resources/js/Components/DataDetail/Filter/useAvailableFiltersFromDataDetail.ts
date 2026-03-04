@@ -37,7 +37,7 @@ export default function useAvailableFiltersFromDataDetail(dataDetail?: DataDetai
         fieldId: date.id, // Assumes 'id' from the base Model interface
         fieldName: date.field_name,
         column: date.column,
-        type: 'string', // The 'use_expression' logic is removed, defaulting to 'date'
+        type: (date as any).temporal_type === 'datetime' ? 'datetime' : 'date', // Type corrected to 'date'/'datetime' based on plan
       })
     })
 

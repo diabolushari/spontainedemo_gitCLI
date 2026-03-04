@@ -18,7 +18,8 @@ class DataTableFilter
     {
         // Get all valid fields (expanded to include textFields for 'string' type)
         $validDimensions = $dataDetail->dimensionFields->pluck('column')->toArray();
-        $validDates = $dataDetail->dateFields->pluck('column')->toArray();
+        $validDates = $dataDetail->dateFields->where('temporal_type', 'date')->pluck('column')->toArray();
+        $validDateTimes = $dataDetail->dateFields->where('temporal_type', 'datetime')->pluck('column')->toArray();
         $validMeasures = $dataDetail->measureFields->pluck('column')->toArray();
         $validText = $dataDetail->textFields->pluck('column')->toArray(); // Added for 'string' type
 
@@ -49,6 +50,8 @@ class DataTableFilter
             $type = null;
             if (in_array($field, $validDates)) {
                 $type = 'date';
+            } elseif (in_array($field, $validDateTimes)) {
+                $type = 'datetime';
             } elseif (in_array($field, $validDimensions)) {
                 $type = 'dimension';
             } elseif (in_array($field, $validText)) {
@@ -133,6 +136,7 @@ class DataTableFilter
     {
         switch ($type) {
             case 'date':
+            case 'datetime':
                 return ['=', '_not', '_from', '_to'];
             case 'dimension':
             case 'string':

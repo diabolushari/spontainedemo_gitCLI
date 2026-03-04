@@ -9,6 +9,7 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 /**
+ * @property DateTimeColumnInfo $datetimes
  * @property DateColumnInfo[] $dates
  * @property DimensionColumnInfo[] $dimensions
  * @property MeasureColumnInfo[] $measures
@@ -29,6 +30,7 @@ class DataDetailFormRequest extends Data
         public string $tableName,
         public bool $isActive,
         public ?array $dates,
+        public ?array $datetimes,
         public ?array $dimensions,
         public ?array $measures,
         public ?array $texts,
@@ -66,7 +68,8 @@ class DataDetailFormRequest extends Data
             $data = $validator->getData();
             
             if (
-                isset($data['sub_hour_interval'], $data['retries'], $data['retries_interval']) &&
+                isset($data['cron_type'], $data['sub_hour_interval'], $data['retries'], $data['retries_interval']) &&
+                $data['cron_type'] === 'subhour' &&
                 ($data['retries'] * $data['retries_interval'] >= $data['sub_hour_interval'])
             ) {
                 $validator->errors()->add('retries_interval', 'Retry duration (Retries * Interval) must be less than Sub-hour Interval');

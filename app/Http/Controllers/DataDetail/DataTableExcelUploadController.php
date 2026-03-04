@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DataTableExcelUploadController extends Controller implements HasMiddleware
@@ -36,6 +37,9 @@ class DataTableExcelUploadController extends Controller implements HasMiddleware
                     'error' => 'No data to import',
                 ]);
         }
+
+        Log::info('Excel sheet data:', $excelSheet);
+
         //convert excel sheet to datatable items
         $dataTable = [];
 

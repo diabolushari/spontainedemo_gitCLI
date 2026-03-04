@@ -19,9 +19,9 @@ class StartScheduledJobs
     public function run(): void
     {
         $this->runSubHourQueries();
-        if ($this->now->minute == 0) {
+        // if ($this->now->minute == 0) {
             $this->runHourlyQueries();
-        }
+        // }
         $this->runDailyQueries($this->now->toTimeString());
         $this->runWeeklyQueries($this->now->toTimeString(), $this->now->dayName);
         $this->runMonthlyQueries($this->now->toTimeString(), $this->now->day);

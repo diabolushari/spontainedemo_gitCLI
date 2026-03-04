@@ -43,7 +43,7 @@ const generateInitalFieldsDataDetail = (
             value: filters[key] ?? '',
             officeData: null,
             dimensionData: null,
-            type: 'string',
+            type: (date as any).temporal_type === 'datetime' ? 'datetime' : 'date',
           })
         }
       })
@@ -56,7 +56,7 @@ const generateInitalFieldsDataDetail = (
             value,
             officeData: null,
             dimensionData: null,
-            type: 'string',
+            type: (date as any).temporal_type === 'datetime' ? 'datetime' : 'date',
           })
         })
       }
@@ -69,7 +69,7 @@ const generateInitalFieldsDataDetail = (
             value,
             officeData: null,
             dimensionData: null,
-            type: 'string',
+            type: (date as any).temporal_type === 'datetime' ? 'datetime' : 'date',
           })
         })
       }

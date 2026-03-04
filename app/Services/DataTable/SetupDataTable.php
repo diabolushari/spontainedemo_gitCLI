@@ -52,6 +52,7 @@ readonly class SetupDataTable
 
         try {
             $this->initDates($record, $formRequest);
+            $this->initDateTimes($record, $formRequest);
             $this->initDimensions($record, $formRequest);
             $this->initMeasures($record, $formRequest);
             $this->initTexts($record, $formRequest);
@@ -95,6 +96,7 @@ readonly class SetupDataTable
                 'data_detail_id' => $dataDetail->id,
                 'column' => $measure->column,
                 'field_name' => $measure->fieldName,
+                'temporal_type'=> 'date',
                 'created_by' => $createdBy,
                 'updated_by' => $createdBy,
                 'created_at' => $now,
@@ -103,6 +105,33 @@ readonly class SetupDataTable
         }
 
         DataTableDate::insert($dateFields);
+    }
+
+    private function initDateTimes(DataDetail $dataDetail, DataDetailFormRequest $request) : void 
+    {
+        if($request->datetimes === null) {
+            return ;
+        }
+
+        $dateTimeFields = [];
+        $createdBy = request()->user()?->id;
+        $now = now()->toDateString();
+
+        foreach($request->datetimes as $dateTime) { 
+            $dateTimeFields[] = [
+                'data_detail_id' => $dataDetail->id,
+                'column' => $dateTime->column,
+                'field_name' => $dateTime->fieldName,
+                'temporal_type'=> 'datetime',
+                'created_by' => $createdBy,
+                'updated_by' => $createdBy,
+                'created_at' => $now,
+                'updated_at' => $now,
+
+            ];
+        }
+
+        DataTableDate::insert($dateTimeFields);
     }
 
     private function initDimensions(DataDetail $dataDetail, DataDetailFormRequest $request): void

@@ -16,7 +16,7 @@ class FieldMappingData extends Data
         public string $column,
         #[Max(255)]
         public string $fieldName,
-        #[In(['date', 'dimension', 'measure', 'text', 'relation'])]
+        #[In(['date', 'datetime', 'dimension', 'measure', 'text', 'relation'])]
         public string $fieldType,
         #[Max(500)]
         public ?string $jsonFieldPath,

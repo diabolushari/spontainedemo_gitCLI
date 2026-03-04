@@ -51,12 +51,15 @@ final readonly class PerformJSONProcessing
             if ($mapping->dateFormat == null) {
                 continue;
             }
+
+            $outputFormat = $mapping->fieldType === 'datetime' ? 'Y-m-d H:i:s' : 'Y-m-d';
+
             foreach ($flattenedData as &$record) {
                 if (isset($record[$mapping->jsonFieldPath])) {
                     $record[$mapping->jsonFieldPath] = Carbon::createFromFormat(
                         $mapping->dateFormat,
                         $record[$mapping->jsonFieldPath]
-                    )->format('Y-m-d');
+                    )->format($outputFormat);
                 }
             }
         }

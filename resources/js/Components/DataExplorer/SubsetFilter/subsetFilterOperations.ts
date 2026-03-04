@@ -22,6 +22,7 @@ export const measureOperations = [
 export const availableOperators = (type: string) => {
   switch (type) {
     case 'date':
+    case 'datetime':
       return dateOperations
     case 'dimension':
       return dimensionOperations
