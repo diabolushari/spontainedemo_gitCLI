@@ -3,6 +3,8 @@
 namespace App\Services\DataLoader\ImportToDataTable;
 
 use App\Models\DataDetail\DataDetail;
+use Illuminate\Support\Carbon;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 readonly class ConvertToDataTable
 {
@@ -19,7 +21,6 @@ readonly class ConvertToDataTable
         $records = [];
 
         $time = now()->toDateTimeString();
-        $measureColumns = $this->getMeasureColumns($dataDetailId);
 
         foreach ($data as $row) {
             $record = [
@@ -28,14 +29,15 @@ readonly class ConvertToDataTable
             ];
 
             foreach ($fieldInfo as $field) {
-                $record[$field->column] = $row[$field->fieldName] ?? null;
                 $value = $row[$field->fieldName] ?? null;
 
-                if (in_array($field->column, $measureColumns)) {
+                if ($field->type === 'measure') {
                     $value = $this->validateMeasureValue($value);
+                } elseif (in_array($field->type, ['date', 'datetime'])) {
+                    $value = $this->normalizeDateValue($value);
                 }
-                $record[$field->column] = $value;
 
+                $record[$field->column] = $value;
             }
 
             $records[] = $record;
@@ -44,16 +46,23 @@ readonly class ConvertToDataTable
         return $records;
     }
 
-    private function getMeasureColumns(int $dataDetailId): array
+    private function normalizeDateValue($value): ?string
     {
-        $dataDetail = DataDetail::find($dataDetailId);
-
-        if (! $dataDetail) {
-            return [];
+        if ($value === null || $value === '') {
+            return null;
         }
 
-        return $dataDetail->measureFields()->pluck('column')->toArray();
+        try {
+            if (is_numeric($value)) {
+                return Carbon::instance(Date::excelToDateTimeObject($value))->toDateTimeString();
+            }
+
+            return Carbon::parse($value)->toDateTimeString();
+        } catch (\Exception $e) {
+            return null;
+        }
     }
+
 
     private function validateMeasureValue($value): float|int|null
     {

@@ -11,5 +11,6 @@ class TableColumnInfo extends Data
         public string $fieldName,
         public bool $isMetaData = false,
         public ?int $metaStructureId = null,
+        public string $type = 'text',
     ) {}
 }
