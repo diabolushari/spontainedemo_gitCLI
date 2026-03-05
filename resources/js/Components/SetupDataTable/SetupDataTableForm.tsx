@@ -204,6 +204,21 @@ export default function SetupDataTableForm({
         }
       })
 
+    const datetimes = fields
+      .filter((field) => field.type === 'datetime')
+      .map((field, index) => {
+        errorMeta.push({
+          column: field.column,
+          type: 'datetimes',
+          index: index,
+        })
+
+        return {
+          column: field.column,
+          field_name: field.field_name,
+        }
+      })
+
     const dimensions = fields
       .filter((field) => field.type === 'dimension')
       .map((field, index) => {
@@ -269,6 +284,7 @@ export default function SetupDataTableForm({
       api_id: apiId,
       query_id: queryId,
       dates,
+      datetimes,
       dimensions,
       measures,
       texts,

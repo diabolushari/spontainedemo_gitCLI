@@ -31,6 +31,7 @@ export interface DataTableFieldInfo {
 
 const types = [
   { value: 'date', structure_name: 'Date' },
+  { value: 'datetime', structure_name: 'Date Time' },
   { value: 'dimension', structure_name: 'Dimension' },
   { value: 'measure', structure_name: 'Measure' },
   { value: 'text', structure_name: 'Text' },

@@ -5,7 +5,7 @@ import { JSONDefinition } from './SetDataStructure/SetDataStructure'
 export interface DataTableFieldMapping {
   column: string
   field_name: string
-  field_type: 'date' | 'dimension' | 'measure' | 'text' | 'relation'
+  field_type: 'date' | 'datetime' | 'dimension' | 'measure' | 'text' | 'relation'
   json_field_path: string
   date_format?: string
 }
@@ -78,9 +78,9 @@ export const useDataTableToJsonMapping = (
       mappings.push({
         column: date.column ?? '',
         field_name: `${date.field_name}`,
-        field_type: 'date',
+        field_type: (date.temporal_type as 'date' | 'datetime') ?? 'date',
         json_field_path: '',
-        date_format: 'Y-m-d',
+        date_format: date.temporal_type === 'datetime' ? 'Y-m-d H:i:s' : 'Y-m-d',
       })
     })
 

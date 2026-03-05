@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $data_detail_id
  * @property string $column
  * @property string $field_name
+ * @property string $temporal_type
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int|null $created_by
  * @property int|null $updated_by
@@ -43,6 +44,7 @@ class DataTableDate extends Model
         'data_table_field',
         'column',
         'field_name',
+        'temporal_type',
         'created_by',
         'updated_by',
     ];

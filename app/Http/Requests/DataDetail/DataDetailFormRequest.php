@@ -6,14 +6,16 @@ use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 /**
- * @property DateColumnInfo[] $dates
- * @property DimensionColumnInfo[] $dimensions
- * @property MeasureColumnInfo[] $measures
- * @property TextColumnInfo[] $texts
- * @property RelationColumnInfo[] $relations
+ * @property-read DataCollection<int, DateTimeColumnInfo>|null $datetimes
+ * @property-read DataCollection<int, DateColumnInfo>|null $dates
+ * @property-read DataCollection<int, DimensionColumnInfo>|null $dimensions
+ * @property-read DataCollection<int, MeasureColumnInfo>|null $measures
+ * @property-read DataCollection<int, TextColumnInfo>|null $texts
+ * @property-read DataCollection<int, RelationColumnInfo>|null $relations
  */
 #[MapName(SnakeCaseMapper::class)]
 class DataDetailFormRequest extends Data
@@ -28,11 +30,18 @@ class DataDetailFormRequest extends Data
         #[Max(255)]
         public string $tableName,
         public bool $isActive,
-        public ?array $dates,
-        public ?array $dimensions,
-        public ?array $measures,
-        public ?array $texts,
-        public ?array $relations,
+        /** @var DataCollection<int, DateColumnInfo>|null */
+        public ?DataCollection $dates,
+        /** @var DataCollection<int, DateTimeColumnInfo>|null */
+        public ?DataCollection $datetimes,
+        /** @var DataCollection<int, DimensionColumnInfo>|null */
+        public ?DataCollection $dimensions,
+        /** @var DataCollection<int, MeasureColumnInfo>|null */
+        public ?DataCollection $measures,
+        /** @var DataCollection<int, TextColumnInfo>|null */
+        public ?DataCollection $texts,
+        /** @var DataCollection<int, RelationColumnInfo>|null */
+        public ?DataCollection $relations,
             // Job-related fields
         #[Max(255)]
         public ?string $jobName,
@@ -66,7 +75,8 @@ class DataDetailFormRequest extends Data
             $data = $validator->getData();
             
             if (
-                isset($data['sub_hour_interval'], $data['retries'], $data['retries_interval']) &&
+                isset($data['cron_type'], $data['sub_hour_interval'], $data['retries'], $data['retries_interval']) &&
+                $data['cron_type'] === 'subhour' &&
                 ($data['retries'] * $data['retries_interval'] >= $data['sub_hour_interval'])
             ) {
                 $validator->errors()->add('retries_interval', 'Retry duration (Retries * Interval) must be less than Sub-hour Interval');

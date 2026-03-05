@@ -31,7 +31,8 @@ class MapColumnsToField
                         $excelFieldName,
                         $tableField->column,
                         false,
-                        null
+                        null,
+                        $tableField->temporal_type ?? 'datetime'
                     );
                 }
             });
@@ -46,6 +47,7 @@ class MapColumnsToField
                         $tableField->column,
                         true,
                         $tableField->meta_structure_id,
+                        'dimension'
                     );
                 }
             });
@@ -60,6 +62,7 @@ class MapColumnsToField
                         $tableField->column,
                         false,
                         null,
+                        'measure'
                     );
                     if ($tableField->unit_column != null && $tableField->unit_field_name != null) {
                         $this->insertToList(
@@ -69,6 +72,7 @@ class MapColumnsToField
                             $tableField->unit_column,
                             false,
                             null,
+                            'text'
                         );
                     }
                 }
@@ -84,6 +88,7 @@ class MapColumnsToField
                         $tableField->column,
                         false,
                         null,
+                        'text'
                     );
                 }
             });
@@ -107,12 +112,13 @@ class MapColumnsToField
         string $tableColumn,
         bool $isMetaData,
         ?int $metaStructureId,
+        string $type,
     ): void {
         $snakeExcelColumn = preg_replace('/[^a-zA-Z0-9]/', '_', $excelFieldName);
         if (
             $tableColumn === strtolower($snakeExcelColumn)
         ) {
-            $list[] = new TableColumnInfo($tableColumn, $excelFieldName, $isMetaData, $metaStructureId);
+            $list[] = new TableColumnInfo($tableColumn, $excelFieldName, $isMetaData, $metaStructureId, $type);
         }
 
     }
@@ -120,7 +126,7 @@ class MapColumnsToField
     private function isFieldMapped(array &$list, array $fieldMapping, bool $isMetaData, ?int $metaStructureId): void
     {
         if (isset($fieldMapping['data_table_column'])) {
-            $list[] = new TableColumnInfo($fieldMapping['data_table_column'], $fieldMapping['field_name'], $isMetaData, $metaStructureId);
+            $list[] = new TableColumnInfo($fieldMapping['data_table_column'], $fieldMapping['field_name'], $isMetaData, $metaStructureId, 'text');
         }
     }
 }

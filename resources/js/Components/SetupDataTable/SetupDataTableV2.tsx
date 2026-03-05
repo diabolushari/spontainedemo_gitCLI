@@ -86,12 +86,26 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
         return {
           column: field.column,
           field_name: field.field_name,
-          field_type: field.type as 'date' | 'dimension' | 'measure' | 'text' | 'relation',
+          field_type: field.type as
+            | 'date'
+            | 'datetime'
+            | 'dimension'
+            | 'measure'
+            | 'text'
+            | 'relation',
           json_field_path: field.source_field_path,
           date_format:
-            field.type === 'date' ? (field.source_field_date_format ?? 'Y-m-d') : undefined,
+            field.type === 'date'
+              ? (field.source_field_date_format ?? 'Y-m-d')
+              : field.type === 'datetime'
+                ? (field.source_field_date_format ?? 'Y-m-d H:i:s')
+                : undefined,
         } as DataTableFieldMapping
       })
+  }, [fields])
+
+  useEffect(() => {
+    console.log(fields)
   }, [fields])
 
   return (

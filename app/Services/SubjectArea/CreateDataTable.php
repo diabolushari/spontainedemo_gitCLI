@@ -14,6 +14,7 @@ class CreateDataTable
         Schema::create($request->tableName, function (Blueprint $table) use ($request) {
             $this->addPrimaryKey($table);
             $this->addDateFields($table, $request);
+            $this->addDateTimeFields($table, $request);
             $this->addDimensionFields($table, $request);
             $this->addMeasureFields($table, $request);
             $this->addTextFieldFields($table, $request);
@@ -37,6 +38,16 @@ class CreateDataTable
             $table->date($date->column)
                 ->nullable()
                 ->index();
+        }
+    }
+
+    private function addDateTimeFields(Blueprint $table, DataDetailFormRequest $request) : void {
+        if($request->datetimes === null) {
+            return;
+        }
+
+        foreach($request->datetimes as $datetime) {
+            $table->dateTime($datetime->column)->nullable()->index();
         }
     }
 

@@ -27,7 +27,14 @@ interface Props {
   offices?: OfficeData[]
 }
 
-export type SubsetFilterFormType = 'date' | 'dimension' | 'number' | 'office' | 'month' | 'string'
+export type SubsetFilterFormType =
+  | 'date'
+  | 'dimension'
+  | 'number'
+  | 'office'
+  | 'month'
+  | 'string'
+  | 'datetime'
 
 export interface SubsetFilterFormField {
   id: number
@@ -215,7 +222,10 @@ export default function AdminSubsetFilterForm({
       }
       if (
         (formField.operator === '=' || formField.operator === '_not') &&
-        (formField.type == 'dimension' || formField.type == 'string' || formField.type == 'date')
+        (formField.type == 'dimension' ||
+          formField.type == 'string' ||
+          formField.type == 'date' ||
+          formField.type == 'datetime')
       ) {
         const existingGroup = groupedData.find(
           (group) => group.field === formField.field && group.operator === formField.operator
@@ -347,6 +357,17 @@ export default function AdminSubsetFilterForm({
                   value={formField.value}
                   label='Date'
                 />
+              )}
+              {formField.type == 'datetime' && (
+                <div className='flex flex-col'>
+                  <label className='mb-1 text-sm font-medium text-gray-700'>Date Time</label>
+                  <input
+                    type='datetime-local'
+                    className='rounded-md border-gray-200 bg-gray-50 text-sm shadow-sm focus:border-indigo-400 focus:ring-0 focus:ring-indigo-400'
+                    value={formField.value}
+                    onChange={(e) => setValue(formField.id, e.target.value)}
+                  />
+                </div>
               )}
               {formField.type == 'office' && (
                 <ComboBox

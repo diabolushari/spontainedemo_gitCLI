@@ -98,6 +98,7 @@ export interface TableDateField extends Model {
   data_detail_id: number
   column: string
   field_name: string
+  temporal_type: 'date' | 'datetime'
 }
 
 export interface TableDimensionField extends Model {
