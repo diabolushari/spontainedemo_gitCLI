@@ -38,7 +38,7 @@ export interface MetaHierarchyItem {
   meta_hierarchy: MetaHierarchy
 }
 
-interface Organization {
+export interface Organization {
   id: number
   name: string
   address: string

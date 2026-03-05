@@ -44,7 +44,7 @@ interface MetaHierarchy {
   name: string
 }
 
-interface MetaHierarchyItem {
+export interface MetaHierarchyItem {
   id: number
   name: string
   structure_name: string
@@ -320,68 +320,7 @@ export default function OrganizationCreatePage({ metaHierarchies }: Readonly<Cre
                   </div>
                 </div>
 
-                {/* Reporting Objectives Section */}
-                {/* <div className='mt-8 border-t border-gray-100 pt-8'>
-                  <div className='mb-6'>
-                    <h2 className='text-xl font-semibold text-gray-900'>Reporting Objectives</h2>
-                    <p className='mt-1 text-sm text-gray-500'>
-                      Add the strategic objectives for specific reporting periods.
-                    </p>
-                  </div>
-
-                  <div className='space-y-6'>
-                    {objectives.map((obj) => (
-                      <div
-                        key={obj.id}
-                        className='group relative rounded-xl border border-gray-200 bg-gray-50 p-6 transition-all hover:border-indigo-100 hover:bg-white hover:shadow-sm'
-                      >
-                        {objectives.length > 1 && (
-                          <button
-                            type='button'
-                            onClick={() => removeObjective(obj.id)}
-                            className='absolute -right-2 -top-2 rounded-full bg-white p-1 text-gray-400 shadow-sm ring-1 ring-gray-200 transition-colors hover:text-red-600 hover:ring-red-100'
-                            title='Remove period'
-                          >
-                            <Trash2 className='h-4 w-4' />
-                          </button>
-                        )}
-                        <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-                          <div className='flex flex-col [&>input]:w-full'>
-                            <DatePicker
-                              label='Period Start'
-                              value={obj.period_start}
-                              setValue={(val) => updateObjective(obj.id, 'period_start', val)}
-                            />
-                          </div>
-                          <div className='flex flex-col [&>input]:w-full'>
-                            <DatePicker
-                              label='Period End'
-                              value={obj.period_end}
-                              setValue={(val) => updateObjective(obj.id, 'period_end', val)}
-                            />
-                          </div>
-                          <div className='flex flex-col md:col-span-2 [&>textarea]:w-full'>
-                            <TextArea
-                              label='Objective'
-                              value={obj.objective}
-                              setValue={(val) => updateObjective(obj.id, 'objective', val)}
-                              placeholder='Strategic objective to be met in this period'
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-
-                    <button
-                      type='button'
-                      onClick={addObjective}
-                      className='flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 py-4 text-sm font-semibold text-gray-600 transition-all hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-700'
-                    >
-                      <Plus className='h-5 w-5' />
-                      Add Another Reporting Period
-                    </button>
-                  </div>
-                </div> */}
+               
 
                 <div className='mt-12 flex justify-end border-t border-gray-100 pt-6'>
                   <Button

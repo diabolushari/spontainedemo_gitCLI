@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\User\ManageUserController;
+use App\Http\Controllers\User\ManageUserGroupController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\Subset\SubsetLevelDataController;
 use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\WidgetsEditor\WidgetAiSearchController;
 use App\Http\Controllers\Api\PageEditorApiController;
 use App\Http\Controllers\Api\WidgetApiController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Utils\SubsetGroupDetailedController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
@@ -105,6 +108,7 @@ use App\Http\Controllers\Subset\SubsetExportController;
 use App\Http\Controllers\Subset\SubsetFieldsListController;
 use App\Http\Controllers\Subset\SubsetListController;
 use App\Http\Controllers\Subset\SubsetOfficeLevelDataController;
+use App\Http\Controllers\Subset\SubsetPermissionsController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetRankedDataController;
 use App\Http\Controllers\Subset\SubsetStoreController;
@@ -481,10 +485,22 @@ Route::get('organization-export', OrganizationExportController::class)
 
 Route::get('meta-hierarchy-item-detail/{metaHierarchyItem}', MetaHierarchyItemDetailController::class)
     ->name('meta-hierarchy-item-detail');
+//users
+Route::resource('manage-users', ManageUserController::class)
+    ->parameters(['manage-users' => 'user']);
+
+Route::resource('manage-user-group', ManageUserGroupController::class)
+    ->parameters(['manage-user-group' => 'userGroup']);
+
+Route::resource('subset-permissions', SubsetPermissionsController::class);
 
 Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
     ->name('subset-level-data');
 
+Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
+    ->name('subset-level-data');
+Route::get('find-organization',[ApiController::class, 'findOrganization'])
+    ->name('find-organization');
 require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');

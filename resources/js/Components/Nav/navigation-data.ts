@@ -240,7 +240,7 @@ const manageMenuData: NavGroup[] = [
       {
         id: 5002,
         item_label: 'Users',
-        item_url: '/manage/users',
+        item_url: '/manage-users',
         item_pos: 2,
         item_icon: 'Users',
       },
