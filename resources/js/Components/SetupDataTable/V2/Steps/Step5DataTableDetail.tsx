@@ -9,6 +9,8 @@ interface Step5DataTableDetailProps {
   types: ReferenceData[]
   selectedAPI: { id: number } | null
   selectedQuery: { id: number } | null
+  excelFile: File | null
+  dataSource: 'sql' | 'api' | 'excel' | null
   fieldMapping: DataTableFieldMapping[]
   onErrorsChange: (errors: FieldErrors) => void
 }
@@ -18,6 +20,8 @@ export default function Step5DataTableDetail({
   types,
   selectedAPI,
   selectedQuery,
+  excelFile,
+  dataSource,
   fieldMapping,
   onErrorsChange,
 }: Readonly<Step5DataTableDetailProps>) {
@@ -28,6 +32,8 @@ export default function Step5DataTableDetail({
         types={types}
         selectedAPI={selectedAPI}
         selectedQuery={selectedQuery}
+        excelFile={excelFile}
+        dataSource={dataSource}
         fieldMapping={fieldMapping}
         onErrorsChange={onErrorsChange}
       />

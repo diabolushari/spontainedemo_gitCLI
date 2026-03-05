@@ -14,6 +14,7 @@ use App\Services\DataTable\DataTableFilter;
 use App\Services\DataTable\DeleteDataTable;
 use App\Services\DataTable\QueryDataTable;
 use App\Services\DataTable\SetupDataTable;
+use App\Services\DataLoader\ImportToDataTable\ProcessExcelUpload;
 use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -92,7 +93,8 @@ class DataDetailController extends Controller implements HasMiddleware
 
     public function store(
         DataDetailFormRequest $request,
-        SetupDataTable $setupDataTable
+        SetupDataTable $setupDataTable,
+        ProcessExcelUpload $processExcelUpload
     ): RedirectResponse {
 
         try {
@@ -109,6 +111,18 @@ class DataDetailController extends Controller implements HasMiddleware
             return back()->with([
                 'error' => $result->message,
             ]);
+        }
+
+        if ($request->excelFile) {
+            $dataDetail = DataDetail::find($result->message);
+            if ($dataDetail) {
+                $processResult = $processExcelUpload->process($dataDetail, $request->excelFile);
+                if ($processResult->error) {
+                    return back()->with([
+                        'error' => 'Data Table configured but Excel Import Failed: ' . $processResult->message,
+                    ]);
+                }
+            }
         }
 
         return redirect()

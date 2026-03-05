@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
 import QueryItem from '../QueryItem'
 import useFetchPagination from '@/hooks/useFetchPagination'
+import { Link } from '@inertiajs/react'
 import { DataLoaderQuery } from '@/interfaces/data_interfaces'
 import RestPagination from '@/ui/Pagination/RestPagination'
 
@@ -60,9 +61,12 @@ const Step2QuerySelection: React.FC<Step2QuerySelectionProps> = ({
             className='w-full rounded-lg border border-gray-300 py-3 pl-12 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
         </div>
-        <button className='whitespace-nowrap rounded-lg border-2 border-blue-500 px-6 py-3 font-medium text-blue-500 transition-colors hover:bg-blue-50'>
+        <Link
+          href='/loader-queries?subtype=queries&type=loaders'
+          className='whitespace-nowrap rounded-lg border-2 border-blue-500 px-6 py-3 font-medium text-blue-500 transition-colors hover:bg-blue-50'
+        >
           + Add New Query
-        </button>
+        </Link>
       </div>
 
       {/* Query List */}

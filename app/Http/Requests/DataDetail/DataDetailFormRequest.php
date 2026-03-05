@@ -7,6 +7,7 @@ use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Illuminate\Http\UploadedFile;
 
 /**
  * @property DateTimeColumnInfo $datetimes
@@ -59,6 +60,7 @@ class DataDetailFormRequest extends Data
         public ?int $subHourInterval,
         public ?int $retries,
         public ?int $retriesInterval,
+        public ?UploadedFile $excelFile,
     ) {
     }
 

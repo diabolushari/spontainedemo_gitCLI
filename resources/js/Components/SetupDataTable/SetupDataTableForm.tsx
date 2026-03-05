@@ -31,6 +31,8 @@ interface Props {
   types: ReferenceData[]
   selectedAPI: { id: number } | null
   selectedQuery: { id: number } | null
+  excelFile: File | null
+  dataSource: 'sql' | 'api' | 'excel' | null
   fieldMapping: DataTableFieldMapping[]
   onErrorsChange: (errors: FieldErrors) => void
 }
@@ -69,6 +71,8 @@ export default function SetupDataTableForm({
   types,
   selectedAPI,
   selectedQuery,
+  excelFile,
+  dataSource,
   fieldMapping,
   onErrorsChange,
 }: Readonly<Props>) {
@@ -170,12 +174,12 @@ export default function SetupDataTableForm({
     }
 
     // Determine source type and source ID
-    const sourceType = selectedAPI ? 'api' : selectedQuery ? 'sql' : null
+    const sourceType = dataSource
     const apiId = selectedAPI?.id ?? null
     const queryId = selectedQuery?.id ?? null
 
     if (!sourceType) {
-      showError('Please select a data source (API or Query)')
+      showError('Please select a data source')
       return
     }
 
@@ -288,7 +292,8 @@ export default function SetupDataTableForm({
       dimensions,
       measures,
       texts,
-    } as DataTableFormData)
+      excel_file: excelFile,
+    } as DataTableFormData & { excel_file: File | null })
   }
 
   return (
@@ -353,194 +358,200 @@ export default function SetupDataTableForm({
       </div>
 
       {/* Job Details Section */}
-      <div className='rounded-lg border border-gray-200 bg-white p-6'>
-        <div className='mb-4 border-b border-gray-200 pb-3'>
-          <h4 className='text-lg font-semibold text-gray-900'>Job Details</h4>
-          <p className='mt-1 text-sm text-gray-600'>
-            Provide information about the data loading job
-          </p>
-        </div>
-        <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
-          <div className='flex flex-col md:col-span-2'>
-            <Input
-              value={formData.job_name}
-              label='Job Name'
-              setValue={setFormValue('job_name')}
-              error={errors.job_name}
-            />
+      {dataSource !== 'excel' && (
+        <>
+          <div className='rounded-lg border border-gray-200 bg-white p-6'>
+            <div className='mb-4 border-b border-gray-200 pb-3'>
+              <h4 className='text-lg font-semibold text-gray-900'>Job Details</h4>
+              <p className='mt-1 text-sm text-gray-600'>
+                Provide information about the data loading job
+              </p>
+            </div>
+            <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
+              <div className='flex flex-col md:col-span-2'>
+                <Input
+                  value={formData.job_name}
+                  label='Job Name'
+                  setValue={setFormValue('job_name')}
+                  error={errors.job_name}
+                />
+              </div>
+              <div className='flex flex-col md:col-span-2'>
+                <TextArea
+                  value={formData.job_description}
+                  label='Job Description'
+                  setValue={setFormValue('job_description')}
+                  error={errors.job_description}
+                />
+              </div>
+            </div>
           </div>
-          <div className='flex flex-col md:col-span-2'>
-            <TextArea
-              value={formData.job_description}
-              label='Job Description'
-              setValue={setFormValue('job_description')}
-              error={errors.job_description}
-            />
-          </div>
-        </div>
-      </div>
 
-      {/* Schedule Configuration Section */}
-      <div className='rounded-lg border border-gray-200 bg-white p-6'>
-        <div className='mb-4 border-b border-gray-200 pb-3'>
-          <h4 className='text-lg font-semibold text-gray-900'>Schedule Configuration</h4>
-          <p className='mt-1 text-sm text-gray-600'>Set up when and how often the job should run</p>
-        </div>
-        <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
-          <div className='flex flex-col'>
-            <SelectList
-              value={formData.cron_type}
-              label='Schedule Frequency'
-              setValue={setFormValue('cron_type')}
-              list={cronTypes}
-              displayKey='label'
-              dataKey='value'
-              allOptionText='Select a schedule type'
-              error={errors.cron_type}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <DatePicker
-              value={formData.start_date}
-              label='Start Date'
-              setValue={setFormValue('start_date')}
-              error={errors.start_date}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <DatePicker
-              value={formData.end_date}
-              label='End Date'
-              setValue={setFormValue('end_date')}
-              error={errors.end_date}
-            />
-          </div>
-          {formData.cron_type === SUB_HOUR_CRON && (
-            <>
+          {/* Schedule Configuration Section */}
+          <div className='rounded-lg border border-gray-200 bg-white p-6'>
+            <div className='mb-4 border-b border-gray-200 pb-3'>
+              <h4 className='text-lg font-semibold text-gray-900'>Schedule Configuration</h4>
+              <p className='mt-1 text-sm text-gray-600'>
+                Set up when and how often the job should run
+              </p>
+            </div>
+            <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
               <div className='flex flex-col'>
-                <TimePicker
-                  setValue={setFormValue('schedule_start_time')}
-                  value={formData.schedule_start_time}
-                  label={'Schedule Start Time'}
-                  error={errors.schedule_start_time}
+                <SelectList
+                  value={formData.cron_type}
+                  label='Schedule Frequency'
+                  setValue={setFormValue('cron_type')}
+                  list={cronTypes}
+                  displayKey='label'
+                  dataKey='value'
+                  allOptionText='Select a schedule type'
+                  error={errors.cron_type}
                 />
               </div>
               <div className='flex flex-col'>
-                <Input
-                  value={formData.sub_hour_interval}
-                  setValue={setFormValue('sub_hour_interval')}
-                  label={'Sub-hour Interval (in minutes)'}
-                  type={'number'}
+                <DatePicker
+                  value={formData.start_date}
+                  label='Start Date'
+                  setValue={setFormValue('start_date')}
+                  error={errors.start_date}
                 />
               </div>
               <div className='flex flex-col'>
-                <Input
-                  value={String(formData.retries)}
-                  setValue={(val: string) => setFormValue('retries')(Number(val))}
-                  label={'Max Retries'}
-                  type={'number'}
+                <DatePicker
+                  value={formData.end_date}
+                  label='End Date'
+                  setValue={setFormValue('end_date')}
+                  error={errors.end_date}
                 />
               </div>
-              <div className='flex flex-col'>
-                <Input
-                  value={String(formData.retries_interval)}
-                  setValue={(val: string) => setFormValue('retries_interval')(Number(val))}
-                  label={'Retry Interval (in minutes)'}
-                  type={'number'}
-                />
+              {formData.cron_type === SUB_HOUR_CRON && (
+                <>
+                  <div className='flex flex-col'>
+                    <TimePicker
+                      setValue={setFormValue('schedule_start_time')}
+                      value={formData.schedule_start_time}
+                      label={'Schedule Start Time'}
+                      error={errors.schedule_start_time}
+                    />
+                  </div>
+                  <div className='flex flex-col'>
+                    <Input
+                      value={formData.sub_hour_interval}
+                      setValue={setFormValue('sub_hour_interval')}
+                      label={'Sub-hour Interval (in minutes)'}
+                      type={'number'}
+                    />
+                  </div>
+                  <div className='flex flex-col'>
+                    <Input
+                      value={String(formData.retries)}
+                      setValue={(val: string) => setFormValue('retries')(Number(val))}
+                      label={'Max Retries'}
+                      type={'number'}
+                    />
+                  </div>
+                  <div className='flex flex-col'>
+                    <Input
+                      value={String(formData.retries_interval)}
+                      setValue={(val: string) => setFormValue('retries_interval')(Number(val))}
+                      label={'Retry Interval (in minutes)'}
+                      type={'number'}
+                    />
+                  </div>
+                </>
+              )}
+              {formData.cron_type !== HOURLY_CRON && formData.cron_type !== SUB_HOUR_CRON && (
+                <div className='flex flex-col'>
+                  <TimePicker
+                    value={formData.schedule_time}
+                    label='Time'
+                    setValue={setFormValue('schedule_time')}
+                    error={errors.schedule_time}
+                  />
+                </div>
+              )}
+              {formData.cron_type === WEEKLY_CRON && (
+                <div className='flex flex-col'>
+                  <SelectList
+                    value={formData.day_of_week}
+                    label='Day of Week'
+                    setValue={setFormValue('day_of_week')}
+                    list={daysOfWeek}
+                    displayKey='name'
+                    dataKey='name'
+                    error={errors.day_of_week}
+                  />
+                </div>
+              )}
+              {(formData.cron_type === MONTHLY_CRON || formData.cron_type === 'YEARLY') && (
+                <div className='flex flex-col'>
+                  <Input
+                    value={formData.day_of_month}
+                    label='Day of Month'
+                    setValue={setFormValue('day_of_month')}
+                    error={errors.day_of_month}
+                  />
+                </div>
+              )}
+              {formData.cron_type === 'YEARLY' && (
+                <div className='flex flex-col'>
+                  <SelectList
+                    value={formData.month_of_year}
+                    label='Month of Year'
+                    setValue={setFormValue('month_of_year')}
+                    list={monthList}
+                    displayKey='name'
+                    dataKey='id'
+                    error={errors.month_of_year}
+                  />
+                </div>
+              )}
+            </div>
+            {nextRunTime && (
+              <div className='mt-4 rounded-md bg-blue-50 p-3'>
+                <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
               </div>
-            </>
-          )}
-          {formData.cron_type !== HOURLY_CRON && formData.cron_type !== SUB_HOUR_CRON && (
-            <div className='flex flex-col'>
-              <TimePicker
-                value={formData.schedule_time}
-                label='Time'
-                setValue={setFormValue('schedule_time')}
-                error={errors.schedule_time}
-              />
-            </div>
-          )}
-          {formData.cron_type === WEEKLY_CRON && (
-            <div className='flex flex-col'>
-              <SelectList
-                value={formData.day_of_week}
-                label='Day of Week'
-                setValue={setFormValue('day_of_week')}
-                list={daysOfWeek}
-                displayKey='name'
-                dataKey='name'
-                error={errors.day_of_week}
-              />
-            </div>
-          )}
-          {(formData.cron_type === MONTHLY_CRON || formData.cron_type === 'YEARLY') && (
-            <div className='flex flex-col'>
-              <Input
-                value={formData.day_of_month}
-                label='Day of Month'
-                setValue={setFormValue('day_of_month')}
-                error={errors.day_of_month}
-              />
-            </div>
-          )}
-          {formData.cron_type === 'YEARLY' && (
-            <div className='flex flex-col'>
-              <SelectList
-                value={formData.month_of_year}
-                label='Month of Year'
-                setValue={setFormValue('month_of_year')}
-                list={monthList}
-                displayKey='name'
-                dataKey='id'
-                error={errors.month_of_year}
-              />
-            </div>
-          )}
-        </div>
-        {nextRunTime && (
-          <div className='mt-4 rounded-md bg-blue-50 p-3'>
-            <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
+            )}
           </div>
-        )}
-      </div>
 
-      {/* Data Management Options Section */}
-      <div className='rounded-lg border border-gray-200 bg-white p-6'>
-        <div className='mb-4 border-b border-gray-200 pb-3'>
-          <h4 className='text-lg font-semibold text-gray-900'>Data Management Options</h4>
-          <p className='mt-1 text-sm text-gray-600'>
-            Configure how existing data should be handled
-          </p>
-        </div>
-        <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
-          <div className='flex flex-col md:col-span-2'>
-            <CheckBox
-              value={formData.delete_existing_data}
-              label='Delete Existing Data When Running A Job'
-              toggleValue={toggleBoolean('delete_existing_data')}
-            />
-          </div>
-          {formData.delete_existing_data && (
-            <div className='flex flex-col md:col-span-2'>
-              <MultiSelectDropdown
-                value={formData.duplicate_identification_field}
-                label='Duplicate Identification Fields'
-                setValue={setFormValue('duplicate_identification_field')}
-                list={dataTableFields}
-                displayKey='field'
-                dataKey='column'
-                placeholder='Select one or more fields'
-              />
+          {/* Data Management Options Section */}
+          <div className='rounded-lg border border-gray-200 bg-white p-6'>
+            <div className='mb-4 border-b border-gray-200 pb-3'>
+              <h4 className='text-lg font-semibold text-gray-900'>Data Management Options</h4>
+              <p className='mt-1 text-sm text-gray-600'>
+                Configure how existing data should be handled
+              </p>
             </div>
-          )}
-        </div>
-      </div>
+            <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
+              <div className='flex flex-col md:col-span-2'>
+                <CheckBox
+                  value={formData.delete_existing_data}
+                  label='Delete Existing Data When Running A Job'
+                  toggleValue={toggleBoolean('delete_existing_data')}
+                />
+              </div>
+              {formData.delete_existing_data && (
+                <div className='flex flex-col md:col-span-2'>
+                  <MultiSelectDropdown
+                    value={formData.duplicate_identification_field}
+                    label='Duplicate Identification Fields'
+                    setValue={setFormValue('duplicate_identification_field')}
+                    list={dataTableFields}
+                    displayKey='field'
+                    dataKey='column'
+                    placeholder='Select one or more fields'
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Submit Button */}
       <div className='flex gap-5'>
         <Button
-          label='Create Data Table & Job'
+          label={dataSource === 'excel' ? 'Create Data Table' : 'Create Data Table & Job'}
           onClick={postData}
           processing={loading}
         />
