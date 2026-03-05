@@ -78,9 +78,8 @@ class ManageUserGroupController extends Controller
     public function show(UserGroup $userGroup): Response
     {
         $userGroup->load('permissions', 'users.organization', 'hierarchy.metaHierarchyItem.primaryField.metaStructure',
-            'hierarchy.metaHierarchyItem.secondaryField', );
-    
-
+            'hierarchy.metaHierarchyItem.secondaryField', 'subsetPermission.subset');
+// dd($userGroup);
         return Inertia::render('UserGroup/UserGroupShowPage', [
             'userGroup' => $userGroup,
         ]);

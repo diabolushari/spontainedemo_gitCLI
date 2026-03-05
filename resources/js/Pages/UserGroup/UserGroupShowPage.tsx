@@ -37,6 +37,7 @@ const UserGroupShowPage = ({ userGroup }: Properties) => {
       ...formData,
     })
   }
+
   console.log(userGroup)
   return (
     <AnalyticsDashboardLayout
@@ -81,24 +82,48 @@ const UserGroupShowPage = ({ userGroup }: Properties) => {
 
             {/* Permissions Section */}
             <div className='rounded-xl border border-indigo-100 bg-indigo-50/40 p-6 shadow-sm'>
-              <h3 className='mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600'>
-                Permissions
-              </h3>
+              {/* Permissions */}
+              <div className='mb-6'>
+                <h3 className='mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600'>
+                  Permissions
+                </h3>
 
-              {userGroup.permissions?.length > 0 ? (
-                <div className='flex flex-wrap gap-3'>
-                  {userGroup.permissions.map((perm, index) => (
-                    <div
-                      key={index}
-                      className='rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm'
-                    >
-                      {perm.role}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className='text-sm text-gray-500'>No permissions assigned.</p>
-              )}
+                {userGroup.permissions?.length > 0 ? (
+                  <div className='flex flex-wrap gap-3'>
+                    {userGroup.permissions.map((perm, index) => (
+                      <div
+                        key={index}
+                        className='rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm'
+                      >
+                        {perm.role}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className='text-sm text-gray-500'>No permissions assigned.</p>
+                )}
+              </div>
+
+              <div>
+                <h3 className='mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600'>
+                  Subset Access
+                </h3>
+
+                {userGroup.subset_permission?.length > 0 ? (
+                  <div className='flex flex-wrap gap-3'>
+                    {userGroup.subset_permission.map((subsetPerm, index) => (
+                      <div
+                        key={index}
+                        className='rounded-xl border border-green-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm'
+                      >
+                        {subsetPerm.subset?.name}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className='text-sm text-gray-500'>No subset access assigned.</p>
+                )}
+              </div>
             </div>
           </div>
           {userGroup.hierarchy?.meta_hierarchy_item && (
@@ -187,7 +212,7 @@ const UserGroupShowPage = ({ userGroup }: Properties) => {
             <div className='rounded-xl border border-gray-100 bg-white shadow-sm'>
               {userGroup?.users?.length > 0 ? (
                 <JobsTable
-                  heads={['Photo', 'Name', 'Email', 'Office Code']}
+                  heads={['Photo', 'Name', 'Email', 'Office Name']}
                   editColumn
                 >
                   <tbody>
@@ -209,7 +234,7 @@ const UserGroupShowPage = ({ userGroup }: Properties) => {
 
                         <td className='standard-td'>{user.name}</td>
                         <td className='standard-td'>{user.email}</td>
-                        <td className='standard-td'>{user.office_code}</td>
+                        <td className='standard-td'>{user.organization.name}</td>
                         <td className='standard-td'>
                           <button
                             onClick={() => {

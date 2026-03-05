@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Subset\SubsetPermission;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,6 +25,11 @@ class UserGroup extends Model
     public function permissions(): HasMany
     {
         return $this->hasMany(UserGroupPermission::class, 'group_id', 'id');
+    }
+
+    public function subsetPermission(): HasMany
+    {
+        return $this->hasMany(SubsetPermission::class, 'group_id', 'id');
     }
 
     public function users(): HasMany

@@ -57,6 +57,14 @@ export default function SubsetPreview({
       editUrl={route('subset.edit', subset.id)}
       onAddClick={() => setShowPermissionsModal(true)}
     >
+      {/* <div className='mb-4 flex w-full justify-end'>
+        <button
+          onClick={() => setShowPermissionsModal(true)}
+          className='flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 transition-colors hover:bg-indigo-100'
+        >
+          Add User
+        </button>
+      </div> */}
       <div className='flex w-full flex-col md:w-1/2'>
         {/*<AdminSubsetFilterForm*/}
         {/*  dates={subset.dates as SubsetDateField[]}*/}

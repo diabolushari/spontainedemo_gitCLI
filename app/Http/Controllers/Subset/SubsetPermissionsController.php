@@ -10,32 +10,35 @@ class SubsetPermissionsController extends Controller
 {
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'subset_id' => 'required|exists:subset_details,id',
-        //     'roles' => 'required|array|min:1',
-        //     'roles.*.role' => 'required|integer|exists:user_groups,id',
-        // ]);
-
         $subsetId = $request->subset_id;
-        $now = now();
 
-        $formatted = collect($request->roles)->map(function ($item) use ($subsetId, $now) {
-            return [
-                'subset_id' => $subsetId,
-                'group_id' => (int) $item['role'],
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        })->toArray();
-// dd($formatted);
+        $roleIds = collect($request->roles)
+            ->pluck('role')
+            ->map(fn ($id) => (int) $id)
+            ->toArray();
+
         try {
-            SubsetPermission::insert($formatted);
+
+            // Delete removed permissions
+            SubsetPermission::where('subset_id', $subsetId)
+                ->whereNotIn('group_id', $roleIds)
+                ->delete();
+
+            // Insert new ones (avoid duplicates)
+            foreach ($roleIds as $groupId) {
+                SubsetPermission::firstOrCreate([
+                    'subset_id' => $subsetId,
+                    'group_id' => $groupId,
+                ]);
+            }
+
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
 
         return redirect()
             ->route('subset.preview', $subsetId)
-            ->with('success', 'User group created successfully.');
+            ->with('message', 'Permissions updated successfully.');
+
     }
 }

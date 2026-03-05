@@ -19,7 +19,11 @@ const PermissionModal = ({
   subset_id,
   permissions,
 }) => {
-  const { post, errors, loading } = useInertiaPost(`/subset-permissions`)
+  const { post, errors, loading } = useInertiaPost(`/subset-permissions`, {
+    onComplete: () => {
+      setShowPermissionsModal(false)
+    },
+  })
 
   const { formData, setFormValue } = useCustomForm({
     // group_id: '',

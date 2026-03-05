@@ -20,4 +20,8 @@ class SubsetPermission extends Model
     {
         return $this->hasOne(UserGroup::class, 'id', 'group_id');
     }
+    public function subset(): HasOne
+    {
+        return $this->hasOne(SubsetDetail::class, 'id', 'subset_id');
+    }
 }
