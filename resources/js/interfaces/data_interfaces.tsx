@@ -2,6 +2,7 @@ import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructur
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
+import { MetaHierarchyItem, Organization } from '@/Pages/Organization/OrganizationShowPage'
 
 export interface Model {
   id: number
@@ -16,8 +17,34 @@ export interface User extends Model {
   email: string
   role?: string
   office_code?: string
+  group_id?: number
+  photo?: string
+  organization: Organization
 }
 
+export interface UserGroup extends Model {
+  group_name: string
+  description?: string
+  permissions: UserGroupPermissions[]
+  users?: User[]
+  hierarchy?: UserGroupHeirarchy
+}
+
+export interface UserGroupHeirarchy extends Model {
+  user_group_id: number
+  meta_hierarchy_item_id: number
+  hierarchy_connection: string
+  meta_hierarchy_item?: MetaHierarchyItem | null
+}
+export interface SubsetPermission extends Model {
+  subset_id: string
+  group_id: string
+  groups: UserGroup[]
+}
+export interface UserGroupPermissions extends Model {
+  user_group_id: number
+  role: string
+}
 export interface ReferenceDataDomain extends Model {
   domain: string
 }
@@ -631,4 +658,11 @@ export interface DashboardPage extends Model {
     highlight_cards?: HighlightCardData[]
     heading_style: number | null
   } | null
+}
+
+export interface OrganizationHeirarchy extends Model {
+  organization_id: number
+  meta_hierarchy_item_id: number
+  hierarchy_connection: string
+  meta_hierarchy_item?: MetaHierarchyItem | null
 }

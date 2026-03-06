@@ -4,6 +4,8 @@ import {
   SubsetDetail,
   SubsetDimensionField,
   SubsetMeasureField,
+  SubsetPermission,
+  UserGroup,
   SubsetTextField,
 } from '@/interfaces/data_interfaces'
 import ShowResourcePage from '@/Components/ShowPage/ShowResourcePage'
@@ -14,16 +16,26 @@ import Pagination from '@/ui/Pagination/Pagination'
 import SubsetTable from '@/Components/DataExplorer/SubsetTable'
 import { router } from '@inertiajs/react'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
+import Modal from '@/ui/Modal/Modal'
+import PermissionModal from '@/Components/Subset/Access/PermissionModal'
 
 interface Props {
   subset: SubsetDetail
   data: Paginator<DataTableItem>
   filters: Record<string, string | undefined | null>
+  groups: UserGroup[]
+  permissions: SubsetPermission[]
 }
 
-export default function SubsetPreview({ subset, data, filters }: Readonly<Props>) {
+export default function SubsetPreview({
+  subset,
+  data,
+  filters,
+  groups,
+  permissions,
+}: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false)
   const handleDeleteClick = useCallback(() => {
     setShowDeleteModal(true)
   }, [])
@@ -44,6 +56,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
       items={[]}
       onDeleteClick={handleDeleteClick}
       editUrl={route('subset.edit', subset.id)}
+      onAddClick={() => setShowPermissionsModal(true)}
     >
       <div className='flex w-full flex-col md:w-1/2'>
         {/*<AdminSubsetFilterForm*/}
@@ -82,6 +95,20 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
         >
           <p>Are you sure you want to delete {subset.name}?</p>
         </DeleteModal>
+      )}
+      {showPermissionsModal && (
+        <Modal
+          setShowModal={setShowPermissionsModal}
+          title={'Add access to user groups'}
+        >
+          <PermissionModal
+            groups={groups}
+            setShowPermissionsModal={setShowPermissionsModal}
+            showPermissionsModal={showPermissionsModal}
+            subset_id={subset.id}
+            permissions={permissions}
+          />
+        </Modal>
       )}
     </ShowResourcePage>
   )

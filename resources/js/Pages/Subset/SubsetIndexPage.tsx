@@ -123,6 +123,7 @@ export default function SubsetIndexPage({
       title='Subets'
       handleCardClick={handleCardClick}
       subheading={``}
+      isAddButton={false}
     />
   )
 }
