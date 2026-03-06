@@ -15,7 +15,9 @@ export interface ChatMessage {
   data_table?: object[]
   is_favorite?: boolean
   chart_data?: object[]
-  explore_data?: { subsetID: number }
+  explore_data?:
+    | { subsetID: number }
+    | { subset_id: number; subset_name: string; subset_description: string }[]
   extras?: string
   widget_generation?: object
 }

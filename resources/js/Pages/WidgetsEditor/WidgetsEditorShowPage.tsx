@@ -1,6 +1,7 @@
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import { Link, router } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
+import { PageProps } from '@/types'
 import { Widget as WidgetType } from '@/interfaces/data_interfaces'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { useState } from 'react'
@@ -20,16 +21,21 @@ interface Props {
 }
 
 export default function WidgetsEditorShowPage({ widget }: Readonly<Props>) {
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(
     widget.updated_at ? new Date(widget.updated_at) : new Date()
   )
 
   const url = widget.data?.overview?.subset_id
-    ? route('subset-field-max-value', {
-        subsetDetail: widget.data.overview.subset_id,
-        field: 'month',
-      })
+    ? `${widget_data_url}${route(
+        'subset-field-max-value',
+        {
+          subsetDetail: widget.data.overview.subset_id,
+          field: 'month',
+        },
+        false
+      )}`
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)

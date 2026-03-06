@@ -1,6 +1,6 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import { AgentResponseMetaData } from '../components/useChat'
+import { AgentResponseMetaData } from '../components/chatTypes'
 
 export interface AgentAction {
   tool: string
@@ -43,7 +43,7 @@ export function handleAgentMetaResponse(
         })
       }
 
-      const newMessages = response.visualization!.map((visualization) => ({
+      const newMessages = response.visualization!.map((visualization: any) => ({
         id: currentIdRef.current++,
         role: 'assistant' as const,
         content: JSON.stringify([visualization]),
@@ -70,7 +70,8 @@ export function handleAgentMetaResponse(
     })
   }
 
-  if (response.data_explore != null) {
+  if (response.data_explore != null || response.explore_data != null) {
+    const exploreData = response.data_explore || response.explore_data
     setMessages((oldValues) => {
       const lastItem = oldValues[oldValues.length - 1]
       if (lastItem && lastItem.contentType === 'final_response') {
@@ -78,7 +79,7 @@ export function handleAgentMetaResponse(
           if (oldMessage.id === lastItem.id) {
             return {
               ...oldMessage,
-              explore_data: response.data_explore,
+              explore_data: exploreData,
             }
           }
           return oldMessage
@@ -90,11 +91,26 @@ export function handleAgentMetaResponse(
         {
           id: currentIdRef.current++,
           role: 'assistant',
-          content: JSON.stringify(response.data_explore),
+          content: JSON.stringify(exploreData),
           contentType: 'explore',
           suggestions: [],
         },
       ]
+    })
+  }
+
+  if (response.widget_generation != null) {
+    setMessages((oldValues) => {
+      const lastItem = oldValues[oldValues.length - 1]
+      return oldValues.map((oldMessage) => {
+        if (oldMessage.id === lastItem.id) {
+          return {
+            ...oldMessage,
+            widget_generation: response.widget_generation,
+          }
+        }
+        return oldMessage
+      })
     })
   }
 }
