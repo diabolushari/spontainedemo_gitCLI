@@ -87,10 +87,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       widget.data.rank?.order_by?.subset_column != null &&
       widget.data.rank?.order_by?.subset_field_name != null
 
-    const hasTrend =
-      widget.data.trend?.subset_id != null &&
-      widget.data.trend?.measure?.subset_column != null &&
-      widget.data.trend?.measure?.subset_field_name != null
+    const hasTrend = widget.data.trend?.subset_id != null && widget.data.trend?.measures?.length > 0
 
     const hasHighlightCards =
       widget.data.highlight_cards != null && widget.data.highlight_cards.length > 0
@@ -189,8 +186,7 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
       {selectView == 'trend' && (
         <TrendWidget
           trendSubsetId={data.trend.subset_id}
-          subsetColumn={data.trend.measure?.subset_column ?? null}
-          subsetFieldName={data.trend.measure?.subset_field_name ?? null}
+          trendMeasures={data.trend.measures ?? []}
           trendChartType={data.trend.chart_type ?? null}
           trendColor={data.trend.color ?? null}
           selectedMonth={selectedMonth}

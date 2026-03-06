@@ -1,13 +1,14 @@
 import CustomPageRow from '@/Components/PageEditor/CustomPage/CustomPageRow'
 import { DashboardPage } from '@/interfaces/data_interfaces'
-import { router } from '@inertiajs/react'
+import { PageProps } from '@/types'
+import { router, usePage } from '@inertiajs/react'
 import { ArrowRight, Maximize2, Plus } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 
-declare function route(name: string, params?: any): string
+declare function route(name: string, params?: any, absolute?: boolean): string
 
 interface Props {
   pages: DashboardPage[]
@@ -27,6 +28,7 @@ export function getAnchorWidgetFromPage(page: DashboardPage) {
 }
 
 export default function DashboardPreviewSection({ pages }: Props) {
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
@@ -45,10 +47,14 @@ export default function DashboardPreviewSection({ pages }: Props) {
   const anchor_widget = selectedPage ? getAnchorWidgetFromPage(selectedPage)?.widget : null
 
   const url = anchor_widget?.data.overview.subset_id
-    ? route('subset-field-max-value', {
-        subsetDetail: anchor_widget?.data.overview.subset_id,
-        field: 'month',
-      })
+    ? `${widget_data_url}${route(
+        'subset-field-max-value',
+        {
+          subsetDetail: anchor_widget?.data.overview.subset_id,
+          field: 'month',
+        },
+        false
+      )}`
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)

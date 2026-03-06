@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import HeadingStyleComponent from '@/Components/PageEditor/HeadingStyleComponent'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 
 interface PageWidget {
   position: number
@@ -57,16 +59,21 @@ export function getAnchorWidgetFromPage(page: PageData) {
 }
 
 export default function CustomPage({ page }: Readonly<CustomPageProps>) {
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
   console.log(page)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
 
   const anchor_widget = getAnchorWidgetFromPage(page)?.widget
 
   const url = anchor_widget?.data.overview.subset_id
-    ? route('subset-field-max-value', {
-        subsetDetail: anchor_widget?.data.overview.subset_id,
-        field: 'month',
-      })
+    ? `${widget_data_url}${route(
+        'subset-field-max-value',
+        {
+          subsetDetail: anchor_widget?.data.overview.subset_id,
+          field: 'month',
+        },
+        false
+      )}`
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
