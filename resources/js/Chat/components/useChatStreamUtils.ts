@@ -77,7 +77,7 @@ export class StreamProcessor {
 
                     try {
                         const parsed = extractJsonMarkdown(this.state.inlineMetaBuffer) as AgentResponseMetaData | null
-                        if (parsed && (parsed.visualization || parsed.data_explore || parsed.suggestions || parsed.widget_generation)) {
+                        if (parsed && (parsed.visualization || parsed.data_explore || parsed.explore_data || parsed.suggestions || parsed.widget_generation)) {
                             resultMeta = parsed
                         }
                     } catch (e) {

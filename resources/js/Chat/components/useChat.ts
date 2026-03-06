@@ -119,8 +119,8 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
           if (extractedMeta.visualization) {
             updatedMessage.chart_data = extractedMeta.visualization
           }
-          if (extractedMeta.data_explore) {
-            updatedMessage.explore_data = extractedMeta.data_explore
+          if (extractedMeta.data_explore || extractedMeta.explore_data) {
+            updatedMessage.explore_data = extractedMeta.data_explore || extractedMeta.explore_data
           }
           if (extractedMeta.suggestions) {
             updatedMessage.suggestions = extractedMeta.suggestions

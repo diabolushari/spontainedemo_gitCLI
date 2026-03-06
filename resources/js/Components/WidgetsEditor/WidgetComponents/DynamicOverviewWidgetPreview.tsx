@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Widget } from '@/interfaces/data_interfaces'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import OverviewWidgetContent from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidgetContent'
 import useFetchRecord from '@/hooks/useFetchRecord'
 
@@ -13,13 +15,18 @@ interface SubsetMaxValueResponse {
 }
 
 export default function DynamicOverviewWidgetPreview({ widget }: Readonly<Props>) {
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
 
   const url = widget.data?.overview?.subset_id
-    ? route('subset-field-max-value', {
-        subsetDetail: widget.data.overview.subset_id,
-        field: 'month',
-      })
+    ? `${widget_data_url}${route(
+        'subset-field-max-value',
+        {
+          subsetDetail: widget.data.overview.subset_id,
+          field: 'month',
+        },
+        false
+      )}`
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)

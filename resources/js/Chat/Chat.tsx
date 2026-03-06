@@ -32,7 +32,13 @@ interface ChatProps {
   initialMessage?: string
 }
 
-export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, favorites = [], initialMessage }: Readonly<ChatProps>) {
+export default function Chat({
+  chatHistory,
+  currentSession,
+  aiSuggestionUrl,
+  favorites = [],
+  initialMessage,
+}: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -59,12 +65,17 @@ export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, fav
     return () => window.removeEventListener('ai-insight-send-message', handler)
   }, [handleSendMessage])
 
-  // Handle initial message from homepage
   useEffect(() => {
     if (wsStatus === 'connected' && initialMessage && messages.length === 0 && !isLoading) {
       handleSendMessage(initialMessage)
     }
   }, [wsStatus, initialMessage, messages.length, isLoading, handleSendMessage])
+
+  useEffect(() => {
+    if (initialMessage && messages.length === 0 && !input) {
+      setInput(initialMessage)
+    }
+  }, [initialMessage, messages.length, setInput, input])
 
   // Sync currentSession prop with local state when it changes (e.g. navigation)
   useEffect(() => {
@@ -81,7 +92,7 @@ export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, fav
       type='chat'
       subtype='chat'
     >
-      <div className='flex h-[calc(100vh-80px)] overflow-hidden w-full'>
+      <div className='flex h-[calc(100vh-80px)] w-full overflow-hidden'>
         {/* Sidebar with fixed width */}
         <div className='w-[280px] flex-shrink-0 border-r border-gray-100 bg-white'>
           <Sidebar
@@ -93,7 +104,7 @@ export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, fav
         </div>
 
         {/* Main content - flex-1 to take remaining space */}
-        <div className='flex-1 min-w-0'>
+        <div className='min-w-0 flex-1'>
           <MainArea
             currentSession={_currentSession}
             messages={messages}
