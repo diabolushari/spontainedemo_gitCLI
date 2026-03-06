@@ -10,6 +10,12 @@ class SubsetPermissionsController extends Controller
 {
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'subset_id' => 'required|integer|exists:subset_details,id',
+            'roles' => 'required|array',
+            'roles.*.role' => 'required|integer|exists:user_groups,id',
+        ]);
+
         $subsetId = $request->subset_id;
 
         $roleIds = collect($request->roles)

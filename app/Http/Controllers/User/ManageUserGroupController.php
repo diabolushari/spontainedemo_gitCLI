@@ -72,7 +72,7 @@ class ManageUserGroupController extends Controller
         }
 
         return redirect()->route('manage-user-group.index')
-            ->with('success', 'User group created successfully.');
+            ->with('message', 'User group created successfully.');
     }
 
     public function show(UserGroup $userGroup): Response
