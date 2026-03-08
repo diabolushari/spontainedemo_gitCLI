@@ -2,7 +2,6 @@ import { ChatMessage } from '@/Chat/components/MainArea'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import { handleAgentMetaResponse } from '../libs/handle-agent-response'
 import { CurrentSession, WebSocketStatus } from './chatTypes'
 import { handleWebSocketMessage } from './useChatSocketHandler'
 import { MARKERS, STATUS, StreamProcessor } from './useChatStreamUtils'
@@ -72,7 +71,11 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
       contentBuffer.current = ''
 
       // Process the stream
-      const { text: textToAdd, meta: extractedMeta, extras: extractedExtras } = streamProcessor.current.process()
+      const {
+        text: textToAdd,
+        meta: extractedMeta,
+        extras: extractedExtras,
+      } = streamProcessor.current.process()
 
       if (textToAdd === '' && extractedMeta === null && extractedExtras === null) {
         return
@@ -155,6 +158,7 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
     }
 
     ws.onmessage = (event) => {
+      console.log(event.data)
       handleWebSocketMessage({
         event,
         uuid,
@@ -210,6 +214,8 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
       },
     ])
     setIsLoading(true)
+
+    console.log(trimmedContent)
 
     socketRef.current?.send(
       JSON.stringify({
@@ -312,7 +318,9 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
       console.error('Error toggling favorite:', err)
       // Revert the optimistic update on error
       setMessages((prev) =>
-        prev.map((msg) => (msg.id === messageId ? { ...msg, is_favorite: isCurrentlyFavorite } : msg))
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, is_favorite: isCurrentlyFavorite } : msg
+        )
       )
     }
   }
