@@ -54,6 +54,10 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
   const streamProcessor = useRef(new StreamProcessor())
 
   useEffect(() => {
+    console.log('messages :',messages)
+  }, [messages])
+
+  useEffect(() => {
     setWsStatus('connecting')
     const ws = new WebSocket(`${agentURL}?token=${chatToken}`)
     ws.onopen = () => {
@@ -91,7 +95,8 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
         let contentStreamedSoFar = lastItem.content + textToAdd
         let lastMessageContent = contentStreamedSoFar
         let newContentType = lastItem.contentType
-
+        
+        console.log('contentStreamedSoFar :',contentStreamedSoFar)
         // Check for START_OF_ANSWER_MARKER and extract content after it
         if (contentStreamedSoFar.includes(MARKERS.START_OF_ANSWER)) {
           const afterStartMarker = contentStreamedSoFar.split(MARKERS.START_OF_ANSWER)[1] || ''
@@ -158,7 +163,7 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
     }
 
     ws.onmessage = (event) => {
-      console.log(event.data)
+      console.log('event.data :',event.data)
       handleWebSocketMessage({
         event,
         uuid,

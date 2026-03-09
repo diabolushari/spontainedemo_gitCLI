@@ -108,6 +108,7 @@ export class StreamProcessor {
                 }
             } else {
                 // Look for markers
+                console.log('this.state.streamBuffer :', this.state.streamBuffer)
                 const startMetaIdx = this.state.streamBuffer.indexOf(MARKERS.START_OF_META)
                 const startExtrasIdx = this.state.streamBuffer.indexOf(MARKERS.START_OF_EXTRAS)
 
