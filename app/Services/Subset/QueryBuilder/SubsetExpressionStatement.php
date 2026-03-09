@@ -5,6 +5,7 @@ namespace App\Services\Subset\QueryBuilder;
 use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
+use App\Models\Subset\SubsetDetailText;
 
 trait SubsetExpressionStatement
 {
@@ -46,5 +47,10 @@ trait SubsetExpressionStatement
         }
 
         return $column;
+    }
+
+    private function textStatement(SubsetDetailText $text): string
+    {
+        return '`'.$text->info->column.'`';
     }
 }

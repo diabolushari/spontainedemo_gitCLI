@@ -2,6 +2,7 @@ import {
   SubsetDateField,
   SubsetDimensionField,
   SubsetMeasureField,
+  SubsetTextField,
 } from '@/interfaces/data_interfaces'
 import { SubsetFilterFormField } from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import {
@@ -29,7 +30,7 @@ function pushDateField(
     value,
     officeData: null,
     dimensionData: null,
-    type: date.use_expression === 1 ? 'string' : 'date',
+    type: date.use_expression === 1 ? 'string' : (date.temporal_type ?? 'date'),
   })
 }
 
@@ -110,6 +111,7 @@ const initSubsetFilterFormFields = (
   dates: SubsetDateField[],
   measures: SubsetMeasureField[],
   dimensions: SubsetDimensionField[],
+  texts: SubsetTextField[],
   offices?: OfficeData[],
   month?: boolean
 ) => {
@@ -189,6 +191,27 @@ const initSubsetFilterFormFields = (
           (op !== '=' && isKeyOfOperator(key, measure.subset_column, op))
         ) {
           pushMeasureField(fields, measure, op, filters[key] ?? '')
+        }
+      })
+    })
+
+    // Handle texts
+    texts.forEach((text) => {
+      dimensionOperations.forEach((textOperation) => {
+        const op = textOperation.value
+        if (
+          (op === '=' && key === `${text.subset_column}`) ||
+          (op !== '=' && isKeyOfOperator(key, text.subset_column, op))
+        ) {
+          fields.push({
+            id: 0,
+            field: text.subset_column ?? '',
+            operator: op,
+            value: filters[key] ?? '',
+            officeData: null,
+            dimensionData: null,
+            type: 'string',
+          })
         }
       })
     })

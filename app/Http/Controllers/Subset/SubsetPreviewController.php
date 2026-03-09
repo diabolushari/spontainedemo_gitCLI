@@ -27,7 +27,7 @@ class SubsetPreviewController extends Controller implements HasMiddleware
 
     public function __invoke(SubsetDetail $subsetDetail, GetSubsetData $getSubsetData, SubsetFilterBuilder $filterBuilder): Response
     {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'dimensions.hierarchy', 'measures.info', 'measures.weightInfo');
+        $subsetDetail->load('dates.info', 'dimensions.info', 'dimensions.hierarchy', 'measures.info', 'measures.weightInfo', 'texts.info');
 
         $query = $getSubsetData
             ->setFilters(request()->all())
@@ -37,6 +37,7 @@ class SubsetPreviewController extends Controller implements HasMiddleware
         $permissions = SubsetPermission::where('subset_id', $subsetDetail->id)->with('groups')->get();
         return Inertia::render('Subset/SubsetPreview', [
             'subset' => $subsetDetail,
+            /** @var \Illuminate\Pagination\LengthAwarePaginator $data */
             'data' => $query?->paginate(50)
                 ->withQueryString(),
             'filters' => request()->all(),

@@ -3,12 +3,14 @@ import {
   SubsetDateField,
   SubsetDimensionField,
   SubsetMeasureField,
+  SubsetTextField,
 } from '@/interfaces/data_interfaces'
 
 export default function useAvailableSubsetFilters(
   dates: SubsetDateField[],
   dimensions: SubsetDimensionField[],
   measures: SubsetMeasureField[],
+  texts: SubsetTextField[],
   month: boolean = false
 ) {
   return useMemo(() => {
@@ -24,7 +26,7 @@ export default function useAvailableSubsetFilters(
         fieldId: date.field_id,
         fieldName: date.subset_field_name ?? '',
         column: date.subset_column ?? '',
-        type: date.use_expression === 1 ? 'string' : 'date',
+        type: date.use_expression === 1 ? 'string' : (date.temporal_type ?? 'date'),
       })
     })
 
@@ -66,6 +68,15 @@ export default function useAvailableSubsetFilters(
       })
     })
 
+    texts.forEach((text) => {
+      fields.push({
+        fieldId: text.field_id,
+        fieldName: text.subset_field_name ?? '',
+        column: text.subset_column ?? '',
+        type: 'string',
+      })
+    })
+
     return fields
-  }, [dates, measures, dimensions])
+  }, [dates, measures, dimensions, texts])
 }

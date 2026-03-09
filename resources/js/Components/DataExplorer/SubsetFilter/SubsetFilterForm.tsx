@@ -3,6 +3,7 @@ import {
   SubsetDetail,
   SubsetDimensionField,
   SubsetMeasureField,
+  SubsetTextField,
 } from '@/interfaces/data_interfaces'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
@@ -21,6 +22,7 @@ interface Props {
   dates: SubsetDateField[]
   measures: SubsetMeasureField[]
   dimensions: SubsetDimensionField[]
+  texts: SubsetTextField[]
   subset: SubsetDetail
   filters: Record<string, string | undefined | null>
   onSubmit: (querystring: string | null) => void
@@ -79,10 +81,11 @@ export default function SubsetFilterForm({
   offices,
   onSubmit,
   month = false,
+  texts,
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
   const [formFields, setFormFields] = useState<SubsetFilterFormField[]>(
-    initSubsetFilterFormFields(filters, dates, measures, dimensions, offices, month).map(
+    initSubsetFilterFormFields(filters, dates, measures, dimensions, texts, offices, month).map(
       (formField) => {
         return {
           ...formField,
@@ -146,7 +149,7 @@ export default function SubsetFilterForm({
     }
   }, [formFields])
 
-  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures, month)
+  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures, texts, month)
 
   const setField = (id: number, value: string) => {
     const field = availableFields.find((field) => field.column === value)

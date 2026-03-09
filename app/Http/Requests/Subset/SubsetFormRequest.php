@@ -11,6 +11,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
  * @property SubsetDateField[] $dates
  * @property SubsetDimensionField[] $dimensions
  * @property SubsetMeasureField[] $measures
+ * @property SubsetTextField[] $texts
  */
 #[MapName(SnakeCaseMapper::class)]
 class SubsetFormRequest extends Data
@@ -32,5 +33,6 @@ class SubsetFormRequest extends Data
         public ?array $dates,
         public ?array $dimensions,
         public ?array $measures,
+        public ?array $texts,
     ) {}
 }

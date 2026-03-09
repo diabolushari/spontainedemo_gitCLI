@@ -57,4 +57,12 @@ class SubsetDetail extends Model
     {
         return $this->hasMany(SubsetDetailMeasure::class, 'subset_detail_id', 'id');
     }
+
+    /**
+     * @return HasMany<SubsetDetailText, $this>
+     */
+    public function texts(): HasMany
+    {
+        return $this->hasMany(SubsetDetailText::class, 'subset_detail_id', 'id');
+    }
 }

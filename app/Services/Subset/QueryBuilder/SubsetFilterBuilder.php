@@ -170,5 +170,37 @@ class SubsetFilterBuilder
             }
         });
 
+        $subsetDetail->texts->each(function ($text) use ($filters, $query) {
+            $column = $this->textStatement($text);
+
+            if (isset($filters[$text->subset_column])) {
+                $query->whereRaw($column.' = ? ', [$filters[$text->subset_column]]);
+            }
+            if (isset($filters[$text->subset_column.'_not'])) {
+                $query->whereRaw($column.' != ? ', [$filters[$text->subset_column.'_not']]);
+            }
+            if (isset($filters[$text->subset_column.'_like'])) {
+                $query->whereRaw($column.' LIKE ? ', ['%'.$filters[$text->subset_column.'_like'].'%']);
+            }
+            if (isset($filters[$text->subset_column.'_not_like'])) {
+                $query->whereRaw($column.' NOT LIKE ? ', ['%'.$filters[$text->subset_column.'_not_like'].'%']);
+            }
+            if (isset($filters[$text->subset_column.'_in'])) {
+                $splited = explode(',', $filters[$text->subset_column.'_in']);
+                $query->where(function (Builder $query) use ($column, $splited) {
+                    foreach ($splited as $split) {
+                        $query->orWhereRaw($column.' = ? ', [$split]);
+                    }
+                });
+            }
+            if (isset($filters[$text->subset_column.'_not_in'])) {
+                $splited = explode(',', $filters[$text->subset_column.'_not_in']);
+                $query->where(function (Builder $query) use ($column, $splited) {
+                    foreach ($splited as $split) {
+                        $query->whereRaw($column.' != ? ', [$split]);
+                    }
+                });
+            }
+        });
     }
 }
