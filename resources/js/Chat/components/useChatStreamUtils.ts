@@ -61,24 +61,20 @@ export class StreamProcessor {
     }
 
     process(): { text: string; meta: AgentResponseMetaData | null; extras: string | null } {
-        let resultText = ''
-        let resultMeta: AgentResponseMetaData | null = null
-        let resultExtras: string | null = null
+        let text = ''
+        let meta: AgentResponseMetaData | null = null
+        let extras: string | null = null
 
-        // Helper to process recursively
-        const processLoop = () => {
-            if (this.state.streamBuffer === '') return
-
+        while (this.state.streamBuffer) {
             if (this.state.isCollectingInlineMeta) {
                 const endIdx = this.state.streamBuffer.indexOf(MARKERS.END_OF_META)
                 if (endIdx !== -1) {
-                    // Found end of meta data
                     this.state.inlineMetaBuffer += this.state.streamBuffer.substring(0, endIdx)
 
                     try {
                         const parsed = extractJsonMarkdown(this.state.inlineMetaBuffer) as AgentResponseMetaData | null
                         if (parsed && (parsed.visualization || parsed.data_explore || parsed.explore_data || parsed.suggestions || parsed.widget_generation)) {
-                            resultMeta = parsed
+                            meta = parsed
                         }
                     } catch (e) {
                         console.warn("Failed to parse inline metadata", e)
@@ -87,7 +83,6 @@ export class StreamProcessor {
                     this.state.inlineMetaBuffer = ''
                     this.state.isCollectingInlineMeta = false
                     this.state.streamBuffer = this.state.streamBuffer.substring(endIdx + MARKERS.END_OF_META.length)
-                    processLoop()
                 } else {
                     this.state.inlineMetaBuffer += this.state.streamBuffer
                     this.state.streamBuffer = ''
@@ -96,86 +91,60 @@ export class StreamProcessor {
                 const endIdx = this.state.streamBuffer.indexOf(MARKERS.END_OF_EXTRAS)
                 if (endIdx !== -1) {
                     this.state.extrasBuffer += this.state.streamBuffer.substring(0, endIdx)
-                    resultExtras = this.state.extrasBuffer
+                    extras = this.state.extrasBuffer
 
                     this.state.extrasBuffer = ''
                     this.state.isCollectingExtras = false
                     this.state.streamBuffer = this.state.streamBuffer.substring(endIdx + MARKERS.END_OF_EXTRAS.length)
-                    processLoop()
                 } else {
                     this.state.extrasBuffer += this.state.streamBuffer
                     this.state.streamBuffer = ''
                 }
             } else {
-                // Look for markers
-                console.log('this.state.streamBuffer :', this.state.streamBuffer)
                 const startMetaIdx = this.state.streamBuffer.indexOf(MARKERS.START_OF_META)
                 const startExtrasIdx = this.state.streamBuffer.indexOf(MARKERS.START_OF_EXTRAS)
 
-                let firstMarkerIdx = -1
-                let markerType: 'meta' | 'extras' | null = null
+                const hasMeta = startMetaIdx !== -1
+                const hasExtras = startExtrasIdx !== -1
 
-                if (startMetaIdx !== -1 && startExtrasIdx !== -1) {
-                    if (startMetaIdx < startExtrasIdx) {
-                        firstMarkerIdx = startMetaIdx
-                        markerType = 'meta'
-                    } else {
-                        firstMarkerIdx = startExtrasIdx
-                        markerType = 'extras'
-                    }
-                } else if (startMetaIdx !== -1) {
-                    firstMarkerIdx = startMetaIdx
-                    markerType = 'meta'
-                } else if (startExtrasIdx !== -1) {
-                    firstMarkerIdx = startExtrasIdx
-                    markerType = 'extras'
-                }
+                if (hasMeta || hasExtras) {
+                    const isMetaFirst = hasMeta && (!hasExtras || startMetaIdx < startExtrasIdx)
+                    const firstMarkerIdx = isMetaFirst ? startMetaIdx : startExtrasIdx
+                    
+                    text += this.state.streamBuffer.substring(0, firstMarkerIdx)
 
-                if (firstMarkerIdx !== -1) {
-                    resultText += this.state.streamBuffer.substring(0, firstMarkerIdx)
-
-                    if (markerType === 'meta') {
+                    if (isMetaFirst) {
                         this.state.isCollectingInlineMeta = true
                         this.state.streamBuffer = this.state.streamBuffer.substring(firstMarkerIdx + MARKERS.START_OF_META.length)
                     } else {
                         this.state.isCollectingExtras = true
                         this.state.streamBuffer = this.state.streamBuffer.substring(firstMarkerIdx + MARKERS.START_OF_EXTRAS.length)
                     }
-                    processLoop()
                 } else {
-                    // No start marker found, handle partial markers at end
-                    const minLengthToCheck = MARKERS.START_OF_META.length - 1
-                    if (this.state.streamBuffer.length > minLengthToCheck) {
-                        let partialMatchLength = 0
-                        for (let i = 1; i <= minLengthToCheck; i++) {
-                            const tail = this.state.streamBuffer.slice(-i)
-                            if (MARKERS.START_OF_META.startsWith(tail)) {
-                                partialMatchLength = i
+                    let matchedPartial = false
+                    
+                    for (const marker of [MARKERS.START_OF_META, MARKERS.START_OF_EXTRAS]) {
+                        const minLen = Math.min(this.state.streamBuffer.length, marker.length - 1)
+                        for (let i = minLen; i > 0; i--) {
+                            if (marker.startsWith(this.state.streamBuffer.slice(-i))) {
+                                text += this.state.streamBuffer.substring(0, this.state.streamBuffer.length - i)
+                                this.state.streamBuffer = this.state.streamBuffer.slice(-i)
+                                matchedPartial = true
+                                break
                             }
                         }
-
-                        if (partialMatchLength > 0) {
-                            const safeLength = this.state.streamBuffer.length - partialMatchLength
-                            resultText += this.state.streamBuffer.substring(0, safeLength)
-                            this.state.streamBuffer = this.state.streamBuffer.substring(safeLength)
-                        } else {
-                            resultText += this.state.streamBuffer
-                            this.state.streamBuffer = ''
-                        }
-                    } else {
-                        if (MARKERS.START_OF_META.startsWith(this.state.streamBuffer)) {
-                            // Potential marker start, keep in buffer
-                        } else {
-                            resultText += this.state.streamBuffer
-                            this.state.streamBuffer = ''
-                        }
+                        if (matchedPartial) break
                     }
+
+                    if (!matchedPartial) {
+                        text += this.state.streamBuffer
+                        this.state.streamBuffer = ''
+                    }
+                    break
                 }
             }
         }
 
-        processLoop()
-
-        return { text: resultText, meta: resultMeta, extras: resultExtras }
+        return { text, meta, extras }
     }
 }
