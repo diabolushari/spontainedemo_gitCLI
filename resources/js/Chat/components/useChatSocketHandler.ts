@@ -89,7 +89,7 @@ export function handleWebSocketMessage({
           debounceTimer.current = setTimeout(() => {
             flushBuffer()
             debounceTimer.current = null
-          }, 50)
+          }, 200)
         }
         break
 
