@@ -206,6 +206,7 @@ export interface SubsetTextField extends Model {
   field_id: number
   subset_field_name: string
   subset_column: string
+  expression: string | null
   description: string | null
   sort_order: string | null
   info?: Partial<TableTextField>

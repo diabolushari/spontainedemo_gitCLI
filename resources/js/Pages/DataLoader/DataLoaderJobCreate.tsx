@@ -183,6 +183,20 @@ export default function DataLoaderJobCreate({
       })
     })
 
+    dataDetail.measure_fields?.forEach((measureField) => {
+      fields.push({
+        field: measureField.field_name as string,
+        column: measureField.column as string,
+      })
+    })
+
+    dataDetail.text_fields?.forEach((textField) => {
+      fields.push({
+        field: textField.field_name as string,
+        column: textField.column as string,
+      })
+    })
+
     return fields
   }, [dataDetail])
 

@@ -51,6 +51,10 @@ trait SubsetExpressionStatement
 
     private function textStatement(SubsetDetailText $text): string
     {
+        if ($text->expression != null) {
+            return $text->expression;
+        }
+
         return '`'.$text->info->column.'`';
     }
 }

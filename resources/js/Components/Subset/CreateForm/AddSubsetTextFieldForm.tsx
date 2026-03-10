@@ -24,10 +24,12 @@ export default function AddSubsetTextFieldForm({
   selectedField,
   removeSelectedField,
 }: Readonly<Props>) {
-  const { formData, setFormValue } = useCustomForm({
+  const { formData, setFormValue, toggleBoolean } = useCustomForm({
     id: selectedField?.id ?? null,
     field_id: selectedField?.field_id.toString() ?? '',
     subset_field_name: selectedField?.subset_field_name ?? '',
+    use_expression: selectedField?.expression != null && selectedField.expression != '',
+    expression: selectedField?.expression ?? '',
     sort_order: selectedField?.sort_order ?? '',
     description: selectedField?.description ?? '',
   })
@@ -47,6 +49,7 @@ export default function AddSubsetTextFieldForm({
           const selected = textFields.find((f) => f.id === Number(value))
           if (selected != null) {
             setFormValue('subset_field_name')(selected.field_name)
+            setFormValue('expression')(`MYSQL format - EXPR(${selected.column})`)
           }
         },
         label: 'Field',
@@ -58,6 +61,18 @@ export default function AddSubsetTextFieldForm({
         type: 'text' as const,
         setValue: setFormValue('subset_field_name'),
         label: 'Name On Subset',
+      },
+      use_expression: {
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('use_expression'),
+        label: 'Use Expression',
+      },
+      expression: {
+        type: 'text' as const,
+        setValue: setFormValue('expression'),
+        label: 'Expression',
+        hidden: !formData.use_expression,
+        placeholder: 'e.g. CONCAT(column, " ", "added_text")',
       },
       description: {
         type: 'textarea' as const,
@@ -76,7 +91,7 @@ export default function AddSubsetTextFieldForm({
         label: 'Sort Order',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, textFields])
+  }, [setFormValue, textFields, toggleBoolean, formData.use_expression])
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -89,6 +104,7 @@ export default function AddSubsetTextFieldForm({
       field_id: Number(formData.field_id),
       subset_field_name: formData.subset_field_name,
       subset_column: generateSnakeCaseName(formData.subset_field_name),
+      expression: formData.use_expression ? formData.expression : '',
       sort_order: formData.sort_order == '' ? null : formData.sort_order,
       description: formData.description,
     })

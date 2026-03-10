@@ -15,6 +15,7 @@ class SubsetTextField extends Data
         public string $subsetFieldName,
         public string $subsetColumn,
         public ?string $sortOrder,
+        public ?string $expression,
         public ?string $description,
     ) {}
 }

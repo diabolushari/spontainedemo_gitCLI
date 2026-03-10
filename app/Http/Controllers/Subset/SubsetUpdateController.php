@@ -127,6 +127,7 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                     'subset_field_name',
                     'subset_column',
                     'sort_order',
+                    'expression',
                     'description',
                     'updated_by',
                 ]

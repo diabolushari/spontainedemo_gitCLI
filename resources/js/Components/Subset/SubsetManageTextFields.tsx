@@ -33,6 +33,7 @@ export default function SubsetManageTextFields({
         subset_column: addedField.subset_column,
         sort: addedField.sort_order ?? 'Not Used For Sorting',
         field: addedField.subset_field_name,
+        expression: addedField.expression ?? '-',
         description: addedField.description ?? '-',
         actions: [],
       }
@@ -50,6 +51,12 @@ export default function SubsetManageTextFields({
       {
         key: 'description',
         label: 'Description',
+        isCardHeader: false,
+        isShownInCard: true,
+      },
+      {
+        key: 'expression',
+        label: 'Expression',
         isCardHeader: false,
         isShownInCard: true,
       },

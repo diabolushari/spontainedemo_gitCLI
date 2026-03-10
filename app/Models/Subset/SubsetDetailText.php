@@ -16,6 +16,7 @@ class SubsetDetailText extends Model
         'field_id',
         'subset_field_name',
         'subset_column',
+        'expression',
         'sort_order',
         'description',
         'created_by',
