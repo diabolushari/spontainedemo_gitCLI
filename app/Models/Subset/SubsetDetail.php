@@ -61,6 +61,14 @@ class SubsetDetail extends Model
     }
 
     /**
+     * @return HasMany<SubsetDetailText, $this>
+     */
+    public function texts(): HasMany
+    {
+        return $this->hasMany(SubsetDetailText::class, 'subset_detail_id', 'id');
+    }
+
+    /**
      * @return HasOne<MetaHierarchy, $this>
      */
     public function heirarchy(): HasOne

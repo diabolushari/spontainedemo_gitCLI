@@ -16,6 +16,7 @@ class SubsetDetailDate extends Model
         'field_id',
         'subset_field_name',
         'subset_column',
+        'temporal_type',
         'sort_order',
         'start_date',
         'end_date',

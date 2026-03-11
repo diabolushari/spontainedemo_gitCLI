@@ -8,6 +8,7 @@ use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Illuminate\Http\UploadedFile;
 
 /**
  * @property-read DataCollection<int, DateTimeColumnInfo>|null $datetimes
@@ -66,6 +67,7 @@ class DataDetailFormRequest extends Data
         public ?int $subHourInterval,
         public ?int $retries,
         public ?int $retriesInterval,
+        public ?UploadedFile $excelFile,
     ) {
     }
 

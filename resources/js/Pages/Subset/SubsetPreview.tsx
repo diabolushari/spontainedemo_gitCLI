@@ -6,6 +6,7 @@ import {
   SubsetMeasureField,
   SubsetPermission,
   UserGroup,
+  SubsetTextField,
 } from '@/interfaces/data_interfaces'
 import ShowResourcePage from '@/Components/ShowPage/ShowResourcePage'
 import { useCallback, useState } from 'react'
@@ -78,6 +79,7 @@ export default function SubsetPreview({
           dates={subset.dates as SubsetDateField[]}
           measures={subset.measures as SubsetMeasureField[]}
           dimensions={subset.dimensions as SubsetDimensionField[]}
+          texts={subset.texts as SubsetTextField[]}
           subset={subset}
           filters={filters}
           onSubmit={handleSubmit}

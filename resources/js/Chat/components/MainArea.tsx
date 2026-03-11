@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ChatInput from './ChatInput'
-import MessageList from './MessageList'
 import EmptyState from './EmptyState'
+import MessageList from './MessageList'
 
 // --- Interfaces ---
 export interface ChatMessage {
@@ -99,10 +99,6 @@ export default function MainArea({
   const onSendMessage = useCallback(() => {
     handleSendMessage(input)
   }, [handleSendMessage, input])
-
-  useEffect(() => {
-    console.log(messages)
-  }, [messages, isLoading])
 
   return (
     <main className='flex h-full flex-1 flex-col bg-[#F3F4F7] font-sans'>

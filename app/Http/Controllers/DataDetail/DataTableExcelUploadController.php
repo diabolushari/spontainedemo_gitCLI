@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\DataDetail;
 
 use App\Http\Controllers\Controller;
-use App\Imports\DataTableImport;
 use App\Models\DataDetail\DataDetail;
-use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
+use App\Services\DataLoader\ImportToDataTable\ProcessExcelUpload;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Facades\Excel;
 
 class DataTableExcelUploadController extends Controller implements HasMiddleware
 {
@@ -23,57 +19,25 @@ class DataTableExcelUploadController extends Controller implements HasMiddleware
         return ['auth'];
     }
 
-    public function __invoke(DataDetail $dataDetail, Request $request, ImportToDataTable $importToDataTable): RedirectResponse
+    public function __invoke(DataDetail $dataDetail, Request $request, ProcessExcelUpload $processExcelUpload): RedirectResponse
     {
         $request->validate([
             'file' => 'required|file',
         ]);
 
-        $excelSheet = Excel::toArray(new DataTableImport, request()->file('file'));
+        $result = $processExcelUpload->process($dataDetail, $request->file('file'));
 
-        if (empty($excelSheet) || empty($excelSheet[0])) {
+        if (!$result->error) {
             return back()
                 ->with([
-                    'error' => 'No data to import',
+                    'message' => $result->message,
                 ]);
         }
-
-        Log::info('Excel sheet data:', $excelSheet);
-
-        //convert excel sheet to datatable items
-        $dataTable = [];
-
-        $columnTitles = $excelSheet[0][0];
-
-        foreach ($excelSheet[0] as $index => $row) {
-            if ($index === 0) {
-                continue;
-            }
-            $record = [];
-            foreach ($columnTitles as $columnIndex => $columnTitle) {
-                $record[$columnTitle] = $row[$columnIndex] ?? null;
-            }
-            $dataTable[] = $record;
-        }
-
-        // Import data to the data table
-        DB::beginTransaction();
-        $result = $importToDataTable->importToDataTable($dataDetail, $dataTable);
-        if ($result['is_successful']) {
-            DB::commit();
-
-            return back()
-                ->with([
-                    'message' => 'Data imported successfully',
-                ]);
-        }
-
-        DB::rollBack();
 
         return redirect()
             ->back()
             ->with([
-                'error' => $result['error_message'],
+                'error' => $result->message,
             ]);
     }
 }

@@ -68,6 +68,15 @@ class SubsetDuplicateController extends Controller implements HasMiddleware
                 $newMeasure->save();
             }
 
+            // Replicate related texts
+            foreach ($subsetDetail->texts as $text) {
+                $newText = $text->replicate();
+                $newText->subset_detail_id = $newSubset->id;
+                $newText->created_by = $user;
+                $newText->updated_by = $user;
+                $newText->save();
+            }
+
             DB::commit();
 
             

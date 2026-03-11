@@ -1,6 +1,7 @@
 import SubsetManageDates from '@/Components/Subset/SubsetManageDates'
 import SubsetManageDimensions from '@/Components/Subset/SubsetManageDimensions'
 import SubsetManageMeasures from '@/Components/Subset/SubsetManageMeasures'
+import SubsetManageTextFields from '@/Components/Subset/SubsetManageTextFields'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
@@ -11,9 +12,11 @@ import {
   SubsetDateField,
   SubsetDimensionField,
   SubsetMeasureField,
+  SubsetTextField,
   TableDateField,
   TableDimensionField,
   TableMeasureField,
+  TableTextField,
 } from '@/interfaces/data_interfaces'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import CardHeader from '@/ui/Card/CardHeader'
@@ -27,6 +30,7 @@ interface Props {
   dateFields: TableDateField[]
   dimensionFields: TableDimensionField[]
   measureFields: TableMeasureField[]
+  textFields: TableTextField[]
   hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
 }
 
@@ -41,6 +45,7 @@ export default function SubsetCreate({
   dateFields,
   dimensionFields,
   measureFields,
+  textFields,
   hierarchies,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
@@ -60,13 +65,10 @@ export default function SubsetCreate({
     showErrorToast: true,
   })
 
-  const [dates, setDates] = useState<Omit<SubsetDateField, 'id' | 'subset_detail_id'>[]>([])
-  const [dimensions, setDimensions] = useState<
-    Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>[]
-  >([])
-  const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'id' | 'subset_detail_id'>[]>(
-    []
-  )
+  const [dates, setDates] = useState<Omit<SubsetDateField, 'subset_detail_id'>[]>([])
+  const [dimensions, setDimensions] = useState<Omit<SubsetDimensionField, 'subset_detail_id'>[]>([])
+  const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'subset_detail_id'>[]>([])
+  const [texts, setTexts] = useState<Omit<SubsetTextField, 'subset_detail_id'>[]>([])
 
   const [aiOptionsOpen, setAiOptionsOpen] = useState(false)
 
@@ -162,6 +164,7 @@ export default function SubsetCreate({
       dates,
       dimensions,
       measures,
+      texts,
     })
   }
 
@@ -230,6 +233,12 @@ export default function SubsetCreate({
           dataDetail={dataDetail}
           measureFields={measureFields}
           usingGroup={formData.group_data}
+        />
+        <SubsetManageTextFields
+          addedTextFields={texts}
+          setAddedTextFields={setTexts}
+          dataDetail={dataDetail}
+          textFields={textFields}
         />
         <div className='flex'>
           <Button

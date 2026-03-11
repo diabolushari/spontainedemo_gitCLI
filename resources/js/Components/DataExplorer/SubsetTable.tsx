@@ -1,4 +1,4 @@
-import { DataTableItem, SubsetDetail } from '@/interfaces/data_interfaces'
+import { DataTableItem, SubsetDetail, SubsetTextField } from '@/interfaces/data_interfaces'
 import { useMemo } from 'react'
 import Table from '@/ui/Table/Table'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
@@ -75,6 +75,18 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
         })
       }
     })
+
+    subset.texts?.forEach((text) => {
+      if (text.info == null) {
+        return
+      }
+      cols.push({
+        name: text.subset_field_name ?? '',
+        source: text.subset_column ?? '',
+        type: 'string',
+      })
+    })
+
     return cols
   }, [subset])
 

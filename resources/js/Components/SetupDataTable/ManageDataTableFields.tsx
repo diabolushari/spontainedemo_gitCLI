@@ -13,13 +13,6 @@ import SourceFieldCard from '@/Components/SetupDataTable/cards/SourceFieldCard'
 import DataTableFieldCard from '@/Components/SetupDataTable/cards/DataTableFieldCard'
 import { FieldErrors } from './SetupDataTable'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/Components/ui/sheet'
-import {
   closestCenter,
   DndContext,
   KeyboardSensor,
@@ -91,7 +84,17 @@ export default function ManageDataTableFields({
   const [showModal, setShowModal] = useState(false)
   const [selectedField, setSelectedField] = useState<DataTableFieldConfig | null>(null)
   const [selectedAvailableField, setSelectedAvailableField] = useState<AvailableField | null>(null)
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [filterQuery, setFilterQuery] = useState('')
+
+  const filteredFields = useMemo(() => {
+    if (!filterQuery.trim()) return fields
+    const query = filterQuery.toLowerCase()
+    return fields.filter(
+      (field) =>
+        field.field_name?.toLowerCase().includes(query) ||
+        field.column?.toLowerCase().includes(query)
+    )
+  }, [fields, filterQuery])
 
   const openAddFieldModal = () => {
     setShowModal(true)
@@ -178,8 +181,8 @@ export default function ManageDataTableFields({
     // Add request body parameter paths
     if (selectedAPI?.body != null && selectedAPI.body.length > 0) {
       const requestFields = selectedAPI.body
-        .filter((param) => !configuredPaths.has(`request_params.${param.key}`))
-        .map((param) => ({
+        .filter((param: any) => !configuredPaths.has(`request_params.${param.key}`))
+        .map((param: any) => ({
           path: `request_params.${param.key}`,
           name: `Request: ${param.key}`,
         }))
@@ -214,7 +217,7 @@ export default function ManageDataTableFields({
     })
   )
 
-  function handleDragEnd(event) {
+  function handleDragEnd(event: any) {
     const { active, over } = event
 
     if (active.id !== over.id) {
@@ -232,78 +235,85 @@ export default function ManageDataTableFields({
   }, [fields])
 
   return (
-    <>
-      {/* Search and Add New Field */}
-      <div className='mb-6 flex gap-3'>
-        <div className='relative flex-1'>
-          <Search className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
-          <input
-            type='text'
-            placeholder='Search fields...'
-            // value={searchQuery}
-            // onChange={(e) => onSearchChange(e.target.value)}
-            className='w-full rounded-lg border border-gray-300 py-3 pl-12 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500'
-          />
-        </div>
-        <button
-          onClick={() => setIsSheetOpen(true)}
-          className='whitespace-nowrap rounded-lg border-2 border-blue-500 px-6 py-3 font-medium text-blue-500 transition-colors hover:bg-blue-50'
-        >
-          + Add New Field
-        </button>
-      </div>
-
-      <div className='grid md:gap-2'>
-        <div className='flex flex-col p-5'>
-          <div className='mb-4 flex flex-col gap-5'>
-            <h4 className='font-semibold'>Added To DataTable</h4>
-            <button
-              onClick={openAddFieldModal}
-              className='flex items-center gap-2 self-end rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700'
-            >
-              <Plus className='h-4 w-4' />
-              Add A Field That Is Not In {sourceName}
-            </button>
+    <div className='flex gap-8'>
+      {/* Left Column: Configured Fields */}
+      <div className='flex-1'>
+        <div className='mb-6'>
+          <div className='relative'>
+            <Search className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
+            <input
+              type='text'
+              placeholder='Search added fields...'
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+              className='w-full rounded-lg border border-gray-200 bg-white py-3 pl-12 pr-4 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10'
+            />
           </div>
+        </div>
+
+        <div className='rounded-xl border border-gray-100 bg-white p-6 shadow-sm'>
+          <div className='mb-6 flex items-center justify-between'>
+            <h4 className='text-lg font-semibold text-gray-900'>Added To DataTable</h4>
+            <span className='rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600'>
+              {filteredFields.length} {filterQuery ? 'Found' : 'Fields'}
+            </span>
+          </div>
+
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <div className='grid gap-2'>
+            <div className='grid gap-3'>
               <SortableContext
-                items={fields}
+                items={filteredFields}
                 strategy={verticalListSortingStrategy}
               >
-                {fields.map((field) => (
-                  <DataTableFieldCard
-                    key={field.id}
-                    id={field.id}
-                    field={field}
-                    onClick={handleConfiguredFieldClick}
-                    errors={fieldErrors[field.column]}
-                  />
-                ))}
+                {filteredFields.length > 0 ? (
+                  filteredFields.map((field) => (
+                    <DataTableFieldCard
+                      key={field.id}
+                      id={field.id}
+                      field={field}
+                      onClick={handleConfiguredFieldClick}
+                      errors={fieldErrors[field.column]}
+                    />
+                  ))
+                ) : (
+                  <div className='flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-12'>
+                    <div className='mb-3 rounded-full bg-gray-50 p-3'>
+                      <Plus className='h-6 w-6 text-gray-400' />
+                    </div>
+                    <p className='text-sm text-gray-500'>No fields added yet</p>
+                  </div>
+                )}
               </SortableContext>
             </div>
           </DndContext>
         </div>
       </div>
 
-      <Sheet
-        open={isSheetOpen && !showModal}
-        onOpenChange={setIsSheetOpen}
-      >
-        <SheetContent className='w-full overflow-y-auto sm:max-w-2xl'>
-          <SheetHeader>
-            <SheetTitle>TITLE</SheetTitle>
-            <SheetDescription>DES</SheetDescription>
-          </SheetHeader>
-          <div className='mt-6'>
-            {availableFields.length > 0 && (
-              <div className='flex flex-col p-5'>
-                <h4 className='mb-4 font-semibold'>Available From {sourceName}</h4>
-                <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+      {/* Right Column: Available Fields Sidebar */}
+      <div className='w-96 shrink-0'>
+        <div className='sticky top-6 flex flex-col gap-6'>
+          <div className='rounded-xl border border-gray-100 bg-white p-6 shadow-sm'>
+            <div className='mb-6'>
+              <h4 className='mb-4 text-lg font-semibold text-gray-900'>Available Fields</h4>
+              <p className='mb-6 text-sm text-gray-500'>
+                Fields found in {sourceName}. Click to add them to your DataTable.
+              </p>
+              <button
+                onClick={openAddFieldModal}
+                className='flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-700 active:scale-[0.98]'
+              >
+                <Plus className='h-4 w-4' />
+                Add A Field That Is Not In {sourceName}
+              </button>
+            </div>
+
+            <div className='max-h-[calc(100vh-25rem)] overflow-y-auto pr-1'>
+              {availableFields.length > 0 ? (
+                <div className='grid gap-3'>
                   {availableFields.map((field) => (
                     <SourceFieldCard
                       key={field.path}
@@ -312,11 +322,15 @@ export default function ManageDataTableFields({
                     />
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className='flex flex-col items-center justify-center py-8 text-center'>
+                  <p className='text-sm text-gray-400'>All available fields have been added.</p>
+                </div>
+              )}
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </div>
+      </div>
 
       {showModal && (
         <Modal setShowModal={setShowModal}>
@@ -328,6 +342,6 @@ export default function ManageDataTableFields({
           />
         </Modal>
       )}
-    </>
+    </div>
   )
 }

@@ -4,9 +4,11 @@ import {
   SubsetDetail,
   SubsetDimensionField,
   SubsetMeasureField,
+  SubsetTextField,
   TableDateField,
   TableDimensionField,
   TableMeasureField,
+  TableTextField,
 } from '@/interfaces/data_interfaces'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
@@ -19,6 +21,7 @@ import React, { useMemo, useState } from 'react'
 import SubsetManageDates from '@/Components/Subset/SubsetManageDates'
 import SubsetManageDimensions from '@/Components/Subset/SubsetManageDimensions'
 import SubsetManageMeasures from '@/Components/Subset/SubsetManageMeasures'
+import SubsetManageTextFields from '@/Components/Subset/SubsetManageTextFields'
 import Button from '@/ui/button/Button'
 import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
@@ -31,6 +34,7 @@ interface Props {
   dateFields: TableDateField[]
   dimensionFields: TableDimensionField[]
   measureFields: TableMeasureField[]
+  textFields: TableTextField[]
   hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
 }
 
@@ -46,6 +50,7 @@ export default function SubsetEdit({
   dimensionFields,
   hierarchies,
   dateFields,
+  textFields,
   subsetDetail,
 }: Readonly<Props>) {
   console.log(subsetDetail)
@@ -71,6 +76,9 @@ export default function SubsetEdit({
   const [measures, setMeasures] = useState<Omit<SubsetMeasureField, 'subset_detail_id'>[]>(
     subsetDetail.measures as SubsetMeasureField[]
   )
+  const [texts, setTexts] = useState<Omit<SubsetTextField, 'subset_detail_id'>[]>(
+    (subsetDetail.texts as SubsetTextField[]) ?? []
+  )
   const { post, loading, errors } = useInertiaPost(route('subset.update', subsetDetail.id), {
     showErrorToast: true,
   })
@@ -78,9 +86,13 @@ export default function SubsetEdit({
   const [showDuplicateModal, setShowDuplicateModal] = useState(false)
 
   const handleDuplicate = () => {
-    router.post(route('subset.duplicate', subsetDetail.id), {}, {
-      onFinish: () => setShowDuplicateModal(false),
-    })
+    router.post(
+      route('subset.duplicate', subsetDetail.id),
+      {},
+      {
+        onFinish: () => setShowDuplicateModal(false),
+      }
+    )
   }
 
   const formItems = useMemo(<
@@ -179,6 +191,7 @@ export default function SubsetEdit({
       dates,
       dimensions,
       measures,
+      texts,
     })
   }
 
@@ -247,6 +260,12 @@ export default function SubsetEdit({
           dataDetail={dataDetail}
           measureFields={measureFields}
           usingGroup={formData.group_data}
+        />
+        <SubsetManageTextFields
+          addedTextFields={texts}
+          setAddedTextFields={setTexts}
+          dataDetail={dataDetail}
+          textFields={textFields}
         />
         <div className='flex gap-3'>
           <Button

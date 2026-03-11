@@ -46,5 +46,11 @@ class SubsetQuerySorting
             }
         }
 
+        foreach ($subsetDetail->texts as $text) {
+            if ($text->subset_column == $column) {
+                $expression = $this->textStatement($text);
+                $queryBuilder->orderByRaw($expression.' '.$sortOrder);
+            }
+        }
     }
 }

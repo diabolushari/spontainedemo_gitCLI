@@ -144,6 +144,7 @@ export interface SubsetDetail extends Model {
   dates?: Partial<SubsetDateField>[]
   dimensions?: Partial<SubsetDimensionField>[]
   measures?: Partial<SubsetMeasureField>[]
+  texts?: Partial<SubsetTextField>[]
   data_detail?: Partial<DataDetail> | null
   max_rows_to_fetch: number | null
   use_for_training_ai: 0 | 1
@@ -171,6 +172,7 @@ export interface SubsetDateField extends Model {
   dynamic_end_offset: number | null
   dynamic_end_unit: string | null
   sort_order: string | null
+  temporal_type?: 'date' | 'datetime'
   info?: Partial<TableDateField>
 }
 
@@ -200,6 +202,16 @@ export interface SubsetMeasureField extends Model {
   weight_field_id: number | null
   sort_order: string | null
   info?: Partial<TableMeasureField>
+}
+
+export interface SubsetTextField extends Model {
+  subset_detail_id: number
+  field_id: number
+  subset_field_name: string
+  subset_column: string
+  description: string | null
+  sort_order: string | null
+  info?: Partial<TableTextField>
 }
 
 export interface DataLoaderConnection extends Model {

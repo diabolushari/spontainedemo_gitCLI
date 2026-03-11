@@ -12,6 +12,8 @@ import Step5DataTableDetail from '@/Components/SetupDataTable/V2/Steps/Step5Data
 import { FieldErrors } from '@/Components/SetupDataTable/SetupDataTable'
 import Step2APISelection from '@/Components/SetupDataTable/V2/Steps/Step2APISelection'
 import Step3APIPreview from '@/Components/SetupDataTable/V2/Steps/Step3APIPreview'
+import Step2ExcelSelection from '@/Components/SetupDataTable/V2/Steps/Step2ExcelSelection'
+import Step3ExcelPreview from '@/Components/SetupDataTable/V2/Steps/Step3ExcelPreview'
 
 type DataSourceType = 'sql' | 'api' | 'excel' | null
 
@@ -28,6 +30,7 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
 
   const [selectedQuery, setSelectedQuery] = useState<DataLoaderQuery | null>(null)
   const [selectedAPI, setSelectedAPI] = useState<DataLoaderAPI | null>(null)
+  const [excelFile, setExcelFile] = useState<File | null>(null)
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
@@ -73,10 +76,10 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
   }
 
   const handleStepClick = (step: number) => {
-    if (selectedAPI == null && selectedQuery == null) {
+    if (selectedAPI == null && selectedQuery == null && excelFile == null) {
       return
     }
-    setCurrentStep(step)
+    setCurrentStep(step as 1 | 2 | 3 | 4 | 5)
   }
 
   const fieldMapping = useMemo(() => {
@@ -104,13 +107,24 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
       })
   }, [fields])
 
-  useEffect(() => {
-    console.log(fields)
-  }, [fields])
+  const sourceDisplayName = useMemo(() => {
+    switch (dataSource) {
+      case 'sql':
+        return `SQL Query (${selectedQuery?.name || 'Selected Query'})`
+      case 'api':
+        return `API (${selectedAPI?.name || 'Selected API'})`
+      case 'excel':
+        return `Excel File (${excelFile?.name || 'Uploaded File'})`
+      default:
+        return 'Data Source'
+    }
+  }, [dataSource, selectedQuery, selectedAPI, excelFile])
 
   return (
     <div className='min-h-screen bg-gray-50 p-6'>
-      <div className='mx-auto max-w-7xl'>
+      <div
+        className={`mx-auto transition-all duration-500 ${currentStep === 4 ? 'max-w-[1600px]' : 'max-w-7xl'}`}
+      >
         {/* Header */}
         <div className='mb-8'>
           <h1 className='mb-1 text-3xl font-bold text-gray-900'>Data Connection</h1>
@@ -160,18 +174,18 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
           />
         )}
 
-        {/*{currentStep === 2 && dataSource === 'excel' && (*/}
-        {/*  <Step2ExcelSelection*/}
-        {/*    searchQuery={searchQuery}*/}
-        {/*    onSearchChange={setSearchQuery}*/}
-        {/*    onBack={handleBack}*/}
-        {/*    onContinue={handleContinue}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {currentStep === 2 && dataSource === 'excel' && (
+          <Step2ExcelSelection
+            file={excelFile}
+            setFile={setExcelFile}
+            onBack={handleBack}
+            onContinue={handleContinue}
+          />
+        )}
 
         {currentStep === 3 && dataSource === 'sql' && (
           <Step3QueryPreview
-            selectedQuery={selectedQuery}
+            selectedQuery={selectedQuery!}
             setSourceResponseStructure={setSourceResponseStructure}
             onBack={handleBack}
             onContinue={handleContinue}
@@ -186,24 +200,28 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
           />
         )}
 
-        {/*{currentStep === 3 && dataSource === 'excel' && (*/}
-        {/*  <Step3ExcelPreview*/}
-        {/*    onBack={handleBack}*/}
-        {/*    onContinue={handleContinue}*/}
-        {/*  />*/}
-        {/*)}*/}
-
-        {currentStep === 4 && (dataSource === 'sql' || dataSource === 'api') && (
-          <Step4QueryFieldConfig
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+        {currentStep === 3 && dataSource === 'excel' && (
+          <Step3ExcelPreview
+            file={excelFile!}
+            setSourceResponseStructure={setSourceResponseStructure}
             onBack={handleBack}
             onContinue={handleContinue}
-            responseStructure={sourceResponseStructure}
-            fields={fields}
-            setFields={setFields}
           />
         )}
+
+        {currentStep === 4 &&
+          (dataSource === 'sql' || dataSource === 'api' || dataSource === 'excel') && (
+            <Step4QueryFieldConfig
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onBack={handleBack}
+              onContinue={handleContinue}
+              responseStructure={sourceResponseStructure}
+              fields={fields}
+              setFields={setFields}
+              sourceName={sourceDisplayName}
+            />
+          )}
 
         {currentStep === 5 && (
           <Step5DataTableDetail
@@ -212,6 +230,8 @@ function SetupDataTableV2({ types, source }: Readonly<Props>) {
             fieldMapping={fieldMapping}
             selectedQuery={selectedQuery}
             selectedAPI={selectedAPI}
+            excelFile={excelFile}
+            dataSource={dataSource}
             onErrorsChange={setFieldErrors}
           />
         )}

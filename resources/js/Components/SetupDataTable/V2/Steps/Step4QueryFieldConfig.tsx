@@ -14,6 +14,7 @@ interface Step4QueryFieldConfigProps {
   selectedAPI?: DataLoaderAPI
   onBack: () => void
   onContinue: () => void
+  sourceName?: string
 }
 
 const Step4QueryFieldConfig: React.FC<Step4QueryFieldConfigProps> = ({
@@ -25,6 +26,7 @@ const Step4QueryFieldConfig: React.FC<Step4QueryFieldConfigProps> = ({
   selectedAPI,
   fields,
   setFields,
+  sourceName,
 }) => {
   return (
     <div>
@@ -35,6 +37,7 @@ const Step4QueryFieldConfig: React.FC<Step4QueryFieldConfigProps> = ({
         setFields={setFields}
         responseStructure={responseStructure}
         selectedAPI={selectedAPI}
+        sourceName={sourceName}
       />
 
       {/* Navigation Buttons */}

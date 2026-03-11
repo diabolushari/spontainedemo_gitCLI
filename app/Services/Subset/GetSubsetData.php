@@ -60,7 +60,7 @@ class GetSubsetData
     public function withSubsetDetail(int $subsetDetailId): self
     {
         $this->subsetDetail = SubsetDetail::where('id', $subsetDetailId)
-            ->with('dates.info', 'measures.info', 'measures.weightInfo', 'dimensions.info')
+            ->with('dates.info', 'measures.info', 'measures.weightInfo', 'dimensions.info', 'texts.info')
             ->first();
 
         return $this;

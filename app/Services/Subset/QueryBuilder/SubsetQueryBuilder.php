@@ -25,7 +25,8 @@ readonly class SubsetQueryBuilder
         private JoinDataTable $joinDataTable,
         private AddDatesToQuery $addDatesToQuery,
         private AddDimensionsToQuery $addDimensionsToQuery,
-        private AddMeasuresToQuery $addMeasuresToQuery
+        private AddMeasuresToQuery $addMeasuresToQuery,
+        private AddTextsToQuery $addTextsToQuery
     ) {
     }
 
@@ -61,6 +62,13 @@ readonly class SubsetQueryBuilder
                 $selectColumns,
                 $orderColumns,
                 $isSummary,
+                $fields
+            );
+            $this->addTextsToQuery->addTextFields(
+                $subsetDetail->texts,
+                $groupingColumns,
+                $selectColumns,
+                $orderColumns,
                 $fields
             );
         }
