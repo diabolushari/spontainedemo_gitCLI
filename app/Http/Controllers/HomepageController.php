@@ -4,16 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\PageEditor\DashboardPage;
 use App\Models\WidgetEditor\Widget;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class HomepageController extends Controller
+class HomepageController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth',
+        ];
+    }
+
     public function index()
     {
         $user = Auth::user();
-        
+
         // Fetch user's widgets (limit to 8 for homepage display)
         $widgets = Widget::with('collection')
             ->where(function ($query) use ($user) {
@@ -62,6 +69,7 @@ class HomepageController extends Controller
             'pages' => $pages,
             'chatHistory' => $chatHistory,
             'page_agent_url' => $pageAgentUrl,
+            'isAdmin' => $user->isAdmin(),
         ]);
     }
 
@@ -72,13 +80,13 @@ class HomepageController extends Controller
 
         // Collect unique widget IDs from all blocks for this page
         $ids = collect($structure)
-            ->flatMap(fn($block) => collect($block['widgets'] ?? [])->pluck('widgetId'))
+            ->flatMap(fn ($block) => collect($block['widgets'] ?? [])->pluck('widgetId'))
             ->filter()
             ->unique()
             ->values();
 
         // Fetch widgets and index by ID for fast lookup
-        // Ideally we'd fetch for ALL pages at once, but for 6 pages * avg 5-10 widgets, 
+        // Ideally we'd fetch for ALL pages at once, but for 6 pages * avg 5-10 widgets,
         // 6 queries is acceptable for now given the complexity of grouping/mapping for multiple pages
         // without a relationship.
         $widgets = Widget::query()
@@ -91,6 +99,7 @@ class HomepageController extends Controller
             $block['widgets'] = collect($block['widgets'] ?? [])->map(function ($slot) use ($widgets) {
                 $wid = $slot['widgetId'] ?? null;
                 $slot['widget'] = $wid ? $widgets->get($wid) : null;
+
                 return $slot;
             })->toArray();
 
@@ -101,4 +110,3 @@ class HomepageController extends Controller
         $page->setAttribute('page', $hydrated);
     }
 }
-
