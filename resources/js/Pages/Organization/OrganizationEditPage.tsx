@@ -190,20 +190,22 @@ export default function OrganizationEditPage({ organization, metaHierarchies }: 
     e.preventDefault()
     const finalData = {
       ...formData,
-      objectives: objectives,
       meta_hierarchy_item_id: selectedHierarchyItem?.id ?? null,
+      _method: 'patch',
     }
-
-    router.patch(
+    router.post(
       route('organization.update', { organization: organization.id }),
-      finalData as any,
       {
+        ...finalData,
+        _method: 'patch',
+      },
+      {
+        forceFormData: true,
         onStart: () => setProcessing(true),
         onFinish: () => setProcessing(false),
       }
     )
   }
-
   const errors = inertiaErrors || {}
 
   return (

@@ -18,31 +18,31 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class OrganizationFormRequest extends Data
 {
     public function __construct(
-        #[Required, StringType, Max(255)]
+        #[Required,  Max(255)]
         public readonly string $name,
 
-        #[Required, StringType]
+        #[Required]
         public readonly string $address,
 
-        #[Required, StringType, Max(255)]
+        #[Required, Max(255)]
         public readonly string $state,
 
-        #[Required, StringType, Max(255)]
+        #[Required, Max(255)]
         public readonly string $country,
 
-        #[Required, StringType]
+        #[Required]
         public readonly string $industryContext,
 
         #[Nullable, Exists('meta_hierarchy_items', 'id')]
         public readonly ?int $metaHierarchyItemId,
 
-        #[Nullable]
-        public readonly ?array $objectives,
+        // #[Nullable]
+        // public readonly ?array $objectives,
 
         #[Nullable]
         public readonly ?string $hierarchyConnection,
 
-        #[Nullable, Image, Mimes('jpg,jpeg,png,webp'), Max(2048)]
+        #[Nullable, Image, Mimes('jpg,jpeg,png,webp'), Max(10240)]
         public readonly ?UploadedFile $logo,
 
         #[Nullable]

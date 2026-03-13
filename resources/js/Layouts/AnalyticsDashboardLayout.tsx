@@ -100,7 +100,12 @@ export default function AnalyticsDashboardLayout({
       <ToastContainer />
       <div className='sticky top-0 z-40 flex h-20 shrink-0 items-center justify-between gap-2 rounded-xl border border-gray-200 bg-gray-50/50 p-4 shadow-sm backdrop-blur-lg'>
         <SidebarTrigger className='md:ml-10' />
-        <ApplicationLogo className='mb-2 h-20 w-auto rounded-2xl md:h-16' />
+        <img
+          src={User?.organization.logo}
+          alt='logo'
+          className='h-12 w-12'
+        />
+        {/* <ApplicationLogo className='mb-2 h-20 w-auto rounded-2xl md:h-16' /> */}
       </div>
 
       <AppSidebar className='z-40' />

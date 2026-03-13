@@ -49,6 +49,7 @@ export interface Organization {
   objectives: Objective[]
   meta_hierarchy_item?: MetaHierarchyItem | null
   hierarchy?: OrganizationHeirarchy
+  logo?: string
 }
 
 interface PageProps {

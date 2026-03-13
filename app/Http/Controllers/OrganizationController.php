@@ -78,7 +78,7 @@ final class OrganizationController extends Controller implements HasMiddleware
                     $request->logo,
                     $organization->id,
                     'logo',
-                    false
+                     true
                 );
 
                 if ($logoFileName == '') {
@@ -179,7 +179,7 @@ final class OrganizationController extends Controller implements HasMiddleware
                     $request->logo,
                     $organization->id,
                     'logo',
-                    false
+                    true
                 );
 
                 if ($logoFileName == '') {

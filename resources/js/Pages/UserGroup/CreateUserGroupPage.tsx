@@ -65,7 +65,7 @@ const CreateUserGroupPage = ({ userRoles, metaHierarchies, userGroup }: Properti
       _method: userGroup ? 'PATCH' : 'POST',
     })
   }
-  console.log(formData)
+
   return (
     <DashboardLayout
       type='Users'
