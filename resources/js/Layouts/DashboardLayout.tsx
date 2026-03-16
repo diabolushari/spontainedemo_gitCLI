@@ -111,7 +111,7 @@ export default function DashboardLayout({
       <div className='sticky top-0 z-40 flex h-20 shrink-0 items-center justify-between gap-2 rounded-xl border border-gray-200 bg-gray-50/50 p-4 shadow-sm backdrop-blur-lg'>
         <SidebarTrigger className='md:ml-10' />
         <img
-          src={user?.organization.logo ?? '/spontaine-favicon.png'}
+          src={user?.organization?.logo ?? '/spontaine-favicon.png'}
           alt='logo'
           className='h-12 w-12'
         />{' '}
