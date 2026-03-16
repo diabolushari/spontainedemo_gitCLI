@@ -31,13 +31,28 @@ class AddTextsToQuery
                 return;
             }
 
-            $groupingColumns[] = '`'.$text->info->column.'`';
-            $selectColumns[] = $text->info->column.' as `'.$text->subset_column.'`';
+            if ($text->expression != null) {
+                $groupingColumns[] = $text->expression;
+                $selectColumns[] = $text->expression.' as `'.$text->subset_column.'`';
+                if ($text->sort_order != null) {
+                    $orderColumns[] = new SubsetFieldOrderInfo(
+                        $text->expression,
+                        strtoupper($text->sort_order) === 'DESC' ? 'DESC' : 'ASC'
+                    );
+                }
+
+                return;
+            }
+
+            $column = '`'.$text->info->column.'`';
+
+            $groupingColumns[] = $column;
+            $selectColumns[] = $column.' as `'.$text->subset_column.'`';
 
             if ($text->sort_order != null) {
                 $sortOrder = $text->sort_order;
                 $orderColumns[] = new SubsetFieldOrderInfo(
-                    $text->info->column,
+                    $column,
                     strtoupper($sortOrder) === 'DESC' ? 'DESC' : 'ASC'
                 );
             }
