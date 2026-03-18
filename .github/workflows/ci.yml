@@ -1,0 +1,57 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "dev", "feature/*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-and-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Setup environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      # ✅ UNIT TEST
+      - name: Run Unit Tests
+        run: php artisan test
+
+      # ❌ If test fails → pipeline stops automatically
+
+      # ✅ SONARQUBE SCAN
+      - name: SonarQube Scan
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=your_project \
+            -Dsonar.host.url=http://your-server-ip:9000 \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      # ✅ QUALITY GATE CHECK (VERY IMPORTANT)
+      - name: Check SonarQube Quality Gate
+        run: |
+          sleep 10
+          STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
+          "http://your-server-ip:9000/api/qualitygates/project_status?projectKey=your_project" \
+          | jq -r '.projectStatus.status')
+
+          echo "Quality Gate Status: $STATUS"
+
+          if [ "$STATUS" != "OK" ]; then
+            echo "❌ Quality Gate Failed"
+            exit 1
+          fi
