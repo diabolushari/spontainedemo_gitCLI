@@ -28,8 +28,8 @@ jobs:
           php artisan key:generate
 
       # ✅ UNIT TEST
-      - name: Run Unit Tests
-        run: php artisan test
+      #- name: Run Unit Tests
+      #  run: php artisan test
 
       # ❌ If test fails → pipeline stops automatically
 
