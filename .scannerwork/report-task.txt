@@ -1,0 +1,6 @@
+projectKey=spontaine-demo
+serverUrl=https://b2f7-2401-4900-8fde-5280-49b6-3600-448c-3d18.ngrok-free.app
+serverVersion=26.3.0.120487
+dashboardUrl=https://b2f7-2401-4900-8fde-5280-49b6-3600-448c-3d18.ngrok-free.app/dashboard?id=spontaine-demo
+ceTaskId=1a89c26c-64b6-4379-8536-cbdde076b410
+ceTaskUrl=https://b2f7-2401-4900-8fde-5280-49b6-3600-448c-3d18.ngrok-free.app/api/ce/task?id=1a89c26c-64b6-4379-8536-cbdde076b410
