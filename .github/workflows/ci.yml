@@ -37,15 +37,15 @@ jobs:
 
       # ✅ SONARQUBE SCAN
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v2
-        env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: "https://b2f7-2401-4900-8fde-5280-49b6-3600-448c-3d18.ngrok-free.app"
+          uses: SonarSource/sonarqube-scan-action@v2
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: "https://b2f7-2401-4900-8fde-5280-49b6-3600-448c-3d18.ngrok-free.app"
 
       # ✅ QUALITY GATE CHECK (VERY IMPORTANT)
       - name: Check SonarQube Quality Gate
         run: |
-          sleep 10
+          sleep 30
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
           "https://b2f7-2401-4900-8fde-5280-49b6-3600-448c-3d18.ngrok-free.app/api/qualitygates/project_status?projectKey=spontaine-demo" \
           | jq -r '.projectStatus.status')
